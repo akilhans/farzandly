@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "description": "Farzandly Express API Server with MongoDB & Mongoose",
+  "packageManager": "npm@10.9.3",
+  "engines": {
+    "node": ">=20.0.0"
+  },
   "main": "dist/server.js",
   "scripts": {
     "dev": "tsx watch src/server.ts",

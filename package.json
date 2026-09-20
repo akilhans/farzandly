@@ -3,14 +3,19 @@
   "version": "1.0.0",
   "private": true,
   "description": "Farzandly — O'zbek ota-onalari uchun zamonaviy raqamli tarbiya platformasi",
+  "packageManager": "npm@10.9.3",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "main": "server/dist/server.js",
   "scripts": {
+    "start": "cd server && npm start",
+    "build": "cd server && npm install && npm run build",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cd server && npm run dev",
     "dev:client": "cd client && npm run dev",
     "build:server": "cd server && npm install && npm run build",
     "build:client": "cd client && npm install && npm run build",
-    "build": "cd server && npm install && npm run build",
-    "start": "cd server && npm start",
     "seed": "cd server && npm run seed"
   },
   "dependencies": {
