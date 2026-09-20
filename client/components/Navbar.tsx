@@ -18,22 +18,34 @@ import {
   Send,
   LogOut,
   ChevronDown,
+  Globe,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useI18n, Language } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 
 export function Navbar() {
   const pathname = usePathname();
   const { user, isAuthenticated, logout } = useAuth();
+  const { language, setLanguage, t } = useI18n();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
+  const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+
+  const languages: Array<{ code: Language; label: string; flag: string }> = [
+    { code: 'uz', label: 'O‘zbekcha', flag: '🇺🇿' },
+    { code: 'en', label: 'English', flag: '🇬🇧' },
+    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  ];
+
+  const currentLangObj = languages.find((l) => l.code === language) || languages[0];
 
   const navLinks = [
-    { href: '/', label: 'Asosiy', icon: Compass },
-    { href: '/dashboard', label: 'O‘quv yo‘li', icon: Compass },
-    { href: '/kurslar', label: 'Kurslar', icon: Layers },
-    { href: '/maqolalar', label: 'Maqolalar', icon: BookOpen },
-    { href: '/premium', label: 'Premium', icon: Crown, highlight: true },
+    { href: '/', label: t('nav.home'), icon: Compass },
+    { href: '/dashboard', label: t('nav.dashboard'), icon: Compass },
+    { href: '/kurslar', label: t('nav.courses'), icon: Layers },
+    { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
+    { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
 
   return (
@@ -54,7 +66,7 @@ export function Navbar() {
                 Farzand<span className="text-emerald-600">ly</span>
               </span>
               <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 -mt-1 hidden sm:block">
-                Ota-ona akademiyasi
+                {t('nav.academy')}
               </span>
             </div>
           </Link>
@@ -83,19 +95,64 @@ export function Navbar() {
             })}
           </nav>
 
-          {/* Right Action / Stats / Auth */}
-          <div className="flex items-center gap-2 sm:gap-3">
+          {/* Right Action / Stats / Language / Auth */}
+          <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Gamification Stats (Streak & XP) */}
             <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-50/80 backdrop-blur-xs border-2 border-slate-200/80 rounded-2xl px-2.5 py-1.5">
-              <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-amber-600" title="Kunlik streak">
+              <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-amber-600" title={t('stats.streak')}>
                 <Flame className="w-4 h-4 text-orange-500 fill-orange-500 animate-pulse" />
                 <span>{user?.streak ?? 1}</span>
               </div>
               <div className="w-[1px] h-3.5 bg-slate-300" />
-              <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-600" title="To‘plangan XP">
+              <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-emerald-600" title={t('stats.xp')}>
                 <Star className="w-4 h-4 text-emerald-500 fill-emerald-500" />
                 <span>{user?.xp ?? 0}</span>
               </div>
+            </div>
+
+            {/* Language Switcher Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setLangDropdownOpen(!langDropdownOpen)}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-slate-50/90 hover:bg-slate-100 border-2 border-slate-200 text-xs font-bold text-slate-700 transition-all cursor-pointer"
+                title="Tilni tanlash / Select Language"
+              >
+                <span>{currentLangObj.flag}</span>
+                <span className="uppercase tracking-wider">{currentLangObj.code}</span>
+                <ChevronDown className="w-3 h-3 text-slate-400" />
+              </button>
+
+              <AnimatePresence>
+                {langDropdownOpen && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 8, scale: 0.95 }}
+                    transition={{ duration: 0.15 }}
+                    className="absolute right-0 mt-2 w-40 bg-white rounded-2xl border-2 border-slate-200 shadow-xl p-1.5 z-50 space-y-0.5"
+                  >
+                    {languages.map((l) => (
+                      <button
+                        key={l.code}
+                        type="button"
+                        onClick={() => {
+                          setLanguage(l.code);
+                          setLangDropdownOpen(false);
+                        }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl transition-all text-left ${
+                          language === l.code
+                            ? 'bg-emerald-50 text-emerald-700'
+                            : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        <span className="text-base leading-none">{l.flag}</span>
+                        <span>{l.label}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
 
             {/* Telegram Auth Status */}
@@ -242,6 +299,28 @@ export function Navbar() {
                 <UserIcon className="w-5 h-5 text-emerald-600" />
                 <span>Mening profilim</span>
               </Link>
+
+              {/* Mobile Language Switcher */}
+              <div className="flex items-center gap-2 pt-2 pb-1">
+                {languages.map((l) => (
+                  <button
+                    key={l.code}
+                    type="button"
+                    onClick={() => {
+                      setLanguage(l.code);
+                      setMobileMenuOpen(false);
+                    }}
+                    className={`flex-1 py-2 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border-2 transition-all ${
+                      language === l.code
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+                        : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
+                    }`}
+                  >
+                    <span>{l.flag}</span>
+                    <span>{l.label}</span>
+                  </button>
+                ))}
+              </div>
 
               {!isAuthenticated && (
                 <Link

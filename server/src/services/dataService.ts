@@ -34,12 +34,12 @@ let memoryUsers: Record<string, any> = {
     _id: 'demo-user',
     name: 'Ota-ona',
     childAgeGroup: '3-5',
-    selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
+    selectedInterests: ['Tarbiya asoslari va iymon'],
     dailyGoalMinutes: 10,
     xp: 20,
     streak: 3,
     level: "O‘rganuvchi",
-    completedLessons: ['bolani-tushunishdan-boshlang'],
+    completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'],
     achievements: ['ilk-qadam'],
     subscriptionStatus: 'free',
   },
@@ -48,10 +48,10 @@ let memoryProgress: Record<string, any[]> = {
   'demo-user': [
     {
       userId: 'demo-user',
-      lessonSlug: 'bolani-tushunishdan-boshlang',
+      lessonSlug: 'dars-1-tarbiyaning-ahamiyati-1-qism',
       isCompleted: true,
       score: 100,
-      xpEarned: 10,
+      xpEarned: 15,
       completedAt: new Date(),
     },
   ],
@@ -62,25 +62,47 @@ function isDbConnected(): boolean {
   return mongoose.connection.readyState === 1;
 }
 
+function localizeEntity<T extends Record<string, any>>(item: T, lang: string = 'uz'): T {
+  if (!item || !lang || lang === 'uz') return item;
+  const raw = (typeof (item as any).toObject === 'function') ? (item as any).toObject() : { ...item };
+  if (raw.translations && raw.translations[lang]) {
+    const t = raw.translations[lang];
+    return {
+      ...raw,
+      ...t,
+      screens: t.screens || raw.screens,
+    };
+  }
+  return raw as T;
+}
+
 export class DataService {
   // Categories
-  static async getCategories() {
+  static async getCategories(lang: string = 'uz') {
+    let items;
     if (isDbConnected()) {
-      return await Category.find().sort({ displayOrder: 1 });
+      items = await Category.find().sort({ displayOrder: 1 });
+    } else {
+      items = memoryCategories;
     }
-    return memoryCategories;
+    return items.map((c: any) => localizeEntity(c, lang));
   }
 
   // Age Groups
-  static async getAgeGroups() {
+  static async getAgeGroups(lang: string = 'uz') {
+    let items;
     if (isDbConnected()) {
-      return await AgeGroup.find().sort({ displayOrder: 1 });
+      items = await AgeGroup.find().sort({ displayOrder: 1 });
+    } else {
+      items = memoryAgeGroups;
     }
-    return memoryAgeGroups;
+    return items.map((ag: any) => localizeEntity(ag, lang));
   }
 
   // Articles
-  static async getArticles(filters?: { categorySlug?: string; ageGroup?: string; search?: string }) {
+  static async getArticles(filters?: { categorySlug?: string; ageGroup?: string; search?: string; lang?: string }) {
+    const lang = filters?.lang || 'uz';
+    let results;
     if (isDbConnected()) {
       const query: Record<string, any> = { isPublished: true };
       if (filters?.categorySlug) query.categorySlug = filters.categorySlug;
@@ -91,111 +113,132 @@ export class DataService {
           { excerpt: { $regex: filters.search, $options: 'i' } },
         ];
       }
-      return await Article.find(query).sort({ publishedAt: -1 });
+      results = await Article.find(query).sort({ publishedAt: -1 });
+    } else {
+      results = memoryArticles;
+      if (filters?.categorySlug) {
+        results = results.filter((a) => a.categorySlug === filters.categorySlug);
+      }
+      if (filters?.ageGroup) {
+        results = results.filter((a) => a.ageGroup === filters.ageGroup);
+      }
+      if (filters?.search) {
+        const q = filters.search.toLowerCase();
+        results = results.filter((a) => a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q));
+      }
     }
-
-    let results = memoryArticles;
-    if (filters?.categorySlug) {
-      results = results.filter((a) => a.categorySlug === filters.categorySlug);
-    }
-    if (filters?.ageGroup) {
-      results = results.filter((a) => a.ageGroup === filters.ageGroup);
-    }
-    if (filters?.search) {
-      const q = filters.search.toLowerCase();
-      results = results.filter((a) => a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q));
-    }
-    return results;
+    return results.map((a: any) => localizeEntity(a, lang));
   }
 
-  static async getArticleBySlug(slug: string) {
+  static async getArticleBySlug(slug: string, lang: string = 'uz') {
+    let article;
     if (isDbConnected()) {
-      return await Article.findOne({ slug });
+      article = await Article.findOne({ slug });
+    } else {
+      article = memoryArticles.find((a) => a.slug === slug) || null;
     }
-    return memoryArticles.find((a) => a.slug === slug) || null;
+    return article ? localizeEntity(article, lang) : null;
   }
 
   // Courses
-  static async getCourses(filters?: { ageGroup?: string; categorySlug?: string }) {
+  static async getCourses(filters?: { ageGroup?: string; categorySlug?: string; lang?: string }) {
+    const lang = filters?.lang || 'uz';
+    let results;
     if (isDbConnected()) {
       const query: Record<string, any> = {};
       if (filters?.ageGroup) query.ageGroup = filters.ageGroup;
       if (filters?.categorySlug) query.categorySlug = filters.categorySlug;
-      return await Course.find(query);
+      results = await Course.find(query);
+    } else {
+      results = memoryCourses;
+      if (filters?.ageGroup) {
+        results = results.filter((c) => c.ageGroup === filters.ageGroup);
+      }
+      if (filters?.categorySlug) {
+        results = results.filter((c) => c.categorySlug === filters.categorySlug);
+      }
     }
-
-    let results = memoryCourses;
-    if (filters?.ageGroup) {
-      results = results.filter((c) => c.ageGroup === filters.ageGroup);
-    }
-    if (filters?.categorySlug) {
-      results = results.filter((c) => c.categorySlug === filters.categorySlug);
-    }
-    return results;
+    return results.map((c: any) => localizeEntity(c, lang));
   }
 
-  static async getCourseBySlug(slug: string) {
+  static async getCourseBySlug(slug: string, lang: string = 'uz') {
+    let course;
     if (isDbConnected()) {
-      return await Course.findOne({ slug });
+      course = await Course.findOne({ slug });
+    } else {
+      course = memoryCourses.find((c) => c.slug === slug) || null;
     }
-    return memoryCourses.find((c) => c.slug === slug) || null;
+    return course ? localizeEntity(course, lang) : null;
   }
 
   // Learning Paths
-  static async getLearningPaths(ageGroup?: string) {
+  static async getLearningPaths(ageGroup?: string, lang: string = 'uz') {
+    let paths;
     if (isDbConnected()) {
       const query = ageGroup ? { ageGroup } : {};
-      return await LearningPath.find(query);
+      paths = await LearningPath.find(query);
+    } else {
+      paths = ageGroup ? memoryLearningPaths.filter((lp) => lp.ageGroup === ageGroup) : memoryLearningPaths;
     }
-    if (ageGroup) {
-      return memoryLearningPaths.filter((lp) => lp.ageGroup === ageGroup);
-    }
-    return memoryLearningPaths;
+    return paths.map((p: any) => localizeEntity(p, lang));
   }
 
-  static async getLearningPathBySlug(slug: string) {
+  static async getLearningPathBySlug(slug: string, lang: string = 'uz') {
+    let path;
     if (isDbConnected()) {
-      return await LearningPath.findOne({ slug });
+      path = await LearningPath.findOne({ slug });
+    } else {
+      path = memoryLearningPaths.find((lp) => lp.slug === slug) || null;
     }
-    return memoryLearningPaths.find((lp) => lp.slug === slug) || null;
+    return path ? localizeEntity(path, lang) : null;
   }
 
   // Lessons
-  static async getLessons(filters?: { courseSlug?: string; ageGroup?: string }) {
+  static async getLessons(filters?: { courseSlug?: string; ageGroup?: string; lang?: string }) {
+    const lang = filters?.lang || 'uz';
+    let results;
     if (isDbConnected()) {
       const query: Record<string, any> = {};
       if (filters?.courseSlug) query.courseSlug = filters.courseSlug;
       if (filters?.ageGroup) query.ageGroup = filters.ageGroup;
-      return await Lesson.find(query).sort({ order: 1 });
+      results = await Lesson.find(query).sort({ order: 1 });
+    } else {
+      results = memoryLessons;
+      if (filters?.courseSlug) {
+        results = results.filter((l) => l.courseSlug === filters.courseSlug);
+      }
+      if (filters?.ageGroup) {
+        results = results.filter((l) => l.ageGroup === filters.ageGroup);
+      }
+      results = results.sort((a, b) => a.order - b.order);
     }
-
-    let results = memoryLessons;
-    if (filters?.courseSlug) {
-      results = results.filter((l) => l.courseSlug === filters.courseSlug);
-    }
-    if (filters?.ageGroup) {
-      results = results.filter((l) => l.ageGroup === filters.ageGroup);
-    }
-    return results.sort((a, b) => a.order - b.order);
+    return results.map((l: any) => localizeEntity(l, lang));
   }
 
-  static async getLessonByIdOrSlug(idOrSlug: string) {
+  static async getLessonByIdOrSlug(idOrSlug: string, lang: string = 'uz') {
+    let lesson = null;
     if (isDbConnected()) {
       if (mongoose.Types.ObjectId.isValid(idOrSlug)) {
-        const byId = await Lesson.findById(idOrSlug);
-        if (byId) return byId;
+        lesson = await Lesson.findById(idOrSlug);
       }
-      return await Lesson.findOne({ slug: idOrSlug });
+      if (!lesson) {
+        lesson = await Lesson.findOne({ slug: idOrSlug });
+      }
+    } else {
+      lesson = memoryLessons.find((l) => l.slug === idOrSlug) || null;
     }
-    return memoryLessons.find((l) => l.slug === idOrSlug) || null;
+    return lesson ? localizeEntity(lesson, lang) : null;
   }
 
   // Achievements
-  static async getAchievements() {
+  static async getAchievements(lang: string = 'uz') {
+    let items;
     if (isDbConnected()) {
-      return await Achievement.find().sort({ xpRequired: 1 });
+      items = await Achievement.find().sort({ xpRequired: 1 });
+    } else {
+      items = memoryAchievements;
     }
-    return memoryAchievements;
+    return items.map((a: any) => localizeEntity(a, lang));
   }
 
   // User Onboarding

@@ -21,27 +21,32 @@ import {
 } from 'lucide-react';
 import { api, Lesson } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 
 export default function DashboardPage() {
   const { user: authUser } = useAuth();
+  const { language, t } = useI18n();
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function loadData() {
-      const allLessons = await api.getLessons({ ageGroup: authUser?.childAgeGroup || '3-5' });
+      const allLessons = await api.getLessons({
+        lang: language,
+        ageGroup: authUser?.childAgeGroup || undefined,
+      });
       setLessons(allLessons || []);
       setLoading(false);
     }
     loadData();
-  }, [authUser?.childAgeGroup]);
+  }, [authUser?.childAgeGroup, language]);
 
-  const completedList = authUser?.completedLessons || ['bolani-tushunishdan-boshlang'];
+  const completedList = authUser?.completedLessons || ['dars-1-tarbiyaning-ahamiyati-1-qism'];
   const streak = authUser?.streak || 3;
   const xp = authUser?.xp || 20;
-  const level = authUser?.level || "O‘rganuvchi";
+  const level = authUser?.level || (language === 'en' ? 'Learner' : language === 'ru' ? 'Ученик' : 'O‘rganuvchi');
 
   // Find the first non-completed lesson
   const currentLesson = lessons.find((l) => !completedList.includes(l.slug)) || lessons[0];
@@ -69,13 +74,13 @@ export default function DashboardPage() {
             />
             <div className="space-y-0.5">
               <h1 className="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-1.5">
-                Assalomu alaykum, {authUser?.name || 'Ota-ona'} 👋
+                {t('dashboard.welcome', 'Assalomu alaykum')}, {authUser?.name || t('dashboard.default_user', 'Ota-ona')} 👋
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 font-medium">
                 {authUser?.telegramUsername && !authUser?.name?.startsWith('@')
                   ? `@${authUser.telegramUsername} • `
                   : ''}
-                Bugun tarbiya yo‘lingizda davom etamiz.
+                {t('dashboard.greeting_sub', 'Bugun tarbiya yo‘lingizda davom etamiz.')}
               </p>
             </div>
           </div>
@@ -98,7 +103,7 @@ export default function DashboardPage() {
               <span className="text-lg sm:text-2xl font-black">{streak}</span>
             </div>
             <p className="text-[10px] sm:text-xs font-bold text-amber-800 uppercase tracking-wider">
-              Kunlik streak
+              {t('dashboard.streak', 'Kunlik streak')}
             </p>
           </motion.div>
 
@@ -111,7 +116,7 @@ export default function DashboardPage() {
               <span className="text-lg sm:text-2xl font-black">{xp}</span>
             </div>
             <p className="text-[10px] sm:text-xs font-bold text-emerald-800 uppercase tracking-wider">
-              XP to‘plandi
+              {t('dashboard.xp_earned', 'XP to‘plandi')}
             </p>
           </motion.div>
 
@@ -124,7 +129,7 @@ export default function DashboardPage() {
               <span className="text-lg sm:text-2xl font-black">{completedList.length}</span>
             </div>
             <p className="text-[10px] sm:text-xs font-bold text-sky-800 uppercase tracking-wider">
-              Dars o‘tildi
+              {t('dashboard.lessons_passed', 'Dars o‘tildi')}
             </p>
           </motion.div>
         </div>
@@ -141,7 +146,7 @@ export default function DashboardPage() {
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center gap-1.5 bg-emerald-500/40 text-emerald-100 px-3 py-1 rounded-full text-xs font-bold">
               <Zap className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-              <span>BUGUNGI ASOSIY DARS • {currentLesson.estimatedMinutes} DAQIQA</span>
+              <span>{t('dashboard.today_main', 'BUGUNGI ASOSIY DARS')} • {currentLesson.estimatedMinutes} {t('dashboard.minutes', 'DAQIQA')}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black">{currentLesson.title}</h2>
             <p className="text-xs sm:text-sm text-emerald-100 line-clamp-2">
@@ -154,7 +159,7 @@ export default function DashboardPage() {
             className="w-full sm:w-auto btn-gold text-sm sm:text-base px-6 py-3.5 flex items-center justify-center gap-2 whitespace-nowrap shadow-md"
           >
             <Play className="w-4 h-4 fill-white" />
-            <span>Bugungi darsni boshlash</span>
+            <span>{t('dashboard.start_today', 'Bugungi darsni boshlash')}</span>
           </Link>
         </motion.div>
       )}
@@ -163,13 +168,13 @@ export default function DashboardPage() {
       <div className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-10 space-y-8 shadow-sm">
         <div className="text-center space-y-1">
           <span className="text-xs font-black uppercase tracking-wider text-emerald-700">
-            {authUser?.childAgeGroup || '3–5'} Yosh: Injiqlikdan hamkorlik sari
+            {authUser?.childAgeGroup ? `${authUser.childAgeGroup} ${t('dashboard.age_label', 'yosh')}` : t('dashboard.all_lessons', 'Barcha 55 dars')}
           </span>
           <h2 className="text-xl sm:text-2xl font-black text-slate-800">
-            Sizning o‘quv xaritangiz
+            {t('dashboard.map_title', 'Sizning o‘quv xaritangiz')}
           </h2>
           <p className="text-xs sm:text-sm text-slate-500">
-            Har bir dars tugagach keyingisi ochiladi. Qadam-baqadam o‘rganing.
+            {t('dashboard.map_subtitle', 'Har bir dars tugagach keyingisi ochiladi. Qadam-baqadam o‘rganing.')}
           </p>
         </div>
 
@@ -204,7 +209,7 @@ export default function DashboardPage() {
                     className="mb-2 bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-full shadow-md animate-subtle-bounce flex items-center gap-1.5 border border-emerald-400"
                   >
                     <Play className="w-3 h-3 fill-amber-300 text-amber-300" />
-                    <span>BU YERDAN BOSHLANG!</span>
+                    <span>{t('dashboard.start_here', 'BU YERDAN BOSHLANG!')}</span>
                   </motion.div>
                 )}
 
@@ -274,7 +279,7 @@ export default function DashboardPage() {
               <div className="space-y-2">
                 <div className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
                   <Star className="w-3.5 h-3.5 fill-emerald-600 text-emerald-600" />
-                  <span>+{selectedLesson.xpReward} XP MUKOFOT</span>
+                  <span>+{selectedLesson.xpReward} {t('dashboard.xp_reward', 'XP MUKOFOT')}</span>
                 </div>
                 <h3 className="text-xl font-black text-slate-800">{selectedLesson.title}</h3>
                 <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
@@ -283,13 +288,13 @@ export default function DashboardPage() {
               </div>
 
               <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 space-y-1 text-xs text-slate-600">
-                <p className="font-bold text-slate-800">Dars mundarijasi:</p>
+                <p className="font-bold text-slate-800">{t('dashboard.lesson_outline', 'Dars mundarijasi:')}</p>
                 <ul className="list-disc list-inside space-y-0.5 text-slate-500">
-                  <li>Kundalik hayotiy muammo</li>
-                  <li>Psixologik tushuntirish</li>
-                  <li>Hadisi sharif va Islomiy hikmat</li>
-                  <li>Bugungi amaliy vazifa</li>
-                  <li>Mini-test</li>
+                  <li>{t('dashboard.step_problem', 'Kundalik hayotiy muammo')}</li>
+                  <li>{t('dashboard.step_psychology', 'Psixologik tushuntirish')}</li>
+                  <li>{t('dashboard.step_wisdom', 'Hadisi sharif va Islomiy hikmat')}</li>
+                  <li>{t('dashboard.step_practice', 'Bugungi amaliy vazifa')}</li>
+                  <li>{t('dashboard.step_quiz', 'Mini-test')}</li>
                 </ul>
               </div>
 
@@ -299,13 +304,13 @@ export default function DashboardPage() {
                   onClick={() => setSelectedLesson(null)}
                   className="flex-1 btn-outline text-sm py-3"
                 >
-                  Yopish
+                  {t('dashboard.close', 'Yopish')}
                 </button>
                 <Link
                   href={`/dars/${selectedLesson.slug}`}
                   className="flex-1 btn-primary text-sm py-3 flex items-center justify-center gap-1.5"
                 >
-                  <span>Darsni boshlash</span>
+                  <span>{t('dashboard.start_lesson', 'Darsni boshlash')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>

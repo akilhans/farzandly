@@ -103,28 +103,28 @@ export default async function HomePage() {
                   </div>
                   <div>
                     <span className="text-xs uppercase tracking-wider font-bold text-slate-600">Bugungi 5 daqiqa</span>
-                    <h3 className="text-lg font-black text-slate-800">Farzandingiz nega yig‘layapti?</h3>
+                    <h3 className="text-lg font-black text-slate-800">1-Dars: Tarbiyaning ahamiyati</h3>
                   </div>
                 </div>
 
                 <div className="py-4 space-y-3">
                   <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs sm:text-sm text-slate-700 space-y-1">
-                    <p className="font-bold text-emerald-800">💡 Psixologik haqiqat:</p>
-                    <p>Yig‘i — bu xarakter emas, balki bolaning yordam so‘rab chaqirig‘idir.</p>
+                    <p className="font-bold text-emerald-800">💡 Dars maqsadi:</p>
+                    <p>Farzand — Alloh taolo omonati va eng katta sarmoyadir. Tarbiya har kuni uzluksiz beriladi.</p>
                   </div>
 
                   <div className="p-3.5 rounded-2xl bg-amber-50/70 border border-amber-200 text-xs sm:text-sm text-amber-900 space-y-1">
                     <p className="font-bold text-amber-800">📖 Hadisi sharif:</p>
-                    <p>«Rahm qilmaganga rahm qilinmas» (Buxoriy).</p>
+                    <p>«Farzandingizga go‘zal odobdan ko‘ra afzalroq narsa berolmaysiz» (Termiziy).</p>
                   </div>
                 </div>
 
                 <div className="pt-2">
                   <Link
-                    href="/dars/bolani-tushunishdan-boshlang"
+                    href="/dars/dars-1-tarbiyaning-ahamiyati-1-qism"
                     className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2"
                   >
-                    <span>1-darsni sinab ko‘rish (+10 XP)</span>
+                    <span>1-darsni boshlash (+10 XP)</span>
                     <Star className="w-4 h-4 fill-amber-300 text-amber-300" />
                   </Link>
                 </div>
@@ -348,8 +348,8 @@ export default async function HomePage() {
         <div className="bg-white rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 space-y-6">
           <div className="flex items-center justify-between border-b border-slate-100 pb-4">
             <div>
-              <span className="text-xs font-bold text-emerald-600 uppercase">3–5 yosh boshlang‘ich kursi</span>
-              <h3 className="text-lg font-black text-slate-800">Injiqlikdan mehrli hamkorlik sari</h3>
+              <span className="text-xs font-bold text-emerald-600 uppercase">1-bosqich: Tarbiya asoslari</span>
+              <h3 className="text-lg font-black text-slate-800">Islomda farzand tarbiyasining poydevori</h3>
             </div>
             <Link href="/dashboard" className="btn-outline text-xs px-3.5 py-2">
               Xaritaga o‘tish
@@ -363,7 +363,7 @@ export default async function HomePage() {
               </div>
               <div className="flex-1">
                 <span className="text-xs font-bold text-emerald-700">1-DARS • TAMOMLANDI</span>
-                <h4 className="font-bold text-slate-800 text-sm">Bolani tushunishdan boshlang</h4>
+                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (1-qism)</h4>
               </div>
               <span className="text-xs font-bold text-emerald-700">+10 XP</span>
             </div>
@@ -375,10 +375,10 @@ export default async function HomePage() {
               </div>
               <div className="flex-1">
                 <span className="text-xs font-bold text-amber-600">2-DARS • NAVBATDAGI DARS</span>
-                <h4 className="font-bold text-slate-800 text-sm">Chegaralarni to‘g‘ri qo‘yish</h4>
+                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (2-qism)</h4>
               </div>
               <Link
-                href="/dars/chegaralarni-togri-qoyish"
+                href="/dars/dars-2-tarbiyaning-ahamiyati-2-qism"
                 className="btn-primary text-xs px-3.5 py-2"
               >
                 Boshlash
@@ -391,7 +391,7 @@ export default async function HomePage() {
               </div>
               <div className="flex-1">
                 <span className="text-xs font-bold text-slate-600">3-DARS • QULFLANGAN</span>
-                <h4 className="font-bold text-slate-700 text-sm">Jazodan oldin tushunish</h4>
+                <h4 className="font-bold text-slate-700 text-sm">Tarbiyaning ahamiyati (3-qism)</h4>
               </div>
               <span className="text-xs font-bold text-slate-600">+10 XP</span>
             </div>

@@ -3,11 +3,23 @@ import { DataService } from '../services/dataService.js';
 import { TelegramBotEngine } from '../services/telegramBotEngine.js';
 import { z } from 'zod';
 
+function getReqLang(req: Request): string {
+  const q = req.query.lang as string;
+  if (q && ['uz', 'en', 'ru'].includes(q.toLowerCase())) return q.toLowerCase();
+  const header = req.headers['accept-language'] || req.headers['x-lang'];
+  if (typeof header === 'string') {
+    if (header.startsWith('en')) return 'en';
+    if (header.startsWith('ru')) return 'ru';
+  }
+  return 'uz';
+}
+
 export class ApiController {
   // GET /api/categories
   static async getCategories(req: Request, res: Response) {
     try {
-      const categories = await DataService.getCategories();
+      const lang = getReqLang(req);
+      const categories = await DataService.getCategories(lang);
       res.json({ success: true, data: categories });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Kategoriyalarni yuklashda xatolik' });
@@ -17,7 +29,8 @@ export class ApiController {
   // GET /api/age-groups
   static async getAgeGroups(req: Request, res: Response) {
     try {
-      const ageGroups = await DataService.getAgeGroups();
+      const lang = getReqLang(req);
+      const ageGroups = await DataService.getAgeGroups(lang);
       res.json({ success: true, data: ageGroups });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Yosh guruhlarini yuklashda xatolik' });
@@ -27,11 +40,13 @@ export class ApiController {
   // GET /api/articles
   static async getArticles(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { category, ageGroup, search } = req.query;
       const articles = await DataService.getArticles({
         categorySlug: category as string,
         ageGroup: ageGroup as string,
         search: search as string,
+        lang,
       });
       res.json({ success: true, count: articles.length, data: articles });
     } catch (error) {
@@ -42,8 +57,9 @@ export class ApiController {
   // GET /api/articles/:slug
   static async getArticleBySlug(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { slug } = req.params;
-      const article = await DataService.getArticleBySlug(slug);
+      const article = await DataService.getArticleBySlug(slug, lang);
       if (!article) {
         return res.status(404).json({ success: false, message: 'Maqola topilmadi' });
       }
@@ -56,10 +72,12 @@ export class ApiController {
   // GET /api/courses
   static async getCourses(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { ageGroup, category } = req.query;
       const courses = await DataService.getCourses({
         ageGroup: ageGroup as string,
         categorySlug: category as string,
+        lang,
       });
       res.json({ success: true, data: courses });
     } catch (error) {
@@ -70,12 +88,13 @@ export class ApiController {
   // GET /api/courses/:slug
   static async getCourseBySlug(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { slug } = req.params;
-      const course = await DataService.getCourseBySlug(slug);
+      const course = await DataService.getCourseBySlug(slug, lang);
       if (!course) {
         return res.status(404).json({ success: false, message: 'Kurs topilmadi' });
       }
-      const lessons = await DataService.getLessons({ courseSlug: slug });
+      const lessons = await DataService.getLessons({ courseSlug: slug, lang });
       res.json({ success: true, data: { ...JSON.parse(JSON.stringify(course)), lessons } });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Kursni yuklashda xatolik' });
@@ -85,8 +104,9 @@ export class ApiController {
   // GET /api/learning-paths
   static async getLearningPaths(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { ageGroup } = req.query;
-      const paths = await DataService.getLearningPaths(ageGroup as string);
+      const paths = await DataService.getLearningPaths(ageGroup as string, lang);
       res.json({ success: true, data: paths });
     } catch (error) {
       res.status(500).json({ success: false, message: 'O‘quv yo‘llarini yuklashda xatolik' });
@@ -96,8 +116,9 @@ export class ApiController {
   // GET /api/learning-paths/:slug
   static async getLearningPathBySlug(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { slug } = req.params;
-      const path = await DataService.getLearningPathBySlug(slug);
+      const path = await DataService.getLearningPathBySlug(slug, lang);
       if (!path) {
         return res.status(404).json({ success: false, message: 'O‘quv yo‘li topilmadi' });
       }
@@ -106,7 +127,7 @@ export class ApiController {
       const lessons = [];
       if (pathObj.lessonSlugs && Array.isArray(pathObj.lessonSlugs)) {
         for (const lSlug of pathObj.lessonSlugs) {
-          const l = await DataService.getLessonByIdOrSlug(lSlug);
+          const l = await DataService.getLessonByIdOrSlug(lSlug, lang);
           if (l) lessons.push(l);
         }
       }
@@ -119,10 +140,12 @@ export class ApiController {
   // GET /api/lessons
   static async getLessons(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { courseSlug, ageGroup } = req.query;
       const lessons = await DataService.getLessons({
         courseSlug: courseSlug as string,
         ageGroup: ageGroup as string,
+        lang,
       });
       res.json({ success: true, data: lessons });
     } catch (error) {
@@ -133,8 +156,9 @@ export class ApiController {
   // GET /api/lessons/:id
   static async getLessonById(req: Request, res: Response) {
     try {
+      const lang = getReqLang(req);
       const { id } = req.params;
-      const lesson = await DataService.getLessonByIdOrSlug(id);
+      const lesson = await DataService.getLessonByIdOrSlug(id, lang);
       if (!lesson) {
         return res.status(404).json({ success: false, message: 'Dars topilmadi' });
       }
@@ -147,7 +171,8 @@ export class ApiController {
   // GET /api/achievements
   static async getAchievements(req: Request, res: Response) {
     try {
-      const achievements = await DataService.getAchievements();
+      const lang = getReqLang(req);
+      const achievements = await DataService.getAchievements(lang);
       res.json({ success: true, data: achievements });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Yutuqlarni yuklashda xatolik' });

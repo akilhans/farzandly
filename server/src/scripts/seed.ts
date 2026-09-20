@@ -68,12 +68,12 @@ async function runSeed() {
     await User.create({
       name: 'Ota-ona (Demo)',
       childAgeGroup: '3-5',
-      selectedInterests: ['Bola xulqi', 'Hissiyotlar', 'Intizom'],
+      selectedInterests: ['Tarbiya asoslari va iymon'],
       dailyGoalMinutes: 10,
       xp: 20,
       streak: 3,
       level: "O‘rganuvchi",
-      completedLessons: ['bolani-tushunishdan-boshlang'],
+      completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'],
       achievements: ['ilk-qadam'],
       subscriptionStatus: 'free',
     });

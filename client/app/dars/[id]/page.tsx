@@ -18,14 +18,17 @@ import {
   Heart,
   HelpCircle,
   Lightbulb,
+  Play,
 } from 'lucide-react';
 import { api, Lesson, LessonScreen } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useI18n } from '@/context/LanguageContext';
 
 export default function LessonRunnerPage() {
   const params = useParams();
   const router = useRouter();
   const { updateUserProgress } = useAuth();
+  const { language, t } = useI18n();
   const lessonId = params?.id as string;
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
@@ -37,21 +40,24 @@ export default function LessonRunnerPage() {
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
 
+  // Video state
+  const [showVideo, setShowVideo] = useState(false);
+
   // Completed state
   const [isFinished, setIsFinished] = useState(false);
-  const [earnedXp, setEarnedXp] = useState(10);
+  const [earnedXp, setEarnedXp] = useState(15);
 
   useEffect(() => {
     async function loadLesson() {
-      const data = await api.getLessonByIdOrSlug(lessonId);
+      const data = await api.getLessonByIdOrSlug(lessonId, language);
       if (data) {
         setLesson(data);
-        setEarnedXp(data.xpReward || 10);
+        setEarnedXp(data.xpReward || 15);
       }
       setLoading(false);
     }
     loadLesson();
-  }, [lessonId]);
+  }, [lessonId, language]);
 
   const screens: LessonScreen[] = lesson?.screens || [];
   const totalScreens = screens.length + 1; // +1 for final victory screen
@@ -102,6 +108,53 @@ export default function LessonRunnerPage() {
     }
   };
 
+  const getScreenTag = (type: string) => {
+    switch (type) {
+      case 'scenario':
+        return {
+          icon: HelpCircle,
+          label: language === 'en' ? 'Core Context' : language === 'ru' ? 'Ситуация' : 'Hayotiy vaziyat',
+          className: 'text-sky-600 bg-sky-50 border-sky-200',
+        };
+      case 'concept':
+        return {
+          icon: Lightbulb,
+          label: language === 'en' ? 'Core Concept' : language === 'ru' ? 'Основная суть' : 'Asosiy tushuncha',
+          className: 'text-emerald-600 bg-emerald-50 border-emerald-200',
+        };
+      case 'explanation':
+        return {
+          icon: BookOpen,
+          label: language === 'en' ? 'Psychological Insight' : language === 'ru' ? 'Анализ' : 'Tarbiyaviy tahlil',
+          className: 'text-indigo-600 bg-indigo-50 border-indigo-200',
+        };
+      case 'islamic_perspective':
+        return {
+          icon: Heart,
+          label: language === 'en' ? 'Sacred Wisdom' : language === 'ru' ? 'Исламская мудрость' : 'Islomiy hikmat',
+          className: 'text-teal-700 bg-teal-50 border-teal-200',
+        };
+      case 'practice':
+        return {
+          icon: CheckCircle2,
+          label: language === 'en' ? 'Practical Step' : language === 'ru' ? 'Практика' : 'Bugungi amaliyot',
+          className: 'text-amber-700 bg-amber-50 border-amber-200',
+        };
+      case 'quiz':
+        return {
+          icon: Award,
+          label: language === 'en' ? 'Mini-quiz' : language === 'ru' ? 'Тест' : 'Mini-test',
+          className: 'text-purple-700 bg-purple-50 border-purple-200',
+        };
+      default:
+        return {
+          icon: BookOpen,
+          label: language === 'en' ? 'Lesson Step' : language === 'ru' ? 'Шаг урока' : 'Dars bosqichi',
+          className: 'text-slate-600 bg-slate-50 border-slate-200',
+        };
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-[70vh] flex items-center justify-center">
@@ -113,10 +166,18 @@ export default function LessonRunnerPage() {
   if (!lesson) {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-xl font-bold text-slate-800">Dars topilmadi</h2>
-        <p className="text-xs text-slate-500">Ushbu dars mavjud emas yoki o‘chirilgan.</p>
-        <Link href="/dashboard" className="btn-primary text-sm px-6 py-2.5">
-          O‘quv yo‘liga qaytish
+        <h2 className="text-xl font-bold text-slate-800">
+          {language === 'en' ? 'Lesson not found' : language === 'ru' ? 'Урок не найден' : 'Dars topilmadi'}
+        </h2>
+        <p className="text-xs text-slate-500">
+          {language === 'en'
+            ? 'This lesson does not exist or has been removed.'
+            : language === 'ru'
+            ? 'Данный урок не существует или был удален.'
+            : 'Ushbu dars mavjud emas yoki o‘chirilgan.'}
+        </p>
+        <Link href="/dashboard" className="btn-primary text-sm px-6 py-2.5 inline-block">
+          {t('lesson.continue_learning')}
         </Link>
       </div>
     );
@@ -135,7 +196,7 @@ export default function LessonRunnerPage() {
           <Link
             href="/dashboard"
             className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
-            title="Darsdan chiqish"
+            title={t('lesson.exit')}
           >
             <X className="w-6 h-6" />
           </Link>
@@ -156,11 +217,43 @@ export default function LessonRunnerPage() {
           </div>
         </div>
 
-        <div className="text-center">
-          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+        <div className="flex items-center justify-between gap-2 px-1">
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 line-clamp-1">
             {lesson.title}
           </span>
+          {lesson.videoUrl && (
+            <button
+              type="button"
+              onClick={() => setShowVideo(!showVideo)}
+              className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1 transition-all cursor-pointer"
+            >
+              <Play className="w-3 h-3 fill-emerald-600" />
+              <span>{t('lesson.video_btn')}</span>
+            </button>
+          )}
         </div>
+
+        {/* Video Embed Section */}
+        <AnimatePresence>
+          {showVideo && lesson.videoUrl && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              className="overflow-hidden rounded-2xl border-2 border-emerald-200 shadow-md bg-black"
+            >
+              <div className="aspect-video w-full">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${lesson.videoId || ''}`}
+                  title={lesson.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full border-0"
+                />
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* 2. DYNAMIC SCREEN CONTENT WITH MOTION */}
@@ -182,10 +275,10 @@ export default function LessonRunnerPage() {
 
               <div className="space-y-2">
                 <h2 className="text-3xl sm:text-4xl font-black text-slate-800">
-                  Barakalla! 🎉
+                  {t('lesson.completed_title')}
                 </h2>
                 <p className="text-sm sm:text-base text-slate-600 font-medium">
-                  Darsni muvaffaqiyatli yakunladingiz va bolangiz bilan yaqinlashish sari muhim qadam tashladingiz.
+                  {t('lesson.completed_desc')}
                 </p>
               </div>
 
@@ -195,7 +288,9 @@ export default function LessonRunnerPage() {
                     <Star className="w-6 h-6 fill-emerald-500" />
                     <span>+{earnedXp}</span>
                   </div>
-                  <span className="text-xs font-bold text-emerald-800 uppercase">XP olindi</span>
+                  <span className="text-xs font-bold text-emerald-800 uppercase">
+                    {t('lesson.earned_xp')}
+                  </span>
                 </div>
 
                 <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-center">
@@ -203,21 +298,23 @@ export default function LessonRunnerPage() {
                     <Flame className="w-6 h-6 fill-orange-500" />
                     <span>+1</span>
                   </div>
-                  <span className="text-xs font-bold text-amber-800 uppercase">Streak yangilandi</span>
+                  <span className="text-xs font-bold text-amber-800 uppercase">
+                    {t('stats.streak')}
+                  </span>
                 </div>
               </div>
 
               <div className="pt-4">
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="w-full btn-primary text-base py-4 flex items-center justify-center gap-2"
+                  className="w-full btn-primary text-base py-4 flex items-center justify-center gap-2 cursor-pointer"
                 >
-                  <span>O‘quv yo‘liga qaytish</span>
+                  <span>{t('lesson.continue_learning')}</span>
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </div>
             </motion.div>
-          ) : (
+          ) : currentScreen ? (
             /* STEP SCREENS */
             <motion.div
               key={currentScreenIdx}
@@ -228,38 +325,19 @@ export default function LessonRunnerPage() {
               className="bg-white/95 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-10 shadow-lg space-y-6"
             >
               {/* Screen Category Tag */}
-              <div className="flex items-center gap-2">
-                {currentScreen.type === 'scenario' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-lg border border-sky-200 flex items-center gap-1">
-                    <HelpCircle className="w-3.5 h-3.5" /> Hayotiy vaziyat
-                  </span>
-                )}
-                {currentScreen.type === 'concept' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 flex items-center gap-1">
-                    <Lightbulb className="w-3.5 h-3.5" /> Asosiy tushuncha
-                  </span>
-                )}
-                {currentScreen.type === 'explanation' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-200 flex items-center gap-1">
-                    <BookOpen className="w-3.5 h-3.5" /> Psixologik tahlil
-                  </span>
-                )}
-                {currentScreen.type === 'islamic_perspective' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-lg border border-teal-200 flex items-center gap-1">
-                    <Heart className="w-3.5 h-3.5" /> Islomiy hikmat
-                  </span>
-                )}
-                {currentScreen.type === 'practice' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Bugungi amaliyot
-                  </span>
-                )}
-                {currentScreen.type === 'quiz' && (
-                  <span className="text-xs font-black uppercase tracking-wider text-purple-700 bg-purple-50 px-3 py-1 rounded-lg border border-purple-200 flex items-center gap-1">
-                    <Award className="w-3.5 h-3.5" /> Mini-test
-                  </span>
-                )}
-              </div>
+              {(() => {
+                const tag = getScreenTag(currentScreen.type);
+                const Icon = tag.icon;
+                return (
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`text-xs font-black uppercase tracking-wider px-3 py-1 rounded-lg border flex items-center gap-1.5 ${tag.className}`}
+                    >
+                      <Icon className="w-3.5 h-3.5" /> {tag.label}
+                    </span>
+                  </div>
+                );
+              })()}
 
               {/* Screen Title */}
               <div className="space-y-1">
@@ -281,7 +359,9 @@ export default function LessonRunnerPage() {
               {/* Example or Quote Highlight Card */}
               {currentScreen.example && (
                 <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs sm:text-sm text-slate-700 space-y-1">
-                  <p className="font-bold text-slate-800">Misol:</p>
+                  <p className="font-bold text-slate-800">
+                    {language === 'en' ? 'Context / Example:' : language === 'ru' ? 'Пример / Контекст:' : 'Misol / Vaziyat:'}
+                  </p>
                   <p className="italic text-slate-600 whitespace-pre-line">{currentScreen.example}</p>
                 </div>
               )}
@@ -358,7 +438,7 @@ export default function LessonRunnerPage() {
                       }`}
                     >
                       <p className="font-bold mb-1">
-                        {isCorrect ? 'Barakalla, to‘g‘ri javob!' : 'E’tibor bering:'}
+                        {isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
                       </p>
                       <p>{currentScreen.quizExplanation}</p>
                     </motion.div>
@@ -366,7 +446,7 @@ export default function LessonRunnerPage() {
                 </div>
               )}
             </motion.div>
-          )}
+          ) : null}
         </AnimatePresence>
       </div>
 
@@ -377,35 +457,35 @@ export default function LessonRunnerPage() {
             <button
               type="button"
               onClick={() => setCurrentScreenIdx(currentScreenIdx - 1)}
-              className="btn-outline text-xs sm:text-sm px-4 py-3 flex items-center gap-1.5"
+              className="btn-outline text-xs sm:text-sm px-4 py-3 flex items-center gap-1.5 cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" />
-              <span>Orqaga</span>
+              <span>{t('lesson.back')}</span>
             </button>
           ) : (
             <div />
           )}
 
-          {currentScreen.type === 'quiz' && !isAnswerChecked ? (
+          {currentScreen?.type === 'quiz' && !isAnswerChecked ? (
             <button
               type="button"
               disabled={selectedOption === null}
               onClick={() => handleCheckQuiz(currentScreen.correctOptionIndex ?? 0)}
-              className={`text-xs sm:text-sm px-8 py-3.5 font-bold rounded-2xl transition-all ${
+              className={`text-xs sm:text-sm px-8 py-3.5 font-bold rounded-2xl transition-all cursor-pointer ${
                 selectedOption !== null
                   ? 'btn-primary'
                   : 'bg-slate-200 text-slate-400 cursor-not-allowed'
               }`}
             >
-              Tekshirish
+              {t('lesson.check')}
             </button>
           ) : (
             <button
               type="button"
               onClick={handleNextScreen}
-              className="btn-primary text-xs sm:text-sm px-8 py-3.5 flex items-center gap-2"
+              className="btn-primary text-xs sm:text-sm px-8 py-3.5 flex items-center gap-2 cursor-pointer"
             >
-              <span>{currentScreenIdx === screens.length - 1 ? 'Darsni yakunlash' : 'Davom etish'}</span>
+              <span>{currentScreenIdx === screens.length - 1 ? t('lesson.finish') : t('lesson.next')}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           )}

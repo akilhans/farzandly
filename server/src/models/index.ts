@@ -8,6 +8,7 @@ export interface ICategory extends Document {
   icon: string;
   color: string;
   displayOrder: number;
+  translations?: Record<string, any>;
 }
 
 const CategorySchema = new Schema<ICategory>({
@@ -17,6 +18,7 @@ const CategorySchema = new Schema<ICategory>({
   icon: { type: String, default: 'BookOpen' },
   color: { type: String, default: '#059669' },
   displayOrder: { type: Number, default: 0 },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const Category = mongoose.models.Category || mongoose.model<ICategory>('Category', CategorySchema);
@@ -28,6 +30,7 @@ export interface IAgeGroup extends Document {
   description: string;
   icon: string;
   displayOrder: number;
+  translations?: Record<string, any>;
 }
 
 const AgeGroupSchema = new Schema<IAgeGroup>({
@@ -36,6 +39,7 @@ const AgeGroupSchema = new Schema<IAgeGroup>({
   description: { type: String, required: true },
   icon: { type: String, default: 'Baby' },
   displayOrder: { type: Number, default: 0 },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const AgeGroup = mongoose.models.AgeGroup || mongoose.model<IAgeGroup>('AgeGroup', AgeGroupSchema);
@@ -99,6 +103,7 @@ export interface IArticle extends Document {
   seoDescription: string;
   isPublished: boolean;
   publishedAt: Date;
+  translations?: Record<string, any>;
 }
 
 const ArticleSchema = new Schema<IArticle>({
@@ -114,6 +119,7 @@ const ArticleSchema = new Schema<IArticle>({
   seoDescription: { type: String, required: true },
   isPublished: { type: Boolean, default: true },
   publishedAt: { type: Date, default: Date.now },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const Article = mongoose.models.Article || mongoose.model<IArticle>('Article', ArticleSchema);
@@ -130,6 +136,7 @@ export interface ICourse extends Document {
   totalLessons: number;
   icon: string;
   color: string;
+  translations?: Record<string, any>;
 }
 
 const CourseSchema = new Schema<ICourse>({
@@ -143,6 +150,7 @@ const CourseSchema = new Schema<ICourse>({
   totalLessons: { type: Number, default: 5 },
   icon: { type: String, default: 'GraduationCap' },
   color: { type: String, default: '#059669' },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const Course = mongoose.models.Course || mongoose.model<ICourse>('Course', CourseSchema);
@@ -174,7 +182,10 @@ export interface ILesson extends Document {
   ageGroup: string;
   xpReward: number;
   isFree: boolean;
+  videoId?: string;
+  videoUrl?: string;
   screens: ILessonScreen[];
+  translations?: Record<string, any>;
 }
 
 const LessonSchema = new Schema<ILesson>({
@@ -187,6 +198,8 @@ const LessonSchema = new Schema<ILesson>({
   ageGroup: { type: String, required: true, index: true },
   xpReward: { type: Number, default: 10 },
   isFree: { type: Boolean, default: true },
+  videoId: { type: String },
+  videoUrl: { type: String },
   screens: [
     {
       screenIndex: { type: Number, required: true },
@@ -203,6 +216,7 @@ const LessonSchema = new Schema<ILesson>({
       quizExplanation: { type: String },
     },
   ],
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const Lesson = mongoose.models.Lesson || mongoose.model<ILesson>('Lesson', LessonSchema);
@@ -216,6 +230,7 @@ export interface ILearningPath extends Document {
   targetAudience: string;
   lessonSlugs: string[];
   badgeIcon: string;
+  translations?: Record<string, any>;
 }
 
 const LearningPathSchema = new Schema<ILearningPath>({
@@ -226,6 +241,7 @@ const LearningPathSchema = new Schema<ILearningPath>({
   targetAudience: { type: String, required: true },
   lessonSlugs: [{ type: String }],
   badgeIcon: { type: String, default: 'Compass' },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const LearningPath = mongoose.models.LearningPath || mongoose.model<ILearningPath>('LearningPath', LearningPathSchema);
@@ -308,6 +324,7 @@ export interface IAchievement extends Document {
   icon: string;
   xpRequired: number;
   streakRequired: number;
+  translations?: Record<string, any>;
 }
 
 const AchievementSchema = new Schema<IAchievement>({
@@ -317,6 +334,7 @@ const AchievementSchema = new Schema<IAchievement>({
   icon: { type: String, default: 'Trophy' },
   xpRequired: { type: Number, default: 0 },
   streakRequired: { type: Number, default: 0 },
+  translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
 
 export const Achievement = mongoose.models.Achievement || mongoose.model<IAchievement>('Achievement', AchievementSchema);
