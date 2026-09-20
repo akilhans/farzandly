@@ -27,7 +27,7 @@ export default function KirishPage() {
     const clientId =
       process.env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID ||
       (typeof window !== 'undefined' ? localStorage.getItem('farzandly_tg_client_id') : '') ||
-      '8912917807';
+      '891291780';
 
     const redirectUri = window.location.origin + '/kirish/callback';
     const state = Math.random().toString(36).substring(2, 15);

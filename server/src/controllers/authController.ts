@@ -8,7 +8,7 @@ export class AuthController {
    * Return Telegram OIDC public configuration
    */
   static async getConfig(req: Request, res: Response) {
-    const clientId = process.env.TELEGRAM_CLIENT_ID || '8912917807';
+    const clientId = process.env.TELEGRAM_CLIENT_ID || '891291780';
     const redirectUri = process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.vercel.app/kirish/callback';
 
     res.json({
@@ -25,7 +25,7 @@ export class AuthController {
    */
   static async getLoginUrl(req: Request, res: Response) {
     try {
-      const clientId = (req.query.clientId as string) || process.env.TELEGRAM_CLIENT_ID || '8912917807';
+      const clientId = (req.query.clientId as string) || process.env.TELEGRAM_CLIENT_ID || '891291780';
       const redirectUri =
         (req.query.redirectUri as string) ||
         process.env.TELEGRAM_REDIRECT_URI ||
@@ -76,7 +76,7 @@ export class AuthController {
       }
 
       const { code, redirectUri, clientId } = parsed.data;
-      const resolvedClientId = clientId || process.env.TELEGRAM_CLIENT_ID || '8912917807';
+      const resolvedClientId = clientId || process.env.TELEGRAM_CLIENT_ID || '891291780';
       const clientSecret =
         process.env.TELEGRAM_CLIENT_SECRET || 'O8WVosrTnxL4eEKz42Z14G3b3QoPph_IWSonUx7mwjJ_Nl5o2IWKbw';
       const resolvedRedirectUri =
