@@ -65,6 +65,10 @@ export default function ProfilePage() {
             <img
               src={user.photoUrl}
               alt={user.name}
+              onError={(e) => {
+                e.currentTarget.onerror = null;
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=059669&color=fff&bold=true`;
+              }}
               className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover border-4 border-emerald-500 shadow-md"
             />
           ) : (

@@ -109,11 +109,15 @@ export function Navbar() {
                     <img
                       src={user.photoUrl}
                       alt={user.name}
+                      onError={(e) => {
+                        e.currentTarget.onerror = null;
+                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=229ED9&color=fff&bold=true`;
+                      }}
                       className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl object-cover border border-emerald-300"
                     />
                   ) : (
                     <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                      {user.name.slice(0, 2).toUpperCase()}
+                      {user.name.replace('@', '').slice(0, 2).toUpperCase()}
                     </div>
                   )}
                   <div className="hidden sm:block">

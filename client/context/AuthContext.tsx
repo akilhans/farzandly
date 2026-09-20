@@ -93,17 +93,44 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     hash?: string;
   }): Promise<boolean> => {
     setIsLoading(true);
+
+    const rawUsername = tgData.username || '';
+    const cleanUsername = rawUsername.replace(/^@/, '').trim();
+    // Automatic sync: username as name
+    const displayName = cleanUsername
+      ? `@${cleanUsername}`
+      : `${tgData.first_name || 'Ota-ona'} ${tgData.last_name || ''}`.trim();
+    // Automatic sync: Telegram profile picture
+    const photoUrl =
+      tgData.photo_url ||
+      (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
+      `https://ui-avatars.com/api/?name=${encodeURIComponent(displayName)}&background=229ED9&color=fff&bold=true`;
+
     try {
       const res = await fetch(`${API_BASE}/auth/telegram`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tgData),
+        body: JSON.stringify({
+          ...tgData,
+          username: cleanUsername,
+          first_name: displayName,
+          photo_url: photoUrl,
+        }),
       });
 
       if (res.ok) {
         const json = await res.json();
         const loggedUser = json.data.user;
         const authToken = json.data.token;
+
+        // Guarantee profile pic and username as name sync
+        if (cleanUsername) {
+          loggedUser.name = `@${cleanUsername}`;
+          loggedUser.telegramUsername = cleanUsername;
+        }
+        if (photoUrl) {
+          loggedUser.photoUrl = photoUrl;
+        }
 
         setUser(loggedUser);
         setToken(authToken);
@@ -121,13 +148,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       console.warn('Telegram auth server call failed, using client-side session:', err);
     }
 
-    // Client fallback if offline
+    // Client fallback if offline / in-flight
     const fallbackUser: TelegramUser = {
       _id: `tg_${tgData.id}`,
       telegramId: String(tgData.id),
-      telegramUsername: tgData.username || '',
-      name: `${tgData.first_name || 'Ota-ona'} ${tgData.last_name || ''}`.trim(),
-      photoUrl: tgData.photo_url || '',
+      telegramUsername: cleanUsername,
+      name: displayName,
+      photoUrl: photoUrl,
       childAgeGroup: '3-5',
       selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
       dailyGoalMinutes: 10,

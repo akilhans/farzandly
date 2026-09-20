@@ -8,17 +8,14 @@ export class AuthController {
    * Return Telegram OIDC public configuration
    */
   static async getConfig(req: Request, res: Response) {
-    const clientId = process.env.TELEGRAM_CLIENT_ID || '';
-    const redirectUri = process.env.TELEGRAM_REDIRECT_URI || 'http://localhost:3000/kirish/callback';
-    const hasSecret = Boolean(process.env.TELEGRAM_CLIENT_SECRET);
+    const clientId = process.env.TELEGRAM_CLIENT_ID || '8912917807';
+    const redirectUri = process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.vercel.app/kirish/callback';
 
     res.json({
       success: true,
       data: {
         clientId,
         redirectUri,
-        hasSecret,
-        configured: Boolean(clientId && hasSecret),
       },
     });
   }
@@ -28,18 +25,11 @@ export class AuthController {
    */
   static async getLoginUrl(req: Request, res: Response) {
     try {
-      const clientId = (req.query.clientId as string) || process.env.TELEGRAM_CLIENT_ID;
+      const clientId = (req.query.clientId as string) || process.env.TELEGRAM_CLIENT_ID || '8912917807';
       const redirectUri =
         (req.query.redirectUri as string) ||
         process.env.TELEGRAM_REDIRECT_URI ||
-        'http://localhost:3000/kirish/callback';
-
-      if (!clientId) {
-        return res.status(400).json({
-          success: false,
-          message: 'Telegram Client ID (Bot ID) sozlanmagan. Iltimos BotFather bergan Client ID ni kiriting.',
-        });
-      }
+        'https://farzandly.vercel.app/kirish/callback';
 
       const state = crypto.randomBytes(16).toString('hex');
       const authUrl = `https://oauth.telegram.org/auth?client_id=${encodeURIComponent(
@@ -86,18 +76,11 @@ export class AuthController {
       }
 
       const { code, redirectUri, clientId } = parsed.data;
-      const resolvedClientId = clientId || process.env.TELEGRAM_CLIENT_ID;
+      const resolvedClientId = clientId || process.env.TELEGRAM_CLIENT_ID || '8912917807';
       const clientSecret =
         process.env.TELEGRAM_CLIENT_SECRET || 'O8WVosrTnxL4eEKz42Z14G3b3QoPph_IWSonUx7mwjJ_Nl5o2IWKbw';
       const resolvedRedirectUri =
-        redirectUri || process.env.TELEGRAM_REDIRECT_URI || 'http://localhost:3000/kirish/callback';
-
-      if (!resolvedClientId) {
-        return res.status(400).json({
-          success: false,
-          message: 'Telegram Client ID (Bot ID) talab qilinadi',
-        });
-      }
+        redirectUri || process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.vercel.app/kirish/callback';
 
       console.log('[Telegram OIDC] Exchanging code with oauth.telegram.org/token...', {
         clientId: resolvedClientId,
@@ -147,16 +130,20 @@ export class AuthController {
       }
 
       const telegramId = String(claims.sub || tokenData.user_id || `tg_${Date.now()}`);
-      const telegramUsername = claims.preferred_username || claims.username || '';
-      const fullName =
-        claims.name ||
-        [claims.given_name, claims.family_name].filter(Boolean).join(' ') ||
-        claims.preferred_username ||
-        'Ota-ona';
+      const rawUsername = claims.preferred_username || claims.username || '';
+      const telegramUsername = rawUsername.replace(/^@/, '').trim();
+
+      // Automatically sync username as name
+      const fullName = telegramUsername
+        ? `@${telegramUsername}`
+        : (claims.name || [claims.given_name, claims.family_name].filter(Boolean).join(' ') || 'Ota-ona');
+
+      // Automatically sync Telegram profile picture
       const photoUrl =
         claims.picture ||
         claims.photo_url ||
-        `https://api.dicebear.com/7.x/bottts/svg?seed=${telegramUsername || telegramId}`;
+        (telegramUsername ? `https://t.me/i/userpic/320/${telegramUsername}.jpg` : '') ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
 
       // Upsert user in DataService
       const user = await DataService.upsertTelegramUser({
@@ -192,7 +179,7 @@ export class AuthController {
 
   /**
    * Telegram Login / Register (Widget or Direct Form)
-   * Handles official Telegram widget payload or one-click demo login
+   * Handles official Telegram widget payload or quick login
    */
   static async telegramAuth(req: Request, res: Response) {
     try {
@@ -217,9 +204,21 @@ export class AuthController {
 
       const { id, first_name, last_name, username, photo_url, auth_date, hash } = parsed.data;
       const telegramId = String(id);
-      const fullName = `${first_name} ${last_name}`.trim() || 'Ota-ona';
+      const rawUsername = username || '';
+      const cleanUsername = rawUsername.replace(/^@/, '').trim();
 
-      // Optional Telegram signature verification if client secret or bot token is provided
+      // Automatically sync username as name
+      const fullName = cleanUsername
+        ? `@${cleanUsername}`
+        : (`${first_name} ${last_name}`.trim() || 'Ota-ona');
+
+      // Automatically sync Telegram profile picture
+      const finalPhotoUrl =
+        photo_url ||
+        (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
+        `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
+
+      // Optional Telegram signature verification
       const secret = process.env.TELEGRAM_CLIENT_SECRET || process.env.TELEGRAM_BOT_TOKEN;
       if (secret && hash && auth_date) {
         const dataCheckArr: string[] = [];
@@ -239,19 +238,17 @@ export class AuthController {
 
         if (calculatedHash !== hash) {
           console.warn('[Telegram Auth] Hash verification failed for:', telegramId);
-          // If hash mismatch, still proceed in dev if configured, else warn
         }
       }
 
       // Upsert user in DataService
       const user = await DataService.upsertTelegramUser({
         telegramId,
-        telegramUsername: username,
+        telegramUsername: cleanUsername,
         name: fullName,
-        photoUrl: photo_url || `https://api.dicebear.com/7.x/bottts/svg?seed=${username || telegramId}`,
+        photoUrl: finalPhotoUrl,
       });
 
-      // Simple mock session token
       const token = `farzandly_tg_${telegramId}_${Date.now()}`;
 
       res.status(200).json({

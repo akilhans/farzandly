@@ -56,15 +56,27 @@ function TelegramCallbackContent() {
         }
 
         const user = data.data.user;
-        setUserData(user);
+        const rawUsername = user.telegramUsername || '';
+        const cleanUsername = rawUsername.replace(/^@/, '').trim();
+        const displayName = cleanUsername ? `@${cleanUsername}` : (user.name || 'Ota-ona');
+        const photoUrl =
+          user.photoUrl ||
+          (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '');
+
+        setUserData({
+          ...user,
+          name: displayName,
+          telegramUsername: cleanUsername,
+          photoUrl: photoUrl,
+        });
         setStatus('success');
 
         // Persist session in AuthContext
         await loginWithTelegram({
           id: user.telegramId || user._id,
-          first_name: user.name,
-          username: user.telegramUsername || '',
-          photo_url: user.photoUrl,
+          first_name: displayName,
+          username: cleanUsername,
+          photo_url: photoUrl,
         });
 
         setTimeout(() => {

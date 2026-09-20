@@ -64,6 +64,10 @@ export default function DashboardPage() {
               <img
                 src={authUser.photoUrl}
                 alt={authUser.name}
+                onError={(e) => {
+                  e.currentTarget.onerror = null;
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(authUser.name)}&background=059669&color=fff&bold=true`;
+                }}
                 className="w-12 h-12 rounded-2xl object-cover border-2 border-emerald-400 shadow-sm"
               />
             ) : (
