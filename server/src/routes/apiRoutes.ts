@@ -1,11 +1,15 @@
 import { Router } from 'express';
 import { ApiController } from '../controllers/apiController.js';
 import { authRouter } from './authRoutes.js';
+import { telegramRouter } from './telegramRoutes.js';
 
 export const apiRouter = Router();
 
 // Authentication via Telegram
 apiRouter.use('/auth', authRouter);
+
+// Telegram Bot Webhook & API
+apiRouter.use('/telegram', telegramRouter);
 
 // Taxonomy
 apiRouter.get('/categories', ApiController.getCategories);

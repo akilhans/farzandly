@@ -65,7 +65,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } catch {
           // ignore corrupted json
         }
-      } else {
+      }
+
+      // Check if running inside Telegram WebApp / Mini App
+      if ((window as any).Telegram?.WebApp) {
+        const tgApp = (window as any).Telegram.WebApp;
+        tgApp.ready?.();
+        tgApp.expand?.();
+
+        const tgUser = tgApp.initDataUnsafe?.user;
+        if (tgUser && (!savedUser || JSON.parse(savedUser || '{}').authProvider === 'guest')) {
+          const username = tgUser.username ? tgUser.username.replace(/^@/, '') : '';
+          const displayName = username ? `@${username}` : `${tgUser.first_name || ''} ${tgUser.last_name || ''}`.trim() || 'Ota-ona';
+          const photo = username ? `https://t.me/i/userpic/320/${username}.jpg` : undefined;
+
+          const webAppUser: TelegramUser = {
+            _id: `tg-${tgUser.id}`,
+            telegramId: String(tgUser.id),
+            telegramUsername: username,
+            name: displayName,
+            firstName: tgUser.first_name,
+            lastName: tgUser.last_name,
+            photoUrl: photo,
+            childAgeGroup: '3-5',
+            selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
+            dailyGoalMinutes: 10,
+            xp: 100,
+            streak: 1,
+            level: 'Boshlovchi',
+            completedLessons: [],
+            achievements: ['ilk-qadam'],
+            subscriptionStatus: 'free',
+            authProvider: 'telegram',
+          };
+
+          setUser(webAppUser);
+          const autoToken = `farzandly_tg_${tgUser.id}_${Date.now()}`;
+          setToken(autoToken);
+          localStorage.setItem('farzandly_auth_user', JSON.stringify(webAppUser));
+          localStorage.setItem('farzandly_auth_token', autoToken);
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      if (!savedUser) {
         // Fallback default guest user
         const defaultGuest: TelegramUser = {
           _id: 'guest-user',

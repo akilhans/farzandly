@@ -26,6 +26,44 @@ function TelegramCallbackContent() {
       return;
     }
 
+    const directToken = searchParams.get('direct_token');
+    if (directToken) {
+      try {
+        const decoded = JSON.parse(atob(decodeURIComponent(directToken)));
+        if (decoded.telegramId) {
+          const userObj = {
+            _id: `tg-${decoded.telegramId}`,
+            telegramId: String(decoded.telegramId),
+            name: decoded.name || 'Ota-ona',
+            telegramUsername: decoded.telegramUsername || '',
+            childAgeGroup: '3-5',
+            selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
+            dailyGoalMinutes: 10,
+            xp: 100,
+            streak: 1,
+            level: 'Boshlovchi',
+            completedLessons: [],
+            achievements: ['ilk-qadam'],
+            subscriptionStatus: 'free',
+            authProvider: 'telegram',
+            photoUrl: decoded.telegramUsername
+              ? `https://t.me/i/userpic/320/${decoded.telegramUsername}.jpg`
+              : undefined,
+          };
+          const tokenStr = `farzandly_direct_${decoded.telegramId}_${Date.now()}`;
+          setUserData(userObj);
+          setAuthenticatedSession(userObj, tokenStr);
+          setStatus('success');
+          setTimeout(() => {
+            router.push('/dashboard');
+          }, 1200);
+          return;
+        }
+      } catch (err: any) {
+        console.warn('Direct token parse error:', err);
+      }
+    }
+
     if (!code) {
       setStatus('error');
       setErrorMessage('Avtorizatsiya kodi topilmadi');

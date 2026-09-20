@@ -40,6 +40,8 @@ export const metadata: Metadata = {
 
 import { AuthProvider } from "@/context/AuthContext";
 
+import Script from "next/script";
+
 export default function RootLayout({
   children,
 }: {
@@ -49,6 +51,10 @@ export default function RootLayout({
     <html lang="uz" className="h-full scroll-smooth">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <Script
+          src="https://telegram.org/js/telegram-web-app.js"
+          strategy="beforeInteractive"
+        />
       </head>
       <body className="min-h-full flex flex-col bg-[#FAF7F2] text-slate-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
         <AuthProvider>

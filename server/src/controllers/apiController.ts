@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import { DataService } from '../services/dataService.js';
+import { TelegramBotEngine } from '../services/telegramBotEngine.js';
 import { z } from 'zod';
 
 export class ApiController {
@@ -217,6 +218,23 @@ export class ApiController {
       }
 
       const result = await DataService.recordProgress(parsed.data);
+
+      // Notify user via Telegram Bot if user has telegramId
+      try {
+        const user = await DataService.getUserByIdOrTelegram(parsed.data.userId);
+        if (user && user.telegramId) {
+          const lesson = await DataService.getLessonByIdOrSlug(parsed.data.lessonSlug);
+          const lessonTitle = lesson?.title || 'Farzandly darsi';
+          TelegramBotEngine.notifyLessonCompleted(
+            user.telegramId,
+            lessonTitle,
+            parsed.data.xpEarned || 10
+          ).catch((e) => console.warn('[TelegramNotify] Dars yakunlandi xabari yuborilmadi:', e.message));
+        }
+      } catch (err: any) {
+        console.warn('[TelegramNotify] Xatolik:', err.message);
+      }
+
       res.json({ success: true, data: result });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Progressni saqlashda xatolik' });
