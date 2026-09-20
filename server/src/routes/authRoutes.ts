@@ -13,6 +13,10 @@ authRouter.post('/telegram/exchange', AuthController.exchangeCode);
 // Direct / Widget Telegram Authentication & Registration
 authRouter.post('/telegram', AuthController.telegramAuth);
 
+// Telegram User Profile & Avatar Proxy
+authRouter.get('/telegram/avatar/:id', AuthController.getUserAvatar);
+authRouter.get('/telegram/user/:id', AuthController.getTelegramUserProfile);
+
 // Get current user session
 authRouter.get('/me', AuthController.getMe);
 

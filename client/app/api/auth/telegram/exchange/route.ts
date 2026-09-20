@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { TelegramBotClient } from '@/lib/telegramBot';
 
 export async function POST(request: Request) {
   try {
@@ -70,13 +71,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Parse ID Token JWT claims
+    // Parse ID Token JWT claims with normalized base64url padding
     let claims: Record<string, any> = {};
     if (tokenData.id_token) {
-      const parts = tokenData.id_token.split('.');
-      if (parts.length >= 2) {
-        const payloadBuffer = Buffer.from(parts[1], 'base64url');
-        claims = JSON.parse(payloadBuffer.toString('utf8'));
+      try {
+        const parts = tokenData.id_token.split('.');
+        if (parts.length >= 2) {
+          let base64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+          while (base64.length % 4) {
+            base64 += '=';
+          }
+          claims = JSON.parse(Buffer.from(base64, 'base64').toString('utf8'));
+        }
+      } catch (e) {
+        console.warn('[Telegram OIDC] JWT payload decode error:', e);
       }
     }
 
@@ -84,38 +92,73 @@ export async function POST(request: Request) {
       sub: claims.sub,
       name: claims.name,
       preferred_username: claims.preferred_username,
+      first_name: claims.first_name || claims.given_name,
+      last_name: claims.last_name || claims.family_name,
       picture: claims.picture ? '[FOUND]' : '[NOT_PROVIDED]',
     });
 
     const telegramId = String(claims.sub || claims.id || tokenData.user_id || `tg_${Date.now()}`);
-    const rawUsername =
+
+    let rawUsername =
       claims.preferred_username ||
       claims.username ||
       claims.user_name ||
       tokenData.username ||
       (tokenData.user && tokenData.user.username) ||
       '';
+
+    let rawFirstName =
+      claims.first_name ||
+      claims.given_name ||
+      (tokenData.user && tokenData.user.first_name) ||
+      '';
+
+    let rawLastName =
+      claims.last_name ||
+      claims.family_name ||
+      (tokenData.user && tokenData.user.last_name) ||
+      '';
+
+    let rawPhotoUrl =
+      claims.picture ||
+      claims.photo_url ||
+      tokenData.photo_url ||
+      (tokenData.user && tokenData.user.photo_url) ||
+      '';
+
+    // Query Telegram Bot API for real username, name, and profile photo
+    try {
+      const botProfile = await TelegramBotClient.fetchCompleteUserProfile(telegramId);
+      if (botProfile) {
+        if (botProfile.username) rawUsername = botProfile.username;
+        if (botProfile.first_name) rawFirstName = botProfile.first_name;
+        if (botProfile.last_name) rawLastName = botProfile.last_name;
+        if (botProfile.photoUrl) rawPhotoUrl = botProfile.photoUrl;
+      }
+    } catch (e) {
+      console.warn('[TelegramBotClient] fetch error in exchange:', e);
+    }
+
     const cleanUsername = rawUsername.replace(/^@/, '').trim();
 
     // User's name must sync with Telegram username: @username
     const fullName = cleanUsername
       ? `@${cleanUsername}`
-      : (claims.name || [claims.given_name, claims.family_name].filter(Boolean).join(' ') || 'Ota-ona');
+      : (claims.name || `${rawFirstName} ${rawLastName}`.trim() || 'Ota-ona');
 
     // Automatically sync Telegram profile picture
     const photoUrl =
-      claims.picture ||
-      claims.photo_url ||
-      tokenData.photo_url ||
-      tokenData.user?.photo_url ||
+      rawPhotoUrl ||
       (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
+      `/api/telegram/avatar/${telegramId}?name=${encodeURIComponent(fullName)}`;
 
     const user = {
       _id: `tg_${telegramId}`,
       telegramId,
       telegramUsername: cleanUsername,
       name: fullName,
+      firstName: rawFirstName,
+      lastName: rawLastName,
       photoUrl,
       childAgeGroup: '3-5',
       selectedInterests: ['Bola xulqi', 'Hissiyotlar'],

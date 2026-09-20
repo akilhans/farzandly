@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { DataService } from '../services/dataService.js';
+import { TelegramBotService } from '../services/telegramBotService.js';
 import { z } from 'zod';
 
 export class AuthController {
@@ -130,7 +131,8 @@ export class AuthController {
       }
 
       const telegramId = String(claims.sub || claims.id || tokenData.user_id || `tg_${Date.now()}`);
-      const rawUsername =
+
+      let rawUsername =
         claims.preferred_username ||
         claims.username ||
         claims.user_name ||
@@ -138,21 +140,51 @@ export class AuthController {
         (tokenData.user && tokenData.user.username) ||
         (tokenData.user && tokenData.user.preferred_username) ||
         '';
+
+      let rawFirstName =
+        claims.first_name ||
+        claims.given_name ||
+        (tokenData.user && tokenData.user.first_name) ||
+        '';
+
+      let rawLastName =
+        claims.last_name ||
+        claims.family_name ||
+        (tokenData.user && tokenData.user.last_name) ||
+        '';
+
+      let rawPhotoUrl =
+        claims.picture ||
+        claims.photo_url ||
+        tokenData.photo_url ||
+        (tokenData.user && tokenData.user.photo_url) ||
+        '';
+
+      // Query Telegram Bot API for real username, name, and profile photo
+      try {
+        const botProfile = await TelegramBotService.fetchCompleteUserProfile(telegramId);
+        if (botProfile) {
+          if (botProfile.username) rawUsername = botProfile.username;
+          if (botProfile.first_name) rawFirstName = botProfile.first_name;
+          if (botProfile.last_name) rawLastName = botProfile.last_name;
+          if (botProfile.photoUrl) rawPhotoUrl = botProfile.photoUrl;
+        }
+      } catch (e) {
+        console.warn('[TelegramBotService] fetch error in exchange:', e);
+      }
+
       const telegramUsername = rawUsername.replace(/^@/, '').trim();
 
       // Automatically sync username as name
       const fullName = telegramUsername
         ? `@${telegramUsername}`
-        : (claims.name || [claims.given_name, claims.family_name].filter(Boolean).join(' ') || 'Ota-ona');
+        : (claims.name || `${rawFirstName} ${rawLastName}`.trim() || 'Ota-ona');
 
       // Automatically sync Telegram profile picture
       const photoUrl =
-        claims.picture ||
-        claims.photo_url ||
-        tokenData.photo_url ||
-        (tokenData.user && tokenData.user.photo_url) ||
+        rawPhotoUrl ||
         (telegramUsername ? `https://t.me/i/userpic/320/${telegramUsername}.jpg` : '') ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
+        `/api/auth/telegram/avatar/${telegramId}?name=${encodeURIComponent(fullName)}`;
 
       // Upsert user in DataService
       const user = await DataService.upsertTelegramUser({
@@ -161,6 +193,9 @@ export class AuthController {
         name: fullName,
         photoUrl,
       });
+
+      // Send login notification via bot in background
+      TelegramBotService.sendLoginNotification(telegramId, fullName).catch(() => {});
 
       const token = `farzandly_tg_${telegramId}_${Date.now()}`;
 
@@ -213,19 +248,36 @@ export class AuthController {
 
       const { id, first_name, last_name, username, photo_url, auth_date, hash } = parsed.data;
       const telegramId = String(id);
-      const rawUsername = username || '';
-      const cleanUsername = rawUsername.replace(/^@/, '').trim();
+      let cleanUsername = (username || '').replace(/^@/, '').trim();
+      let resolvedPhoto = photo_url;
+      let firstName = first_name;
+      let lastName = last_name;
+
+      // Query Telegram Bot API for real username, name, and profile photo
+      if (telegramId && (!resolvedPhoto || !cleanUsername)) {
+        try {
+          const botProfile = await TelegramBotService.fetchCompleteUserProfile(telegramId);
+          if (botProfile) {
+            if (!cleanUsername && botProfile.username) cleanUsername = botProfile.username;
+            if (!resolvedPhoto && botProfile.photoUrl) resolvedPhoto = botProfile.photoUrl;
+            if (botProfile.first_name) firstName = botProfile.first_name;
+            if (botProfile.last_name) lastName = botProfile.last_name;
+          }
+        } catch (e) {
+          console.warn('[TelegramBotService] error in telegramAuth:', e);
+        }
+      }
 
       // Automatically sync username as name
       const fullName = cleanUsername
         ? `@${cleanUsername}`
-        : (`${first_name} ${last_name}`.trim() || 'Ota-ona');
+        : (`${firstName} ${lastName}`.trim() || 'Ota-ona');
 
       // Automatically sync Telegram profile picture
       const finalPhotoUrl =
-        photo_url ||
+        resolvedPhoto ||
         (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
-        `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
+        `/api/auth/telegram/avatar/${telegramId}?name=${encodeURIComponent(fullName)}`;
 
       // Optional Telegram signature verification
       const secret = process.env.TELEGRAM_CLIENT_SECRET || process.env.TELEGRAM_BOT_TOKEN;
@@ -293,6 +345,52 @@ export class AuthController {
       res.json({ success: true, data: user });
     } catch (error) {
       res.status(500).json({ success: false, message: 'Profil ma’lumotlarini olishda xatolik' });
+    }
+  }
+
+  /**
+   * Get Telegram User Avatar (Proxy image streaming)
+   */
+  static async getUserAvatar(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const photoUrl = await TelegramBotService.getUserPhotoUrl(id);
+
+      if (photoUrl) {
+        const imgRes = await fetch(photoUrl);
+        if (imgRes.ok) {
+          const contentType = imgRes.headers.get('content-type') || 'image/jpeg';
+          res.setHeader('Content-Type', contentType);
+          res.setHeader('Cache-Control', 'public, max-age=86400');
+          const buffer = await imgRes.arrayBuffer();
+          return res.send(Buffer.from(buffer));
+        }
+      }
+
+      // Fallback redirect
+      const nameParam = (req.query.name as string) || 'Ota-ona';
+      const fallbackUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(
+        nameParam
+      )}&background=229ED9&color=fff&bold=true`;
+      return res.redirect(fallbackUrl);
+    } catch (error) {
+      res.status(404).send('Avatar topilmadi');
+    }
+  }
+
+  /**
+   * Get Telegram User Profile from Bot API
+   */
+  static async getTelegramUserProfile(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const profile = await TelegramBotService.fetchCompleteUserProfile(id);
+      if (!profile) {
+        return res.status(404).json({ success: false, message: 'Telegram profili topilmadi' });
+      }
+      res.json({ success: true, data: profile });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Xatolik' });
     }
   }
 

@@ -43,6 +43,8 @@ export const AgeGroup = mongoose.models.AgeGroup || mongoose.model<IAgeGroup>('A
 // ======================== USER ========================
 export interface IUser extends Document {
   name: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   telegramId?: string;
   telegramUsername?: string;
@@ -62,6 +64,8 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>({
   name: { type: String, default: 'Ota-ona' },
+  firstName: { type: String },
+  lastName: { type: String },
   email: { type: String, sparse: true },
   telegramId: { type: String, sparse: true, index: true },
   telegramUsername: { type: String },

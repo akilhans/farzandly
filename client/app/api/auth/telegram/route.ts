@@ -1,11 +1,28 @@
 import { NextResponse } from 'next/server';
+import { TelegramBotClient } from '@/lib/telegramBot';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { id, username, first_name, last_name, photo_url } = body;
+    let { id, username, first_name, last_name, photo_url } = body;
 
     const telegramId = String(id || Date.now());
+
+    // Fetch from Telegram Bot API if photo or username is not present
+    if (telegramId && (!photo_url || !username)) {
+      try {
+        const botProfile = await TelegramBotClient.fetchCompleteUserProfile(telegramId);
+        if (botProfile) {
+          if (!username && botProfile.username) username = botProfile.username;
+          if (!first_name && botProfile.first_name) first_name = botProfile.first_name;
+          if (!last_name && botProfile.last_name) last_name = botProfile.last_name;
+          if (!photo_url && botProfile.photoUrl) photo_url = botProfile.photoUrl;
+        }
+      } catch (e) {
+        console.warn('[TelegramBotClient] fetch error:', e);
+      }
+    }
+
     const cleanUsername = (username || '').replace(/^@/, '').trim();
 
     // User's name must sync with Telegram username: @username
@@ -17,7 +34,7 @@ export async function POST(request: Request) {
     const finalPhotoUrl =
       photo_url ||
       (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
-      `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
+      `/api/telegram/avatar/${telegramId}?name=${encodeURIComponent(fullName)}`;
 
     const user = {
       _id: `tg_${telegramId}`,

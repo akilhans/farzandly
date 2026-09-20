@@ -7,6 +7,8 @@ export interface TelegramUser {
   telegramId?: string;
   telegramUsername?: string;
   name: string;
+  firstName?: string;
+  lastName?: string;
   photoUrl?: string;
   childAgeGroup: string;
   selectedInterests: string[];
@@ -38,6 +40,7 @@ interface AuthContextType {
   logout: () => void;
   updateUserProgress: (xpToAdd: number, lessonSlug: string) => void;
   updateUserProfile: (updates: Partial<TelegramUser>) => void;
+  setAuthenticatedSession: (user: TelegramUser, token: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -126,10 +129,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
         // Guarantee profile pic and username as name sync
         if (cleanUsername) {
-          loggedUser.name = `@${cleanUsername}`;
           loggedUser.telegramUsername = cleanUsername;
+          if (!loggedUser.name || loggedUser.name === 'Ota-ona') {
+            loggedUser.name = `@${cleanUsername}`;
+          }
         }
-        if (photoUrl) {
+        if (!loggedUser.photoUrl && photoUrl) {
           loggedUser.photoUrl = photoUrl;
         }
 
@@ -269,6 +274,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const setAuthenticatedSession = (authUser: TelegramUser, authToken: string) => {
+    setUser(authUser);
+    setToken(authToken);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('farzandly_auth_user', JSON.stringify(authUser));
+      localStorage.setItem('farzandly_auth_token', authToken);
+      localStorage.setItem('farzandly_user', JSON.stringify(authUser));
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -281,6 +296,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         logout,
         updateUserProgress,
         updateUserProfile,
+        setAuthenticatedSession,
       }}
     >
       {children}

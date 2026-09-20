@@ -49,6 +49,11 @@ export default function UserAvatar({
   showBadge = true,
 }: UserAvatarProps) {
   const [imageError, setImageError] = useState(false);
+
+  React.useEffect(() => {
+    setImageError(false);
+  }, [photoUrl]);
+
   const styles = sizeStyles[size] || sizeStyles.md;
 
   const cleanName = name.replace(/^@/, '').trim() || 'Farzandly';

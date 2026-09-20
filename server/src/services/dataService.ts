@@ -235,12 +235,16 @@ export class DataService {
     telegramId: string;
     telegramUsername?: string;
     name: string;
+    firstName?: string;
+    lastName?: string;
     photoUrl?: string;
   }) {
     if (isDbConnected()) {
       let user = await User.findOne({ telegramId: data.telegramId });
       if (user) {
         user.name = data.name || user.name;
+        if (data.firstName) user.firstName = data.firstName;
+        if (data.lastName) user.lastName = data.lastName;
         user.telegramUsername = data.telegramUsername || user.telegramUsername;
         user.photoUrl = data.photoUrl || user.photoUrl;
         user.lastActiveDate = new Date();
@@ -252,6 +256,8 @@ export class DataService {
         telegramId: data.telegramId,
         telegramUsername: data.telegramUsername,
         name: data.name,
+        firstName: data.firstName,
+        lastName: data.lastName,
         photoUrl: data.photoUrl,
         authProvider: 'telegram',
         childAgeGroup: '3-5',
@@ -275,6 +281,8 @@ export class DataService {
     if (existingKey) {
       const user = memoryUsers[existingKey];
       user.name = data.name || user.name;
+      if (data.firstName) user.firstName = data.firstName;
+      if (data.lastName) user.lastName = data.lastName;
       user.telegramUsername = data.telegramUsername || user.telegramUsername;
       user.photoUrl = data.photoUrl || user.photoUrl;
       return user;
@@ -286,6 +294,8 @@ export class DataService {
       telegramId: data.telegramId,
       telegramUsername: data.telegramUsername,
       name: data.name,
+      firstName: data.firstName,
+      lastName: data.lastName,
       photoUrl: data.photoUrl,
       authProvider: 'telegram',
       childAgeGroup: '3-5',

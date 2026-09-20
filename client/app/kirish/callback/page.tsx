@@ -9,7 +9,7 @@ import UserAvatar from '@/components/UserAvatar';
 function TelegramCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { loginWithTelegram } = useAuth();
+  const { loginWithTelegram, setAuthenticatedSession } = useAuth();
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -61,28 +61,27 @@ function TelegramCallbackContent() {
         }
 
         const user = data.data.user;
+        const authToken = data.data.token || `farzandly_tg_${user.telegramId || user._id}_${Date.now()}`;
         const rawUsername = user.telegramUsername || '';
         const cleanUsername = rawUsername.replace(/^@/, '').trim();
         const displayName = cleanUsername ? `@${cleanUsername}` : (user.name || 'Ota-ona');
         const photoUrl =
           user.photoUrl ||
-          (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '');
+          (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
+          `/api/telegram/avatar/${user.telegramId || user._id}?name=${encodeURIComponent(displayName)}`;
 
-        setUserData({
+        const completeUser = {
           ...user,
           name: displayName,
           telegramUsername: cleanUsername,
           photoUrl: photoUrl,
-        });
+        };
+
+        setUserData(completeUser);
         setStatus('success');
 
-        // Persist session in AuthContext
-        await loginWithTelegram({
-          id: user.telegramId || user._id,
-          first_name: displayName,
-          username: cleanUsername,
-          photo_url: photoUrl,
-        });
+        // Persist session directly without redundant network call
+        setAuthenticatedSession(completeUser, authToken);
 
         setTimeout(() => {
           router.push('/dashboard');
