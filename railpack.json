@@ -14,6 +14,6 @@
     }
   },
   "deploy": {
-    "startCommand": "cd server && npm start"
+    "startCommand": "node index.js"
   }
 }

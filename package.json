@@ -7,9 +7,9 @@
   "engines": {
     "node": ">=20.0.0"
   },
-  "main": "server/dist/server.js",
+  "main": "index.js",
   "scripts": {
-    "start": "cd server && npm start",
+    "start": "node index.js",
     "build": "cd server && npm install && npm run build",
     "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
     "dev:server": "cd server && npm run dev",
