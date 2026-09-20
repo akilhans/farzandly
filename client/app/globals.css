@@ -1,0 +1,144 @@
+@import "tailwindcss";
+
+:root {
+  --primary-emerald: #059669;
+  --primary-dark: #047857;
+  --primary-light: #10b981;
+  --primary-soft: #ecfdf5;
+  --cream-bg: #faf7f2;
+  --accent-gold: #f59e0b;
+  --accent-gold-dark: #d97706;
+  --spark-blue: #0284c7;
+  --spark-blue-dark: #0369a1;
+  --charcoal: #1e293b;
+  --muted-gray: #64748b;
+  --card-border: #e2e8f0;
+}
+
+body {
+  background-color: #faf7f2;
+  color: #1e293b;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3D Duolingo-inspired Tactile Buttons */
+.btn-press {
+  transition: all 0.1s ease-in-out;
+}
+.btn-press:active {
+  transform: translateY(2px);
+}
+
+.btn-primary {
+  background-color: #059669;
+  color: #ffffff;
+  border-bottom: 4px solid #047857;
+  border-radius: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+.btn-primary:hover {
+  background-color: #10b981;
+}
+.btn-primary:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.btn-secondary {
+  background-color: #0284c7;
+  color: #ffffff;
+  border-bottom: 4px solid #0369a1;
+  border-radius: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+.btn-secondary:hover {
+  background-color: #0ea5e9;
+}
+.btn-secondary:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.btn-gold {
+  background-color: #f59e0b;
+  color: #ffffff;
+  border-bottom: 4px solid #d97706;
+  border-radius: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+.btn-gold:hover {
+  background-color: #fbbf24;
+}
+.btn-gold:active {
+  border-bottom-width: 0px;
+  transform: translateY(4px);
+}
+
+.btn-outline {
+  background-color: #ffffff;
+  color: #334155;
+  border: 2px solid #e2e8f0;
+  border-bottom: 4px solid #cbd5e1;
+  border-radius: 1rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.1s ease;
+}
+.btn-outline:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+.btn-outline:active {
+  border-bottom-width: 2px;
+  transform: translateY(2px);
+}
+
+/* Card Style */
+.card-farzandly {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-bottom-width: 4px;
+  border-radius: 1.25rem;
+}
+
+/* Path Line */
+.path-line {
+  width: 4px;
+  background: repeating-linear-gradient(
+    to bottom,
+    #cbd5e1 0,
+    #cbd5e1 10px,
+    transparent 10px,
+    transparent 20px
+  );
+}
+
+/* Custom animations */
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+.animate-subtle-bounce {
+  animation: bounceSubtle 2s infinite ease-in-out;
+}

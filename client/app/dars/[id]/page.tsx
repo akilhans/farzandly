@@ -1,0 +1,416 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import confetti from 'canvas-confetti';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  X,
+  ArrowRight,
+  ArrowLeft,
+  CheckCircle2,
+  AlertCircle,
+  Star,
+  Flame,
+  Award,
+  BookOpen,
+  Heart,
+  HelpCircle,
+  Lightbulb,
+} from 'lucide-react';
+import { api, Lesson, LessonScreen } from '@/lib/api';
+import { useAuth } from '@/context/AuthContext';
+
+export default function LessonRunnerPage() {
+  const params = useParams();
+  const router = useRouter();
+  const { updateUserProgress } = useAuth();
+  const lessonId = params?.id as string;
+
+  const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [currentScreenIdx, setCurrentScreenIdx] = useState(0);
+
+  // Quiz state
+  const [selectedOption, setSelectedOption] = useState<number | null>(null);
+  const [isAnswerChecked, setIsAnswerChecked] = useState(false);
+  const [isCorrect, setIsCorrect] = useState(false);
+
+  // Completed state
+  const [isFinished, setIsFinished] = useState(false);
+  const [earnedXp, setEarnedXp] = useState(10);
+
+  useEffect(() => {
+    async function loadLesson() {
+      const data = await api.getLessonByIdOrSlug(lessonId);
+      if (data) {
+        setLesson(data);
+        setEarnedXp(data.xpReward || 10);
+      }
+      setLoading(false);
+    }
+    loadLesson();
+  }, [lessonId]);
+
+  const screens: LessonScreen[] = lesson?.screens || [];
+  const totalScreens = screens.length + 1; // +1 for final victory screen
+  const progressPercent = Math.min(100, Math.round(((currentScreenIdx + 1) / totalScreens) * 100));
+
+  const handleNextScreen = async () => {
+    if (currentScreenIdx < screens.length - 1) {
+      setCurrentScreenIdx(currentScreenIdx + 1);
+      // Reset quiz state for next screen
+      setSelectedOption(null);
+      setIsAnswerChecked(false);
+      setIsCorrect(false);
+    } else if (currentScreenIdx === screens.length - 1) {
+      // Enter victory screen
+      setCurrentScreenIdx(currentScreenIdx + 1);
+      setIsFinished(true);
+
+      // Trigger Confetti celebration
+      try {
+        confetti({
+          particleCount: 90,
+          spread: 80,
+          origin: { y: 0.6 },
+          colors: ['#059669', '#10B981', '#F59E0B', '#0284C7'],
+        });
+      } catch {
+        // Confetti fallback
+      }
+
+      // Record progress to AuthContext and Backend API
+      updateUserProgress(earnedXp, lesson?.slug || lessonId);
+      await api.recordLessonProgress({
+        lessonSlug: lesson?.slug || lessonId,
+        xpEarned: earnedXp,
+      });
+    }
+  };
+
+  const handleCheckQuiz = (correctIndex: number) => {
+    if (selectedOption === null) return;
+    setIsAnswerChecked(true);
+    const correct = selectedOption === correctIndex;
+    setIsCorrect(correct);
+    if (correct) {
+      try {
+        confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+      } catch {}
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center">
+        <div className="w-12 h-12 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (!lesson) {
+    return (
+      <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
+        <h2 className="text-xl font-bold text-slate-800">Dars topilmadi</h2>
+        <p className="text-xs text-slate-500">Ushbu dars mavjud emas yoki o‘chirilgan.</p>
+        <Link href="/dashboard" className="btn-primary text-sm px-6 py-2.5">
+          O‘quv yo‘liga qaytish
+        </Link>
+      </div>
+    );
+  }
+
+  const currentScreen = screens[currentScreenIdx];
+
+  return (
+    <div className="min-h-[85vh] flex flex-col justify-between max-w-2xl mx-auto px-4 py-6 sm:py-8 relative">
+      {/* Ambient background blur */}
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-80 h-80 bg-emerald-200/30 rounded-full blur-3xl pointer-events-none -z-10" />
+
+      {/* 1. TOP HEADER & PROGRESS BAR */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between gap-4">
+          <Link
+            href="/dashboard"
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors"
+            title="Darsdan chiqish"
+          >
+            <X className="w-6 h-6" />
+          </Link>
+
+          {/* Progress Bar */}
+          <div className="flex-1 h-3.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
+            <motion.div
+              className="h-full bg-emerald-500 rounded-full shadow-sm"
+              initial={{ width: 0 }}
+              animate={{ width: `${progressPercent}%` }}
+              transition={{ duration: 0.3 }}
+            />
+          </div>
+
+          <div className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shadow-xs">
+            <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+            <span>+{earnedXp} XP</span>
+          </div>
+        </div>
+
+        <div className="text-center">
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-400">
+            {lesson.title}
+          </span>
+        </div>
+      </div>
+
+      {/* 2. DYNAMIC SCREEN CONTENT WITH MOTION */}
+      <div className="py-6 sm:py-8 flex-1 flex flex-col justify-center">
+        <AnimatePresence mode="wait">
+          {isFinished ? (
+            /* VICTORY / COMPLETION SCREEN */
+            <motion.div
+              key="victory"
+              initial={{ opacity: 0, scale: 0.95, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+              className="bg-white/95 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-8 sm:p-12 text-center space-y-6 shadow-xl"
+            >
+              <div className="w-24 h-24 mx-auto rounded-full bg-emerald-100 border-4 border-emerald-300 text-emerald-600 flex items-center justify-center shadow-inner">
+                <Award className="w-12 h-12" />
+              </div>
+
+              <div className="space-y-2">
+                <h2 className="text-3xl sm:text-4xl font-black text-slate-800">
+                  Barakalla! 🎉
+                </h2>
+                <p className="text-sm sm:text-base text-slate-600 font-medium">
+                  Darsni muvaffaqiyatli yakunladingiz va bolangiz bilan yaqinlashish sari muhim qadam tashladingiz.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4 max-w-xs mx-auto">
+                <div className="bg-emerald-50 border-2 border-emerald-200 rounded-2xl p-4 text-center">
+                  <div className="flex items-center justify-center gap-1 text-emerald-600 font-black text-2xl">
+                    <Star className="w-6 h-6 fill-emerald-500" />
+                    <span>+{earnedXp}</span>
+                  </div>
+                  <span className="text-xs font-bold text-emerald-800 uppercase">XP olindi</span>
+                </div>
+
+                <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-4 text-center">
+                  <div className="flex items-center justify-center gap-1 text-orange-600 font-black text-2xl">
+                    <Flame className="w-6 h-6 fill-orange-500" />
+                    <span>+1</span>
+                  </div>
+                  <span className="text-xs font-bold text-amber-800 uppercase">Streak yangilandi</span>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                <button
+                  onClick={() => router.push('/dashboard')}
+                  className="w-full btn-primary text-base py-4 flex items-center justify-center gap-2"
+                >
+                  <span>O‘quv yo‘liga qaytish</span>
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+              </div>
+            </motion.div>
+          ) : (
+            /* STEP SCREENS */
+            <motion.div
+              key={currentScreenIdx}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.25 }}
+              className="bg-white/95 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-10 shadow-lg space-y-6"
+            >
+              {/* Screen Category Tag */}
+              <div className="flex items-center gap-2">
+                {currentScreen.type === 'scenario' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-sky-600 bg-sky-50 px-3 py-1 rounded-lg border border-sky-200 flex items-center gap-1">
+                    <HelpCircle className="w-3.5 h-3.5" /> Hayotiy vaziyat
+                  </span>
+                )}
+                {currentScreen.type === 'concept' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-emerald-600 bg-emerald-50 px-3 py-1 rounded-lg border border-emerald-200 flex items-center gap-1">
+                    <Lightbulb className="w-3.5 h-3.5" /> Asosiy tushuncha
+                  </span>
+                )}
+                {currentScreen.type === 'explanation' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-indigo-600 bg-indigo-50 px-3 py-1 rounded-lg border border-indigo-200 flex items-center gap-1">
+                    <BookOpen className="w-3.5 h-3.5" /> Psixologik tahlil
+                  </span>
+                )}
+                {currentScreen.type === 'islamic_perspective' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-teal-700 bg-teal-50 px-3 py-1 rounded-lg border border-teal-200 flex items-center gap-1">
+                    <Heart className="w-3.5 h-3.5" /> Islomiy hikmat
+                  </span>
+                )}
+                {currentScreen.type === 'practice' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-3 py-1 rounded-lg border border-amber-200 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> Bugungi amaliyot
+                  </span>
+                )}
+                {currentScreen.type === 'quiz' && (
+                  <span className="text-xs font-black uppercase tracking-wider text-purple-700 bg-purple-50 px-3 py-1 rounded-lg border border-purple-200 flex items-center gap-1">
+                    <Award className="w-3.5 h-3.5" /> Mini-test
+                  </span>
+                )}
+              </div>
+
+              {/* Screen Title */}
+              <div className="space-y-1">
+                <h2 className="text-2xl sm:text-3xl font-black text-slate-800 leading-tight">
+                  {currentScreen.title}
+                </h2>
+                {currentScreen.subtitle && (
+                  <p className="text-xs sm:text-sm font-bold text-slate-400">
+                    {currentScreen.subtitle}
+                  </p>
+                )}
+              </div>
+
+              {/* Content text */}
+              <div className="text-sm sm:text-base text-slate-700 leading-relaxed font-medium whitespace-pre-line">
+                {currentScreen.content}
+              </div>
+
+              {/* Example or Quote Highlight Card */}
+              {currentScreen.example && (
+                <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs sm:text-sm text-slate-700 space-y-1">
+                  <p className="font-bold text-slate-800">Misol:</p>
+                  <p className="italic text-slate-600 whitespace-pre-line">{currentScreen.example}</p>
+                </div>
+              )}
+
+              {currentScreen.highlight && (
+                <div className="p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300 text-xs sm:text-sm text-emerald-900 font-bold flex items-start gap-2.5">
+                  <Lightbulb className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+                  <p>{currentScreen.highlight}</p>
+                </div>
+              )}
+
+              {currentScreen.quoteSource && (
+                <p className="text-right text-xs font-bold text-slate-400">
+                  — {currentScreen.quoteSource}
+                </p>
+              )}
+
+              {/* QUIZ INTERACTION */}
+              {currentScreen.type === 'quiz' && currentScreen.quizOptions && (
+                <div className="space-y-4 pt-2">
+                  <p className="font-bold text-slate-800 text-sm sm:text-base">
+                    {currentScreen.quizQuestion}
+                  </p>
+
+                  <div className="space-y-2.5">
+                    {currentScreen.quizOptions.map((opt, idx) => {
+                      const isSelected = selectedOption === idx;
+                      let optionClasses = 'border-slate-200 hover:border-slate-300 hover:bg-slate-50';
+
+                      if (isSelected) {
+                        if (isAnswerChecked) {
+                          optionClasses = isCorrect
+                            ? 'border-emerald-600 bg-emerald-50 text-emerald-900 border-b-4'
+                            : 'border-rose-500 bg-rose-50 text-rose-900 border-b-4';
+                        } else {
+                          optionClasses = 'border-emerald-600 bg-emerald-50 text-emerald-900 border-b-4';
+                        }
+                      }
+
+                      return (
+                        <motion.button
+                          key={idx}
+                          whileHover={{ scale: isAnswerChecked ? 1 : 1.01 }}
+                          whileTap={{ scale: isAnswerChecked ? 1 : 0.99 }}
+                          type="button"
+                          onClick={() => !isAnswerChecked && setSelectedOption(idx)}
+                          disabled={isAnswerChecked}
+                          className={`w-full text-left p-4 rounded-2xl border-2 font-bold text-xs sm:text-sm transition-all flex items-center justify-between cursor-pointer ${optionClasses}`}
+                        >
+                          <span>{opt}</span>
+                          {isAnswerChecked && isSelected && (
+                            <span>
+                              {isCorrect ? (
+                                <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
+                              ) : (
+                                <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
+                              )}
+                            </span>
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Feedback note after checking */}
+                  {isAnswerChecked && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className={`p-4 rounded-2xl border-2 text-xs sm:text-sm ${
+                        isCorrect
+                          ? 'bg-emerald-50 border-emerald-300 text-emerald-900'
+                          : 'bg-amber-50 border-amber-300 text-amber-900'
+                      }`}
+                    >
+                      <p className="font-bold mb-1">
+                        {isCorrect ? 'Barakalla, to‘g‘ri javob!' : 'E’tibor bering:'}
+                      </p>
+                      <p>{currentScreen.quizExplanation}</p>
+                    </motion.div>
+                  )}
+                </div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+
+      {/* 3. BOTTOM ACTION BUTTON BAR */}
+      {!isFinished && (
+        <div className="pt-4 border-t border-slate-200/80 bg-white/60 backdrop-blur-md -mx-4 px-4 pb-2 rounded-2xl flex items-center justify-between gap-4">
+          {currentScreenIdx > 0 ? (
+            <button
+              type="button"
+              onClick={() => setCurrentScreenIdx(currentScreenIdx - 1)}
+              className="btn-outline text-xs sm:text-sm px-4 py-3 flex items-center gap-1.5"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              <span>Orqaga</span>
+            </button>
+          ) : (
+            <div />
+          )}
+
+          {currentScreen.type === 'quiz' && !isAnswerChecked ? (
+            <button
+              type="button"
+              disabled={selectedOption === null}
+              onClick={() => handleCheckQuiz(currentScreen.correctOptionIndex ?? 0)}
+              className={`text-xs sm:text-sm px-8 py-3.5 font-bold rounded-2xl transition-all ${
+                selectedOption !== null
+                  ? 'btn-primary'
+                  : 'bg-slate-200 text-slate-400 cursor-not-allowed'
+              }`}
+            >
+              Tekshirish
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleNextScreen}
+              className="btn-primary text-xs sm:text-sm px-8 py-3.5 flex items-center gap-2"
+            >
+              <span>{currentScreenIdx === screens.length - 1 ? 'Darsni yakunlash' : 'Davom etish'}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}
