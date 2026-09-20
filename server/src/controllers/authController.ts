@@ -129,8 +129,15 @@ export class AuthController {
         }
       }
 
-      const telegramId = String(claims.sub || tokenData.user_id || `tg_${Date.now()}`);
-      const rawUsername = claims.preferred_username || claims.username || '';
+      const telegramId = String(claims.sub || claims.id || tokenData.user_id || `tg_${Date.now()}`);
+      const rawUsername =
+        claims.preferred_username ||
+        claims.username ||
+        claims.user_name ||
+        tokenData.username ||
+        (tokenData.user && tokenData.user.username) ||
+        (tokenData.user && tokenData.user.preferred_username) ||
+        '';
       const telegramUsername = rawUsername.replace(/^@/, '').trim();
 
       // Automatically sync username as name
@@ -142,6 +149,8 @@ export class AuthController {
       const photoUrl =
         claims.picture ||
         claims.photo_url ||
+        tokenData.photo_url ||
+        (tokenData.user && tokenData.user.photo_url) ||
         (telegramUsername ? `https://t.me/i/userpic/320/${telegramUsername}.jpg` : '') ||
         `https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=229ED9&color=fff&bold=true`;
 

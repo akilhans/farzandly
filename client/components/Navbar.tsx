@@ -20,6 +20,7 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import UserAvatar from '@/components/UserAvatar';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -103,32 +104,22 @@ export function Navbar() {
                 <button
                   type="button"
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                  className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-white border-2 border-slate-200 hover:border-emerald-500 transition-all text-left"
+                  className="flex items-center gap-2 p-1.5 sm:px-3 sm:py-1.5 rounded-2xl bg-white border-2 border-slate-200 hover:border-emerald-500 transition-all text-left cursor-pointer"
                 >
-                  {user.photoUrl ? (
-                    <img
-                      src={user.photoUrl}
-                      alt={user.name}
-                      onError={(e) => {
-                        e.currentTarget.onerror = null;
-                        e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=229ED9&color=fff&bold=true`;
-                      }}
-                      className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl object-cover border border-emerald-300"
-                    />
-                  ) : (
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold text-xs">
-                      {user.name.replace('@', '').slice(0, 2).toUpperCase()}
-                    </div>
-                  )}
+                  <UserAvatar
+                    name={user.name}
+                    photoUrl={user.photoUrl}
+                    telegramUsername={user.telegramUsername}
+                    size="sm"
+                  />
                   <div className="hidden sm:block">
-                    <p className="text-xs font-black text-slate-800 leading-tight truncate max-w-[100px]">
+                    <p className="text-xs font-black text-slate-800 leading-tight truncate max-w-[120px]">
                       {user.name}
                     </p>
-                    {user.telegramUsername && (
-                      <p className="text-[10px] text-[#229ED9] font-bold leading-none">
-                        @{user.telegramUsername}
-                      </p>
-                    )}
+                    <p className="text-[10px] text-emerald-600 font-bold leading-none flex items-center gap-1 mt-0.5">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
+                      Telegram
+                    </p>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
                 </button>
@@ -141,11 +132,19 @@ export function Navbar() {
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
                       transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-md rounded-2xl border-2 border-slate-200 shadow-xl p-2 z-50 space-y-1"
+                      className="absolute right-0 mt-2 w-60 bg-white/95 backdrop-blur-md rounded-2xl border-2 border-slate-200 shadow-xl p-2 z-50 space-y-1"
                     >
-                      <div className="p-2.5 border-b border-slate-100">
-                        <p className="text-xs font-black text-slate-800">{user.name}</p>
-                        <p className="text-[11px] text-emerald-600 font-bold">{user.level}</p>
+                      <div className="p-2.5 border-b border-slate-100 flex items-center gap-2.5">
+                        <UserAvatar
+                          name={user.name}
+                          photoUrl={user.photoUrl}
+                          telegramUsername={user.telegramUsername}
+                          size="sm"
+                        />
+                        <div className="overflow-hidden">
+                          <p className="text-xs font-black text-slate-800 truncate">{user.name}</p>
+                          <p className="text-[11px] text-emerald-600 font-bold">{user.level}</p>
+                        </div>
                       </div>
 
                       <Link

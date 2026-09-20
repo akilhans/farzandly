@@ -17,12 +17,17 @@ import {
   Send,
   LogOut,
   ShieldCheck,
+  Camera,
+  Upload,
+  Info,
 } from 'lucide-react';
 import { api, Achievement } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import UserAvatar from '@/components/UserAvatar';
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, updateUserProfile } = useAuth();
+  const fileInputRef = React.useRef<HTMLInputElement>(null);
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -60,40 +65,57 @@ export default function ProfilePage() {
         transition={{ duration: 0.3 }}
         className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-center sm:items-start gap-6"
       >
-        <div className="relative">
-          {user?.photoUrl ? (
-            <img
-              src={user.photoUrl}
-              alt={user.name}
-              onError={(e) => {
-                e.currentTarget.onerror = null;
-                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=059669&color=fff&bold=true`;
-              }}
-              className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl object-cover border-4 border-emerald-500 shadow-md"
-            />
-          ) : (
-            <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-3xl bg-emerald-600 border-4 border-emerald-800 text-white flex items-center justify-center font-black text-3xl shadow-md shrink-0">
-              <UserIcon className="w-12 h-12" />
-            </div>
-          )}
-          {isAuthenticated && (
-            <div
-              className="absolute -bottom-2 -right-2 bg-[#229ED9] text-white p-1.5 rounded-xl shadow-md border-2 border-white"
-              title="Telegram orqali tasdiqlangan"
-            >
-              <Send className="w-3.5 h-3.5 -rotate-12" />
-            </div>
-          )}
+        <div className="relative group">
+          <UserAvatar
+            name={user?.name}
+            photoUrl={user?.photoUrl}
+            telegramUsername={user?.telegramUsername}
+            size="xl"
+          />
+
+          <button
+            type="button"
+            onClick={() => fileInputRef.current?.click()}
+            className="absolute bottom-0 right-0 bg-stone-900/80 hover:bg-stone-950 text-white p-2 rounded-2xl shadow-lg border-2 border-white transition-all cursor-pointer hover:scale-110"
+            title="Rasmni almashtirish"
+          >
+            <Camera className="w-3.5 h-3.5" />
+          </button>
+
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (uploadEvent) => {
+                const result = uploadEvent.target?.result as string;
+                if (result) {
+                  updateUserProfile({ photoUrl: result });
+                }
+              };
+              reader.readAsDataURL(file);
+            }}
+            accept="image/*"
+            className="hidden"
+          />
         </div>
 
         <div className="flex-1 text-center sm:text-left space-y-2">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h1 className="text-2xl sm:text-3xl font-black text-slate-800">
-                {user?.name || 'Ota-ona'}
+              <h1 className="text-2xl sm:text-3xl font-black text-slate-800 flex items-center justify-center sm:justify-start gap-2">
+                <span>{user?.name || 'Ota-ona'}</span>
+                {isAuthenticated && (
+                  <span className="bg-sky-50 text-[#229ED9] border border-sky-200 text-xs font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+                    <Send className="w-3 h-3 -rotate-12" />
+                    Telegram
+                  </span>
+                )}
               </h1>
               <p className="text-xs sm:text-sm text-slate-500">
-                {user?.telegramUsername ? (
+                {user?.telegramUsername && !user?.name?.startsWith('@') ? (
                   <span className="font-bold text-[#229ED9]">@{user.telegramUsername} • </span>
                 ) : null}
                 Farzand yoshi: <span className="font-bold text-slate-700">{user?.childAgeGroup || '3-5'} yosh</span> • Kunlik reja: <span className="font-bold text-slate-700">{user?.dailyGoalMinutes || 10} daqiqa</span>
@@ -135,6 +157,23 @@ export default function ProfilePage() {
           </div>
         </div>
       </motion.div>
+
+      {/* Telegram Avatar Tip */}
+      {isAuthenticated && (
+        <div className="bg-sky-50/80 border border-sky-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-slate-600">
+          <div className="p-2 rounded-xl bg-[#229ED9] text-white shrink-0 mt-0.5">
+            <Send className="w-4 h-4 -rotate-12" />
+          </div>
+          <div className="space-y-1 flex-1">
+            <p className="font-bold text-slate-800">
+              Telegram profil rasmi qanday sinxronlanadi?
+            </p>
+            <p className="text-slate-500 leading-relaxed">
+              Telegram ilovangizda <b>Sozlamalar &gt; Maxfiylik va xavfsizlik &gt; Profil rasmi</b> qismida <b>«Hamma»</b> tanlangan bo‘lsa, rasmingiz Farzandly ga avtomatik ulanadi. Yoki yuqoridagi kamera belgisi orqali xohlagan rasmingizni bevosita yuklashingiz mumkin.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* 3 Metric Cards with hover animations */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">

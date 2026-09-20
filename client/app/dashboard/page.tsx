@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { api, Lesson } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import UserAvatar from '@/components/UserAvatar';
 
 export default function DashboardPage() {
   const { user: authUser } = useAuth();
@@ -60,27 +61,20 @@ export default function DashboardPage() {
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            {authUser?.photoUrl ? (
-              <img
-                src={authUser.photoUrl}
-                alt={authUser.name}
-                onError={(e) => {
-                  e.currentTarget.onerror = null;
-                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(authUser.name)}&background=059669&color=fff&bold=true`;
-                }}
-                className="w-12 h-12 rounded-2xl object-cover border-2 border-emerald-400 shadow-sm"
-              />
-            ) : (
-              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center font-black text-sm">
-                {(authUser?.name || 'Ota').slice(0, 2).toUpperCase()}
-              </div>
-            )}
+            <UserAvatar
+              name={authUser?.name}
+              photoUrl={authUser?.photoUrl}
+              telegramUsername={authUser?.telegramUsername}
+              size="md"
+            />
             <div className="space-y-0.5">
               <h1 className="text-xl sm:text-2xl font-black text-slate-800 flex items-center gap-1.5">
                 Assalomu alaykum, {authUser?.name || 'Ota-ona'} 👋
               </h1>
               <p className="text-xs sm:text-sm text-slate-500 font-medium">
-                {authUser?.telegramUsername ? `@${authUser.telegramUsername} • ` : ''}
+                {authUser?.telegramUsername && !authUser?.name?.startsWith('@')
+                  ? `@${authUser.telegramUsername} • `
+                  : ''}
                 Bugun tarbiya yo‘lingizda davom etamiz.
               </p>
             </div>

@@ -4,6 +4,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Send, CheckCircle2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import UserAvatar from '@/components/UserAvatar';
 
 function TelegramCallbackContent() {
   const router = useRouter();
@@ -34,18 +35,22 @@ function TelegramCallbackContent() {
     const exchangeCode = async () => {
       try {
         const redirectUri = window.location.origin + '/kirish/callback';
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
+        const endpoint = apiBase ? `${apiBase}/auth/telegram/exchange` : '/api/auth/telegram/exchange';
 
         // Try to get clientId from searchParams or localStorage or env
-        const storedClientId = localStorage.getItem('farzandly_tg_client_id') || process.env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID || '';
+        const storedClientId =
+          localStorage.getItem('farzandly_tg_client_id') ||
+          process.env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID ||
+          '891291780';
 
-        const res = await fetch(`${apiUrl}/auth/telegram/exchange`, {
+        const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             code,
             redirectUri,
-            clientId: storedClientId || undefined,
+            clientId: storedClientId,
           }),
         });
 
@@ -113,8 +118,13 @@ function TelegramCallbackContent() {
 
       {status === 'success' && (
         <div className="space-y-4 py-4 animate-in fade-in zoom-in duration-300">
-          <div className="w-16 h-16 mx-auto rounded-3xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/30">
-            <CheckCircle2 className="w-9 h-9" />
+          <div className="flex justify-center">
+            <UserAvatar
+              name={userData?.name}
+              photoUrl={userData?.photoUrl}
+              telegramUsername={userData?.telegramUsername}
+              size="lg"
+            />
           </div>
           <div className="space-y-1">
             <h2 className="text-2xl font-black text-slate-800">Xush kelibsiz!</h2>

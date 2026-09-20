@@ -37,11 +37,12 @@ interface AuthContextType {
   loginDemoTelegram: (persona?: 'aziza' | 'jasur' | 'dilnoza') => Promise<void>;
   logout: () => void;
   updateUserProgress: (xpToAdd: number, lessonSlug: string) => void;
+  updateUserProfile: (updates: Partial<TelegramUser>) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<TelegramUser | null>(null);
@@ -256,6 +257,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     });
   };
 
+  const updateUserProfile = (updates: Partial<TelegramUser>) => {
+    setUser((prev) => {
+      if (!prev) return null;
+      const updated = { ...prev, ...updates };
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('farzandly_auth_user', JSON.stringify(updated));
+        localStorage.setItem('farzandly_user', JSON.stringify(updated));
+      }
+      return updated;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -267,6 +280,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loginDemoTelegram,
         logout,
         updateUserProgress,
+        updateUserProfile,
       }}
     >
       {children}
