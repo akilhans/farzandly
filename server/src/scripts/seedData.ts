@@ -634,7 +634,7 @@ export const seedCourses = [
     "categorySlug": "tarbiya-asoslari",
     "isPremium": true,
     "estimatedMinutes": 30,
-    "totalLessons": 4,
+    "totalLessons": 7,
     "icon": "Heart",
     "color": "#059669",
     "translations": {
@@ -14266,6 +14266,186 @@ export const seedLessons = [
     ],
     "isPremium": true
   },
+{
+  "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+  "title": "Bola tabiati, ruhiy ehtiyojlar va ota-onalik chegaralari",
+  "slug": "bola-tabiati-ruhiy-ehtiyojlar-va-chegaralar",
+  "summary": "Bolalar dunyosining kaliti — o'yin, yig'lashning shifobaxsh tabiati, ifor va limbik xotira, qardoshlararo hasad, yorliq yopishtirish xavfi va 4 yoshdan boshlanadigan mahramiyat chegaralari.",
+  "order": 5,
+  "estimatedMinutes": 10,
+  "ageGroup": "0-2",
+  "xpReward": 25,
+  "isFree": true,
+  "isPremium": false,
+  "screens": [
+    {
+      "screenIndex": 0,
+      "type": "concept",
+      "title": "Bolalar dunyosining kaliti — O‘yin",
+      "subtitle": "Ankabut surasi, 64-oyat & Mavlono Rumiy hikmati",
+      "content": "Yaratuvchi insonning millionlab ko'nikmalarni o'rganish yo'lini osonlashtirish uchun uning fitratiga o'yin instinktini joylagan. Rumiy: «O'yin — bolani kamolotga tortuvchi ichki quvvatdir».\n\nO'yin quruq ovunchoq emas — bola u orqali qoidalarga bo'ysunishni, navbat kutishni, yutqazish va g'alabani qabul qilishni o'rganadi. Eng muhimi, bola ichki jarohatlarini o'yini orqali davolaydi.\n\nSunnatda esa Payg'ambarimiz (s.a.v.) nabiralari bilan o'ynaganlar, namozda bolalarning o'yini buzilmasligi uchun sajdani uzaytirganlar.",
+      "highlight": "O'yin — bolaning o'z ruhiy yarasini davolash va kamolotga erishish vositasidir."
+    },
+    {
+      "screenIndex": 1,
+      "type": "explanation",
+      "title": "Qo‘yib bering, yig‘lasin! — Ko‘z yoshi shifosi",
+      "subtitle": "Najm surasi, 60-oyat",
+      "content": "Yig'lash — ruhiyatdagi bosimni pasaytiruvchi tabiiy shifo mexanizmidir. Bola yig'laganda unga «Nega yig'layapsan?» deb tergov qilish yoki «Yigit kishi yig'lamaydi!» deb hislarini bo'g'ish keyinchalik tajovuzkorlik va yurak qotishiga olib keladi.\n\nYechim — hislarni qabul qilish: Bolaning ko'z darajasiga egilib, bag'ringizga bosing va «Seni tushunaman, mayli yig'lab ol» deb uning tuyg'usini tan oling. Shundan so'ng bola ichidagi yukni to'kib, xotirjamlik topadi.",
+      "example": "«Latta bo'lma, yig'lama» deyilgan bolaning qalbi qotadi; hislarni tan olish esa bolaga o'z tuyg'ularini yengish kuchini beradi."
+    },
+    {
+      "screenIndex": 2,
+      "type": "islamic_perspective",
+      "title": "Ifor va qardoshlararo hasadni yengish",
+      "subtitle": "Yusuf surasi, 94-oyat & Hobil-Qobil ibrati",
+      "content": "Yoqub (a.s.) o'g'li Yusufning ko'ylagidan uning hidini tuyganlari kabi, hid limbik tizim orqali eng chuqur xotirani shakllantiradi. Onaning hidi, shirinlik yoki mehr bilan pishirilgan taom ifori bolaning ongida iliq oilaviy baxt bo'lib muhrlanadi.\n\nYangi chaqaloq tug'ilganda to'ng'ich bolani chetlatmaslik kerak. «U yoqqa bormaymiz, ukang uxlayapti» deb to'ng'ichda nafrat uyg'otish o'rniga, unga akalik/opalik sharafini bering va kuniga kamida 5 daqiqa to'liq e'tibor qarating.",
+      "quoteSource": "Yusuf surasi, 94-oyat"
+    },
+    {
+      "screenIndex": 3,
+      "type": "practice",
+      "title": "4 yoshdan mahramiyat chegaralari va Abu Mahzura sabri",
+      "subtitle": "Nur surasi 58-59 oyatlar & Baqara 153",
+      "content": "1. Jismoniy chegaralar: 4 yoshdan boshlab bolaning kiyimini birovlarning oldida yechmaslik, xonaga 3 vaqtda (bomdoddan oldin, tushki kiyim yechilganda, xuftondan keyin) ruxsat so'rab kirishni o'rgatish.\n2. Sabr siri: Sabr bolaning to'kilgan sharbatiga emas, o'sha paytda o'z nafsingizdagi g'azabga sabr qilishdir.\n3. Abu Mahzura ibrati: Rasululloh (s.a.v.) azonni masxara qilgan yosh yigitni urushmadilar, balki uning ovozi shirali ekanini aytib maqtadilar va Ka'baga muazzin qilib tayinladilar.",
+      "highlight": "Haqiqiy sabr — bolaga emas, o'z nafsingizdagi g'azabga sabr qilishdir."
+    },
+    {
+      "screenIndex": 4,
+      "type": "quiz",
+      "title": "Fahmni sinash mini-testi",
+      "quizQuestion": "Farzand tarbiyasida 'bolaga emas, o'z nafsingizga sabr qiling' qoidasining asl mohiyati nima?",
+      "quizOptions": [
+        "Voqea shunchaki hodisa, uni sinovga aylantiradigan narsa ota-onaning ichidagi nafsiy munosabati va g'azabidir",
+        "Bolaga hech qachon hech qanday qoida o'rgatmaslik kerak",
+        "Faqat bolani jazolash orqali sabrli bo'lish mumkin",
+        "Bolalar o'yin o'ynaganda ularni xonadan chiqarib yuborish kerak"
+      ],
+      "correctOptionIndex": 0,
+      "quizExplanation": "To'g'ri! Gilamga sharbat to'kilishi shunchaki oddiy hodisa; uni janjal va og'ir sinovga aylantiruvchi narsa ota-onaning o'z ichidagi g'azab refleksidir. Nafsni jilovlash — tarbiyaning aslidir."
+    }
+  ]
+},
+{
+  "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+  "title": "Bola ruhiyati, ota-onalik mas’uliyati va ma’naviy tarbiya",
+  "slug": "bola-ruhiyati-ota-onalik-masuliyati-va-manaviyat",
+  "summary": "Farzand xatolarini berkitish (Sattorlik fazilati), bolalikni o'g'irlamaslik va 'Oltin to'p' masali, farzand ne'matining amaliy shukri, ota-onalik duo maqomidir hamda yolg'onning ildizlari.",
+  "order": 6,
+  "estimatedMinutes": 10,
+  "ageGroup": "0-2",
+  "xpReward": 25,
+  "isFree": true,
+  "isPremium": false,
+  "screens": [
+    {
+      "screenIndex": 0,
+      "type": "concept",
+      "title": "Sattorlik fazilati: Ayblarni berkitish san’ati",
+      "subtitle": "Humaza surasi, 1-oyat",
+      "content": "Alloh taolo bandalarining ayblarini fosh qilmay, 'Sattor' sifati bilan parda tortadi. Ota-onadan ham bolasining xatolarini el oldida fosh qilmaslik talab etiladi.\n\nBolaning har bir xatosini yuziga solish unda nuqsonlilik, qadrsizlik va surunkali aybdorlik hissini uyg'otadi.\n\nNabaviy hikmat: Masjidda bir sahobaning tahorati buzilganda, Rasululloh (s.a.v.) uni hijolatga qo'ymaslik uchun butun jamoatga: «Kelinglar, barchamiz tahoratimizni yangilaymiz» deganlar. Bolani tuzatishda ham uni hijolatga qo'ymaydigan hikmat zarur.",
+      "highlight": "Bolaning xatosini yuziga solmang — sattorlik bilan qalbini asrang."
+    },
+    {
+      "screenIndex": 1,
+      "type": "explanation",
+      "title": "Bolalikni o‘g‘irlamaslik va «Oltin to‘p» masali",
+      "subtitle": "Kahf surasi, 46-oyat",
+      "content": "Ota-onalar ko'pincha xayolidagi «mukammal bola» qolipini tiqishtiradilar: to'polon qilmasin, kiyimini kirlatmasin, qimir etmasin. Bu bolani bolalikdan mahrum qilish demakdir.\n\nOltin to'p masali: Boy xonadon kambag'al qo'shnisining doimiy quvonchiga havas qilib, ularning «oltin to'pi» bor deb eshitadi. Oltindan to'p yasatib o'ynaganda tanalari ko'karib jarohat oladi. Kambag'al esa mehr bilan qo'lda o'ynatgan beg'ubor bolasini «oltin to'p» degan edi.\n\nFarzand — xonadonga baraka va quvonch beruvchi buyuk ne'matdir.",
+      "example": "«Bolasi bor kishi u bilan bolalashsin». Rasululloh (s.a.v.) Hasan va Husayn bilan gilamda emaklab ulov bo'lganlar."
+    },
+    {
+      "screenIndex": 2,
+      "type": "islamic_perspective",
+      "title": "Farzand ne’matining amaliy shukri va duo maqomi",
+      "subtitle": "Fotiha surasi, 1 & Furqon surasi, 77-oyat",
+      "content": "Farzand — Alloh o'zi xohlagan fe'l-atvor va qiyofada bergan sovg'adir. Qiz yoki o'g'il, sho'x yoki yuvoshligidan nolish noshukurlikdir.\n\nJunayd Bag'dodiy: «Shukr — Alloh bergan ne'mat bilan Unga isyon qilmaslikdir». Farzand ne'matining amaliy shukri — uni urmaslik, so'kmaslik va Alloh rozi bo'ladigan yo'lda o'stirishdir.\n\nDuo — eng oliy rag'bat: Moddiy sovg'alar vaqt o'tishi bilan o'z kuchini yo'qotadi. Ota-onaning chin dildan qilgan duosi esa bolaning ruhiyatini yillar davomida oziqlantiradi.",
+      "quoteSource": "Junayd Bag'dodiy hikmatlari"
+    },
+    {
+      "screenIndex": 3,
+      "type": "practice",
+      "title": "Yolg‘onning tub ildizi va xavfsiz muhit",
+      "subtitle": "Nahl surasi, 105-oyat",
+      "content": "Tarbiyadagi «oq yolg'onlar» — bolani tinchlantirish uchun «jim tursang, buni beraman» deb bermaslik yoki «uxlamasang, ukol qiladi» deb aldash katta xatodir.\n\nBolaning yolg'on gapirish sababi tabiatan buzuqligidan emas, balki qattiq jazodan qo'rqish va mehr qozonish uchun to'qilgan himoya chorasidir.\n\nYechim: Boladan xatosiz bo'lishni talab qilish emas, xato qilganda ham to'g'risini aytsa kaltaklanmasligini biladigan xavfsiz muhit yaratishdir.",
+      "highlight": "Xavfsiz va mehrli muhit bor joyda yolg'onga ehtiyoj qolmaydi."
+    },
+    {
+      "screenIndex": 4,
+      "type": "quiz",
+      "title": "Fahmni sinash mini-testi",
+      "quizQuestion": "Junayd Bag'dodiyning 'Shukr — Alloh bergan ne'mat bilan Unga isyon qilmaslikdir' so'ziga ko'ra, farzand ne'matining amaliy shukri qanday bo'ladi?",
+      "quizOptions": [
+        "Bolani kaltaklamaslik, haqorat qilmaslik va unga zulm qilmasdan mehr bilan tarbiyalash",
+        "Faqat tilda shukr deb, amalda bolani qo'rqitib ushlab turish",
+        "Bolani boshqa bolalar bilan solishtirish",
+        "Bolaga hech qanday e'tibor bermaslik"
+      ],
+      "correctOptionIndex": 0,
+      "quizExplanation": "To'g'ri! Farzand ne'mati uchun amaliy shukr — uning sha'nini toptamaslik, shaxsini hurmat qilish va Islomiy odob bilan tarbiyalashdir."
+    }
+  ]
+},
+{
+  "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+  "title": "Zamonaviy ota-onalik, ijtimoiy muhit va yakuniy xulosa",
+  "slug": "zamonaviy-ota-onalik-ijtimoiy-muhit-yakuniy-xulosa",
+  "summary": "«Otalar dini» aqidasidan qutulish, o'z bolalik jarohatlarini bolaga yuklamaslik, onalikdagi rollar muvozanati, katta oila va Silai rahm zakovati hamda Nasr surasidagi shukr va tavba.",
+  "order": 7,
+  "estimatedMinutes": 10,
+  "ageGroup": "0-2",
+  "xpReward": 30,
+  "isFree": true,
+  "isPremium": false,
+  "screens": [
+    {
+      "screenIndex": 0,
+      "type": "concept",
+      "title": "«Otalar dini» aqidasidan qutulish: Zamon bilan hamnafaslik",
+      "subtitle": "Moida surasi, 104-oyat & Hazrati Ali (r.a.) o'giti",
+      "content": "«Biz ham kaltak yeb katta bo'lganmiz, hech narsa bo'lganimiz yo'q» deb o'tmishdagi qattiqqo'llikni bugungi bolaga qo'llash johiliyatdagi «otalarimizdan shunday ko'rganmiz» degan o'jarlikka o'xshaydi.\n\nHazrati Ali: «Farzandlaringizni o'z davringiz haqiqatiga qarab emas, ular yashaydigan davr haqiqatiga qarab tarbiyalang. Zotan, ular boshqa bir zamon uchun yaratilgandirlar».\n\nBolaga diniy ta'lim berishda ham bugungi avlodning o'ynoqi, tezkor idrokiga mos qiziqarli metodikalardan foydalanish lozim.",
+      "highlight": "Farzandlaringizni ular yashaydigan davr haqiqatiga qarab tarbiyalang."
+    },
+    {
+      "screenIndex": 1,
+      "type": "explanation",
+      "title": "Onalikdagi rollar muvozanati",
+      "subtitle": "Sharh surasi, 7-oyat",
+      "content": "Ayol kishi faqat ona emas — u farzand, rafiqa, kelin, singil va shaxsdir. Onalik kelgach, barcha rollarni unutib, 24/7 faqat bola parvarishiga qamalib qolish asabiy toliqish va baqiriqqa sabab bo'ladi.\n\n«Bo'shaganingda (yangi ishga) kirishgin» (Sharh, 7). Insonni charchatadigan narsa ishning ko'pligi emas, balki bir xil rolda qamalib qolishdir. Ona vaqt-vaqti bilan o'ziga nafas rostlash uchun vaqt ajratishi va ijtimoiy munosabatlarni yangilashi shart.",
+      "example": "Baxtli va xotirjam ona — baxtli va xotirjam bolaning kafolatidir."
+    },
+    {
+      "screenIndex": 2,
+      "type": "islamic_perspective",
+      "title": "Katta oila va Silai rahm — Zakovat maktabi",
+      "subtitle": "Niso surasi, 1-oyat",
+      "content": "To'rt devor ichidagi yakkalangan mikro-oila bolani toliqtiradi. Bola faqat bitta onaning cheklangan sabri va bitta ohangdagi munosabati bilan to'laqonli aqliy va hissiy rivojlana olmaydi.\n\nBobo, buvi, amaki, tog'a va xolalar bilan muloqot qilgan bola turli xarakterlar bilan tanishadi, xatolarga turli munosabatni ko'rib, hayotiy idroki boyiydi. Buvilarning mehrli bag'ri esa oilada ruhiy osoyishtalik poydevoridir.",
+      "quoteSource": "Niso surasi, 1-oyat"
+    },
+    {
+      "screenIndex": 3,
+      "type": "practice",
+      "title": "Nasr surasi — Shukr, tavba va istig‘for yakuni",
+      "subtitle": "Nasr surasi, 1-3 oyatlar",
+      "content": "Fitrat pedagogikasi Alaq surasining «O'qi» amri bilan boshlanib, Nasr surasining «Rabbingga hamd ayt va Undan mag'firat so'ra» chaqirig'i bilan tugaydi.\n\nTarbiyadagi barcha yutuqlar — Allohning lutfi; sodir bo'lgan nuqsonlar esa o'z nafsimizdandir.\n\nHar bir ota-ona o'z ojizligini tan olib, kibrga berilmasdan, doimo Parvardigordan mag'firat so'rashi va farzandini Unga omonat topshirishi zarur.",
+      "highlight": "Tarbiyadagi har bir go'zal natija — Allohning lutfi, ojizliklar esa nafsimizdandir."
+    },
+    {
+      "screenIndex": 4,
+      "type": "quiz",
+      "title": "Kurs yakuniy imtihoni",
+      "quizQuestion": "Hazrati Alining 'Farzandlaringizni ular yashaydigan davr uchun tarbiyalang' degan so'zlari zamonaviy ota-onaga nimani o'rgatadi?",
+      "quizOptions": [
+        "O'tmishdagi eskirgan bosim uslublaridan voz kechib, bugungi zamon realligi va o'zgarishlarini anglagan holda tarbiya berish",
+        "Bolaga hamma narsani taqiqlab, faqat eski kitoblarni o'qitish",
+        "Bolani tarbiyalashdan butunlay voz kechish",
+        "Faqat zamonaviy kompyuter o'yinlarini o'ynatish"
+      ],
+      "correctOptionIndex": 0,
+      "quizExplanation": "To'g'ri! Davr o'zgardi; bugungi bolaga o'tmishdagi kaltak yoki quruq bosim emas, balki uning idrokiga mos zamonaviy, mehrli va hikmatli yondashuv kerak."
+    }
+  ]
+},
   {
     "courseSlug": "zamonaviy-tarbiya-va-talim-sirlari",
     "title": "Ta'lim va tarbiyaning farqi: «Nega?» savoli va rag'bat",
@@ -14884,8 +15064,71 @@ export const seedArticles = [
     "isPublished": true,
     "publishedAt": "2026-09-21T12:00:00.000Z"
   }
+,
+{
+  "title": "Fitrat pedagogikasi: Bola tabiati, ruhiy ehtiyojlar va ota-onalik chegaralari",
+  "slug": "fitrat-pedagogikasi-bola-tabiati-va-chegaralari",
+  "excerpt": "Xadicha Kubro Tongar: Bolalar dunyosining kaliti — o'yin, yig'i shifosi, ifor xotirasi, qardoshlararo hasad, yorliq xavfi va 4 yoshdan mahramiyat chegaralari.",
+  "content": "Fitrat pedagogikasi: Bola tabiati, ruhiy ehtiyojlar va ota-onalik chegaralari 5-dars || Xadicha Kubro\n1. Bolalar dunyosining kaliti — O‘yin (Ankabut, 64)\nYaratilishdagi yengillik mexanizmi: Go‘daklikdan voyaga yetguncha inson millionlab ko‘nikma va harakatlarni o‘zlashtirishi shart. Yaratuvchi bu uzoq va mashaqqatli yo‘lni bola uchun osonlashtirish maqsadida uning fitratiga o‘yin instinktini joylagan (Mavlono Rumiy: «O‘yin — bolani kamolotga tortuvchi ichki quvvatdir»).\n\nO‘yin — quruq ovunchoq emas: O‘yin orqali bola mushaklarini, muvozanatini boshqarishni, navbat kutishni, qoidalarga bo‘ysunishni, yutqazish va g‘alabani qabul qilishni o‘rganadi.\n\nIchki jarohatlar va og‘ir mavzular terapiyasi: Bola kattalardek mavhum tasallilar (masalan, «onang jannatda») orqali o‘zini ovuta olmaydi. U yaqinidan ayrilganda, oilada janjal ko‘rganda yoki birovdan g‘azablanganda buni o‘yiniga ko‘chiradi (mashinasini «o‘ldiradi», qo‘g‘irchog‘ini jazolaydi). O‘yin — bolaning o‘z ruhiy yarasini davolash vositasidir.\n\nNabaviy sunnat: Payg‘ambarimiz (s.a.v.) Oysha onamiz bilan yugurishda musobaqa qilganlar, nabiralariga o‘zlarini tuya qilib o‘ynatganlar va namozda bolalarning o‘yini buzilmasligi uchun sajdani uzaytirganlar. Bugungi virtual ekranlar esa bolani ushbu tabiiy jismoniy va ruhiy rivojlanishdan mahrum qilmoqda.\n\n2. “Qo‘yib bering, yig‘lasin!” — Ko‘z yoshi shifosi (Najm, 60)\nFitriy ehtiyoj: Yig‘lash — inson ruhiyatidagi bosimni pasaytiruvchi, Alloh taolo bergan tabiiy shifo mexanizmidir. Chaqaloq nafaqat ochlikdan, balki xavotirini chiqarish va ota-onasi yonida ekanini his qilish uchun ham yig‘laydi.\n\nKattalarning xatosi: Bolaning yig‘isiga duch kelganda unga «Nega yig‘layapsan?» deb tergov qilish (bola sababini tushuntirib berolmasligi mumkin), tahdid qilish yoki mantiqiy gaplar bilan ovozini o‘chirishga urinish uning hislarini bo‘g‘adi.\n\nIchga yutilgan yig‘i oqibatlari: Bostirilgan yig‘i va g‘am keyinchalik tajovuzkorlik, mushak spazmlari, uyqu va ishtaha buzilishiga aylanadi.\n\nYechim — hislarni qabul qilish: Bola yig‘laganda uning ko‘z darajasiga egilish, quchoqlash va «Seni tushunaman, mayli yig‘lab ol» deb uning his-tuyg‘usini tan olish kifoya. Shundan so‘ng bola ichidagi yukni to‘kib, xotirjam o‘yiniga qaytadi.\n\nErkaklik stereotipi: «Yigit kishi yig‘lamaydi», «latta bo‘lma» kabi so‘zlar bilan hislari o‘ldirilgan bolaning qalbi qotadi, keyinchalik sajdalari ham ko‘z yoshisiz quriydi. Haqiqiy kuch — tuyg‘ularini his qila olish va ulardan yengilmasdan o‘ta bilishdir.\n\n3. Ifor va bola xotirasi (Yusuf, 94)\nLimbik tizim va eng chuqur xotira: Yoqub (a.s.) o‘g‘li Yusufning ko‘ylagidan uning hidini tuyganlari kabi, hid inson xotirasidagi eng mustahkam bog‘lovchidir. Ko‘rish va eshitish tez unutiladi, lekin hid to‘g‘ridan-to‘g‘ri hissiyotlar va xotirani boshqaruvchi limbik tizimga boradi.\n\nOnaning hidi — birlamchi osoyishtalik: Chaqaloq onasining yuzi va ovozidan oldin uning hidini taniydi va uning bag‘rida tinchlanadi.\n\nIforlar vositasida xotira qoldirish: Ota-ona farzandining baxtli damlarini xushbo‘y iforlar bilan uyg‘unlashtirishi zarur: onaning pishirgan shirinligi, uyga sepilgan atir yoki issiq sho‘rvaning ifori bolaning ongida umr bo‘yi iliq oilaviy xotira va baxt tuyg‘usi bo‘lib muhrlanadi.\n\n4. Qardoshlararo hasad va uni yengish usullari (Moida, 30; Yusuf, 5)\nHasadning tub ildizi: Hobil-Qobil va Yusuf (a.s.) qissalarida bo‘lgani kabi, farzandlararo hasadning asosiy sababi — mehr, e’tibor yoki mavqeni boshqasiga boy berdim deb o‘ylashdir.\n\nKatta farzandga yangi maqom berish: Uyga yangi chaqaloq kelganda to‘ng‘ich bolani mahrumiyatga uchratmaslik kerak («U yoqqa bormaymiz, ukang uxlayapti», «Menga xalaqit berma, ukangga qarayapman» kabi gaplar ukasiga nisbatan nafrat uyg‘otadi). Aksincha, unga akalik/opalik sharafini his qildirish, ukasining parvarishiga sekin-asta jalb etish lozim.\n\nJismoniy yaqinlik: Katta farzand yangi chaqaloqqa qiziqsa, vahima qilib haydash o‘rniga, chaqaloq uxlayotgan paytda uning qo‘lchasini ushlashga, erkalashga ruxsat berish lozim.\n\nOta-onaning 5 daqiqalik qoidasi: Katta bolaga kun bo‘yi vaqt ajratish shart emas; u e’tibor so‘raganda ishlarni to‘xtatib, unga chin dildan 5 daqiqa to‘liq diqqat qaratish uning mehr tanqisligini qoplaydi.\n\nBolalar tortishuviga darhol hakamlik qilmaslik: Aka-ukalar o‘rtasidagi kichik kelishmovchiliklarga «Kim boshladi?» deb aralashmaslik, ularga muammoni o‘zlari hal qilishlari uchun imkon berish orqali hayotiy kurash ko‘nikmasini shakllantirish kerak.\n\n5. “Cho‘ntaklarimizdagi tamg‘alar” — Yorliq yopishtirish xavfi (Inson, 2)\nYorliqning xavfi: Inson miyasi murakkablikni osonlashtirish uchun hamma narsaga qolip yasaydi («qaynona-kelin kelisholmaydi», «u romantik emas»). Ota-ona ham bolasiga «o‘jar», «dangasa», «yaramas», «giperfaol» deb tamg‘a bossa, bola ongsiz ravishda o‘sha yorliqqa mos hayot kechira boshlaydi («Onam meni dangasa dedi, demak men shundayman»).\n\nSuvning xotirasi (Masaru Emoto tajribasi): Tanamizning 65%i suvdan iborat. Tajribalar suv salbiy va ijobiy so‘zlardan, hatto qog‘ozga yozilgan niyatlardan ham molekulyar darajada ta’sirlanishini ko‘rsatgan. Farzandga qaratilgan har bir yomon so‘z uning jismoniy va ruhiy tuzilishiga zahar kabi ta’sir qiladi.\n\nXalq donishmandligi: «Tentakni 40 kun tentak desang, tentak bo‘ladi». Hazrati Umarning: «Og‘zingizdan chiqqan so‘zni yashamaguningizcha o‘lmaysiz», — degan so‘zlari ota-onani faqat ezgu va ijobiy duo-iboralar aytishga undaydi.\n\n6. Oila ichidagi mahramiyat chegaralari (Nur, 58–59)\nMahramiyat — shaxsiy daxlsizlik: Odam (a.s.) va Havodan boshlangan bu buyruq insonning hayo va sha’nini asraydi. Bola ota-onaning mulki emas, alohida shaxsdir.\n\nJismoniy mustaqillikni hurmat qilish: Bolaning o‘rniga majburlab ovqat tiqmaslik, qavatma-qavat kiyintirmaslik; uni erkalash bahonasida istamasa ham o‘pmaslik, qitiqlamaslik. Bolaning «Yo‘q, tegmang» deyish huquqi hurmat qilinishi shart. Aks holda uning jismoniy chegarasi buziladi va u begonalarning tajovuziga qarshi tura olmaydigan bo‘lib qoladi.\n\n4 yoshdan boshlanadigan mahramiyat qoidalari:\n\nBolaning kiyimini birovlarning (hatto oilaning) ko‘z o‘ngida yechmaslik, alohida xonada yoki o‘zi kiyinishiga o‘rgatish.\n\nJinsiy a’zolariga hech kimning (hatto yaqin qarindoshlarning) teginishi, o‘pishi yoki hazillashishiga yo‘l qo‘ymaslik.\n\nCho‘miltirganda ham butunlay yalang‘och qilmay, ichki kiyim bilan qoldirish; ota-ona o‘zi ham bolaning oldida yalang‘och yurmasligi.\n\nHojatxona eshigini ochiq qoldirmaslik va hojat odobini o‘rgatish.\n\nXonaga kirishda ruxsat so‘rash (3 vaqt qoidasi): Balog‘atga yetmagan bolalar bomdoddan oldin, tushki kiyim yechiladigan paytda va xuftondan keyin ota-onaning xonasiga ruxsatsiz kirmasligi lozim (ko‘pi bilan 3 marta taqillatish). Balog‘atga yetgach esa doimiy ravishda eshik qoqib, izn so‘rab kirishi farzdir.\n\n7. “Bolaga emas, o‘z nafsingizga sabr qiling!” (Baqara, 153)\nHaqiqiy sabr nima? Sabr — bolaning tabiiy injiqligiga yoki gilamga sharbat to‘kkaniga chidash emas, o‘sha vaziyatda ota-onaning ichida qaynagan g‘azab va nafsiy tuyg‘ularga sabr qilishidir. Voqea shunchaki hodisa, uni sinovga aylantirgan narsa — bizning ichki munosabatimizdir.\n\nAbu Mahzura voqeasi (Nabaviy pedagogika namunasi):\n\nBir guruh yoshlar azonni masxara qiladi. Rasululloh (s.a.v.) ulardan azon aytgan bolani (Abu Mahzurani) chaqirtiradilar.\n\nU zot g‘azablanmaydilar, tanbeh bermaydilar, balki bolaning salbiy qilig‘iga emas, iste’dodiga urg‘u berib: «Ovozing juda shirali ekan, qani bir azon ayt-chi», — deydilar.\n\nBola uyalib, takrorlaydi. Shunda Payg‘ambarimiz (s.a.v.) unga pul hadya qiladilar, boshini silaydilar va duo qiladilar.\n\nNatijada, biroz oldin muqaddas azonni kamsitgan bola shu ondayoq islomga oshiq bo‘lib: «Yo Rasululloh, meni Ka’baga muazzin qilib tayinlang», — deb so‘raydi. U zot rozi bo‘ladilar.\n\nXulosa: Bolaning fitrati sofdir. Agar ota-ona o‘z nafsiy reflekslarini yengib, jazoga emas, ijobiy xulqqa e’tibor qaratsa va sabr ko‘rsatsa, xatoga yo‘l qo‘ygan bola ham qattiq jazo orqali emas, mehr va hikmat orqali komil inson bo‘lib yetishadi.",
+  "categorySlug": "tarbiya-asoslari",
+  "ageGroup": "0-2",
+  "readingTimeMinutes": 8,
+  "tags": [
+    "fitrat pedagogikasi",
+    "xadicha kubro tongar",
+    "oyin",
+    "yigi shifosi",
+    "mahramiyat",
+    "sabr"
+  ],
+  "seoTitle": "Fitrat pedagogikasi: Bola tabiati va ota-onalik chegaralari | Farzandly",
+  "seoDescription": "Xadicha Kubro Tongar — Fitrat pedagogikasi 5-dars: O'yin, ko'z yoshi terapiyasi, hasadni yengish va mahramiyat chegaralari.",
+  "isPremium": false,
+  "isPublished": true,
+  "publishedAt": "2026-09-21T14:00:00.000Z"
+},
+{
+  "title": "Fitrat pedagogikasi: Bola ruhiyati, ota-onalik mas’uliyati va ma’naviy tarbiya",
+  "slug": "fitrat-pedagogikasi-bola-ruhiyati-va-manaviy-tarbiya",
+  "excerpt": "Xadicha Kubro Tongar: Xatolarni berkitish (Sattorlik), bolalikni o'g'irlamaslik va «Oltin to'p» masali, shukr amali, duo maqomi va yolg'ondan saqlanish.",
+  "content": "6-dars || Xadicha Kubro:\n\nUshbu audio-transkript Xadicha Kubro Tongarning «Barkamol farzand tarbiyasi» asarining xatolarni berkitish (sattorlik), bolalik quvonchi, farzand ne’matining shukri, duo va qarg‘ish ta’siri hamda yolg‘ondan saqlanish odoblariga bag‘ishlangan boblarini o‘z ichiga oladi.\n\nQuyida barcha mavzular mantiqiy ketma-ketlikda, tahrirlangan va tizimli shaklda umumlashtirildi.\n\nFitrat pedagogikasi: Bola ruhiyati, ota-onalik mas’uliyati va ma’naviy tarbiya\n1. Farzandning xatolarini oshkor qilmaslik — Sattorlik fazilati (Humaza, 1)\nIlohiy sifatga ergashish: Inson tabiatan xatoga moyil. Alloh taolo bandalarining ayblarini yuziga solmay, «Sattor» (ayblarni berkituvchi) sifati bilan parda tortadi. Ota-onadan ham bolasining xatolarini el oldida fosh qilmaslik talab etiladi.\n\nXatoni yuzga solishning ruhiy zararlari: Bolaning har bir noo‘rin harakatini yuziga solish, kamsitish va tanbeh berish unda uchta og‘ir asoratni paydo qiladi:\n\nNuqsonlilik hissi;\n\nQadrsizlik hissi;\n\nSurunkali aybdorlik hissi.\n\nTasavvur va yolg‘on farqi: Maktabgacha yoshdagi bolalarda hayol va haqiqat chegarasi to‘liq shakllanmagan bo‘ladi. Hayolidagi voqeani haqiqat deb so‘zlab bergan bolani «yolg‘onchi»ga chiqarish uning tasavvur mexanizmini sindiradi va o‘ziga bo‘lgan ishonchini yo‘qotadi.\n\nNabaviy yechim (Hijolatdan asrash): Masjidda sahobalardan birining tahorati buzilganida, Rasululloh (s.a.v.) o‘sha sahobani alohida ajratib sharmanda qilmaslik uchun butun jamoatga: «Tahorat ustiga tahorat olish fazilatdir, kelinglar, barchamiz tahoratimizni yangilaymiz», — deya umumiy buyruq berganlar. Bolaning aybini tuzatishda ham uni hijolatga qo‘ymaydigan shunday nozik hikmat qo‘llanilishi lozim.\n\n2. Uyning go‘zal ziynati — Bolalikni o‘g‘irlamaslik (Kahf, 46)\nKattalashgan bola qolipi: Ota-onalar ko‘pincha xayolidagi «mukammal bola» obrazini bolaga majburlab tiqishtiradilar: yugurmasin, to‘polon qilmasin, kiyimini kirlatmasin, qimir etmay dars qilsin. Bu bolani bolalikdan mahrum qilish demakdir.\n\nBola o‘z tabiati bilan ziynatdir: Bola sakragan, to‘kkan, sindirgan, qiziqqan va savol bergan holatidagina boladir.\n\nOltin to‘p masali: Boy xonadon kambag‘al qo‘shnisining xonadonidagi doimiy qahqaha va shodlikka havas qilib, ularning «kichik oltin to‘pi» borligini eshitadi. Boy oltindan og‘ir to‘p yasatib, xotini bilan o‘ynaganda tanalari ko‘karib, jarohat oladi. Qo‘shni esa «oltin to‘p» deb erkalab, qo‘ldan qo‘lga olib o‘ynagan beg‘ubor farzandini nazarda tutgan edi. Bolaning borligi — charchoqni ketkazuvchi, xonadonga baraka va quvonch beruvchi oltin to‘pdir.\n\n«Bolasi bor kishi u bilan bolalashsin»: Rasululloh (s.a.v.) Hasan va Husayn bilan birga gilamda emaklab ulov bo‘lganlar, ularning kurashini kulib tomosha qilganlar, namozda yelkalariga chiqqanlarida tushirishga shoshilmaganlar.\n\n3. Farzand — Buyuk ne’mat va uning amaliy shukri (Fotiha, 1)\nNe’matga rozi bo‘lish: Farzand — tanlash imkoni berilmagan, Alloh o‘zi xohlagan fe’l-atvor va qiyofada taqdim etgan sovg‘adir. Qiz yoki o‘g‘il, faol yoki yuvosh bo‘lishidan shikoyat qilish sovg‘a beruvchi Zotga nisbatan noshukurlikdir.\n\nShukr — faqat tilda emas: Junayd Bag‘dodiy aytganlaridek: «Shukr — Alloh bergan ne’mat bilan Unga isyon qilmaslikdir».\n\nFarzand ne’matining shukri — uni kaltaklamaslik, so‘kmaslik, haqorat qilmaslik va Alloh rozi bo‘ladigan yo‘lda tarbiyalashdir.\n\nBolasiga tilida «shukur» deb, amalda unga zulm qilgan ota-ona berilgan ne’mat orqali imtihondan yiqiladi.\n\n4. Ota-onalik — Duo maqomidir (Furqon, 77)\nKelajak mavhumligi va tavakkul: Ota-ona qanchalik bilimli bo‘lmasin, bolaning 5 daqiqadan keyingi taqdirini bilmaydi. Kelajakni to‘liq nazorat qilishga urinish asabiy charchoq keltiradi. Yagona chora — bolani duolar panohiga topshirishdir.\n\nDuo — eng oliy rag‘bat: Moddiy mukofotlar (shirinlik, telefon, pul) vaqt o‘tishi bilan ichki motivatsiyani so‘ndiradi. Samimiy duo esa bolaning ruhini oziqlantiradi, onasining mehrini his qildiradi va uni yaxshi xulqqa undaydi.\n\nNabaviy va Qur’oniy duolar:\n\nRasululloh (s.a.v.) Anas ibn Molikka mol-mulk va serfarzandlik barakasini, Abdulloh ibn Abbosga esa hikmat va Qur’on ilmini so‘rab duo qilganlar.\n\nPayg‘ambarlarning (Ibrohim, Zakariyo, Imron xotini) duolari har bir ota-ona uchun namuna: doimo solih zurriyot, namozni to‘kis ado etuvchi avlod va ko‘z quvonchi so‘ralishi zarur.\n\nQarg‘ish va badduo halokati: Ota-onaning duosi mustajob bo‘lganidek, uning jahl ustida aytgan qarg‘ishi ham darhol urishi mumkin. «Oq sutimga rozi emasman» deyish bolaning ikki dunyosini xarob qiladi (onasi rozi bo‘lmagani uchun jon berolmay yotgan sahoba Alqama voqeasi).\n\n5. Yolg‘on — Ishonch binosini qulatuvchi ofat (Nahl, 105)\nMo‘min yolg‘on gapirmaydi: Hadisi sharifga ko‘ra, mo‘min turli xatolarga yo‘l qo‘yishi mumkin, ammo xiyonatkor va yolg‘onchi bo‘lmaydi.\n\nTarbiyadagi «oq yolg‘onlar» xatosi: Bolaga dars qildirish, ovqat yedirish yoki tinchlantirish uchun yolg‘on va’dalar berish («jim tursang, buni olib beraman» deb bermaslik, «uxlamasang, ukol qiladi» deb qo‘rqitish) katta gunohdir.\n\nRasululloh (s.a.v.) bolani chaqirib, qo‘lida hech narsa bo‘lmasa-da «kel, senga bir narsa beraman» deyishning o‘zini ham yolg‘on deb ataganlar.\n\nOta-onaga bo‘lgan ishonchning sinishi: Bolalar ota-onaning so‘zini mutlaq haqiqat deb biladi. Bir marta yolg‘on ustida tutilgan ota-ona bolaning nazdida butun dunyoga va hatto Yaratuvchiga bo‘lgan ishonchini yo‘qotishiga sabab bo‘ladi.\n\nBoladagi yolg‘onning ildizi: Agar bola yolg‘on gapirayotgan bo‘lsa, bu uning tabiatan buzuqligidan emas, balki:\n\nJazodan va qattiq g‘azabdan qochish;\n\nYetarlicha mehr va e’tibor qozonish uchun to‘qilgan himoya chorasidir.\n\nYechim: Boladan xatosiz bo‘lishni talab qilish emas, u xato qilganda ham to‘g‘risini aytsa jazolanmasligini biladigan xavfsiz va samimiy muhit yaratishdir.",
+  "categorySlug": "tarbiya-asoslari",
+  "ageGroup": "0-2",
+  "readingTimeMinutes": 7,
+  "tags": [
+    "fitrat pedagogikasi",
+    "sattorlik",
+    "oltin top",
+    "shukr",
+    "duo",
+    "yolgon"
+  ],
+  "seoTitle": "Fitrat pedagogikasi: Bola ruhiyati va ma'naviy tarbiya | Farzandly",
+  "seoDescription": "Xadicha Kubro Tongar — Fitrat pedagogikasi 6-dars: Sattorlik fazilati, Oltin to'p masali, ne'mat shukri va bolalikni o'g'irlamaslik.",
+  "isPremium": false,
+  "isPublished": true,
+  "publishedAt": "2026-09-21T14:10:00.000Z"
+},
+{
+  "title": "Fitrat pedagogikasi: Zamonaviy ota-onalik, ijtimoiy muhit va yakuniy xulosa",
+  "slug": "fitrat-pedagogikasi-zamonaviy-ota-onalik-va-yakuniy-xulosa",
+  "excerpt": "Xadicha Kubro Tongar: «Otalar dini» aqidasidan qutulish, onalikdagi rollar muvozanati, katta oila va Silai rahm zakovati hamda Nasr surasi shukri.",
+  "content": "7-dars (oxirgi) || Xadicha Kubro:\n\nFitrat pedagogikasi: Zamonaviy ota-onalik, ijtimoiy muhit va yakuniy xulosa\n1. Zamon bilan hamnafas tarbiya: «Otalar dini» aqidasidan qutulish (Moida, 104)\n«Otalar dini» qolipi: Johiliyat davrida odamlar haqiqat kelganda «Biz ota-bobolarimizdan shunday ko‘rganmiz» deb o‘jarlik qilgan. Tarbiyada ham ota-ona o‘z bilimi va ma’rifatini oshirmasa, o‘zining o‘tmishdagi eskirgan, qattiqqo‘l usullarini («Biz ham kaltak yeb katta bo‘lganmiz, hech narsa bo‘lganimiz yo‘q») bugungi bolaga majburlab tiqishtiradi.\n\nHazrati Alining mashhur o‘giti: «Farzandlaringizni o‘z davringiz haqiqatiga qarab emas, ular yashaydigan davr haqiqatiga qarab tarbiyalang. Zotan, ular boshqa bir zamon uchun yaratilgandirlar».\n\nDavr o‘zgarishlarini qabul qilish: So‘nggi 50 yilda nafaqat texnologiya (televizor, internet, smartfonlar), balki ijtimoiy-madaniy munosabatlar ham tubdan o‘zgardi.\n\nBolaga internetni butunlay taqiqlash emas, balki uni to‘g‘ri me’yorda ishlatishni o‘rgatish zarur.\n\nBolaga Qur’on va diniy ta’lim berishda ham bugungi avlodning o‘ynoqi, tezkor idrokiga mos qiziqarli, zamonaviy metodikalardan foydalanish lozim; uni eski davrning quruq bosim va tazyiq uslubiga majburlash fanga nisbatan nafrat uyg‘otadi.\n\nO‘tmish jarohatlaridan forig‘ bo‘lish: O‘z bolaligida xo‘rlangan, kaltaklangan yoki shaxsi tan olinmagan ota-onalar ulg‘aygach, «nihol egiladi» degan bahona bilan o‘sha zo‘ravonlikni o‘z bolasiga o‘tkazishga moyil bo‘ladi. Aslida vazifa niholni sindirib egish emas, balki boshini tik tutib o‘sishiga sharoit yaratishdir. Ota-ona o‘z bolalik yaralarini anglab, ularni davolashi va farzandini o‘tmish yukidan xoli tarbiyalashi lozim.\n\n2. Onalikdagi rollar muvozanati (Sharh, 7)\nOnalik — yagona rol emas: Ayol umri davomida nafaqat ona, balki farzand, opa-singil, rafiqa, kelin, xodim kabi o‘nlab rollarni bajaradi. Onalik maqomi kirib kelgach, u ko‘pincha boshqa barcha vazifalarni (ayniqsa rafiqalikni) chetga surib qo‘yadi.\n\n«Forig‘ bo‘lsang, boshqasiga kirish»: Qur’ondagi «Bo‘shaganingda (yangi ishga) kirishgin» amri inson qanday dam olishi kerakligini ko‘rsatadi. Insonni charchatadigan narsa faoliyatning ko‘pligi emas, balki doimo bir xil rolda (faqat bola parvarishida) qamalib qolishdir.\n\nAvlodlar o‘rtasidagi farq va zamonaviy yolg‘izlik:\n\nBirinchi va ikkinchi avlod (buvilarimiz va onalarimiz): Jismoniy mehnat ko‘p bo‘lgan, biroq mahalla, qarindosh-urug‘ va qo‘shnichilik rishtalari mustahkam bo‘lib, «bola butun mahallaniki» tamoyili ishlagan.\n\nBugungi avlod: Ko‘p qavatli uylarda, tor doirada qamalib qolgan onalar farzandi bilan 24/7 yolg‘iz qolmoqda. Haddan tashqari birga bo‘lish munosabatlarni toliqtiradi, natijada ota-ona bolaga faqat taqiq qo‘yadigan, g‘azab va baqiriq bilan boshqaradigan insonga aylanadi.\n\nYechim: Ona vaqt-vaqti bilan o‘z vazifalarini almashtirib turishi (ayollik, xotinlik, ijodiy yoki ijtimoiy rollarga o‘tishi), o‘ziga nafas rostlash uchun imkon berishi va atrofi bilan yana samimiy ijtimoiy aloqalarni tiklashi lozim.\n\n3. Katta oila va Silai rahm — Zakovat maktabi (Niso, 1)\nYakkalangan mikro-oila xavfi: Zamonaviy davrda shakllangan, bolani to‘rt devor ichida faqat ota-ona tarbiyalaydigan mikro-oilalar bolani ijtimoiy va intellektual jihatdan toliqtiradi.\n\nKo‘p qirrali rag‘bat va aql-zakovat: Bola bitta inson (ona) orqali to‘laqonli aqliy va hissiy rivojlana olmaydi. Chunki har bir onaning tabiati va sabri cheklangan. U har doim bir xil ohangda gapiradi, bir xil munosabat bildiradi; natijada bolaning miyasi bitta markazdan keladigan ogohlantirishlarga o‘rganib, rivojlanishdan to‘xtay boshlaydi.\n\nKatta oilaning pedagogik afzalliklari:\n\nKeng dunyoqarash: Bobo, buvi, amaki, xolalar bilan muloqot qilgan bola har xil temperament (bosiq, quvnoq, mantiqiy, his-tuyg‘uli) bilan tanishadi.\n\nXatoga turli munosabat: Bola xato qilganda atrofidagilarning turlicha (biri tushuntiradi, biri jilmayadi, biri e’tiroz bildiradi) reaksiyasini ko‘rib, hayotning rang-barangligini va o‘zini to‘g‘rilash yo‘llarini o‘rganadi.\n\nRuhiy suyanch: Bobo va buvilarning borligi oilada osoyishtalik va xotirjamlik poydevori bo‘lib, kelajak ildizlardan oziqlanishini ta’minlaydi.\n\n4. Yakun: «Nasr» surasi — Shukr, tavba va istig‘for\nO‘qishdan yordamgacha: Risola Alaq surasining «O‘qi» amri bilan boshlangan bo‘lsa, yakun Nasr surasining «Rabbingga hamd ayt va Undan mag‘firat so‘ra» chaqirig‘i bilan tugaydi.\n\nOta-onalikdagi tavba va tasbeh:\n\nIlmni bilish va unga amal qilish — musulmonning vazifasi, ammo bunga kuch-quvvat beradigan faqat Allohning yordami (nasr)dir.\n\nOta-onalik yo‘lida erishilgan har bir yutuq va yaxshilik — Allohning lutfi; sodir bo‘lgan barcha xato va nuqsonlar esa o‘z nafsimizdandir.\n\nNatija: Tarbiyada kibrga berilmaslik, o‘z ojizligini tan olgan holda doimo Parvardigordan istig‘for so‘rash, tavba eshigida turish va farzandlarni ikki dunyo saodati sari duolar bilan yo‘naltirish lozim.",
+  "categorySlug": "tarbiya-asoslari",
+  "ageGroup": "0-2",
+  "readingTimeMinutes": 7,
+  "tags": [
+    "fitrat pedagogikasi",
+    "zamonaviy ota-onalik",
+    "onalik rollari",
+    "katta oila",
+    "silai rahm",
+    "nasr surasi"
+  ],
+  "seoTitle": "Fitrat pedagogikasi: Zamonaviy ota-onalik va yakuniy xulosa | Farzandly",
+  "seoDescription": "Xadicha Kubro Tongar — Fitrat pedagogikasi 7-dars: Zamonaviy tarbiya, onalik muvozanati, katta oila afzalliklari va yakuniy xulosalar.",
+  "isPremium": false,
+  "isPublished": true,
+  "publishedAt": "2026-09-21T14:20:00.000Z"
+}
 ];
-
-// Merge content generated from content/farzand-tarbiyasi.txt (see build_extra_content.py)
-import { applyExtraContent } from './seedExtra.js';
-applyExtraContent({ courses: seedCourses, lessons: seedLessons, articles: seedArticles, paths: seedLearningPaths });
