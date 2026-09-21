@@ -1,0 +1,97 @@
+// en dictionary
+const en: Record<string, string> = {
+    // Nav
+    'nav.home': 'Home',
+    'nav.dashboard': 'Learning Path',
+    'nav.courses': 'Lessons',
+    'nav.articles': 'Articles',
+    'nav.premium': 'Premium',
+    'nav.login': 'Sign In',
+    'nav.logout': 'Sign Out',
+    'nav.profile': 'Profile',
+    'nav.academy': 'Parenting Academy',
+
+    // Stats
+    'stats.streak': 'Day streak',
+    'stats.xp': 'Total XP',
+
+    // Lesson player
+    'lesson.exit': 'Exit',
+    'lesson.back': 'Back',
+    'lesson.next': 'Next',
+    'lesson.check': 'Check Answer',
+    'lesson.correct': 'Correct Answer! 🎉',
+    'lesson.incorrect': 'Incorrect, please think again',
+    'lesson.retry': 'Try Again',
+    'lesson.finish': 'Finish Lesson',
+    'lesson.completed_title': 'MashaAllah! Lesson Completed!',
+    'lesson.completed_desc': 'You have successfully mastered this lesson and earned new parenting insights and XP points.',
+    'lesson.earned_xp': 'Earned XP',
+    'lesson.continue_learning': 'Return to Learning Path',
+    'lesson.video_btn': 'Watch Video',
+    'lesson.quote_source': 'Source',
+    'lesson.question': 'Question',
+    'lesson.select_answer': 'Select the correct option:',
+
+    // Courses
+    'courses.badge': 'Structured Curriculum',
+    'courses.title': 'Islamic Child Rearing Lessons',
+    'courses.subtitle': 'Structured interactive micro-courses covering lessons 1–55 tailored to your child\'s age.',
+    'courses.all_ages': 'All Ages',
+    'courses.free_badge': 'FREE CORE LESSONS',
+    'courses.premium_badge': 'PREMIUM CONTENT',
+    'courses.lessons_count': 'lessons',
+    'courses.duration': 'mins',
+    'courses.start_course': 'Start Lessons',
+    'courses.view_course': 'View Lessons',
+
+    // Dashboard
+    'dashboard.welcome': 'Assalamu Alaikum',
+    'dashboard.default_user': 'Dear Parent',
+    'dashboard.greeting_sub': 'Let us continue your parenting journey today.',
+    'dashboard.streak': 'Daily streak',
+    'dashboard.xp_earned': 'XP earned',
+    'dashboard.lessons_passed': 'Lessons completed',
+    'dashboard.today_main': 'TODAY\'S MAIN LESSON',
+    'dashboard.minutes': 'MINUTES',
+    'dashboard.start_today': 'Start Today\'s Lesson',
+    'dashboard.map_title': 'Your Learning Roadmap',
+    'dashboard.map_subtitle': 'Each completed lesson unlocks the next. Learn step by step.',
+    'dashboard.start_here': 'START HERE!',
+    'dashboard.xp_reward': 'XP REWARD',
+    'dashboard.lesson_outline': 'Lesson Outline:',
+    'dashboard.step_problem': 'Everyday real-life scenario',
+    'dashboard.step_psychology': 'Psychological & developmental insights',
+    'dashboard.step_wisdom': 'Hadith & Islamic wisdom',
+    'dashboard.step_practice': 'Actionable parent practice',
+    'dashboard.step_quiz': 'Interactive quiz',
+    'dashboard.close': 'Close',
+    'dashboard.start_lesson': 'Start Lesson',
+    'dashboard.all_lessons': 'All 55 Lessons',
+    'dashboard.age_label': 'years old',
+    'dashboard.continue_lesson': 'Continue Lesson',
+    'dashboard.learning_path': 'Parenting Learning Roadmap',
+    'dashboard.completed': 'Completed',
+    'dashboard.locked': 'Locked',
+    'dashboard.start': 'Start',
+
+    // Course Detail
+    'course_detail.all_courses': 'Lessons',
+    'course_detail.home': 'Home',
+    'course_detail.total': 'Total:',
+    'course_detail.start_from_1': 'Start from Lesson 1',
+    'course_detail.syllabus_title': 'Course Curriculum',
+    'course_detail.lesson_btn': 'Lesson',
+
+    // Footer
+    'footer.desc': 'Build a loving, confident, and resilient bond with your child grounded in timeless Islamic values and modern developmental wisdom.',
+    'footer.quick_links': 'Quick Links',
+    'footer.rights': 'All rights reserved.',
+    'footer.disclaimer': 'This platform is based on the 1–55 Islamic child rearing lectures by Abdulloh Domla.',
+    'pagination.prev': 'Previous',
+    'pagination.next': 'Next',
+    'pagination.page': 'Page',
+    'articles.empty': 'No articles found',
+};
+
+export default en;

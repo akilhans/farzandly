@@ -188,7 +188,7 @@ export default async function HomePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           <Link
-            href="/maqolalar/bola-gapga-quloq-solmasa"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">
@@ -206,7 +206,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/maqolalar/bolalarda-tantrum-va-injiqlik"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">
@@ -224,7 +224,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/maqolalar/bola-telefonni-tashlamasa"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">
@@ -242,7 +242,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/maqolalar/bolani-urmasdan-tarbiyalash"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">
@@ -260,7 +260,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/maqolalar/bolani-namozga-muhabbat-bilan-orgatish"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">
@@ -278,7 +278,7 @@ export default async function HomePage() {
           </Link>
 
           <Link
-            href="/maqolalar/3-yoshli-bola-tarbiyasi"
+            href=""
             className="card-farzandly p-6 group hover:border-emerald-500 transition-all"
           >
             <div className="flex items-center gap-3 mb-3">

@@ -1,0 +1,97 @@
+// uz dictionary
+const uz: Record<string, string> = {
+    // Nav
+    'nav.home': 'Asosiy',
+    'nav.dashboard': 'O‘quv yo‘li',
+    'nav.courses': 'Darslar',
+    'nav.articles': 'Maqolalar',
+    'nav.premium': 'Premium',
+    'nav.login': 'Kirish',
+    'nav.logout': 'Chiqish',
+    'nav.profile': 'Profil',
+    'nav.academy': 'Ota-ona akademiyasi',
+
+    // Stats
+    'stats.streak': 'Kunlik odat',
+    'stats.xp': 'To‘plangan XP',
+
+    // Lesson player
+    'lesson.exit': 'Chiqish',
+    'lesson.back': 'Ortga',
+    'lesson.next': 'Keyingisi',
+    'lesson.check': 'Tekshirish',
+    'lesson.correct': 'To‘g‘ri javob! 🎉',
+    'lesson.incorrect': 'Noto‘g‘ri, yana bir bor o‘ylab ko‘ring',
+    'lesson.retry': 'Qayta urinish',
+    'lesson.finish': 'Darsni yakunlash',
+    'lesson.completed_title': 'Mashalloh! Dars yakunlandi!',
+    'lesson.completed_desc': 'Siz ushbu darsni muvaffaqiyatli o‘rganib, yangi tarbiyaviy tajriba va XP ballarga ega bo‘ldingiz.',
+    'lesson.earned_xp': 'To‘plangan XP ball',
+    'lesson.continue_learning': 'O‘quv yo‘liga qaytish',
+    'lesson.video_btn': 'Videoni ko‘rish',
+    'lesson.quote_source': 'Manba',
+    'lesson.question': 'Savol',
+    'lesson.select_answer': 'To‘g‘ri javobni tanlang:',
+
+    // Courses
+    'courses.badge': 'Strukturali dasturlar',
+    'courses.title': 'Islomda farzand tarbiyasi darslari',
+    'courses.subtitle': '1-55 darslar bo‘yicha tartiblangan, bolaning yoshiga moslashtirilgan interaktiv darslar majmuasi.',
+    'courses.all_ages': 'Barcha yoshlar',
+    'courses.free_badge': 'BEPUL ASOSIY DARSLAR',
+    'courses.premium_badge': 'PREMIUM KONTENT',
+    'courses.lessons_count': 'ta dars',
+    'courses.duration': 'daqiqa',
+    'courses.start_course': 'Darslarni boshlash',
+    'courses.view_course': 'Darslarni ko‘rish',
+
+    // Dashboard
+    'dashboard.welcome': 'Assalomu alaykum',
+    'dashboard.default_user': 'Ota-ona',
+    'dashboard.greeting_sub': 'Bugun tarbiya yo‘lingizda davom etamiz.',
+    'dashboard.streak': 'Kunlik streak',
+    'dashboard.xp_earned': 'XP to‘plandi',
+    'dashboard.lessons_passed': 'Dars o‘tildi',
+    'dashboard.today_main': 'BUGUNGI ASOSIY DARS',
+    'dashboard.minutes': 'DAQIQA',
+    'dashboard.start_today': 'Bugungi darsni boshlash',
+    'dashboard.map_title': 'Sizning o‘quv xaritangiz',
+    'dashboard.map_subtitle': 'Har bir dars tugagach keyingisi ochiladi. Qadam-baqadam o‘rganing.',
+    'dashboard.start_here': 'BU YERDAN BOSHLANG!',
+    'dashboard.xp_reward': 'XP MUKOFOT',
+    'dashboard.lesson_outline': 'Dars mundarijasi:',
+    'dashboard.step_problem': 'Kundalik hayotiy muammo',
+    'dashboard.step_psychology': 'Psixologik tushuntirish',
+    'dashboard.step_wisdom': 'Hadisi sharif va Islomiy hikmat',
+    'dashboard.step_practice': 'Bugungi amaliy vazifa',
+    'dashboard.step_quiz': 'Mini-test',
+    'dashboard.close': 'Yopish',
+    'dashboard.start_lesson': 'Darsni boshlash',
+    'dashboard.all_lessons': 'Barcha 55 dars',
+    'dashboard.age_label': 'yosh',
+    'dashboard.continue_lesson': 'Darsni davom ettirish',
+    'dashboard.learning_path': 'Farzand tarbiyasi o‘quv yo‘li',
+    'dashboard.completed': 'Tamomlandi',
+    'dashboard.locked': 'Qulflangan',
+    'dashboard.start': 'Boshlash',
+
+    // Course Detail
+    'course_detail.all_courses': 'Darslar',
+    'course_detail.home': 'Asosiy',
+    'course_detail.total': 'Jami:',
+    'course_detail.start_from_1': '1-darsdan boshlash',
+    'course_detail.syllabus_title': 'Darslar ro‘yxati',
+    'course_detail.lesson_btn': 'Dars',
+
+    // Footer
+    'footer.desc': 'Zamonaviy ilm-fan va islomiy qadriyatlar asosida bolangiz bilan mehrli, ishonchli va mustahkam rishta o‘rnating.',
+    'footer.quick_links': 'Tezkor havolalar',
+    'footer.rights': 'Barcha huquqlar himoyalangan.',
+    'footer.disclaimer': 'Ushbu platforma Abdulloh Domlaning «Islomda farzand tarbiyasi» 1-55 darslari asosida tayyorlangan.',
+    'pagination.prev': 'Oldingi',
+    'pagination.next': 'Keyingi',
+    'pagination.page': 'Sahifa',
+    'articles.empty': 'Maqolalar topilmadi',
+};
+
+export default uz;

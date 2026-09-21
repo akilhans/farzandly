@@ -1,0 +1,97 @@
+// ru dictionary
+const ru: Record<string, string> = {
+    // Nav
+    'nav.home': 'Главная',
+    'nav.dashboard': 'Учебный путь',
+    'nav.courses': 'Уроки',
+    'nav.articles': 'Статьи',
+    'nav.premium': 'Премиум',
+    'nav.login': 'Войти',
+    'nav.logout': 'Выйти',
+    'nav.profile': 'Профиль',
+    'nav.academy': 'Академия родителей',
+
+    // Stats
+    'stats.streak': 'Дней подряд',
+    'stats.xp': 'Всего XP',
+
+    // Lesson player
+    'lesson.exit': 'Выход',
+    'lesson.back': 'Назад',
+    'lesson.next': 'Далее',
+    'lesson.check': 'Проверить',
+    'lesson.correct': 'Правильный ответ! 🎉',
+    'lesson.incorrect': 'Неверно, попробуйте еще раз',
+    'lesson.retry': 'Повторить',
+    'lesson.finish': 'Завершить урок',
+    'lesson.completed_title': 'МашаАллах! Урок завершен!',
+    'lesson.completed_desc': 'Вы успешно освоили этот урок, получив важные знания по воспитанию и баллы опыта XP.',
+    'lesson.earned_xp': 'Заработанные баллы XP',
+    'lesson.continue_learning': 'Вернуться к учебному пути',
+    'lesson.video_btn': 'Смотреть видео',
+    'lesson.quote_source': 'Источник',
+    'lesson.question': 'Вопрос',
+    'lesson.select_answer': 'Выберите правильный вариант ответа:',
+
+    // Courses
+    'courses.badge': 'Структурированная программа',
+    'courses.title': 'Уроки воспитания детей в Исламе',
+    'courses.subtitle': 'Комплекс интерактивных уроков по темам 1-55, адаптированных под возраст ребенка.',
+    'courses.all_ages': 'Все возрасты',
+    'courses.free_badge': 'БЕСПЛАТНЫЕ БАЗОВЫЕ УРОКИ',
+    'courses.premium_badge': 'ПРЕМИУМ КОНТЕНТ',
+    'courses.lessons_count': 'уроков',
+    'courses.duration': 'мин',
+    'courses.start_course': 'Начать уроки',
+    'courses.view_course': 'Открыть уроки',
+
+    // Dashboard
+    'dashboard.welcome': 'Ассаляму алейкум',
+    'dashboard.default_user': 'Родитель',
+    'dashboard.greeting_sub': 'Продолжаем ваш путь осознанного воспитания.',
+    'dashboard.streak': 'Дней подряд',
+    'dashboard.xp_earned': 'XP получено',
+    'dashboard.lessons_passed': 'Уроков пройдено',
+    'dashboard.today_main': 'ГЛАВНЫЙ УРОК ДНЯ',
+    'dashboard.minutes': 'МИНУТ',
+    'dashboard.start_today': 'Начать сегодняшний урок',
+    'dashboard.map_title': 'Ваша карта обучения',
+    'dashboard.map_subtitle': 'Каждый пройденный урок открывает следующий. Учитесь шаг за шагом.',
+    'dashboard.start_here': 'НАЧНИТЕ ЗДЕСЬ!',
+    'dashboard.xp_reward': 'XP НАГРАДА',
+    'dashboard.lesson_outline': 'Содержание урока:',
+    'dashboard.step_problem': 'Повседневная жизненная ситуация',
+    'dashboard.step_psychology': 'Психологическое объяснение',
+    'dashboard.step_wisdom': 'Хадисы и исламская мудрость',
+    'dashboard.step_practice': 'Практическое задание для родителей',
+    'dashboard.step_quiz': 'Мини-тест',
+    'dashboard.close': 'Закрыть',
+    'dashboard.start_lesson': 'Начать урок',
+    'dashboard.all_lessons': 'Все 55 уроков',
+    'dashboard.age_label': 'лет',
+    'dashboard.continue_lesson': 'Продолжить урок',
+    'dashboard.learning_path': 'Учебный маршрут воспитания',
+    'dashboard.completed': 'Завершено',
+    'dashboard.locked': 'Заблокировано',
+    'dashboard.start': 'Начать',
+
+    // Course Detail
+    'course_detail.all_courses': 'Уроки',
+    'course_detail.home': 'Главная',
+    'course_detail.total': 'Всего:',
+    'course_detail.start_from_1': 'Начать с 1-го урока',
+    'course_detail.syllabus_title': 'Список уроков курса',
+    'course_detail.lesson_btn': 'Урок',
+
+    // Footer
+    'footer.desc': 'Постройте доверительные, крепкие и любящие отношения с ребенком на основе исламских ценностей и современной психологии.',
+    'footer.quick_links': 'Быстрые ссылки',
+    'footer.rights': 'Все права защищены.',
+    'footer.disclaimer': 'Платформа создана на основе цикла из 55 уроков по воспитанию детей в Исламе Абдуллоха Домлы.',
+    'pagination.prev': 'Назад',
+    'pagination.next': 'Далее',
+    'pagination.page': 'Страница',
+    'articles.empty': 'Статьи не найдены',
+};
+
+export default ru;

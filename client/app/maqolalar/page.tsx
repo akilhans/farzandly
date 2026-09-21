@@ -3,22 +3,46 @@ import Link from 'next/link';
 import { BookOpen, Clock, Tag, ArrowRight, Baby, Crown } from 'lucide-react';
 import { api } from '@/lib/api';
 import SearchForm from '@/components/SearchForm';
+import Pagination, { EmptyArticles } from '@/components/Pagination';
+import type { Metadata } from 'next';
+
+const PAGE_SIZE = 9;
 
 interface MaqolalarProps {
-  searchParams: Promise<{ category?: string; ageGroup?: string; search?: string }>;
+  searchParams: Promise<{ category?: string; ageGroup?: string; search?: string; page?: string }>;
+}
+
+const parsePage = (raw?: string) => {
+  const n = parseInt(raw || '1', 10);
+  return Number.isFinite(n) && n > 0 ? n : 1;
+};
+
+export async function generateMetadata({ searchParams }: MaqolalarProps): Promise<Metadata> {
+  const params = await searchParams;
+  const page = parsePage(params.page);
+  // Filtered/searched views are duplicates of the main list — keep them out of the index
+  const filtered = Boolean(params.category || params.ageGroup || params.search);
+  return {
+    title: page > 1 ? `Tarbiya maqolalari — ${page}-sahifa` : 'Tarbiya maqolalari',
+    alternates: { canonical: page > 1 ? `/maqolalar?page=${page}` : '/maqolalar' },
+    ...(filtered ? { robots: { index: false, follow: true } } : {}),
+  };
 }
 
 export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
   const params = await searchParams;
-  const [articles, categories, ageGroups] = await Promise.all([
+  const [allArticles, categories] = await Promise.all([
     api.getArticles({
       category: params.category,
       ageGroup: params.ageGroup,
       search: params.search,
     }),
     api.getCategories(),
-    api.getAgeGroups(),
   ]);
+
+  const totalPages = Math.max(1, Math.ceil(allArticles.length / PAGE_SIZE));
+  const page = Math.min(parsePage(params.page), totalPages);
+  const articles = allArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
@@ -124,6 +148,17 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
           </article>
         ))}
       </div>
+
+      {articles.length === 0 && (
+        <EmptyArticles />
+      )}
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        basePath="/maqolalar"
+        params={{ category: params.category, ageGroup: params.ageGroup, search: params.search }}
+      />
     </div>
   );
 }
