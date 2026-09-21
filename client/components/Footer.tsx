@@ -138,6 +138,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/bolalar?tab=maqollar" className="hover:text-emerald-400 transition-colors">
+                  Odob va tarbiya maqollari
+                </Link>
+              </li>
+              <li>
                 <Link href="/maqolalar/bolani-urmasdan-tarbiyalash" className="hover:text-emerald-400 transition-colors">
                   <T k="footer.17" />
                 </Link>

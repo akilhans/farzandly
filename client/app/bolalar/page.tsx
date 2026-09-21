@@ -26,16 +26,18 @@ import {
   Flower2,
   GraduationCap,
   Volume2,
+  Quote,
 } from 'lucide-react';
-import { kidsTales, kidsPoems, kidsRiddles, Tale, Poem, Riddle } from '@/lib/kidsData';
+import { kidsTales, kidsPoems, kidsRiddles, kidsProverbs, Tale, Poem, Riddle, Proverb } from '@/lib/kidsData';
 import { useI18n } from '@/context/LanguageContext';
 import Pagination from '@/components/Pagination';
 
-type TabType = 'ertaklar' | 'sherlar' | 'topishmoqlar';
+type TabType = 'ertaklar' | 'sherlar' | 'topishmoqlar' | 'maqollar';
 
 const TALES_PAGE_SIZE = 6;
 const POEMS_PAGE_SIZE = 9;
 const RIDDLES_PAGE_SIZE = 6;
+const PROVERBS_PAGE_SIZE = 12;
 
 function BolalarContent() {
   const searchParams = useSearchParams();
@@ -48,7 +50,7 @@ function BolalarContent() {
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const [activeTab, setActiveTab] = useState<TabType>(
-    ['ertaklar', 'sherlar', 'topishmoqlar'].includes(tabParam) ? tabParam : 'ertaklar'
+    ['ertaklar', 'sherlar', 'topishmoqlar', 'maqollar'].includes(tabParam) ? tabParam : 'ertaklar'
   );
 
   // Sync tab with URL
@@ -183,6 +185,56 @@ function BolalarContent() {
     }
   };
 
+  // --- MAQOLLAR STATE ---
+  const [proverbCategory, setProverbCategory] = useState<string>(
+    activeTab === 'maqollar' ? categoryParam : 'all'
+  );
+  const [proverbSearch, setProverbSearch] = useState('');
+  const [copiedProverbId, setCopiedProverbId] = useState<string | null>(null);
+  const [randomProverbId, setRandomProverbId] = useState<string | null>(null);
+
+  const proverbCategories = [
+    { id: 'all', label: 'Barchasi', count: kidsProverbs.length },
+    { id: 'odob', label: 'Odob va axloq', count: kidsProverbs.filter((p) => p.category === 'odob').length },
+    { id: 'ota-ona', label: 'Ota-ona & Kattalar', count: kidsProverbs.filter((p) => p.category === 'ota-ona').length },
+    { id: 'tarbiya', label: 'Farzand tarbiyasi', count: kidsProverbs.filter((p) => p.category === 'tarbiya').length },
+    { id: 'muomala', label: 'Salom & Muomala', count: kidsProverbs.filter((p) => p.category === 'muomala').length },
+  ];
+
+  const filteredProverbs = useMemo(() => {
+    return kidsProverbs.filter((proverb) => {
+      const matchCat = proverbCategory === 'all' || proverb.category === proverbCategory;
+      if (!matchCat) return false;
+      if (!proverbSearch.trim()) return true;
+      const q = proverbSearch.toLowerCase();
+      return proverb.text.toLowerCase().includes(q);
+    });
+  }, [proverbCategory, proverbSearch]);
+
+  const totalProverbsPages = Math.max(1, Math.ceil(filteredProverbs.length / PROVERBS_PAGE_SIZE));
+  const proverbsPage = Math.min(page, totalProverbsPages);
+  const paginatedProverbs = filteredProverbs.slice(
+    (proverbsPage - 1) * PROVERBS_PAGE_SIZE,
+    proverbsPage * PROVERBS_PAGE_SIZE
+  );
+
+  const handleCopyProverb = (proverb: Proverb) => {
+    const text = `«${proverb.text}»\n\n— O‘zbek xalq maqoli (Farzandly.uz)`;
+    navigator.clipboard.writeText(text);
+    setCopiedProverbId(proverb.id);
+    setTimeout(() => setCopiedProverbId(null), 2000);
+  };
+
+  const handleRandomProverb = () => {
+    const randomIdx = Math.floor(Math.random() * kidsProverbs.length);
+    const chosen = kidsProverbs[randomIdx];
+    setRandomProverbId(chosen.id);
+    const el = document.getElementById(chosen.id);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  };
+
   // Close reader on Esc
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -265,6 +317,25 @@ function BolalarContent() {
                 }`}
               >
                 {kidsRiddles.length}
+              </span>
+            </button>
+
+            <button
+              onClick={() => setTab('maqollar')}
+              className={`px-5 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all ${
+                activeTab === 'maqollar'
+                  ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 ring-2 ring-emerald-600 ring-offset-2'
+                  : 'bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
+              }`}
+            >
+              <Quote className="w-4 h-4" />
+              <span>Maqollar</span>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-black ${
+                  activeTab === 'maqollar' ? 'bg-emerald-700 text-emerald-100' : 'bg-slate-100 text-slate-600'
+                }`}
+              >
+                {kidsProverbs.length}
               </span>
             </button>
           </div>
@@ -602,6 +673,169 @@ function BolalarContent() {
               totalPages={totalRiddlesPages}
               basePath="/bolalar"
               params={{ tab: 'topishmoqlar' }}
+            />
+          </div>
+        )}
+
+        {/* ================= TAB 4: MAQOLLAR ================= */}
+        {activeTab === 'maqollar' && (
+          <div className="space-y-8 animate-in fade-in duration-300">
+            {/* Category Pills & Controls */}
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+              {/* Category Pills */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-none">
+                {proverbCategories.map((cat) => {
+                  const isActive = proverbCategory === cat.id;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => {
+                        setProverbCategory(cat.id);
+                        router.replace(
+                          `/bolalar?tab=maqollar${cat.id !== 'all' ? `&category=${cat.id}` : ''}`,
+                          { scroll: false }
+                        );
+                      }}
+                      className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold whitespace-nowrap transition-all flex items-center gap-1.5 cursor-pointer ${
+                        isActive
+                          ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20'
+                          : 'bg-slate-100 text-slate-600 hover:bg-slate-200/80'
+                      }`}
+                    >
+                      <span>{cat.label}</span>
+                      <span
+                        className={`text-[10px] px-1.5 py-0.5 rounded-full font-black ${
+                          isActive ? 'bg-emerald-700 text-emerald-100' : 'bg-slate-200 text-slate-600'
+                        }`}
+                      >
+                        {cat.count}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Search & Random */}
+              <div className="flex items-center gap-2">
+                <div className="relative flex-1 sm:w-64">
+                  <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <input
+                    type="text"
+                    placeholder="Maqollardan qidirish..."
+                    value={proverbSearch}
+                    onChange={(e) => setProverbSearch(e.target.value)}
+                    className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                  />
+                  {proverbSearch && (
+                    <button
+                      onClick={() => setProverbSearch('')}
+                      className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+
+                <button
+                  onClick={handleRandomProverb}
+                  className="px-3.5 py-2 bg-amber-50 hover:bg-amber-100 text-amber-800 border border-amber-200 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all shrink-0 cursor-pointer"
+                  title="Tasodifiy maqol ko‘rish"
+                >
+                  <Shuffle className="w-4 h-4 text-amber-600" />
+                  <span className="hidden sm:inline">Tasodifiy</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Proverb Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {paginatedProverbs.map((proverb) => {
+                const isHighlighted = randomProverbId === proverb.id;
+                const isCopied = copiedProverbId === proverb.id;
+                return (
+                  <div
+                    key={proverb.id}
+                    id={proverb.id}
+                    className={`bg-white rounded-2xl p-6 flex flex-col justify-between border transition-all duration-200 group ${
+                      isHighlighted
+                        ? 'border-amber-400 ring-4 ring-amber-300/40 shadow-lg scale-[1.02]'
+                        : 'border-slate-200/90 hover:border-emerald-500 hover:shadow-md'
+                    }`}
+                  >
+                    <div>
+                      {/* Header */}
+                      <div className="flex items-center justify-between gap-2 mb-4">
+                        <span className="text-xs font-black text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-lg">
+                          #{proverb.number} maqol
+                        </span>
+                        <span className="text-[11px] font-bold text-slate-400">
+                          {proverb.category === 'muomala'
+                            ? 'Salom & Muomala'
+                            : proverb.category === 'ota-ona'
+                            ? 'Ota-ona & Kattalar'
+                            : proverb.category === 'tarbiya'
+                            ? 'Farzand tarbiyasi'
+                            : 'Odob va axloq'}
+                        </span>
+                      </div>
+
+                      {/* Proverb Text */}
+                      <div className="flex items-start gap-3 py-1">
+                        <Quote className="w-6 h-6 text-emerald-300 shrink-0 mt-0.5" />
+                        <p className="text-base sm:text-lg font-bold text-slate-800 leading-snug">
+                          {proverb.text}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Footer actions */}
+                    <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400">
+                      <span>O‘zbek xalq maqoli</span>
+                      <button
+                        onClick={() => handleCopyProverb(proverb)}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer ${
+                          isCopied
+                            ? 'bg-emerald-600 text-white'
+                            : 'bg-slate-100 hover:bg-emerald-50 hover:text-emerald-700 text-slate-600'
+                        }`}
+                        title="Maqoldan nusxa olish"
+                      >
+                        {isCopied ? (
+                          <>
+                            <Check className="w-3.5 h-3.5" />
+                            <span>Nusxalandi</span>
+                          </>
+                        ) : (
+                          <>
+                            <Copy className="w-3.5 h-3.5" />
+                            <span>Nusxa olish</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Empty state */}
+            {filteredProverbs.length === 0 && (
+              <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/90 text-slate-500">
+                <Quote className="w-10 h-10 text-slate-300 mx-auto mb-3" />
+                <p className="font-bold text-base">Hech qanday maqol topilmadi</p>
+                <p className="text-xs mt-1">Boshqa so‘z yoki toifa tanlab ko‘ring.</p>
+              </div>
+            )}
+
+            {/* Pagination */}
+            <Pagination
+              page={proverbsPage}
+              totalPages={totalProverbsPages}
+              basePath="/bolalar"
+              params={{
+                tab: 'maqollar',
+                ...(proverbCategory !== 'all' ? { category: proverbCategory } : {}),
+              }}
             />
           </div>
         )}

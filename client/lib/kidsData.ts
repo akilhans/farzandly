@@ -1093,3 +1093,547 @@ export const kidsRiddles: Riddle[] = [
     "category": "hayvonlar"
   }
 ];
+
+export interface Proverb {
+  id: string;
+  number: number;
+  text: string;
+  category: 'odob' | 'ota-ona' | 'tarbiya' | 'muomala';
+}
+
+export const kidsProverbs: Proverb[] = [
+  {
+    "id": "maqol-1",
+    "number": 1,
+    "text": "Avval salom, bad'az kalom.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-2",
+    "number": 2,
+    "text": "Amri padar — arshdan a'lo.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-3",
+    "number": 3,
+    "text": "Bir kattani bil, bir kichikni bil.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-4",
+    "number": 4,
+    "text": "Bola — aziz, odobi undan aziz.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-5",
+    "number": 5,
+    "text": "Bolaning erkasi — bitning sirkasi.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-6",
+    "number": 6,
+    "text": "Bosh bo'lmagan uyda, otasi turib o'g'li so'zlar.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-7",
+    "number": 7,
+    "text": "Yolg'iz bolaga indamasang, ko'payar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-8",
+    "number": 8,
+    "text": "Inson — odobi bilan, osmon — oftobi bilan.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-9",
+    "number": 9,
+    "text": "Kattaga katta bo'l, kichikka — kichik.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-10",
+    "number": 10,
+    "text": "Kattaga salom ber, kichikka — kalom.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-11",
+    "number": 11,
+    "text": "Kattada izzat yo'q, kichikda xizmat yo'q.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-12",
+    "number": 12,
+    "text": "Katta izzatda — kichik xizmatda.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-13",
+    "number": 13,
+    "text": "Kattani katta desang, o'zidan ketar, kichikni katta desang, kattaga yetar.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-14",
+    "number": 14,
+    "text": "Kattaning uyalgisi kelsa, kichikka tegar.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-15",
+    "number": 15,
+    "text": "Kattaning hurmati — qarz, kichikka salom — farz.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-16",
+    "number": 16,
+    "text": "Ko'p o'ynagan bola, el ko'zida ola.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-17",
+    "number": 17,
+    "text": "Odob bozorda sotilmas.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-18",
+    "number": 18,
+    "text": "Odob — kishining zeb-u ziynati.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-19",
+    "number": 19,
+    "text": "Odob — oltindan qimmat.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-20",
+    "number": 20,
+    "text": "Odob — peshada, gunoh — teshada.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-21",
+    "number": 21,
+    "text": "Odobli bola elga manzur.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-22",
+    "number": 22,
+    "text": "Odobli kelinning supurgisi xashak ostida turar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-23",
+    "number": 23,
+    "text": "Odobli o'g'il — ko'kdagi yulduz, odobli qiz — yoqadagi qunduz.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-24",
+    "number": 24,
+    "text": "Odoblilik belgisi — eshilib salom bergani, yaqinlikning belgisi — kelib-ketib turgani.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-25",
+    "number": 25,
+    "text": "Odobni beodobdan o'rgan.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-26",
+    "number": 26,
+    "text": "Odobning boshi — til.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-27",
+    "number": 27,
+    "text": "Odobsiz betga chopar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-28",
+    "number": 28,
+    "text": "Oltin olmay, odob ol, odob oltin emasmi.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-29",
+    "number": 29,
+    "text": "Onangga boshingni xam qil, otangga gapingni kam qil.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-30",
+    "number": 30,
+    "text": "Onasi maqtagan qizni olma, yangasi maqtagan qizdan qolma.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-31",
+    "number": 31,
+    "text": "Ota bo'lish oson, odob berish qiyin.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-32",
+    "number": 32,
+    "text": "Ota oldida kek urma, odobingga chek urma.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-33",
+    "number": 33,
+    "text": "Ota oldidan o'tma, odob oldidan ketma.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-34",
+    "number": 34,
+    "text": "Otang bolasi bo'lma, odam bolasi bo'l.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-35",
+    "number": 35,
+    "text": "Otang ta'zirini olmay desang, odam ta'sirini ol.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-36",
+    "number": 36,
+    "text": "Otasi tentakning biri — tentak, onasi tentakning bari — tentak.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-37",
+    "number": 37,
+    "text": "Osh kattadan, suv kichikdan.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-38",
+    "number": 38,
+    "text": "Osh kelsa, yegin, so'z kelsa, degin.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-39",
+    "number": 39,
+    "text": "Og'ani ko'rib ini o'sar, opani ko'rib — singil.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-40",
+    "number": 40,
+    "text": "Payg'ambar qizi bo'lma, otang qizi bo'l.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-41",
+    "number": 41,
+    "text": "Rahm yema yetimga, yetim urar betingga.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-42",
+    "number": 42,
+    "text": "Sadaqasiga qarab — savobi, so'ziga qarab — javobi.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-43",
+    "number": 43,
+    "text": "Salom — kattadan, alif — nuqtadan.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-44",
+    "number": 44,
+    "text": "Salom ham — farz, alik ham — farz.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-45",
+    "number": 45,
+    "text": "Suvga tupurgan — koski, quduqqa tupurgan — kofir.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-46",
+    "number": 46,
+    "text": "So'z kishining — o'zagi, odob kishining — bezagi.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-47",
+    "number": 47,
+    "text": "Tegirmonni suv buzar, odamni odam buzar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-48",
+    "number": 48,
+    "text": "Tek turganga shayton tayoq tutqazar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-49",
+    "number": 49,
+    "text": "Turqi buzuqdan xulqi buzuq yomon.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-50",
+    "number": 50,
+    "text": "Urug'ingga so'z aytsang, orasini uzib ayt. Otang ishga buyursa, namozingni buzib ayt.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-51",
+    "number": 51,
+    "text": "Usta borida qo'lingni tiy, ustod borida — tilingni.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-52",
+    "number": 52,
+    "text": "Usta bo'lsang, ustozingni unutma.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-53",
+    "number": 53,
+    "text": "Ustozingga tik qarasang, to'zasan, hurmat qilsang, asta-asta o'zasan.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-54",
+    "number": 54,
+    "text": "Chakki yursang, dakki yersan.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-55",
+    "number": 55,
+    "text": "Cho'ponni tayog'idan bil, kelinni — oyog'idan.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-56",
+    "number": 56,
+    "text": "Shalp yursang, shapaki yersan.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-57",
+    "number": 57,
+    "text": "Shamolimni so'kma, tuzimni yerga to'kma.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-58",
+    "number": 58,
+    "text": "Shapaloq bilan yuz qizarar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-59",
+    "number": 59,
+    "text": "Eshik ochiq bo'lsa ham, so'rab kir.",
+    "category": "muomala"
+  },
+  {
+    "id": "maqol-60",
+    "number": 60,
+    "text": "Yaxshi bola yog' keltirar, yomon bola dog' keltirar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-61",
+    "number": 61,
+    "text": "Yaxshi bola nom keltirar, yomon bola g'am keltirar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-62",
+    "number": 62,
+    "text": "Yaxshi bola — otaga quvvat, yomon bola — uqubat.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-63",
+    "number": 63,
+    "text": "Yaxshi bola — suyuk, yomon bola — kuyuk.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-64",
+    "number": 64,
+    "text": "Yaxshi bola — to'rga tortar, yomon bola — go'rga.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-65",
+    "number": 65,
+    "text": "Yaxshi bola shon keltirar, yomon bola qon keltirar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-66",
+    "number": 66,
+    "text": "Yaxshi boladan rahmat, yomon boladan — la'nat.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-67",
+    "number": 67,
+    "text": "Yaxshi xulq — kishining husni.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-68",
+    "number": 68,
+    "text": "Yaxshi yaroqsiz bo'lar, yomon — quloqsiz.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-69",
+    "number": 69,
+    "text": "Yaxshi qiz erta turib, soch tarar, yomon qiz erta turib, non so'rar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-70",
+    "number": 70,
+    "text": "O'ynoqi qo'zi oyna sindirar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-71",
+    "number": 71,
+    "text": "O'ynoqi buzoq o't bosar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-72",
+    "number": 72,
+    "text": "O'rinsiz qiliqdan o'rinli yumruq yaxshi.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-73",
+    "number": 73,
+    "text": "O'g'ilga o'g'il bo'lmasang, uviq tegar boshingga. Kelinga kelin bo'lmasang, kelisop tegar boshingga.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-74",
+    "number": 74,
+    "text": "O'g'irlik osh badanga yuqmas, yomon bola ota-onaga boqmas.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-75",
+    "number": 75,
+    "text": "Qaynanalik kelin — qarqara kelin, qaynanasiz kelin — masxara kelin.",
+    "category": "ota-ona"
+  },
+  {
+    "id": "maqol-76",
+    "number": 76,
+    "text": "Qiz bola uyda yaxshi, er bola elda yaxshi.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-77",
+    "number": 77,
+    "text": "Qizim uyda, qilig'i tuzda.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-78",
+    "number": 78,
+    "text": "Qizni erkalatsang, erningga tepar, o'g'ilni erkalatsang, burningga tepar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-79",
+    "number": 79,
+    "text": "Qizning erkasi — echkining serkasi.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-80",
+    "number": 80,
+    "text": "Qizining qilig'i ko'chada bilinar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-81",
+    "number": 81,
+    "text": "Qobil farzand — jonga payvand.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-82",
+    "number": 82,
+    "text": "Qobil o'g'il otga mindirar, noqobil — otdan tushirar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-83",
+    "number": 83,
+    "text": "Qobil o'g'il rohat keltirar, noqobil o'g'il — mehnat.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-84",
+    "number": 84,
+    "text": "Qovun qovundan rang olar.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-85",
+    "number": 85,
+    "text": "Qo'yni — serka, o'yinni erka boshlar.",
+    "category": "tarbiya"
+  },
+  {
+    "id": "maqol-86",
+    "number": 86,
+    "text": "Hay-hay sening yurishing, bordir sening bir ishing.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-87",
+    "number": 87,
+    "text": "Husn xulqi bilan chiroyli.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-88",
+    "number": 88,
+    "text": "Husn husn emas, odob husn.",
+    "category": "odob"
+  },
+  {
+    "id": "maqol-89",
+    "number": 89,
+    "text": "Ho'l yog'ochni egmagin, tegmaganga tegmagin.",
+    "category": "odob"
+  }
+];
