@@ -29,8 +29,13 @@ import {
 } from 'lucide-react';
 import { kidsTales, kidsPoems, kidsRiddles, Tale, Poem, Riddle } from '@/lib/kidsData';
 import { useI18n } from '@/context/LanguageContext';
+import Pagination from '@/components/Pagination';
 
 type TabType = 'ertaklar' | 'sherlar' | 'topishmoqlar';
+
+const TALES_PAGE_SIZE = 6;
+const POEMS_PAGE_SIZE = 9;
+const RIDDLES_PAGE_SIZE = 6;
 
 function BolalarContent() {
   const searchParams = useSearchParams();
@@ -38,6 +43,10 @@ function BolalarContent() {
   const { t } = useI18n();
 
   const tabParam = (searchParams.get('tab') as TabType) || 'ertaklar';
+  const categoryParam = searchParams.get('category') || 'all';
+  const rawPage = parseInt(searchParams.get('page') || '1', 10);
+  const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+
   const [activeTab, setActiveTab] = useState<TabType>(
     ['ertaklar', 'sherlar', 'topishmoqlar'].includes(tabParam) ? tabParam : 'ertaklar'
   );
@@ -65,6 +74,11 @@ function BolalarContent() {
         (t.moral && t.moral.toLowerCase().includes(q))
     );
   }, [taleSearch]);
+
+  // Tales pagination
+  const totalTalesPages = Math.max(1, Math.ceil(filteredTales.length / TALES_PAGE_SIZE));
+  const talesPage = Math.min(page, totalTalesPages);
+  const paginatedTales = filteredTales.slice((talesPage - 1) * TALES_PAGE_SIZE, talesPage * TALES_PAGE_SIZE);
 
   const handleCopyTale = (tale: Tale) => {
     const text = `${tale.title}\n\n${tale.paragraphs.join('\n\n')}${
@@ -96,7 +110,7 @@ function BolalarContent() {
   };
 
   // --- SHE'RLAR STATE ---
-  const [poemCategory, setPoemCategory] = useState<string>('all');
+  const [poemCategory, setPoemCategory] = useState<string>(categoryParam);
   const [poemSearch, setPoemSearch] = useState('');
   const [copiedPoemId, setCopiedPoemId] = useState<string | null>(null);
 
@@ -124,6 +138,11 @@ function BolalarContent() {
     });
   }, [poemCategory, poemSearch]);
 
+  // Poems pagination
+  const totalPoemsPages = Math.max(1, Math.ceil(filteredPoems.length / POEMS_PAGE_SIZE));
+  const poemsPage = Math.min(page, totalPoemsPages);
+  const paginatedPoems = filteredPoems.slice((poemsPage - 1) * POEMS_PAGE_SIZE, poemsPage * POEMS_PAGE_SIZE);
+
   const handleCopyPoem = (poem: Poem) => {
     const text = `${poem.title}\n${poem.lines.join('\n')}\n\nMuallif: ${poem.author}\n— Farzandly.uz`;
     navigator.clipboard.writeText(text);
@@ -134,6 +153,11 @@ function BolalarContent() {
   // --- TOPISHMOQLAR STATE ---
   const [revealedRiddles, setRevealedRiddles] = useState<Record<string, boolean>>({});
   const [randomRiddleId, setRandomRiddleId] = useState<string | null>(null);
+
+  // Riddles pagination
+  const totalRiddlesPages = Math.max(1, Math.ceil(kidsRiddles.length / RIDDLES_PAGE_SIZE));
+  const riddlesPage = Math.min(page, totalRiddlesPages);
+  const paginatedRiddles = kidsRiddles.slice((riddlesPage - 1) * RIDDLES_PAGE_SIZE, riddlesPage * RIDDLES_PAGE_SIZE);
 
   const toggleRiddle = (id: string) => {
     setRevealedRiddles((prev) => ({ ...prev, [id]: !prev[id] }));
@@ -271,7 +295,7 @@ function BolalarContent() {
 
             {/* Tales Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTales.map((tale) => (
+              {paginatedTales.map((tale) => (
                 <div
                   key={tale.id}
                   className="bg-white rounded-2xl border border-slate-200/90 p-6 flex flex-col justify-between hover:border-emerald-500 hover:shadow-md hover:-translate-y-1 transition-all duration-200 group"
@@ -331,6 +355,13 @@ function BolalarContent() {
                 <p className="text-xs mt-1">Boshqa so‘z bilan qidirib ko‘ring.</p>
               </div>
             )}
+
+            <Pagination
+              page={talesPage}
+              totalPages={totalTalesPages}
+              basePath="/bolalar"
+              params={{ tab: 'ertaklar' }}
+            />
           </div>
         )}
 
@@ -386,7 +417,7 @@ function BolalarContent() {
 
             {/* Poems Masonry / Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredPoems.map((poem) => (
+              {paginatedPoems.map((poem) => (
                 <div
                   key={poem.id}
                   className="bg-white rounded-2xl border border-slate-200/90 p-6 flex flex-col justify-between hover:border-emerald-400 hover:shadow-sm transition-all group"
@@ -444,6 +475,13 @@ function BolalarContent() {
                 <p className="text-xs mt-1">Boshqa so‘z yoki kategoriya tanlang.</p>
               </div>
             )}
+
+            <Pagination
+              page={poemsPage}
+              totalPages={totalPoemsPages}
+              basePath="/bolalar"
+              params={{ tab: 'sherlar', ...(poemCategory !== 'all' ? { category: poemCategory } : {}) }}
+            />
           </div>
         )}
 
@@ -497,7 +535,7 @@ function BolalarContent() {
 
             {/* Riddles Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {kidsRiddles.map((riddle) => {
+              {paginatedRiddles.map((riddle) => {
                 const isRevealed = Boolean(revealedRiddles[riddle.id]);
                 const isHighlighted = randomRiddleId === riddle.id;
                 return (
@@ -558,6 +596,13 @@ function BolalarContent() {
                 );
               })}
             </div>
+
+            <Pagination
+              page={riddlesPage}
+              totalPages={totalRiddlesPages}
+              basePath="/bolalar"
+              params={{ tab: 'topishmoqlar' }}
+            />
           </div>
         )}
       </div>
