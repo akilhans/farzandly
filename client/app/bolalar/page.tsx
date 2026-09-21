@@ -18,6 +18,7 @@ import {
   Eye,
   EyeOff,
   Shuffle,
+  Baby,
   Smile,
   Sun,
   CloudRain,
@@ -100,7 +101,7 @@ function BolalarContent() {
   const [copiedPoemId, setCopiedPoemId] = useState<string | null>(null);
 
   const poemCategories = [
-    { id: 'all', label: 'Barchasi', icon: Sparkles, count: kidsPoems.length },
+    { id: 'all', label: 'Barchasi', icon: BookOpen, count: kidsPoems.length },
     { id: 'bahor', label: 'Bahor', icon: Flower2, count: kidsPoems.filter((p) => p.category === 'bahor').length },
     { id: 'yoz', label: 'Yoz', icon: Sun, count: kidsPoems.filter((p) => p.category === 'yoz').length },
     { id: 'kuz', label: 'Kuz', icon: CloudRain, count: kidsPoems.filter((p) => p.category === 'kuz').length },
@@ -173,7 +174,7 @@ function BolalarContent() {
       <div className="bg-white border-b border-slate-200/80">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 text-center">
           <div className="inline-flex items-center gap-2 bg-emerald-50 border border-emerald-200 text-emerald-700 px-3.5 py-1 rounded-full text-xs font-bold uppercase tracking-wider mb-4">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Baby className="w-3.5 h-3.5" />
             <span>Bolalar va Ota-onalar uchun</span>
           </div>
           <h1 className="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">

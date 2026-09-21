@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass, Sparkles } from 'lucide-react';
+import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass, Baby } from 'lucide-react';
 import { START_LESSON_HREF } from '@/lib/site';
 import { T } from '@/components/T';
 
@@ -106,7 +106,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/bolalar" className="hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-1.5 text-emerald-400">
-                  <Sparkles className="w-3.5 h-3.5" />
+                  <Baby className="w-3.5 h-3.5" />
                   <span>Bolalar olami (Ertak & She’rlar)</span>
                 </Link>
               </li>

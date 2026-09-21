@@ -327,7 +327,7 @@ export default async function HomePage() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-emerald-100 pb-6">
             <div className="space-y-2">
               <div className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider">
-                <Sparkles className="w-3.5 h-3.5" />
+                <Baby className="w-3.5 h-3.5" />
                 <span>Yangi bo‘lim</span>
               </div>
               <h2 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">

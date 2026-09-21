@@ -22,7 +22,7 @@ import {
   ChevronDown,
   Globe,
   Search,
-  Sparkles,
+  Baby,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n, Language } from '@/context/LanguageContext';
@@ -51,7 +51,7 @@ export function Navbar() {
     { href: '/dashboard', label: t('nav.dashboard'), icon: Compass },
     { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
-    { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Sparkles },
+    { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Baby },
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
 
@@ -59,7 +59,7 @@ export function Navbar() {
     { href: '/dashboard', label: t('nav.dashboard'), icon: Compass },
     { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
-    { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Sparkles },
+    { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Baby },
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
 
