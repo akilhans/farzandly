@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass } from 'lucide-react';
+import { START_LESSON_HREF } from '@/lib/site';
 
 export function Footer() {
   return (
@@ -74,7 +75,7 @@ export function Footer() {
             </p>
             <div className="pt-2">
               <Link
-                href="/onboarding"
+                href={START_LESSON_HREF}
                 className="btn-primary text-sm px-5 py-2.5 inline-flex items-center gap-2"
               >
                 <span>Tarbiyani boshlash</span>
@@ -93,8 +94,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/kurslar" className="hover:text-emerald-400 transition-colors">
-                  Barcha kurslar
+                <Link href="/darslar" className="hover:text-emerald-400 transition-colors">
+                  Barcha darslar
                 </Link>
               </li>
               <li>

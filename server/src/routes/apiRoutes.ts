@@ -19,6 +19,9 @@ apiRouter.get('/age-groups', ApiController.getAgeGroups);
 apiRouter.get('/articles', ApiController.getArticles);
 apiRouter.get('/articles/:slug', ApiController.getArticleBySlug);
 
+// Search
+apiRouter.get('/search', ApiController.search);
+
 // Courses
 apiRouter.get('/courses', ApiController.getCourses);
 apiRouter.get('/courses/:slug', ApiController.getCourseBySlug);

@@ -133,57 +133,84 @@ export class TelegramBotEngine {
     return this.callApi('deleteWebhook');
   }
 
-  /**
-   * Standard persistent Reply Keyboard for Telegram app
-   */
+  // ---------------------------------------------------------------------------
+  // Helpers
+  // ---------------------------------------------------------------------------
+
+  private static esc(value: unknown): string {
+    return String(value ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  private static truncate(value: string, max: number): string {
+    return value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value;
+  }
+
+  /** Same gating rule as the platform: premium content requires an active premium account. */
+  private static isPremiumUser(user: any): boolean {
+    if (!user?.isPremium) return false;
+    if (user.premiumExpiresAt && new Date(user.premiumExpiresAt).getTime() < Date.now()) return false;
+    return true;
+  }
+
+  private static async getUser(from: any) {
+    try {
+      return await DataService.getUserByIdOrTelegram(String(from.id));
+    } catch {
+      return null;
+    }
+  }
+
+  private static premiumButton() {
+    return { text: '👑 Premiumni platformada faollashtirish', url: `${this.getClientUrl()}/premium` };
+  }
+
+  /** Telegram messages are capped at 4096 chars — split on block boundaries. */
+  private static chunkBlocks(blocks: string[], limit = 3800): string[] {
+    const chunks: string[] = [];
+    let current = '';
+    for (const block of blocks) {
+      if (current && current.length + block.length + 2 > limit) {
+        chunks.push(current);
+        current = block;
+      } else {
+        current = current ? `${current}\n\n${block}` : block;
+      }
+    }
+    if (current) chunks.push(current);
+    return chunks;
+  }
+
   private static getMainReplyKeyboard() {
     const clientUrl = this.getClientUrl();
     return {
       keyboard: [
-        [
-          {
-            text: '🌿 Farzandly platformasini ochish',
-            web_app: { url: clientUrl },
-          },
-        ],
-        [
-          { text: '📚 Kurslar' },
-          { text: '📖 Maqolalar' },
-        ],
-        [
-          { text: '👤 Mening profilim' },
-          { text: '💡 Kunlik maslahat' },
-        ],
-        [
-          { text: '🔑 Saytga bir klikda kirish' },
-          { text: 'ℹ️ Yordam' },
-        ],
+        [{ text: '🌿 Farzandly platformasini ochish', web_app: { url: clientUrl } }],
+        [{ text: '📚 Darslar' }, { text: '📖 Maqolalar' }],
+        [{ text: '🔎 Qidiruv' }, { text: '⏰ Eslatma' }],
+        [{ text: '👤 Mening profilim' }, { text: '👑 Premium' }],
+        [{ text: '💡 Kunlik maslahat' }, { text: 'ℹ️ Yordam' }],
       ],
       resize_keyboard: true,
       persistent: true,
     };
   }
 
-  /**
-   * Main welcome inline keyboard
-   */
-  private static getMainInlineKeyboard(userId?: string | number) {
+  private static getMainInlineKeyboard() {
     const clientUrl = this.getClientUrl();
     return {
       inline_keyboard: [
+        [{ text: '🚀 Farzandly Mini App (Ilovani ochish)', web_app: { url: clientUrl } }],
+        [{ text: '▶️ Keyingi darsim', callback_data: 'n:' }],
         [
-          {
-            text: '🚀 Farzandly Mini App (Ilovani ochish)',
-            web_app: { url: clientUrl },
-          },
-        ],
-        [
-          { text: '📚 Barcha kurslar', callback_data: 'cmd_courses' },
+          { text: '📚 Barcha darslar', callback_data: 'cmd_courses' },
           { text: '📖 Foydali maqolalar', callback_data: 'cmd_articles' },
         ],
         [
           { text: '👤 Mening profilim', callback_data: 'cmd_profile' },
-          { text: '💡 Kunlik maslahat', callback_data: 'cmd_tip' },
+          { text: '⏰ Eslatma', callback_data: 'cmd_reminder' },
         ],
         [
           { text: '🔑 Veb-saytga bir klikda kirish', callback_data: 'cmd_weblogin' },
@@ -209,28 +236,26 @@ export class TelegramBotEngine {
     return `${clientUrl}/kirish/callback?direct_token=${encodeURIComponent(directToken)}`;
   }
 
-  /**
-   * Core Update Handler: Processes messages and callback queries
-   */
+  // ---------------------------------------------------------------------------
+  // Update routing
+  // ---------------------------------------------------------------------------
+
   static async handleUpdate(update: any): Promise<void> {
     if (!update) return;
 
-    // 1. Handle Callback Query (Inline buttons)
-    if (update.callback_query) {
-      await this.handleCallbackQuery(update.callback_query);
-      return;
-    }
-
-    // 2. Handle Message
-    if (update.message) {
-      await this.handleMessage(update.message);
-      return;
+    try {
+      if (update.callback_query) {
+        await this.handleCallbackQuery(update.callback_query);
+        return;
+      }
+      if (update.message) {
+        await this.handleMessage(update.message);
+      }
+    } catch (err: any) {
+      console.error('[TelegramBotEngine] handleUpdate xatosi:', err?.message || err);
     }
   }
 
-  /**
-   * Handle incoming text messages and commands
-   */
   private static async handleMessage(msg: any) {
     const chatId = msg.chat?.id;
     const from = msg.from;
@@ -238,9 +263,11 @@ export class TelegramBotEngine {
 
     if (!chatId || !from) return;
 
-    // Automatically sync / upsert user in MongoDB
+    // Keep the Telegram account in sync with the platform user record
     try {
-      const displayName = from.username ? `@${from.username}` : `${from.first_name || ''} ${from.last_name || ''}`.trim() || 'Ota-ona';
+      const displayName = from.username
+        ? `@${from.username}`
+        : `${from.first_name || ''} ${from.last_name || ''}`.trim() || 'Ota-ona';
       await DataService.upsertTelegramUser({
         telegramId: String(from.id),
         telegramUsername: from.username,
@@ -253,334 +280,668 @@ export class TelegramBotEngine {
       console.warn('[TelegramBotEngine] Sync user failed:', err.message);
     }
 
-    // Command: /start
-    if (text.startsWith('/start')) {
-      await this.sendWelcomeMessage(chatId, from);
-      return;
-    }
+    const lower = text.toLowerCase();
+    const is = (...variants: string[]) => variants.some((v) => lower === v.toLowerCase());
 
-    // Command: /kurslar or button "📚 Kurslar"
-    if (text === '/kurslar' || text === '📚 Kurslar') {
-      await this.sendCoursesList(chatId);
-      return;
-    }
+    if (lower.startsWith('/start eslatma')) return this.sendReminderSettings(chatId, from);
+    if (lower.startsWith('/start')) return this.sendWelcomeMessage(chatId, from);
+    // `/kurslar` kept as a backward-compatible alias of `/darslar`
+    if (is('/darslar', '/kurslar', '📚 Darslar', '📚 Kurslar')) return this.sendCoursesList(chatId, from);
+    if (is('/maqolalar', '📖 Maqolalar')) return this.sendArticlesList(chatId, from);
+    if (is('/profil', '👤 Mening profilim', '👤 Profilim')) return this.sendUserProfile(chatId, from);
+    if (is('/login', '🔑 Saytga bir klikda kirish', '🔑 Veb-saytga kirish')) return this.sendDirectLogin(chatId, from);
+    if (is('/maslahat', '💡 Kunlik maslahat', '💡 Maslahat')) return this.sendDailyTip(chatId);
+    if (is('/yordam', '/help', 'ℹ️ Yordam')) return this.sendHelp(chatId);
+    if (is('/premium', '👑 Premium')) return this.sendPremiumInfo(chatId, from);
+    if (is('/eslatma', '⏰ Eslatma')) return this.sendReminderSettings(chatId, from);
+    if (is('/keyingi')) return this.sendNextLesson(chatId, from);
 
-    // Command: /maqolalar or button "📖 Maqolalar"
-    if (text === '/maqolalar' || text === '📖 Maqolalar') {
-      await this.sendArticlesList(chatId);
-      return;
-    }
-
-    // Command: /profil or button "👤 Mening profilim" or "👤 Profilim"
-    if (text === '/profil' || text === '👤 Mening profilim' || text === '👤 Profilim') {
-      await this.sendUserProfile(chatId, from);
-      return;
-    }
-
-    // Command: /login or button "🔑 Saytga bir klikda kirish"
-    if (text === '/login' || text === '🔑 Saytga bir klikda kirish' || text === '🔑 Veb-saytga kirish') {
-      await this.sendDirectLogin(chatId, from);
-      return;
-    }
-
-    // Command: /maslahat or button "💡 Kunlik maslahat"
-    if (text === '/maslahat' || text === '💡 Kunlik maslahat' || text === '💡 Maslahat') {
-      await this.sendDailyTip(chatId);
-      return;
-    }
-
-    // Command: /yordam or button "ℹ️ Yordam"
-    if (text === '/yordam' || text === '/help' || text === 'ℹ️ Yordam') {
-      await this.sendHelp(chatId);
-      return;
-    }
-
-    // Default friendly response
-    await this.sendMessage(
-      chatId,
-      `🌿 <b>Farzandly platformasi boti</b>\n\nSiz yozgan xabar: <i>"${text}"</i>\n\nKerakli bo'limni tanlash uchun quyidagi tugmalardan foydalaning:`,
-      {
-        reply_markup: this.getMainInlineKeyboard(from.id),
+    if (lower.startsWith('/qidiruv') || is('🔎 Qidiruv')) {
+      const q = text.replace(/^\/qidiruv(@\w+)?/i, '').replace('🔎 Qidiruv', '').trim();
+      if (!q) {
+        await this.sendMessage(
+          chatId,
+          '🔎 <b>Qidiruv</b>\n\nQidirmoqchi bo‘lgan mavzuni yozing, masalan: <i>tantrum</i>, <i>namoz</i>, <i>ekran</i>.'
+        );
+        return;
       }
-    );
+      return this.sendSearchResults(chatId, from, q);
+    }
+
+    // Any other plain text is treated as a search query across lessons and articles
+    if (text && !text.startsWith('/')) {
+      return this.sendSearchResults(chatId, from, text);
+    }
+
+    await this.sendMessage(chatId, '🌿 <b>Farzandly</b>\n\nKerakli bo‘limni tanlang:', {
+      reply_markup: this.getMainInlineKeyboard(),
+    });
   }
 
-  /**
-   * Handle Callback Queries
-   */
   private static async handleCallbackQuery(cb: any) {
-    const callbackId = cb.id;
     const chatId = cb.message?.chat?.id;
     const from = cb.from;
-    const data = cb.data || '';
+    const data: string = cb.data || '';
 
-    if (!chatId) {
-      await this.answerCallbackQuery(callbackId);
+    if (!chatId || !from) {
+      await this.answerCallbackQuery(cb.id);
       return;
     }
 
-    await this.answerCallbackQuery(callbackId);
+    let toast: string | undefined;
 
-    if (data === 'cmd_courses') {
-      await this.sendCoursesList(chatId);
-    } else if (data === 'cmd_articles') {
-      await this.sendArticlesList(chatId);
-    } else if (data === 'cmd_profile') {
-      await this.sendUserProfile(chatId, from);
-    } else if (data === 'cmd_weblogin') {
-      await this.sendDirectLogin(chatId, from);
-    } else if (data === 'cmd_tip') {
-      await this.sendDailyTip(chatId);
-    } else if (data === 'cmd_help') {
-      await this.sendHelp(chatId);
+    if (data.startsWith('rem:')) {
+      toast = await this.handleReminderCallback(chatId, from, data);
     }
+    await this.answerCallbackQuery(cb.id, toast);
+    if (data.startsWith('rem:')) return;
+
+    if (data === 'cmd_courses') return this.sendCoursesList(chatId, from);
+    if (data === 'cmd_articles') return this.sendArticlesList(chatId, from);
+    if (data === 'cmd_profile') return this.sendUserProfile(chatId, from);
+    if (data === 'cmd_weblogin') return this.sendDirectLogin(chatId, from);
+    if (data === 'cmd_tip') return this.sendDailyTip(chatId);
+    if (data === 'cmd_help') return this.sendHelp(chatId);
+    if (data === 'cmd_premium') return this.sendPremiumInfo(chatId, from);
+    if (data === 'cmd_reminder') return this.sendReminderSettings(chatId, from);
+    if (data === 'n:') return this.sendNextLesson(chatId, from);
+    if (data.startsWith('c:')) return this.sendCourse(chatId, from, data.slice(2));
+    if (data.startsWith('l:')) return this.sendLesson(chatId, from, data.slice(2));
+    if (data.startsWith('d:')) return this.completeLesson(chatId, from, data.slice(2));
+    if (data.startsWith('a:')) return this.sendArticle(chatId, from, data.slice(2));
   }
 
-  /**
-   * 1. Welcome Message
-   */
+  // ---------------------------------------------------------------------------
+  // Screens
+  // ---------------------------------------------------------------------------
+
   private static async sendWelcomeMessage(chatId: string | number, from: any) {
-    const clientUrl = this.getClientUrl();
-    const userName = from.first_name || from.username || 'Ota-ona';
+    const userName = this.esc(from.first_name || from.username || 'Ota-ona');
 
-    const text = `🌿 <b>Assalomu alaykum, ${userName}!</b>\n\n` +
+    const text =
+      `🌿 <b>Assalomu alaykum, ${userName}!</b>\n\n` +
       `<b>Farzandly</b> — ota-onalar uchun zamonaviy raqamli tarbiya platformasining rasmiy botiga xush kelibsiz!\n\n` +
-      `Bu yerda siz:\n` +
-      `• 📚 Bolalar psixologiyasi bo‘yicha 5 daqiqalik amaliy darslar\n` +
-      `• 📖 Tarbiya, hissiyotlar va intizom haqida foydali maqolalar\n` +
-      `• 💡 Kunlik amaliy maslahatlar\n` +
-      `• 🏆 O‘z natijalaringiz va o‘rganish tarixingizni kuzatishingiz mumkin.\n\n` +
-      `<i>Platformadan Telegram ichida to‘liq foydalanish uchun quyidagi tugmani bosing:</i>`;
+      `Bot va sayt <b>bir xil darslar va maqolalarni</b> ko‘rsatadi:\n` +
+      `• 📚 5 daqiqalik amaliy darslar (1–10-darslar bepul)\n` +
+      `• 📖 Tarbiya, hissiyotlar va intizom haqida maqolalar\n` +
+      `• 🔎 Mavzu bo‘yicha qidiruv — shunchaki so‘z yozing\n` +
+      `• ⏰ Har kuni dars eslatmasi\n` +
+      `• 👑 Premium darslar — platformada faollashtiriladi\n\n` +
+      `<i>Boshlash uchun «Keyingi darsim» tugmasini bosing:</i>`;
 
-    // Send message with both main reply keyboard and rich inline action buttons
-    await this.sendMessage(chatId, text, {
-      reply_markup: this.getMainInlineKeyboard(from.id),
-    });
-
-    // Also send prompt activating persistent keyboard
+    await this.sendMessage(chatId, text, { reply_markup: this.getMainInlineKeyboard() });
     await this.sendMessage(chatId, '👇 Menyu orqali kerakli bo‘limni tanlang:', {
       reply_markup: this.getMainReplyKeyboard(),
     });
   }
 
-  /**
-   * 2. Courses List
-   */
-  private static async sendCoursesList(chatId: string | number) {
-    const clientUrl = this.getClientUrl();
+  private static async sendCoursesList(chatId: string | number, from: any) {
     try {
       const courses = await DataService.getCourses();
 
-      let text = `📚 <b>Farzandly kurslari:</b>\n\n`;
-      const inlineButtons: any[][] = [];
+      let text = `📚 <b>Farzandly darslari:</b>\n\n`;
+      const buttons: any[][] = [];
 
-      courses.slice(0, 6).forEach((c: any, index: number) => {
-        text += `<b>${index + 1}. ${c.title}</b>\n`;
-        text += `⏱ Davomiyligi: ${c.totalDurationMinutes || 15} daqiqa • Yosh: ${c.ageGroup || '3-5'} yosh\n`;
-        text += `📖 Darslar soni: ${c.lessonsCount || 5} ta\n`;
-        text += `👉 <a href="${clientUrl}/kurslar/${c.slug}">Kursni ko‘rish</a>\n\n`;
-
-        inlineButtons.push([
-          {
-            text: `▶️ ${c.title.substring(0, 25)}...`,
-            web_app: { url: `${clientUrl}/kurslar/${c.slug}` },
-          },
-        ]);
+      courses.forEach((c: any, index: number) => {
+        const lock = c.isPremium ? '👑 Premium' : '🆓 Bepul';
+        text += `<b>${index + 1}. ${this.esc(c.title)}</b>\n`;
+        text += `${lock} • ${c.totalLessons ?? '?'} ta dars • ⏱ ${c.estimatedMinutes ?? '?'} daqiqa • ${this.esc(c.ageGroup)} yosh\n\n`;
+        buttons.push([{ text: `${index + 1}. ${this.truncate(c.title, 40)}`, callback_data: `c:${c.slug}` }]);
       });
 
-      inlineButtons.push([
-        {
-          text: '🌐 Barcha kurslarni ko‘rish',
-          web_app: { url: `${clientUrl}/kurslar` },
-        },
-      ]);
+      buttons.push([{ text: '🌐 Platformada ochish', web_app: { url: `${this.getClientUrl()}/darslar` } }]);
 
-      await this.sendMessage(chatId, text, {
-        reply_markup: { inline_keyboard: inlineButtons },
-      });
+      await this.sendMessage(chatId, text, { reply_markup: { inline_keyboard: buttons } });
     } catch (err: any) {
-      await this.sendMessage(chatId, 'Kurslar ro‘yxatini yuklashda xatolik yuz berdi.');
+      console.warn('[TelegramBotEngine] sendCoursesList:', err.message);
+      await this.sendMessage(chatId, 'Darslar ro‘yxatini yuklashda xatolik yuz berdi.');
     }
   }
 
-  /**
-   * 3. Articles List
-   */
-  private static async sendArticlesList(chatId: string | number) {
+  private static async sendCourse(chatId: string | number, from: any, slug: string) {
     const clientUrl = this.getClientUrl();
+    const [course, lessons, user] = await Promise.all([
+      DataService.getCourseBySlug(slug),
+      DataService.getLessons({ courseSlug: slug }),
+      this.getUser(from),
+    ]);
+
+    if (!course) {
+      await this.sendMessage(chatId, 'Bu dars to‘plami topilmadi.');
+      return;
+    }
+
+    const premium = this.isPremiumUser(user);
+    const completed: string[] = user?.completedLessons || [];
+
+    const text =
+      `📚 <b>${this.esc(course.title)}</b>\n` +
+      `${course.isPremium ? '👑 Premium' : '🆓 Bepul'} • ${lessons.length} ta dars • ⏱ ${course.estimatedMinutes ?? '?'} daqiqa\n\n` +
+      `${this.esc(course.description)}\n\n` +
+      `✅ tugatilgan • ▶️ ochiq • 🔒 Premium`;
+
+    const buttons: any[][] = lessons.map((l: any) => {
+      const done = completed.includes(l.slug);
+      const locked = Boolean(l.isPremium && !premium);
+      const icon = done ? '✅' : locked ? '🔒' : '▶️';
+      return [{ text: `${icon} ${l.order}. ${this.truncate(l.title, 42)}`, callback_data: `l:${l.slug}` }];
+    });
+    buttons.push([
+      { text: '⬅️ Barcha darslar', callback_data: 'cmd_courses' },
+      { text: '🌐 Saytda', web_app: { url: `${clientUrl}/darslar/${course.slug}` } },
+    ]);
+
+    await this.sendMessage(chatId, text, { reply_markup: { inline_keyboard: buttons } });
+  }
+
+  private static async sendLockedNotice(chatId: string | number, title: string, backData?: string) {
+    const rows: any[][] = [[this.premiumButton()]];
+    if (backData) rows.push([{ text: '⬅️ Orqaga', callback_data: backData }]);
+    await this.sendMessage(
+      chatId,
+      `🔒 <b>${this.esc(title)}</b>\n\n` +
+        `Bu kontent <b>Premium</b> obunachilar uchun. 1–10-darslar hamda asosiy maqolalar barcha uchun bepul.\n\n` +
+        `Premiumni faollashtirish platformada amalga oshiriladi — quyidagi tugma sizni sayt sahifasiga olib boradi.`,
+      { reply_markup: { inline_keyboard: rows } }
+    );
+  }
+
+  private static async sendLesson(chatId: string | number, from: any, slug: string) {
+    const clientUrl = this.getClientUrl();
+    const [lesson, user] = await Promise.all([DataService.getLessonByIdOrSlug(slug), this.getUser(from)]);
+
+    if (!lesson) {
+      await this.sendMessage(chatId, 'Bu dars topilmadi.');
+      return;
+    }
+
+    if (lesson.isPremium && !this.isPremiumUser(user)) {
+      await this.sendLockedNotice(chatId, lesson.title, `c:${lesson.courseSlug}`);
+      return;
+    }
+
+    const icons: Record<string, string> = {
+      scenario: '🎬',
+      concept: '💡',
+      explanation: '📘',
+      islamic_perspective: '🕌',
+      practice: '✅',
+      quiz: '❓',
+      victory: '🏆',
+    };
+
+    const blocks: string[] = [
+      `📘 <b>${this.esc(lesson.title)}</b>\n` +
+        `⏱ ${lesson.estimatedMinutes ?? 5} daqiqa • ⭐️ +${lesson.xpReward ?? 10} XP • ${this.esc(lesson.ageGroup)} yosh\n` +
+        `<i>${this.esc(lesson.summary)}</i>`,
+    ];
+
+    for (const screen of lesson.screens || []) {
+      let block = `${icons[screen.type] || '▫️'} <b>${this.esc(screen.title)}</b>`;
+      if (screen.subtitle) block += `\n<i>${this.esc(screen.subtitle)}</i>`;
+      if (screen.content) block += `\n${this.esc(screen.content)}`;
+      if (screen.example) block += `\n\n💬 <i>${this.esc(screen.example)}</i>`;
+      if (screen.highlight) block += `\n\n⭐️ <b>${this.esc(screen.highlight)}</b>`;
+      if (screen.quoteSource) block += `\n— ${this.esc(screen.quoteSource)}`;
+
+      if (screen.type === 'quiz' && screen.quizQuestion) {
+        const options: string[] = screen.quizOptions || [];
+        block += `\n\n<b>${this.esc(screen.quizQuestion)}</b>`;
+        options.forEach((opt, i) => {
+          block += `\n${String.fromCharCode(65 + i)}) ${this.esc(opt)}`;
+        });
+        if (typeof screen.correctOptionIndex === 'number' && options[screen.correctOptionIndex]) {
+          block += `\n\n👀 Javob: <tg-spoiler>${String.fromCharCode(65 + screen.correctOptionIndex)}) ${this.esc(
+            options[screen.correctOptionIndex]
+          )}${screen.quizExplanation ? ` — ${this.esc(screen.quizExplanation)}` : ''}</tg-spoiler>`;
+        }
+      }
+      blocks.push(block);
+    }
+
+    const chunks = this.chunkBlocks(blocks);
+    const done = (user?.completedLessons || []).includes(lesson.slug);
+
+    for (let i = 0; i < chunks.length; i++) {
+      const isLast = i === chunks.length - 1;
+      await this.sendMessage(
+        chatId,
+        chunks[i],
+        isLast
+          ? {
+              reply_markup: {
+                inline_keyboard: [
+                  [
+                    done
+                      ? { text: '✅ Tugatilgan — keyingisi', callback_data: 'n:' }
+                      : { text: `✅ Darsni yakunlash (+${lesson.xpReward ?? 10} XP)`, callback_data: `d:${lesson.slug}` },
+                  ],
+                  [
+                    { text: '📱 Platformada ochish', web_app: { url: `${clientUrl}/dars/${lesson.slug}` } },
+                    { text: '⬅️ Darslar', callback_data: `c:${lesson.courseSlug}` },
+                  ],
+                ],
+              },
+            }
+          : {}
+      );
+    }
+  }
+
+  private static async completeLesson(chatId: string | number, from: any, slug: string) {
+    const [lesson, user] = await Promise.all([DataService.getLessonByIdOrSlug(slug), this.getUser(from)]);
+    if (!lesson || !user) {
+      await this.sendMessage(chatId, 'Darsni yakunlashda xatolik yuz berdi. Iltimos, /start ni bosing.');
+      return;
+    }
+    if (lesson.isPremium && !this.isPremiumUser(user)) {
+      await this.sendLockedNotice(chatId, lesson.title, `c:${lesson.courseSlug}`);
+      return;
+    }
+    if ((user.completedLessons || []).includes(lesson.slug)) {
+      await this.sendMessage(chatId, '✅ Bu dars allaqachon tugatilgan.', {
+        reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi dars', callback_data: 'n:' }]] },
+      });
+      return;
+    }
+
+    const userId = String(user._id ?? user.id);
+    const result: any = await DataService.recordProgress({
+      userId,
+      lessonSlug: lesson.slug,
+      xpEarned: lesson.xpReward || 10,
+    });
+    const updated = result?.updatedUser || result?.user || user;
+
+    await this.sendMessage(
+      chatId,
+      `🎉 <b>Dars yakunlandi!</b>\n\n` +
+        `«${this.esc(lesson.title)}»\n` +
+        `⭐️ +${lesson.xpReward || 10} XP • Jami: <b>${updated.xp ?? 0} XP</b>\n` +
+        `🔥 Ketma-ket: <b>${updated.streak ?? 1} kun</b>\n\n` +
+        `<i>Natijangiz saytdagi profilingiz bilan sinxronlangan.</i>`,
+      { reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi dars', callback_data: 'n:' }]] } }
+    );
+  }
+
+  /** First lesson the user hasn't completed (respecting age group and premium access). */
+  private static async findNextLesson(user: any) {
+    const premium = this.isPremiumUser(user);
+    const completed: string[] = user?.completedLessons || [];
+    const ageGroup: string | undefined = user?.childAgeGroup;
+
+    let lessons: any[] = ageGroup ? await DataService.getLessons({ ageGroup }) : [];
+    if (!lessons.length) lessons = await DataService.getLessons();
+
+    const remaining = lessons.filter((l: any) => !completed.includes(l.slug));
+    const open = remaining.find((l: any) => !l.isPremium || premium);
+    return { open, lockedNext: open ? undefined : remaining[0], remainingCount: remaining.length };
+  }
+
+  private static async sendNextLesson(chatId: string | number, from: any) {
+    const user = await this.getUser(from);
+    const { open, lockedNext } = await this.findNextLesson(user);
+
+    if (open) return this.sendLesson(chatId, from, open.slug);
+    if (lockedNext) return this.sendLockedNotice(chatId, lockedNext.title);
+
+    await this.sendMessage(chatId, '🏆 Barcha mavjud darslarni tugatdingiz! Yangi maqolalarni o‘qing:', {
+      reply_markup: { inline_keyboard: [[{ text: '📖 Maqolalar', callback_data: 'cmd_articles' }]] },
+    });
+  }
+
+  private static async sendArticlesList(chatId: string | number, from: any) {
     try {
       const articles = await DataService.getArticles();
 
       let text = `📖 <b>Foydali maqolalar:</b>\n\n`;
-      const inlineButtons: any[][] = [];
+      const buttons: any[][] = [];
 
-      articles.slice(0, 5).forEach((a: any, index: number) => {
-        text += `<b>${index + 1}. ${a.title}</b>\n`;
-        text += `⏳ Mutolaa: ${a.readingTimeMinutes || 5} daqiqa\n`;
-        text += `💡 <i>${a.excerpt || ''}</i>\n`;
-        text += `👉 <a href="${clientUrl}/maqolalar/${a.slug}">To‘liq o‘qish</a>\n\n`;
-
-        inlineButtons.push([
-          {
-            text: `📖 ${a.title.substring(0, 28)}...`,
-            web_app: { url: `${clientUrl}/maqolalar/${a.slug}` },
-          },
-        ]);
+      articles.slice(0, 9).forEach((a: any, index: number) => {
+        text += `<b>${index + 1}. ${this.esc(a.title)}</b>\n`;
+        text += `${a.isPremium ? '👑 Premium' : '🆓 Bepul'} • ⏳ ${a.readingTimeMinutes || 5} daqiqa\n`;
+        text += `<i>${this.esc(this.truncate(a.excerpt || '', 140))}</i>\n\n`;
+        buttons.push([{ text: `${a.isPremium ? '🔒' : '📖'} ${this.truncate(a.title, 40)}`, callback_data: `a:${a.slug}` }]);
       });
+      buttons.push([{ text: '🌐 Platformada ochish', web_app: { url: `${this.getClientUrl()}/maqolalar` } }]);
 
-      inlineButtons.push([
-        {
-          text: '🌐 Barcha maqolalarni ko‘rish',
-          web_app: { url: `${clientUrl}/maqolalar` },
-        },
-      ]);
-
-      await this.sendMessage(chatId, text, {
-        reply_markup: { inline_keyboard: inlineButtons },
-      });
+      await this.sendMessage(chatId, text, { reply_markup: { inline_keyboard: buttons } });
     } catch (err: any) {
+      console.warn('[TelegramBotEngine] sendArticlesList:', err.message);
       await this.sendMessage(chatId, 'Maqolalarni yuklashda xatolik yuz berdi.');
     }
   }
 
-  /**
-   * 4. User Profile & Website Sync
-   */
+  private static async sendArticle(chatId: string | number, from: any, slug: string) {
+    const [article, user] = await Promise.all([DataService.getArticleBySlug(slug), this.getUser(from)]);
+    if (!article) {
+      await this.sendMessage(chatId, 'Bu maqola topilmadi.');
+      return;
+    }
+    if (article.isPremium && !this.isPremiumUser(user)) {
+      await this.sendLockedNotice(chatId, article.title, 'cmd_articles');
+      return;
+    }
+
+    const paragraphs = String(article.content || '')
+      .split(/\n{2,}/)
+      .map((p) => this.esc(p.trim()))
+      .filter(Boolean);
+    const blocks = [
+      `📖 <b>${this.esc(article.title)}</b>\n⏳ ${article.readingTimeMinutes || 5} daqiqa`,
+      ...(paragraphs.length ? paragraphs : [this.esc(article.excerpt)]),
+    ];
+    const chunks = this.chunkBlocks(blocks);
+
+    for (let i = 0; i < chunks.length; i++) {
+      await this.sendMessage(
+        chatId,
+        chunks[i],
+        i === chunks.length - 1
+          ? {
+              reply_markup: {
+                inline_keyboard: [
+                  [{ text: '📱 Platformada ochish', web_app: { url: `${this.getClientUrl()}/maqolalar/${article.slug}` } }],
+                  [{ text: '⬅️ Maqolalar', callback_data: 'cmd_articles' }],
+                ],
+              },
+            }
+          : {}
+      );
+    }
+  }
+
+  private static async sendSearchResults(chatId: string | number, from: any, query: string) {
+    const q = query.trim().slice(0, 60);
+    const { lessons, articles } = await DataService.searchContent(q, 'uz', 6);
+    const user = await this.getUser(from);
+    const premium = this.isPremiumUser(user);
+
+    if (!lessons.length && !articles.length) {
+      await this.sendMessage(
+        chatId,
+        `🔎 «${this.esc(q)}» bo‘yicha hech narsa topilmadi.\n\nBoshqa so‘z bilan urinib ko‘ring yoki barcha darslarni ko‘ring.`,
+        { reply_markup: { inline_keyboard: [[{ text: '📚 Barcha darslar', callback_data: 'cmd_courses' }]] } }
+      );
+      return;
+    }
+
+    const buttons: any[][] = [];
+    let text = `🔎 <b>«${this.esc(q)}»</b> bo‘yicha natijalar:\n\n`;
+
+    if (lessons.length) {
+      text += `<b>📚 Darslar</b>\n`;
+      lessons.forEach((l: any) => {
+        const locked = l.isPremium && !premium;
+        text += `• ${locked ? '🔒 ' : ''}${this.esc(l.title)}\n`;
+        buttons.push([{ text: `${locked ? '🔒' : '▶️'} ${this.truncate(l.title, 44)}`, callback_data: `l:${l.slug}` }]);
+      });
+      text += '\n';
+    }
+    if (articles.length) {
+      text += `<b>📖 Maqolalar</b>\n`;
+      articles.forEach((a: any) => {
+        const locked = a.isPremium && !premium;
+        text += `• ${locked ? '🔒 ' : ''}${this.esc(a.title)}\n`;
+        buttons.push([{ text: `${locked ? '🔒' : '📖'} ${this.truncate(a.title, 44)}`, callback_data: `a:${a.slug}` }]);
+      });
+    }
+
+    await this.sendMessage(chatId, text, { reply_markup: { inline_keyboard: buttons } });
+  }
+
+  private static async sendPremiumInfo(chatId: string | number, from: any) {
+    const user = await this.getUser(from);
+    if (this.isPremiumUser(user)) {
+      await this.sendMessage(chatId, '👑 <b>Sizda Premium faol!</b>\n\nBarcha darslar va maqolalar ochiq. Yaxshi o‘qing! 🌿', {
+        reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi darsim', callback_data: 'n:' }]] },
+      });
+      return;
+    }
+
+    await this.sendMessage(
+      chatId,
+      `👑 <b>Farzandly Premium</b>\n\n` +
+        `• 1–10-darslar va asosiy maqolalar — <b>bepul</b>\n` +
+        `• 11-darsdan boshlab barcha chuqurlashtirilgan darslar, amaliy topshiriqlar va maqolalar — <b>Premium</b>\n\n` +
+        `To‘lov va faollashtirish <b>platformada</b> amalga oshiriladi. Quyidagi tugmani bosing:`,
+      { reply_markup: { inline_keyboard: [[this.premiumButton()]] } }
+    );
+  }
+
   private static async sendUserProfile(chatId: string | number, from: any) {
     const clientUrl = this.getClientUrl();
     try {
-      const user = await DataService.getUserByIdOrTelegram(String(from.id));
+      const user = await this.getUser(from);
       const loginLink = this.generateDirectLoginLink(from);
 
-      const name = user?.name || from.first_name || 'Ota-ona';
+      const name = this.esc(user?.name || from.first_name || 'Ota-ona');
       const xp = user?.xp || 0;
       const streak = user?.streak || user?.streakDays || 1;
-      const level = user?.level || 'O‘rganuvchi';
+      const level = this.esc(user?.level || 'O‘rganuvchi');
       const completedCount = user?.completedLessons?.length || 0;
+      const premium = this.isPremiumUser(user);
+      const reminder = user?.reminderEnabled ? `yoqilgan (${String(user.reminderHour ?? 20).padStart(2, '0')}:00)` : 'o‘chirilgan';
 
-      const text = `👤 <b>Farzandly Profilingiz:</b>\n\n` +
+      const text =
+        `👤 <b>Farzandly Profilingiz:</b>\n\n` +
         `🆔 Telegram ID: <code>${from.id}</code>\n` +
         `👤 Ism: <b>${name}</b>\n` +
         `⭐️ Ballar: <b>${xp} XP</b>\n` +
         `🔥 O‘qish davomiyligi: <b>${streak} kun</b> ketma-ket\n` +
         `🏆 Daraja: <b>${level}</b>\n` +
-        `🎓 Tamomlangan darslar: <b>${completedCount} ta</b>\n\n` +
-        `🌐 <b>Veb-sayt bilan holat:</b> Sinxronlangan ✅\n\n` +
-        `<i>Quyidagi tugma orqali profilingizni to‘g‘ridan-to‘g‘ri ochishingiz mumkin:</i>`;
+        `🎓 Tamomlangan darslar: <b>${completedCount} ta</b>\n` +
+        `👑 Premium: <b>${premium ? 'faol' : 'yo‘q'}</b>\n` +
+        `⏰ Eslatma: <b>${reminder}</b>\n\n` +
+        `<i>Profilingizni saytda to‘g‘ridan-to‘g‘ri ochishingiz mumkin:</i>`;
 
-      await this.sendMessage(chatId, text, {
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: '👤 Profilni ochish (Mini App)',
-                web_app: { url: `${clientUrl}/profil` },
-              },
-            ],
-            [
-              {
-                text: '🔑 Saytga kirish (Bir klikda)',
-                url: loginLink,
-              },
-            ],
-          ],
-        },
-      });
-    } catch (err: any) {
+      const rows: any[][] = [
+        [{ text: '👤 Profilni ochish (Mini App)', web_app: { url: `${clientUrl}/profil` } }],
+        [{ text: '🔑 Saytga kirish (Bir klikda)', url: loginLink }],
+      ];
+      if (!premium) rows.push([this.premiumButton()]);
+
+      await this.sendMessage(chatId, text, { reply_markup: { inline_keyboard: rows } });
+    } catch {
       await this.sendMessage(chatId, 'Profil ma’lumotlarini olishda xatolik yuz berdi.');
     }
   }
 
-  /**
-   * 5. Direct Login
-   */
   private static async sendDirectLogin(chatId: string | number, from: any) {
     const loginLink = this.generateDirectLoginLink(from);
     const clientUrl = this.getClientUrl();
 
-    const text = `🔑 <b>Farzandly platformasiga bir klikda kiring</b>\n\n` +
-      `Siz Telegram orqali ro‘yxatdan o‘tgansiz. Quyidagi havola orqali brauzerda hech qanday parol terishsiz to‘g‘ridan-to‘g‘ri hisobingizga kirishingiz mumkin:\n\n` +
+    const text =
+      `🔑 <b>Farzandly platformasiga bir klikda kiring</b>\n\n` +
+      `Siz Telegram orqali ro‘yxatdan o‘tgansiz. Quyidagi havola orqali brauzerda parol terishsiz hisobingizga kirishingiz mumkin:\n\n` +
       `👉 <a href="${loginLink}">Platformaga kirish (avtorizatsiyalangan)</a>\n\n` +
       `<i>Eslatma: Bu havola shaxsiy hisobingizga tegishli. Uni boshqalarga ulashmang.</i>`;
 
     await this.sendMessage(chatId, text, {
       reply_markup: {
         inline_keyboard: [
-          [
-            {
-              text: '🚀 Saytga to‘g‘ridan-to‘g‘ri kirish',
-              url: loginLink,
-            },
-          ],
-          [
-            {
-              text: '📱 Telegram Mini Appda ochish',
-              web_app: { url: clientUrl },
-            },
-          ],
+          [{ text: '🚀 Saytga to‘g‘ridan-to‘g‘ri kirish', url: loginLink }],
+          [{ text: '📱 Telegram Mini Appda ochish', web_app: { url: clientUrl } }],
         ],
       },
     });
   }
 
-  /**
-   * 6. Daily Parenting Tip
-   */
   private static async sendDailyTip(chatId: string | number) {
-    const randomTip = PARENTING_TIPS[Math.floor(Math.random() * PARENTING_TIPS.length)];
-    const clientUrl = this.getClientUrl();
+    const tip = PARENTING_TIPS[Math.floor(Math.random() * PARENTING_TIPS.length)];
 
-    const text = `💡 <b>Kunlik tarbiya maslahati:</b>\n\n` +
-      `📌 <b>${randomTip.title}</b>\n\n` +
-      `${randomTip.tip}\n\n` +
-      `🌿 <i>Farzand tarbiyasi — har kuni o‘rganiladigan mehrli yo‘ldir.</i>`;
+    await this.sendMessage(
+      chatId,
+      `💡 <b>Kunlik tarbiya maslahati:</b>\n\n📌 <b>${this.esc(tip.title)}</b>\n\n${this.esc(tip.tip)}\n\n` +
+        `🌿 <i>Farzand tarbiyasi — har kuni o‘rganiladigan mehrli yo‘ldir.</i>`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            [
+              { text: '🔄 Boshqa maslahat', callback_data: 'cmd_tip' },
+              { text: '📚 Darslarni o‘rganish', callback_data: 'cmd_courses' },
+            ],
+            [{ text: '📱 Platformani ochish', web_app: { url: this.getClientUrl() } }],
+          ],
+        },
+      }
+    );
+  }
+
+  private static async sendHelp(chatId: string | number) {
+    const text =
+      `ℹ️ <b>Farzandly boti bo‘yicha qo‘llanma:</b>\n\n` +
+      `Bot saytdagi bilan <b>bir xil</b> darslar, maqolalar va natijalarni ko‘rsatadi.\n\n` +
+      `<b>Buyruqlar:</b>\n` +
+      `• /start — asosiy menyu\n` +
+      `• /keyingi — keyingi darsingiz\n` +
+      `• /darslar — barcha darslar\n` +
+      `• /maqolalar — maqolalar\n` +
+      `• /qidiruv <i>so‘z</i> — darslar va maqolalardan qidirish (yoki shunchaki yozing)\n` +
+      `• /eslatma — kunlik dars eslatmasi\n` +
+      `• /profil — ball, daraja, tugatilgan darslar\n` +
+      `• /premium — Premium (platformada faollashtiriladi)\n` +
+      `• /login — saytga bir klikda kirish\n` +
+      `• /maslahat — kunlik maslahat`;
 
     await this.sendMessage(chatId, text, {
       reply_markup: {
-        inline_keyboard: [
-          [
-            { text: '🔄 Boshqa maslahat', callback_data: 'cmd_tip' },
-            { text: '📚 Kurslarni o‘rganish', callback_data: 'cmd_courses' },
-          ],
-          [
-            {
-              text: '📱 Platformani ochish',
-              web_app: { url: clientUrl },
-            },
-          ],
-        ],
+        inline_keyboard: [[{ text: '🌿 Farzandly platformasini ochish', web_app: { url: this.getClientUrl() } }]],
       },
     });
   }
 
-  /**
-   * 7. Help Message
-   */
-  private static async sendHelp(chatId: string | number) {
-    const clientUrl = this.getClientUrl();
-    const text = `ℹ️ <b>Farzandly boti bo‘yicha qo‘llanma:</b>\n\n` +
-      `Ushbu bot orqali siz Farzandly ta’lim platformasidagi darslar, kurslar va shaxsiy natijalaringizni bevosita Telegram ichida kuzatishingiz mumkin.\n\n` +
-      `<b>Mavjud buyruqlar:</b>\n` +
-      `• /start — Botni qayta ishga tushirish va asosiy menyu\n` +
-      `• /kurslar — Ota-onalar uchun mavjud darslar va kurslar\n` +
-      `• /maqolalar — Psixologik va amaliy maqolalar\n` +
-      `• /profil — Ballaringiz, darajangiz va tamomlangan darslaringiz\n` +
-      `• /login — Veb-saytga bir klikda avtorizatsiyasiz kirish havolasi\n` +
-      `• /maslahat — Kunlik foydali tarbiya maslahati\n\n` +
-      `Savollaringiz yoki takliflaringiz bo‘lsa, saytimiz orqali biz bilan bog‘lanishingiz mumkin.`;
+  // ---------------------------------------------------------------------------
+  // Daily reminders (times are Asia/Tashkent, UTC+5)
+  // ---------------------------------------------------------------------------
 
-    await this.sendMessage(chatId, text, {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '🌿 Farzandly platformasini ochish',
-              web_app: { url: clientUrl },
-            },
+  private static readonly REMINDER_HOURS = [7, 9, 12, 18, 20, 21];
+
+  private static async sendReminderSettings(chatId: string | number, from: any) {
+    const user = await this.getUser(from);
+    const enabled = Boolean(user?.reminderEnabled);
+    const hour: number = user?.reminderHour ?? 20;
+
+    const hourRow = this.REMINDER_HOURS.map((h) => ({
+      text: `${h === hour && enabled ? '✅ ' : ''}${String(h).padStart(2, '0')}:00`,
+      callback_data: `rem:h:${h}`,
+    }));
+
+    await this.sendMessage(
+      chatId,
+      `⏰ <b>Kunlik dars eslatmasi</b>\n\n` +
+        `Holat: <b>${enabled ? `yoqilgan — har kuni ${String(hour).padStart(2, '0')}:00 (Toshkent vaqti)` : 'o‘chirilgan'}</b>\n\n` +
+        `Har kuni tanlangan vaqtda keyingi darsingiz va ketma-ketlik (streak) haqida xabar yuboramiz. Vaqtni tanlang:`,
+      {
+        reply_markup: {
+          inline_keyboard: [
+            hourRow.slice(0, 3),
+            hourRow.slice(3),
+            [
+              enabled
+                ? { text: '🔕 Eslatmani o‘chirish', callback_data: 'rem:off' }
+                : { text: '🔔 Eslatmani yoqish', callback_data: 'rem:on' },
+            ],
           ],
-        ],
-      },
+        },
+      }
+    );
+  }
+
+  private static async handleReminderCallback(chatId: string | number, from: any, data: string): Promise<string> {
+    const telegramId = String(from.id);
+    if (data === 'rem:off') {
+      await DataService.updateUserSettings(telegramId, { reminderEnabled: false });
+      await this.sendReminderSettings(chatId, from);
+      return 'Eslatma o‘chirildi';
+    }
+    if (data === 'rem:on') {
+      await DataService.updateUserSettings(telegramId, { reminderEnabled: true });
+      await this.sendReminderSettings(chatId, from);
+      return 'Eslatma yoqildi';
+    }
+    const match = data.match(/^rem:h:(\d{1,2})$/);
+    if (match && this.REMINDER_HOURS.includes(Number(match[1]))) {
+      await DataService.updateUserSettings(telegramId, { reminderEnabled: true, reminderHour: Number(match[1]) });
+      await this.sendReminderSettings(chatId, from);
+      return `Har kuni ${match[1].padStart(2, '0')}:00 da eslatamiz`;
+    }
+    return '';
+  }
+
+  private static getTashkentNow() {
+    const shifted = new Date(Date.now() + 5 * 60 * 60 * 1000);
+    return { hour: shifted.getUTCHours(), date: shifted.toISOString().slice(0, 10) };
+  }
+
+  static async runReminders(): Promise<number> {
+    if (!this.isConfigured()) return 0;
+    const { hour, date } = this.getTashkentNow();
+    const candidates = await DataService.getReminderCandidates(hour, date);
+    let sent = 0;
+
+    for (const user of candidates) {
+      const telegramId = String(user.telegramId);
+      // Claim first so parallel instances never send the same reminder twice
+      if (!(await DataService.claimReminder(telegramId, date))) continue;
+      try {
+        const res = await this.sendReminder(telegramId, user);
+        if (res?.ok === false && res.error_code === 403) {
+          // User blocked the bot — stop reminding
+          await DataService.updateUserSettings(telegramId, { reminderEnabled: false });
+        } else {
+          sent++;
+        }
+      } catch (err: any) {
+        console.warn('[TelegramBotEngine] Reminder xatosi:', err.message);
+      }
+      await new Promise((r) => setTimeout(r, 60)); // stay well under Telegram's 30 msg/sec limit
+    }
+    return sent;
+  }
+
+  private static async sendReminder(telegramId: string, user: any) {
+    const { open, lockedNext } = await this.findNextLesson(user);
+    const streak = user?.streak || 1;
+    const name = this.esc(user?.firstName || user?.name?.replace(/^@/, '') || 'Ota-ona');
+    const head = `⏰ <b>${name}, bugungi 5 daqiqalik tarbiya darsi vaqti!</b>\n🔥 Ketma-ketlik: <b>${streak} kun</b> — uzilib qolmasin.\n\n`;
+    const off = [{ text: '🔕 Eslatmani o‘chirish', callback_data: 'rem:off' }];
+
+    if (open) {
+      return this.sendMessage(telegramId, `${head}▶️ Bugungi dars: <b>${this.esc(open.title)}</b>\n<i>${this.esc(open.summary)}</i>`, {
+        reply_markup: {
+          inline_keyboard: [
+            [{ text: '▶️ Botda boshlash', callback_data: `l:${open.slug}` }],
+            [{ text: '📱 Platformada ochish', web_app: { url: `${this.getClientUrl()}/dars/${open.slug}` } }],
+            off,
+          ],
+        },
+      });
+    }
+
+    if (lockedNext) {
+      return this.sendMessage(
+        telegramId,
+        `${head}Bepul darslarni tugatdingiz! Keyingi dars: <b>${this.esc(lockedNext.title)}</b> — Premium.`,
+        { reply_markup: { inline_keyboard: [[this.premiumButton()], off] } }
+      );
+    }
+
+    return this.sendMessage(telegramId, `${head}Barcha darslarni tugatdingiz, barakalla! 🏆 Yangi maqolalarni o‘qing.`, {
+      reply_markup: { inline_keyboard: [[{ text: '📖 Maqolalar', callback_data: 'cmd_articles' }], off] },
     });
+  }
+
+  private static reminderTimer: NodeJS.Timeout | null = null;
+
+  /** Checks every 5 minutes whether any user's reminder hour has arrived. */
+  static startReminderScheduler() {
+    if (this.reminderTimer || !this.isConfigured()) return;
+    const tick = () =>
+      this.runReminders().catch((err) => console.warn('[TelegramBotEngine] Reminder scheduler xatosi:', err.message));
+    this.reminderTimer = setInterval(tick, 5 * 60 * 1000);
+    setTimeout(tick, 30 * 1000);
+    console.log('[TelegramBotEngine] ⏰ Kunlik eslatma rejalashtiruvchisi ishga tushdi.');
   }
 
   /**
@@ -588,25 +949,15 @@ export class TelegramBotEngine {
    */
   static async notifyLessonCompleted(telegramId: string | number, lessonTitle: string, xpEarned: number = 10) {
     if (!this.isConfigured() || !telegramId) return;
-    const clientUrl = this.getClientUrl();
 
-    const text = `🎉 <b>Dars muvaffaqiyatli yakunlandi!</b>\n\n` +
-      `Siz <b>"${lessonTitle}"</b> darsini muvaffaqiyatli yakunladingiz!\n` +
-      `⭐️ Hisobingizga <b>+${xpEarned} XP</b> qo‘shildi.\n\n` +
-      `O‘qishda davom eting va farzandingiz bilan munosabatni mustahkamlang! 🌿`;
-
-    await this.sendMessage(telegramId, text, {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '▶️ Keyingi darsni boshlash',
-              web_app: { url: `${clientUrl}/dashboard` },
-            },
-          ],
-        ],
-      },
-    });
+    await this.sendMessage(
+      telegramId,
+      `🎉 <b>Dars muvaffaqiyatli yakunlandi!</b>\n\n` +
+        `Siz <b>"${this.esc(lessonTitle)}"</b> darsini yakunladingiz!\n` +
+        `⭐️ Hisobingizga <b>+${xpEarned} XP</b> qo‘shildi.\n\n` +
+        `O‘qishda davom eting va farzandingiz bilan munosabatni mustahkamlang! 🌿`,
+      { reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi darsni boshlash', callback_data: 'n:' }]] } }
+    );
   }
 
   /**

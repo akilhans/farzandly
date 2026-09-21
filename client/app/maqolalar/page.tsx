@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import { BookOpen, Clock, Tag, ArrowRight, Baby, Crown } from 'lucide-react';
 import { api } from '@/lib/api';
+import SearchForm from '@/components/SearchForm';
 
 interface MaqolalarProps {
   searchParams: Promise<{ category?: string; ageGroup?: string; search?: string }>;
@@ -33,6 +34,8 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
           Islomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy tavsiyalarga asoslangan ilmiy-ommabop maqolalar.
         </p>
       </div>
+
+      <SearchForm className="max-w-2xl mx-auto" />
 
       {/* Category Pills Filter */}
       <div className="flex items-center justify-center flex-wrap gap-2 pt-2">

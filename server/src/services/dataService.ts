@@ -443,6 +443,95 @@ export class DataService {
     return byTg || memoryUsers['demo-user'] || null;
   }
 
+  // ---------------------------------------------------------------------------
+  // Search (lessons + articles) — same content the platform serves
+  // ---------------------------------------------------------------------------
+  static async searchContent(query: string, lang: string = 'uz', limit: number = 8) {
+    const q = query.trim();
+    if (q.length < 2) return { lessons: [] as any[], articles: [] as any[] };
+    const needle = q.toLowerCase();
+    const rx = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i');
+
+    let lessons: any[];
+    let articles: any[];
+    if (isDbConnected()) {
+      lessons = await Lesson.find({ $or: [{ title: rx }, { summary: rx }] }).sort({ order: 1 }).limit(limit);
+      articles = await Article.find({
+        isPublished: true,
+        $or: [{ title: rx }, { excerpt: rx }, { tags: rx }],
+      }).limit(limit);
+    } else {
+      lessons = memoryLessons
+        .filter((l: any) => l.title.toLowerCase().includes(needle) || (l.summary || '').toLowerCase().includes(needle))
+        .sort((a: any, b: any) => a.order - b.order)
+        .slice(0, limit);
+      articles = memoryArticles
+        .filter(
+          (a: any) =>
+            a.title.toLowerCase().includes(needle) ||
+            (a.excerpt || '').toLowerCase().includes(needle) ||
+            (a.tags || []).some((t: string) => t.toLowerCase().includes(needle))
+        )
+        .slice(0, limit);
+    }
+    return {
+      lessons: lessons.map((l: any) => localizeEntity(l, lang)),
+      articles: articles.map((a: any) => localizeEntity(a, lang)),
+    };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Telegram reminder settings
+  // ---------------------------------------------------------------------------
+  static async updateUserSettings(
+    telegramId: string,
+    patch: { reminderEnabled?: boolean; reminderHour?: number; childAgeGroup?: string }
+  ) {
+    const clean: Record<string, any> = {};
+    if (typeof patch.reminderEnabled === 'boolean') clean.reminderEnabled = patch.reminderEnabled;
+    if (typeof patch.reminderHour === 'number' && patch.reminderHour >= 0 && patch.reminderHour <= 23) {
+      clean.reminderHour = Math.floor(patch.reminderHour);
+    }
+    if (typeof patch.childAgeGroup === 'string') clean.childAgeGroup = patch.childAgeGroup;
+
+    if (isDbConnected()) {
+      return User.findOneAndUpdate({ telegramId }, { $set: clean }, { new: true });
+    }
+    const user: any = Object.values(memoryUsers).find((u: any) => u.telegramId === telegramId);
+    if (user) Object.assign(user, clean);
+    return user || null;
+  }
+
+  static async getReminderCandidates(hour: number, today: string): Promise<any[]> {
+    if (isDbConnected()) {
+      return User.find({
+        reminderEnabled: true,
+        telegramId: { $exists: true, $ne: null },
+        reminderHour: { $lte: hour },
+        lastReminderDate: { $ne: today },
+      }).limit(2000);
+    }
+    return Object.values(memoryUsers).filter(
+      (u: any) =>
+        u.reminderEnabled && u.telegramId && (u.reminderHour ?? 20) <= hour && u.lastReminderDate !== today
+    );
+  }
+
+  /** Atomically claims today's reminder so concurrent instances never double-send. */
+  static async claimReminder(telegramId: string, today: string): Promise<boolean> {
+    if (isDbConnected()) {
+      const res = await User.findOneAndUpdate(
+        { telegramId, lastReminderDate: { $ne: today } },
+        { $set: { lastReminderDate: today } }
+      );
+      return Boolean(res);
+    }
+    const user: any = Object.values(memoryUsers).find((u: any) => u.telegramId === telegramId);
+    if (!user || user.lastReminderDate === today) return false;
+    user.lastReminderDate = today;
+    return true;
+  }
+
   // User Progress
   static async getUserProgress(userId: string) {
     if (isDbConnected()) {

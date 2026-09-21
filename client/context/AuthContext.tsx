@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { calculateLevel, checkAchievements, calculateStreak } from '@/lib/gamification';
+import type { ChildProfile } from '@/lib/children';
 
 export interface TelegramUser {
   _id: string;
@@ -27,6 +28,8 @@ export interface TelegramUser {
   phone?: string;
   authProvider?: string;
   lastActiveDate?: string;
+  children?: ChildProfile[];
+  activeChildId?: string;
 }
 
 interface AuthContextType {
@@ -130,7 +133,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           xp: 20,
           streak: 3,
           level: "O‘rganuvchi",
-          completedLessons: ['bolani-tushunishdan-boshlang'],
+          completedLessons: [],
           achievements: ['ilk-qadam'],
           subscriptionStatus: 'free',
           authProvider: 'guest',
@@ -221,7 +224,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       xp: 30,
       streak: 4,
       level: "O‘rganuvchi",
-      completedLessons: ['bolani-tushunishdan-boshlang'],
+      completedLessons: [],
       achievements: ['ilk-qadam', 'uch-kunlik-streak'],
       subscriptionStatus: 'free',
       authProvider: 'telegram',
@@ -480,6 +483,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         streak: newStreak,
         lastActiveDate: new Date().toISOString(),
         completedLessons: newCompleted,
+        // Progress is also tracked per child so each child has their own learning path
+        children: prev.children?.map((c) =>
+          c.id === (prev.activeChildId || prev.children?.[0]?.id) && !c.completedLessons.includes(lessonSlug)
+            ? { ...c, completedLessons: [...c.completedLessons, lessonSlug] }
+            : c
+        ),
         level: levelInfo.level,
         achievements: achResult.unlocked,
       };

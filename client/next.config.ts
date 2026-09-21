@@ -18,6 +18,13 @@ const nextConfig: NextConfig = {
   experimental: {
     optimizePackageImports: ["lucide-react", "framer-motion"],
   },
+  async redirects() {
+    return [
+      { source: "/kurslar", destination: "/darslar", permanent: true },
+      { source: "/kurslar/:slug", destination: "/darslar/:slug", permanent: true },
+      { source: "/onboarding", destination: "/darslar", permanent: true },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders },

@@ -136,6 +136,11 @@ export interface UserProgressData {
   }>;
 }
 
+export interface SearchResults {
+  lessons: Lesson[];
+  articles: Article[];
+}
+
 export class ApiError extends Error {
   statusCode: number;
   details?: any;
@@ -284,6 +289,45 @@ export const api = {
     const { seedArticles } = await loadSeed();
     const item = (seedArticles.find((a) => a.slug === slug) as unknown as Article) || null;
     return item ? localizeEntity(item, lang) : null;
+  },
+
+  // Search across lessons + articles (falls back to bundled content when the API is offline)
+  async search(query: string, lang: string = 'uz'): Promise<SearchResults> {
+    const q = query.trim().slice(0, 80);
+    if (q.length < 2) return { lessons: [], articles: [] };
+
+    const data = await fetchFromApi<SearchResults>(`/search?q=${encodeURIComponent(q)}&lang=${lang}`);
+    if (data && Array.isArray(data.lessons) && Array.isArray(data.articles)) {
+      return {
+        lessons: data.lessons.map((l) => localizeEntity(l, lang)),
+        articles: data.articles.map((a) => localizeEntity(a, lang)),
+      };
+    }
+
+    const { seedLessons, seedArticles } = await loadSeed();
+    // Ignore apostrophe variants (o' / o‘ / oʻ) so "ozbek" and "o‘zbek" both match
+    const norm = (s: string) => (s || '').toLowerCase().replace(/[‘’ʻʼ`']/g, '');
+    const needle = norm(q);
+    const lessons = (seedLessons as unknown as Lesson[])
+      .filter((l) => norm(l.title).includes(needle) || norm(l.summary).includes(needle))
+      .slice(0, 12)
+      .map((l) => {
+        const { screens, translations, ...rest } = localizeEntity(l, lang);
+        return { ...rest, screens: [] } as Lesson;
+      });
+    const articles = (seedArticles as unknown as Article[])
+      .filter(
+        (a) =>
+          norm(a.title).includes(needle) ||
+          norm(a.excerpt).includes(needle) ||
+          (a.tags || []).some((t) => norm(t).includes(needle))
+      )
+      .slice(0, 12)
+      .map((a) => {
+        const { content, translations, ...rest } = localizeEntity(a, lang);
+        return { ...rest, content: '' } as Article;
+      });
+    return { lessons, articles };
   },
 
   // Courses
@@ -438,22 +482,14 @@ export const api = {
         childAgeGroup: '3-5',
         selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
         dailyGoalMinutes: 10,
-        xp: 20,
-        streak: 3,
+        xp: 0,
+        streak: 0,
         level: "O‘rganuvchi",
-        completedLessons: ['bolani-tushunishdan-boshlang'],
+        completedLessons: [],
         achievements: ['ilk-qadam'],
         subscriptionStatus: 'free',
       },
-      progress: [
-        {
-          lessonSlug: 'bolani-tushunishdan-boshlang',
-          isCompleted: true,
-          score: 100,
-          xpEarned: 10,
-          completedAt: new Date().toISOString(),
-        },
-      ],
+      progress: [],
     };
   },
 

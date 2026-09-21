@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton, CourseCardSkeleton } from '@/components/ui/Skeleton';
 
-export default function KurslarLoading() {
+export default function DarslarLoading() {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 space-y-10">
       <div className="text-center space-y-3 max-w-xl mx-auto">

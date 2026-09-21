@@ -5,3 +5,6 @@ export const SITE_DESCRIPTION =
 export const DEFAULT_OG_IMAGE = '/logo.png';
 
 export const absoluteUrl = (path = '/') => `${SITE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+
+// First free lesson — the primary "start now" destination for every CTA
+export const START_LESSON_HREF = '/dars/dars-1-tarbiyaning-ahamiyati-1-qism';

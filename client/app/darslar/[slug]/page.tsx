@@ -20,9 +20,9 @@ export function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const course = await getCourse(slug);
-  if (!course) return { title: 'Kurs topilmadi', robots: { index: false, follow: false } };
+  if (!course) return { title: 'Dars to‘plami topilmadi', robots: { index: false, follow: false } };
 
-  const url = `/kurslar/${course.slug}`;
+  const url = `/darslar/${course.slug}`;
   return {
     title: course.title,
     description: course.description,
@@ -51,7 +51,7 @@ export default async function CourseDetailPage({ params }: Props) {
         '@type': 'Course',
         name: course.title,
         description: course.description,
-        url: absoluteUrl(`/kurslar/${course.slug}`),
+        url: absoluteUrl(`/darslar/${course.slug}`),
         inLanguage: 'uz',
         provider: { '@type': 'Organization', name: SITE_NAME, url: SITE_URL },
         isAccessibleForFree: !course.isPremium,
@@ -62,8 +62,8 @@ export default async function CourseDetailPage({ params }: Props) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Asosiy', item: SITE_URL },
-          { '@type': 'ListItem', position: 2, name: 'Kurslar', item: absoluteUrl('/kurslar') },
-          { '@type': 'ListItem', position: 3, name: course.title, item: absoluteUrl(`/kurslar/${course.slug}`) },
+          { '@type': 'ListItem', position: 2, name: 'Darslar', item: absoluteUrl('/darslar') },
+          { '@type': 'ListItem', position: 3, name: course.title, item: absoluteUrl(`/darslar/${course.slug}`) },
         ],
       },
     ],

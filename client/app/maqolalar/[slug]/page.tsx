@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import ArticleContentReader from '@/components/ArticleContentReader';
-import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/site';
+import { SITE_NAME, SITE_URL, START_LESSON_HREF, absoluteUrl } from '@/lib/site';
 import { seedArticles } from '@/lib/seedData';
 
 // Deduplicates the fetch between generateMetadata() and the page render
@@ -203,17 +203,17 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
         <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
           <Link
-            href="/onboarding"
+            href={START_LESSON_HREF}
             className="w-full sm:w-auto btn-gold text-sm sm:text-base px-6 py-3.5 flex items-center justify-center gap-2"
           >
             <span>Bepul darsni boshlash</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/kurslar"
+            href="/darslar"
             className="w-full sm:w-auto text-xs sm:text-sm font-bold text-emerald-100 hover:text-white px-4 py-2 text-center"
           >
-            Barcha kurslar bilan tanishish →
+            Barcha darslar bilan tanishish →
           </Link>
         </div>
       </div>

@@ -15,7 +15,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav
     'nav.home': 'Asosiy',
     'nav.dashboard': 'O‘quv yo‘li',
-    'nav.courses': 'Kurslar',
+    'nav.courses': 'Darslar',
     'nav.articles': 'Maqolalar',
     'nav.premium': 'Premium',
     'nav.login': 'Kirish',
@@ -47,15 +47,15 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Courses
     'courses.badge': 'Strukturali dasturlar',
-    'courses.title': 'Islomda farzand tarbiyasi kurslari',
+    'courses.title': 'Islomda farzand tarbiyasi darslari',
     'courses.subtitle': '1-55 darslar bo‘yicha tartiblangan, bolaning yoshiga moslashtirilgan interaktiv darslar majmuasi.',
     'courses.all_ages': 'Barcha yoshlar',
-    'courses.free_badge': 'BEPUL ASOSIY KURS',
+    'courses.free_badge': 'BEPUL ASOSIY DARSLAR',
     'courses.premium_badge': 'PREMIUM KONTENT',
     'courses.lessons_count': 'ta dars',
     'courses.duration': 'daqiqa',
-    'courses.start_course': 'Kursni boshlash',
-    'courses.view_course': 'Kursni ko‘rish',
+    'courses.start_course': 'Darslarni boshlash',
+    'courses.view_course': 'Darslarni ko‘rish',
 
     // Dashboard
     'dashboard.welcome': 'Assalomu alaykum',
@@ -88,11 +88,11 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.start': 'Boshlash',
 
     // Course Detail
-    'course_detail.all_courses': 'Kurslar',
+    'course_detail.all_courses': 'Darslar',
     'course_detail.home': 'Asosiy',
     'course_detail.total': 'Jami:',
     'course_detail.start_from_1': '1-darsdan boshlash',
-    'course_detail.syllabus_title': 'Kurs darslari ro‘yxati',
+    'course_detail.syllabus_title': 'Darslar ro‘yxati',
     'course_detail.lesson_btn': 'Dars',
 
     // Footer
@@ -105,7 +105,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav
     'nav.home': 'Home',
     'nav.dashboard': 'Learning Path',
-    'nav.courses': 'Courses',
+    'nav.courses': 'Lessons',
     'nav.articles': 'Articles',
     'nav.premium': 'Premium',
     'nav.login': 'Sign In',
@@ -137,15 +137,15 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Courses
     'courses.badge': 'Structured Curriculum',
-    'courses.title': 'Islamic Child Rearing Courses',
+    'courses.title': 'Islamic Child Rearing Lessons',
     'courses.subtitle': 'Structured interactive micro-courses covering lessons 1–55 tailored to your child\'s age.',
     'courses.all_ages': 'All Ages',
-    'courses.free_badge': 'FREE CORE COURSE',
+    'courses.free_badge': 'FREE CORE LESSONS',
     'courses.premium_badge': 'PREMIUM CONTENT',
     'courses.lessons_count': 'lessons',
     'courses.duration': 'mins',
-    'courses.start_course': 'Start Course',
-    'courses.view_course': 'View Course',
+    'courses.start_course': 'Start Lessons',
+    'courses.view_course': 'View Lessons',
 
     // Dashboard
     'dashboard.welcome': 'Assalamu Alaikum',
@@ -178,7 +178,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.start': 'Start',
 
     // Course Detail
-    'course_detail.all_courses': 'Courses',
+    'course_detail.all_courses': 'Lessons',
     'course_detail.home': 'Home',
     'course_detail.total': 'Total:',
     'course_detail.start_from_1': 'Start from Lesson 1',
@@ -195,7 +195,7 @@ const translations: Record<Language, Record<string, string>> = {
     // Nav
     'nav.home': 'Главная',
     'nav.dashboard': 'Учебный путь',
-    'nav.courses': 'Курсы',
+    'nav.courses': 'Уроки',
     'nav.articles': 'Статьи',
     'nav.premium': 'Премиум',
     'nav.login': 'Войти',
@@ -227,15 +227,15 @@ const translations: Record<Language, Record<string, string>> = {
 
     // Courses
     'courses.badge': 'Структурированная программа',
-    'courses.title': 'Курсы воспитания детей в Исламе',
+    'courses.title': 'Уроки воспитания детей в Исламе',
     'courses.subtitle': 'Комплекс интерактивных уроков по темам 1-55, адаптированных под возраст ребенка.',
     'courses.all_ages': 'Все возрасты',
-    'courses.free_badge': 'БЕСПЛАТНЫЙ БАЗОВЫЙ КУРС',
+    'courses.free_badge': 'БЕСПЛАТНЫЕ БАЗОВЫЕ УРОКИ',
     'courses.premium_badge': 'ПРЕМИУМ КОНТЕНТ',
     'courses.lessons_count': 'уроков',
     'courses.duration': 'мин',
-    'courses.start_course': 'Начать курс',
-    'courses.view_course': 'Открыть курс',
+    'courses.start_course': 'Начать уроки',
+    'courses.view_course': 'Открыть уроки',
 
     // Dashboard
     'dashboard.welcome': 'Ассаляму алейкум',
@@ -268,7 +268,7 @@ const translations: Record<Language, Record<string, string>> = {
     'dashboard.start': 'Начать',
 
     // Course Detail
-    'course_detail.all_courses': 'Курсы',
+    'course_detail.all_courses': 'Уроки',
     'course_detail.home': 'Главная',
     'course_detail.total': 'Всего:',
     'course_detail.start_from_1': 'Начать с 1-го урока',

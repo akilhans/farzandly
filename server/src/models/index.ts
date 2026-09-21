@@ -68,6 +68,9 @@ export interface IUser extends Document {
   isPremium?: boolean;
   premiumExpiresAt?: Date;
   role?: 'user' | 'admin';
+  reminderEnabled?: boolean;
+  reminderHour?: number;
+  lastReminderDate?: string;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -93,6 +96,10 @@ const UserSchema = new Schema<IUser>({
   isPremium: { type: Boolean, default: false },
   premiumExpiresAt: { type: Date },
   role: { type: String, default: 'user', enum: ['user', 'admin'] },
+  // Telegram daily reminder (hour is Asia/Tashkent local time)
+  reminderEnabled: { type: Boolean, default: false, index: true },
+  reminderHour: { type: Number, default: 20, min: 0, max: 23 },
+  lastReminderDate: { type: String },
 }, { timestamps: true });
 
 export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);

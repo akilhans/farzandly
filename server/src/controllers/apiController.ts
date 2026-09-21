@@ -69,6 +69,31 @@ export class ApiController {
     }
   }
 
+  // GET /api/search?q=
+  static async search(req: Request, res: Response) {
+    try {
+      const lang = getReqLang(req);
+      const q = String(req.query.q || '').slice(0, 80);
+      const { lessons, articles } = await DataService.searchContent(q, lang, 12);
+      const plain = (x: any) => (typeof x?.toObject === 'function' ? x.toObject() : x);
+      res.json({
+        success: true,
+        data: {
+          lessons: lessons.map((l: any) => {
+            const { screens, translations, ...rest } = plain(l);
+            return rest;
+          }),
+          articles: articles.map((a: any) => {
+            const { content, translations, ...rest } = plain(a);
+            return rest;
+          }),
+        },
+      });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Qidiruvda xatolik' });
+    }
+  }
+
   // GET /api/courses
   static async getCourses(req: Request, res: Response) {
     try {

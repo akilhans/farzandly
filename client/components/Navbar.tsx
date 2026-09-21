@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import {
   Heart,
   Flame,
@@ -20,6 +20,7 @@ import {
   LogOut,
   ChevronDown,
   Globe,
+  Search,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n, Language } from '@/context/LanguageContext';
@@ -44,7 +45,7 @@ export function Navbar() {
   const navLinks = [
     { href: '/', label: t('nav.home'), icon: Compass },
     { href: '/dashboard', label: t('nav.dashboard'), icon: Compass },
-    { href: '/kurslar', label: t('nav.courses'), icon: Layers },
+    { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
@@ -55,7 +56,7 @@ export function Navbar() {
         <div className="flex items-center justify-between h-16 sm:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
-            <motion.div
+            <m.div
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.96 }}
               className="flex items-center"
@@ -68,7 +69,7 @@ export function Navbar() {
                 className="h-8 sm:h-9 w-auto object-contain"
                 priority
               />
-            </motion.div>
+            </m.div>
           </Link>
 
           {/* Desktop Nav */}
@@ -125,7 +126,7 @@ export function Navbar() {
 
               <AnimatePresence>
                 {langDropdownOpen && (
-                  <motion.div
+                  <m.div
                     initial={{ opacity: 0, y: 8, scale: 0.95 }}
                     animate={{ opacity: 1, y: 0, scale: 1 }}
                     exit={{ opacity: 0, y: 8, scale: 0.95 }}
@@ -150,10 +151,18 @@ export function Navbar() {
                         <span>{l.label}</span>
                       </button>
                     ))}
-                  </motion.div>
+                  </m.div>
                 )}
               </AnimatePresence>
             </div>
+
+            <Link
+              href="/qidiruv"
+              aria-label="Qidiruv"
+              className="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all"
+            >
+              <Search className="w-5 h-5" />
+            </Link>
 
             {/* Telegram Auth Status */}
             {isAuthenticated && user ? (
@@ -184,7 +193,7 @@ export function Navbar() {
                 {/* Dropdown Menu */}
                 <AnimatePresence>
                   {profileDropdownOpen && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -235,7 +244,7 @@ export function Navbar() {
                           <span>Chiqish</span>
                         </button>
                       </div>
-                    </motion.div>
+                    </m.div>
                   )}
                 </AnimatePresence>
               </div>
@@ -264,7 +273,7 @@ export function Navbar() {
       {/* Mobile Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
@@ -333,7 +342,7 @@ export function Navbar() {
                 </Link>
               )}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </header>

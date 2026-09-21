@@ -45,9 +45,9 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
   if (!course) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-slate-800">Kurs topilmadi</h2>
-        <Link href="/kurslar" className="btn-primary inline-flex">
-          Barcha kurslar
+        <h2 className="text-2xl font-bold text-slate-800">Dars to‘plami topilmadi</h2>
+        <Link href="/darslar" className="btn-primary inline-flex">
+          Barcha darslar
         </Link>
       </div>
     );
@@ -63,8 +63,8 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
           {t('course_detail.home', 'Asosiy')}
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <Link href="/kurslar" className="hover:text-emerald-700">
-          {t('course_detail.all_courses', 'Kurslar')}
+        <Link href="/darslar" className="hover:text-emerald-700">
+          {t('course_detail.all_courses', 'Darslar')}
         </Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <span className="text-slate-600 line-clamp-1">{course.title}</span>
@@ -82,7 +82,7 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
             </span>
           ) : (
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full">
-              {t('courses.free_badge', 'BEPUL ASOSIY KURS')}
+              {t('courses.free_badge', 'BEPUL ASOSIY DARSLAR')}
             </span>
           )}
           <span className="ml-auto text-slate-400 flex items-center gap-1">
@@ -114,7 +114,7 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
       {/* Curriculum Syllabus */}
       <div className="space-y-4">
         <h2 className="text-xl sm:text-2xl font-black text-slate-800">
-          {t('course_detail.syllabus_title', 'Kurs darslari ro‘yxati')} ({lessons.length} {t('courses.lessons_count', 'ta dars')})
+          {t('course_detail.syllabus_title', 'Darslar ro‘yxati')} ({lessons.length} {t('courses.lessons_count', 'ta dars')})
         </h2>
 
         <div className="space-y-3">

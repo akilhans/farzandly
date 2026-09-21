@@ -6,8 +6,9 @@ import { useSearchParams } from 'next/navigation';
 import { Clock, BookOpen, Crown, ArrowRight, Baby } from 'lucide-react';
 import { api, Course, AgeGroup } from '@/lib/api';
 import { useI18n } from '@/context/LanguageContext';
+import SearchForm from '@/components/SearchForm';
 
-function KurslarContent() {
+function DarslarContent() {
   const searchParams = useSearchParams();
   const ageGroupParam = searchParams.get('ageGroup') || undefined;
   const categoryParam = searchParams.get('category') || undefined;
@@ -38,17 +39,19 @@ function KurslarContent() {
           {t('courses.badge', 'Strukturali dasturlar')}
         </span>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">
-          {t('courses.title', 'Tarbiya kurslari')}
+          {t('courses.title', 'Tarbiya darslari')}
         </h1>
         <p className="text-sm sm:text-base text-slate-500">
           {t('courses.subtitle', 'Bolaning yoshiga moslashtirilgan, bosqichma-bosqich qisqa interaktiv darslar majmuasi.')}
         </p>
       </div>
 
+      <SearchForm className="max-w-2xl mx-auto" />
+
       {/* Age Group Filter Tabs */}
       <div className="flex items-center justify-center flex-wrap gap-2">
         <Link
-          href="/kurslar"
+          href="/darslar"
           className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
             !ageGroupParam
               ? 'bg-emerald-600 text-white shadow-sm'
@@ -62,7 +65,7 @@ function KurslarContent() {
           return (
             <Link
               key={ag.code}
-              href={`/kurslar?ageGroup=${ag.code}`}
+              href={`/darslar?ageGroup=${ag.code}`}
               className={`px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold transition-all ${
                 isActive
                   ? 'bg-emerald-600 text-white shadow-sm'
@@ -119,7 +122,7 @@ function KurslarContent() {
 
             <div className="pt-5 mt-4 border-t border-slate-100">
               <Link
-                href={`/kurslar/${course.slug}`}
+                href={`/darslar/${course.slug}`}
                 className="w-full btn-primary text-xs sm:text-sm py-2.5 flex items-center justify-center gap-1.5"
               >
                 <span>{t('courses.view_course', 'Dasturni ko‘rish')}</span>
@@ -133,10 +136,10 @@ function KurslarContent() {
   );
 }
 
-export default function KurslarPage() {
+export default function DarslarPage() {
   return (
     <Suspense fallback={<div className="p-12 text-center text-slate-400">Yuklanmoqda...</div>}>
-      <KurslarContent />
+      <DarslarContent />
     </Suspense>
   );
 }

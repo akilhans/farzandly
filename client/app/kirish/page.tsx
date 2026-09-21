@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import {
   Send,
   ShieldCheck,
@@ -119,7 +119,7 @@ export default function KirishPage() {
         aria-hidden="true"
       />
 
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 16, scale: 0.99 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.35, ease: 'easeOut' }}
@@ -185,7 +185,7 @@ export default function KirishPage() {
         {/* Feedback alerts */}
         <AnimatePresence mode="wait">
           {errorMessage && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -195,11 +195,11 @@ export default function KirishPage() {
             >
               <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" aria-hidden="true" />
               <span>{errorMessage}</span>
-            </motion.div>
+            </m.div>
           )}
 
           {successMessage && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: -8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
@@ -209,7 +209,7 @@ export default function KirishPage() {
             >
               <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" aria-hidden="true" />
               <span>{successMessage}</span>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
 
@@ -365,7 +365,7 @@ export default function KirishPage() {
             Ma’lumotlaringiz xavfsiz himoyalangan. Parollar maxfiy shifrlangan holda saqlanadi.
           </p>
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }

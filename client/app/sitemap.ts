@@ -8,9 +8,8 @@ const BUILD_DATE = new Date();
 export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 1.0 },
-    { url: `${SITE_URL}/onboarding`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.9 },
     { url: `${SITE_URL}/maqolalar`, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${SITE_URL}/kurslar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/darslar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/premium`, lastModified: BUILD_DATE, changeFrequency: 'monthly', priority: 0.7 },
   ];
 
@@ -22,7 +21,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   }));
 
   const courseRoutes: MetadataRoute.Sitemap = seedCourses.map((course) => ({
-    url: `${SITE_URL}/kurslar/${course.slug}`,
+    url: `${SITE_URL}/darslar/${course.slug}`,
     lastModified: BUILD_DATE,
     changeFrequency: 'weekly',
     priority: 0.8,

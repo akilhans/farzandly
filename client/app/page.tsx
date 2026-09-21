@@ -16,6 +16,10 @@ import {
   Star,
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { START_LESSON_HREF } from '@/lib/site';
+import SearchForm from '@/components/SearchForm';
+
+const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
 export default async function HomePage() {
   const [categories, ageGroups, sampleArticles] = await Promise.all([
@@ -59,20 +63,23 @@ export default async function HomePage() {
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <Link
-                  href="/onboarding"
+                  href={START_LESSON_HREF}
                   className="w-full sm:w-auto btn-primary text-base sm:text-lg px-8 py-3.5 sm:py-4 gap-3 shadow-lg shadow-emerald-600/25 cursor-pointer"
                 >
-                  <span>Hoziroq bepul boshlang</span>
+                  <span>1-darsni bepul boshlash · 5 daqiqa</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
 
                 <Link
-                  href="/kurslar"
+                  href="/darslar"
                   className="w-full sm:w-auto btn-outline text-base sm:text-lg px-7 py-3.5 sm:py-4 cursor-pointer"
                 >
-                  Dastur bilan tanishish
+                  Barcha darslar
                 </Link>
               </div>
+
+              {/* Search */}
+              <SearchForm className="max-w-xl mx-auto lg:mx-0" />
 
               {/* Social proof microcopy */}
               <div className="pt-3 flex flex-wrap items-center justify-center lg:justify-start gap-4 text-xs font-semibold text-slate-500">
@@ -94,7 +101,7 @@ export default async function HomePage() {
                 {/* Floating Streak Badge */}
                 <div className="absolute -top-4 -right-2 bg-amber-500 text-white font-black text-xs px-3.5 py-1.5 rounded-full border-b-2 border-amber-700 flex items-center gap-1.5 shadow-md">
                   <Flame className="w-4 h-4 fill-white animate-bounce" />
-                  <span>3 KUNLIK STREAK</span>
+                  <span>BEPUL · RO‘YXATSIZ</span>
                 </div>
 
                 <div className="flex items-center gap-3 border-b border-slate-100 pb-4">
@@ -124,7 +131,7 @@ export default async function HomePage() {
                     href="/dars/dars-1-tarbiyaning-ahamiyati-1-qism"
                     className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>1-darsni bepul boshlash (+10 XP)</span>
+                    <span>Hozir boshlash — bepul (+10 XP)</span>
                     <Star className="w-4 h-4 fill-amber-300 text-amber-300" />
                   </Link>
                 </div>
@@ -148,7 +155,7 @@ export default async function HomePage() {
           {ageGroups.map((ag) => (
             <Link
               key={ag.code}
-              href={`/onboarding?age=${ag.code}`}
+              href={`/darslar?ageGroup=${ag.code}`}
               className="card-farzandly p-5 text-center group hover:border-emerald-500 hover:-translate-y-1 transition-all flex flex-col justify-between"
             >
               <div className="space-y-3">
@@ -357,45 +364,70 @@ export default async function HomePage() {
           </div>
 
           <div className="space-y-4">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-300">
-              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold">
-                ✓
-              </div>
-              <div className="flex-1">
-                <span className="text-xs font-bold text-emerald-700">1-DARS • TAMOMLANDI</span>
-                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (1-qism)</h4>
-              </div>
-              <span className="text-xs font-bold text-emerald-700">+10 XP</span>
-            </div>
-
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-white border-2 border-amber-400 shadow-sm relative overflow-hidden">
               <div className="absolute left-0 top-0 bottom-0 w-1.5 bg-amber-500" />
               <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center font-bold animate-pulse">
                 ▶
               </div>
               <div className="flex-1">
-                <span className="text-xs font-bold text-amber-600">2-DARS • NAVBATDAGI DARS</span>
-                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (2-qism)</h4>
+                <span className="text-xs font-bold text-amber-600">1-DARS • BEPUL</span>
+                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (1-qism)</h4>
               </div>
-              <Link
-                href="/dars/dars-2-tarbiyaning-ahamiyati-2-qism"
-                className="btn-primary text-xs px-3.5 py-2"
-              >
+              <Link href={START_LESSON_HREF} className="btn-primary text-xs px-3.5 py-2">
                 Boshlash
               </Link>
             </div>
 
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200 opacity-70">
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-emerald-50 border-2 border-emerald-200">
+              <div className="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold">
+                2
+              </div>
+              <div className="flex-1">
+                <span className="text-xs font-bold text-emerald-700">2-DARS • BEPUL</span>
+                <h4 className="font-bold text-slate-800 text-sm">Tarbiyaning ahamiyati (2-qism)</h4>
+              </div>
+              <Link href="/dars/dars-2-tarbiyaning-ahamiyati-2-qism" className="btn-outline text-xs px-3.5 py-2">
+                Ochish
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-200">
               <div className="w-10 h-10 rounded-xl bg-slate-200 text-slate-500 flex items-center justify-center font-bold">
                 🔒
               </div>
               <div className="flex-1">
-                <span className="text-xs font-bold text-slate-600">3-DARS • QULFLANGAN</span>
-                <h4 className="font-bold text-slate-700 text-sm">Tarbiyaning ahamiyati (3-qism)</h4>
+                <span className="text-xs font-bold text-slate-600">11-DARSDAN • PREMIUM</span>
+                <h4 className="font-bold text-slate-700 text-sm">Chuqurlashtirilgan darslar va amaliy topshiriqlar</h4>
               </div>
-              <span className="text-xs font-bold text-slate-600">+10 XP</span>
+              <Link href="/premium" className="text-xs font-bold text-amber-700 hover:underline">
+                Batafsil
+              </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* FINAL CTA */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-5">
+        <h2 className="text-2xl sm:text-4xl font-black text-slate-800">Bugun atigi 5 daqiqa ajrating</h2>
+        <p className="text-sm sm:text-base text-slate-500 max-w-xl mx-auto">
+          Ro‘yxatdan o‘tmasdan birinchi darsni boshlang. Natijalaringiz saqlanishi uchun keyinroq kirish mumkin.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link href={START_LESSON_HREF} className="w-full sm:w-auto btn-primary text-base px-8 py-3.5 gap-2 shadow-lg shadow-emerald-600/25">
+            <span>Birinchi darsni boshlash</span>
+            <ArrowRight className="w-5 h-5" />
+          </Link>
+          {BOT_USERNAME && (
+            <a
+              href={`https://t.me/${BOT_USERNAME}?start=eslatma`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto btn-secondary text-base px-8 py-3.5"
+            >
+              Telegram botda eslatma olish
+            </a>
+          )}
         </div>
       </section>
 

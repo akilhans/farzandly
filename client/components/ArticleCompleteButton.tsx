@@ -1,7 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import confetti from 'canvas-confetti';
+// Loaded on demand so the confetti library isn't part of the initial bundle
+const fireConfetti = (opts: import('canvas-confetti').Options) => import('canvas-confetti').then((mod) => mod.default(opts));
 import { Star, CheckCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { playChimeSound } from '@/lib/gamification';
@@ -20,7 +21,7 @@ export default function ArticleCompleteButton({ articleSlug }: Props) {
     playChimeSound('bonus');
 
     try {
-      confetti({
+      fireConfetti({
         particleCount: 50,
         spread: 60,
         origin: { y: 0.8 },

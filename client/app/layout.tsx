@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import MotionProvider from "@/components/MotionProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
 
@@ -94,7 +95,7 @@ const siteJsonLd = {
       publisher: { "@id": `${SITE_URL}/#organization` },
       potentialAction: {
         "@type": "SearchAction",
-        target: `${SITE_URL}/maqolalar?search={search_term_string}`,
+        target: `${SITE_URL}/qidiruv?q={search_term_string}`,
         "query-input": "required name=search_term_string",
       },
     },
@@ -137,9 +138,11 @@ export default function RootLayout({
         </a>
         <LanguageProvider>
           <AuthProvider>
-            <Navbar />
-            <main id="main-content" className="flex-1">{children}</main>
-            <Footer />
+            <MotionProvider>
+              <Navbar />
+              <main id="main-content" className="flex-1">{children}</main>
+              <Footer />
+            </MotionProvider>
           </AuthProvider>
         </LanguageProvider>
       </body>

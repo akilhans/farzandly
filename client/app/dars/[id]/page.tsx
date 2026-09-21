@@ -3,8 +3,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import confetti from 'canvas-confetti';
-import { motion, AnimatePresence } from 'framer-motion';
+// Loaded on demand so the confetti library isn't part of the initial bundle
+const fireConfetti = (opts: import('canvas-confetti').Options) => import('canvas-confetti').then((mod) => mod.default(opts));
+import { m, AnimatePresence } from 'framer-motion';
 import {
   X,
   ArrowRight,
@@ -112,7 +113,7 @@ export default function LessonRunnerPage() {
 
       // Trigger Confetti celebration
       try {
-        confetti({
+        fireConfetti({
           particleCount: 110,
           spread: 85,
           origin: { y: 0.6 },
@@ -145,7 +146,7 @@ export default function LessonRunnerPage() {
     if (correct) {
       playChimeSound('correct');
       try {
-        confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
+        fireConfetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
       } catch {}
     } else {
       setHasFailedQuiz(true);
@@ -249,7 +250,7 @@ export default function LessonRunnerPage() {
               {lesson.title}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              «1–10-darslar: Tarbiya asoslari» kursi barcha uchun mutlaqo bepul. 11-darsdan boshlab barcha chuqurlashtirilgan darslar, amaliy topshiriqlar va video/audio tahlillar Premium obunachilar uchundir.
+              «1–10-darslar: Tarbiya asoslari» darslari barcha uchun mutlaqo bepul. 11-darsdan boshlab barcha chuqurlashtirilgan darslar, amaliy topshiriqlar va video/audio tahlillar Premium obunachilar uchundir.
             </p>
           </div>
 
@@ -280,7 +281,7 @@ export default function LessonRunnerPage() {
             </button>
 
             <Link
-              href="/kurslar/tarbiya-asoslari-va-boshlangich-himoya"
+              href="/darslar/tarbiya-asoslari-va-boshlangich-himoya"
               className="w-full btn-outline text-xs sm:text-sm py-3 flex items-center justify-center gap-2"
             >
               <span>Bepul darslarga o‘tish (1–10 darslar)</span>
@@ -316,7 +317,7 @@ export default function LessonRunnerPage() {
 
           {/* Progress Bar */}
           <div className="flex-1 h-3.5 bg-slate-200 rounded-full overflow-hidden p-0.5">
-            <motion.div
+            <m.div
               className="h-full bg-emerald-500 rounded-full shadow-sm"
               initial={{ width: 0 }}
               animate={{ width: `${progressPercent}%` }}
@@ -349,7 +350,7 @@ export default function LessonRunnerPage() {
         {/* Video Embed Section */}
         <AnimatePresence>
           {showVideo && lesson.videoUrl && (
-            <motion.div
+            <m.div
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
@@ -364,7 +365,7 @@ export default function LessonRunnerPage() {
                   className="w-full h-full border-0"
                 />
               </div>
-            </motion.div>
+            </m.div>
           )}
         </AnimatePresence>
       </div>
@@ -374,7 +375,7 @@ export default function LessonRunnerPage() {
         <AnimatePresence mode="wait">
           {isFinished ? (
             /* VICTORY / COMPLETION SCREEN */
-            <motion.div
+            <m.div
               key="victory"
               initial={{ opacity: 0, scale: 0.95, y: 15 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -418,18 +419,18 @@ export default function LessonRunnerPage() {
               </div>
 
               {perfectBonus && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 max-w-sm mx-auto flex items-center justify-center gap-2 text-amber-900 font-bold text-xs sm:text-sm shadow-xs"
                 >
                   <Sparkles className="w-4 h-4 text-amber-600 fill-amber-500" />
                   <span>A’lochi bonusi: +5 XP mukofotlandi! (100% to‘g‘ri)</span>
-                </motion.div>
+                </m.div>
               )}
 
               {unlockedBadges.length > 0 && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-2xl p-4 max-w-sm mx-auto space-y-1 text-center shadow-md"
@@ -441,7 +442,7 @@ export default function LessonRunnerPage() {
                   <p className="font-extrabold text-sm text-slate-800">
                     {unlockedBadges.join(', ')}
                   </p>
-                </motion.div>
+                </m.div>
               )}
 
               <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -467,10 +468,10 @@ export default function LessonRunnerPage() {
                   {!nextLessonSlug && <ArrowRight className="w-5 h-5" />}
                 </button>
               </div>
-            </motion.div>
+            </m.div>
           ) : currentScreen ? (
             /* STEP SCREENS */
-            <motion.div
+            <m.div
               key={currentScreenIdx}
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -556,7 +557,7 @@ export default function LessonRunnerPage() {
                       }
 
                       return (
-                        <motion.button
+                        <m.button
                           key={idx}
                           whileHover={{ scale: isAnswerChecked ? 1 : 1.01 }}
                           whileTap={{ scale: isAnswerChecked ? 1 : 0.99 }}
@@ -575,14 +576,14 @@ export default function LessonRunnerPage() {
                               )}
                             </span>
                           )}
-                        </motion.button>
+                        </m.button>
                       );
                     })}
                   </div>
 
                   {/* Feedback note after checking */}
                   {isAnswerChecked && (
-                    <motion.div
+                    <m.div
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
                       className={`p-4 rounded-2xl border-2 text-xs sm:text-sm ${
@@ -595,11 +596,11 @@ export default function LessonRunnerPage() {
                         {isCorrect ? t('lesson.correct') : t('lesson.incorrect')}
                       </p>
                       <p>{currentScreen.quizExplanation}</p>
-                    </motion.div>
+                    </m.div>
                   )}
                 </div>
               )}
-            </motion.div>
+            </m.div>
           ) : null}
         </AnimatePresence>
       </div>

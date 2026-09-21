@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import {
   User as UserIcon,
   Flame,
@@ -33,12 +33,17 @@ import {
   Clock,
   Heart,
   ChevronRight,
+  Plus,
+  X,
 } from 'lucide-react';
 import { api, Achievement } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
+import { AGE_GROUP_OPTIONS, MAX_CHILDREN, normalizeAgeGroup, type ChildProfile } from '@/lib/children';
 import { calculateLevel, playChimeSound } from '@/lib/gamification';
+
+const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
 export default function ProfilePage() {
   const { user, isAuthenticated, logout, updateUserProfile } = useAuth();
@@ -56,7 +61,10 @@ export default function ProfilePage() {
   const [formName, setFormName] = useState(user?.name || '');
   const [formPhone, setFormPhone] = useState(user?.phone || '');
   const [formTelegramUsername, setFormTelegramUsername] = useState(user?.telegramUsername || '');
-  const [formAgeGroup, setFormAgeGroup] = useState(user?.childAgeGroup || '3-5');
+  const [formAgeGroup, setFormAgeGroup] = useState(normalizeAgeGroup(user?.childAgeGroup));
+  const [formChildren, setFormChildren] = useState<ChildProfile[]>(user?.children || []);
+  const [formActiveChildId, setFormActiveChildId] = useState(user?.activeChildId || '');
+  const [newChildName, setNewChildName] = useState('');
   const [formDailyGoal, setFormDailyGoal] = useState<number>(user?.dailyGoalMinutes || 10);
   const [formInterests, setFormInterests] = useState<string[]>(
     user?.selectedInterests && user.selectedInterests.length > 0
@@ -66,8 +74,6 @@ export default function ProfilePage() {
 
   // Sound preference state
   const [soundEnabled, setSoundEnabled] = useState(true);
-  const [reminderTime, setReminderTime] = useState('20:00');
-  const [reminderEnabled, setReminderEnabled] = useState(true);
 
   // Save toast notification
   const [saveSuccess, setSaveSuccess] = useState(false);
@@ -83,10 +89,6 @@ export default function ProfilePage() {
     if (typeof window !== 'undefined') {
       const soundPref = localStorage.getItem('farzandly_sound_enabled');
       if (soundPref === 'false') setSoundEnabled(false);
-      const remPref = localStorage.getItem('farzandly_reminder_time');
-      if (remPref) setReminderTime(remPref);
-      const remEnabled = localStorage.getItem('farzandly_reminder_enabled');
-      if (remEnabled === 'false') setReminderEnabled(false);
     }
   }, []);
 
@@ -96,7 +98,9 @@ export default function ProfilePage() {
       setFormName(user.name || '');
       setFormPhone(user.phone || '');
       setFormTelegramUsername(user.telegramUsername || '');
-      setFormAgeGroup(user.childAgeGroup || '3-5');
+      setFormAgeGroup(normalizeAgeGroup(user.childAgeGroup));
+      setFormChildren(user.children || []);
+      setFormActiveChildId(user.activeChildId || '');
       setFormDailyGoal(user.dailyGoalMinutes || 10);
       if (user.selectedInterests && user.selectedInterests.length > 0) {
         setFormInterests(user.selectedInterests);
@@ -105,8 +109,8 @@ export default function ProfilePage() {
   }, [user]);
 
   const completed = user?.completedLessons || [];
-  const xp = user?.xp || 20;
-  const streak = user?.streak || 3;
+  const xp = user?.xp || 0;
+  const streak = user?.streak || 0;
   const levelInfo = calculateLevel(xp, language);
   const level = user?.level || levelInfo.level;
 
@@ -135,6 +139,37 @@ export default function ProfilePage() {
     }
   };
 
+  // --- Child profiles ---
+  const selectAgeGroup = (code: string) => {
+    setFormAgeGroup(code);
+    if (formActiveChildId) {
+      setFormChildren((prev) => prev.map((c) => (c.id === formActiveChildId ? { ...c, ageGroup: code } : c)));
+    }
+  };
+
+  const selectChild = (child: ChildProfile) => {
+    setFormActiveChildId(child.id);
+    setFormAgeGroup(child.ageGroup);
+  };
+
+  const addChild = () => {
+    const name = newChildName.trim();
+    if (!name || formChildren.length >= MAX_CHILDREN) return;
+    const child: ChildProfile = { id: `child_${Date.now()}`, name, ageGroup: formAgeGroup, completedLessons: [] };
+    setFormChildren((prev) => [...prev, child]);
+    setFormActiveChildId(child.id);
+    setNewChildName('');
+  };
+
+  const removeChild = (id: string) => {
+    const remaining = formChildren.filter((c) => c.id !== id);
+    setFormChildren(remaining);
+    if (formActiveChildId === id) {
+      setFormActiveChildId(remaining[0]?.id || '');
+      if (remaining[0]) setFormAgeGroup(remaining[0].ageGroup);
+    }
+  };
+
   // Save Settings Handler
   const handleSaveSettings = () => {
     updateUserProfile({
@@ -142,14 +177,14 @@ export default function ProfilePage() {
       phone: formPhone.trim(),
       telegramUsername: formTelegramUsername.trim().replace(/^@/, ''),
       childAgeGroup: formAgeGroup,
+      children: formChildren,
+      activeChildId: formActiveChildId || undefined,
       dailyGoalMinutes: formDailyGoal,
       selectedInterests: formInterests,
     });
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('farzandly_sound_enabled', String(soundEnabled));
-      localStorage.setItem('farzandly_reminder_time', reminderTime);
-      localStorage.setItem('farzandly_reminder_enabled', String(reminderEnabled));
     }
 
     if (soundEnabled) {
@@ -160,13 +195,7 @@ export default function ProfilePage() {
     setTimeout(() => setSaveSuccess(false), 3000);
   };
 
-  const ageGroupOptions = [
-    { code: '0-2', label: '0–2 yosh', desc: 'Chaqaloqlik va ilk qadamlar' },
-    { code: '3-5', label: '3–5 yosh', desc: 'Bog‘cha va mustaqillik davri' },
-    { code: '6-9', label: '6–9 yosh', desc: 'Kichik maktab va qiziqishlar' },
-    { code: '10-13', label: '10–13 yosh', desc: 'O‘smirlikka o‘tish va xarakter' },
-    { code: '14-18', label: '14–18 yosh', desc: 'Balog‘at va shaxs kamoloti' },
-  ];
+  const ageGroupOptions = AGE_GROUP_OPTIONS;
 
   const availableInterests = [
     'Bola xulqi',
@@ -188,7 +217,7 @@ export default function ProfilePage() {
       {/* Save Success Toast */}
       <AnimatePresence>
         {saveSuccess && (
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -196,12 +225,12 @@ export default function ProfilePage() {
           >
             <CheckCircle className="w-5 h-5 text-emerald-300" />
             <span>Sozlamalar muvaffaqiyatli saqlandi!</span>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
 
       {/* Profile Header Card */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -324,7 +353,7 @@ export default function ProfilePage() {
               <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
             </div>
             <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-              <motion.div
+              <m.div
                 className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${levelInfo.progressPercent}%` }}
@@ -333,7 +362,7 @@ export default function ProfilePage() {
             </div>
           </div>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* Navigation Tabs: Overview vs Settings */}
       <div className="flex items-center gap-2 border-b-2 border-slate-200 pb-1">
@@ -369,31 +398,31 @@ export default function ProfilePage() {
         <div className="space-y-8 animate-in fade-in duration-200">
           {/* 4 Metric Cards */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-            <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+            <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-1.5">
                 <Flame className="w-6 h-6 fill-orange-500" />
               </div>
               <span className="text-xl sm:text-2xl font-black text-slate-800">{streak} kun</span>
               <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Uzluksiz streak</p>
-            </motion.div>
+            </m.div>
 
-            <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+            <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-1.5">
                 <Star className="w-6 h-6 fill-amber-500" />
               </div>
               <span className="text-xl sm:text-2xl font-black text-slate-800">{xp} XP</span>
               <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">To‘plangan ballar</p>
-            </motion.div>
+            </m.div>
 
-            <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+            <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5">
                 <CheckCircle className="w-6 h-6 text-emerald-600" />
               </div>
               <span className="text-xl sm:text-2xl font-black text-slate-800">{completed.length} ta</span>
               <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Darslar o‘tildi</p>
-            </motion.div>
+            </m.div>
 
-            <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+            <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-1.5">
                 <Trophy className="w-6 h-6 text-purple-600 fill-purple-400" />
               </div>
@@ -401,7 +430,7 @@ export default function ProfilePage() {
                 {achievements.filter((a) => (user?.achievements && user.achievements.includes(a.code)) || xp >= a.xpRequired).length} / {achievements.length}
               </span>
               <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Ochilgan nishonlar</p>
-            </motion.div>
+            </m.div>
           </div>
 
           {/* Achievements Grid */}
@@ -423,7 +452,7 @@ export default function ProfilePage() {
                 const progress = Math.min(100, Math.round((xp / Math.max(1, ach.xpRequired)) * 100));
 
                 return (
-                  <motion.div
+                  <m.div
                     key={ach.code}
                     whileHover={{ scale: isUnlocked ? 1.01 : 1 }}
                     className={`p-4 rounded-2xl border-2 transition-all flex items-start gap-4 ${
@@ -467,7 +496,7 @@ export default function ProfilePage() {
                         )}
                       </div>
                     </div>
-                  </motion.div>
+                  </m.div>
                 );
               })}
             </div>
@@ -542,10 +571,73 @@ export default function ProfilePage() {
               <h2>Farzand va ta’lim parametrlari</h2>
             </div>
 
+            {/* Farzandlar (child profiles) */}
+            <div className="space-y-3">
+              <label className="text-xs font-bold text-slate-700 block">
+                Farzandlaringiz (har birining o‘z yoshi va o‘quv yo‘li bo‘ladi):
+              </label>
+              <div className="flex flex-wrap gap-2">
+                {formChildren.map((child) => {
+                  const isActive = child.id === (formActiveChildId || formChildren[0]?.id);
+                  return (
+                    <div
+                      key={child.id}
+                      className={`inline-flex items-center rounded-2xl border-2 text-xs font-bold overflow-hidden ${
+                        isActive ? 'border-emerald-600 bg-emerald-50 text-emerald-800' : 'border-slate-200 bg-white text-slate-600'
+                      }`}
+                    >
+                      <button type="button" onClick={() => selectChild(child)} className="px-3 py-1.5 flex items-center gap-1.5 cursor-pointer">
+                        <Baby className="w-3.5 h-3.5" />
+                        <span>{child.name}</span>
+                        <span className="text-slate-400">{child.ageGroup}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeChild(child.id)}
+                        aria-label={`${child.name} profilini o‘chirish`}
+                        className="px-2 py-1.5 text-slate-400 hover:text-red-600 cursor-pointer"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  );
+                })}
+                {formChildren.length === 0 && (
+                  <p className="text-xs text-slate-500">Hali farzand qo‘shilmagan. Ism yozing va pastdagi yoshni tanlab qo‘shing.</p>
+                )}
+              </div>
+              {formChildren.length < MAX_CHILDREN && (
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={newChildName}
+                    maxLength={30}
+                    onChange={(e) => setNewChildName(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addChild();
+                      }
+                    }}
+                    placeholder="Farzand ismi"
+                    className="flex-1 bg-white border-2 border-slate-200 focus:border-emerald-500 outline-none rounded-xl px-3 py-2 text-sm font-medium"
+                  />
+                  <button
+                    type="button"
+                    onClick={addChild}
+                    disabled={!newChildName.trim()}
+                    className="btn-primary text-xs px-4 py-2.5 gap-1 disabled:opacity-50 cursor-pointer"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Qo‘shish
+                  </button>
+                </div>
+              )}
+            </div>
+
             {/* Yosh guruhi */}
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-700 block">
-                Farzandingizning yosh guruhi (tavsiya etiluvchi darslar shunga moslashadi):
+                Tanlangan farzandning yosh guruhi (tavsiya etiluvchi darslar shunga moslashadi):
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                 {ageGroupOptions.map((ag) => {
@@ -554,7 +646,7 @@ export default function ProfilePage() {
                     <button
                       key={ag.code}
                       type="button"
-                      onClick={() => setFormAgeGroup(ag.code)}
+                      onClick={() => selectAgeGroup(ag.code)}
                       className={`p-3 rounded-2xl border-2 text-left transition-all cursor-pointer ${
                         isSelected
                           ? 'border-emerald-600 bg-emerald-50/80 shadow-xs'
@@ -713,29 +805,22 @@ export default function ProfilePage() {
                 </div>
                 <div>
                   <div className="text-sm font-bold text-slate-800">Kunlik dars eslatmasi</div>
-                  <div className="text-xs text-slate-500">Kechki payt darsni o‘tkazib yubormaslik uchun</div>
+                  <div className="text-xs text-slate-500">Telegram bot har kuni tanlangan vaqtda keyingi darsingizni eslatadi</div>
                 </div>
               </div>
 
-              <div className="flex items-center gap-2">
-                <input
-                  type="time"
-                  value={reminderTime}
-                  onChange={(e) => setReminderTime(e.target.value)}
-                  className="bg-white border border-slate-200 rounded-xl px-2.5 py-1.5 text-xs font-bold text-slate-800"
-                />
-                <button
-                  type="button"
-                  onClick={() => setReminderEnabled(!reminderEnabled)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                    reminderEnabled
-                      ? 'bg-emerald-600 text-white'
-                      : 'bg-slate-200 text-slate-600'
-                  }`}
+              {BOT_USERNAME ? (
+                <a
+                  href={`https://t.me/${BOT_USERNAME}?start=eslatma`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="btn-secondary text-xs px-4 py-2.5 gap-1.5"
                 >
-                  {reminderEnabled ? 'Faol' : 'O‘chiq'}
-                </button>
-              </div>
+                  <Send className="w-3.5 h-3.5" /> Botda sozlash
+                </a>
+              ) : (
+                <span className="text-xs font-bold text-slate-500">Botga <code>/eslatma</code> yuboring</span>
+              )}
             </div>
           </div>
 
@@ -760,7 +845,7 @@ export default function ProfilePage() {
                           ? `Amal qilish muddati: ${new Date(user.premiumExpiresAt).toLocaleDateString('uz-UZ')}`
                           : 'Muddatsiz obuna'
                       }`
-                    : 'Hozirda faqat 1–10-darslar va asosiy maqolalar ochiq. To‘liq kurslarni ochish uchun Premium kontentni faollashtiring.'}
+                    : 'Hozirda faqat 1–10-darslar va asosiy maqolalar ochiq. To‘liq darslarni ochish uchun Premium kontentni faollashtiring.'}
                 </p>
               </div>
 

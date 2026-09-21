@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import {
   Crown,
   Check,
@@ -18,6 +18,7 @@ import {
   Lock,
 } from 'lucide-react';
 import PaymentModal from '@/components/PaymentModal';
+import { START_LESSON_HREF } from '@/lib/site';
 
 export default function PremiumPage() {
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
@@ -35,7 +36,7 @@ export default function PremiumPage() {
   const faqs = [
     {
       q: "Qaysi darslar va maqolalar bepul taqdim etiladi?",
-      a: "Platformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya» kursi hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi har bir ota-ona uchun umrbod bepul. Boshqa barcha chuqurlashtirilgan 56 ta dars, barcha audio-hikmatlar va ilmiy tahliliy maqolalar Premium kontent hisoblanadi.",
+      a: "Platformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya» darslari hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi har bir ota-ona uchun umrbod bepul. Boshqa barcha chuqurlashtirilgan 56 ta dars, barcha audio-hikmatlar va ilmiy tahliliy maqolalar Premium kontent hisoblanadi.",
     },
     {
       q: "To‘lov qanday amalga oshiriladi?",
@@ -116,7 +117,7 @@ export default function PremiumPage() {
             <ul className="space-y-3 text-xs sm:text-sm text-slate-600 pt-4 border-t border-slate-100">
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-semibold text-slate-800">1–10-darslar (Tarbiya asoslari kursi)</span>
+                <span className="font-semibold text-slate-800">1–10-darslar (Tarbiya asoslari)</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
@@ -141,7 +142,7 @@ export default function PremiumPage() {
             </ul>
           </div>
 
-          <Link href="/onboarding" className="w-full btn-outline text-sm py-3.5 text-center">
+          <Link href={START_LESSON_HREF} className="w-full btn-outline text-sm py-3.5 text-center">
             Bepul darslarni boshlash
           </Link>
         </div>

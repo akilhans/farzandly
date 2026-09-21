@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import {
   Flame,
   Star,
@@ -27,6 +27,8 @@ import { api, Lesson } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
+import ChildSwitcher from '@/components/ChildSwitcher';
+import { getActiveChild, normalizeAgeGroup } from '@/lib/children';
 import { calculateLevel, getWeeklyLeaderboard } from '@/lib/gamification';
 
 export default function DashboardPage() {
@@ -40,7 +42,7 @@ export default function DashboardPage() {
     async function loadData() {
       const allLessons = await api.getLessons({
         lang: language,
-        ageGroup: authUser?.childAgeGroup || undefined,
+        ageGroup: authUser?.childAgeGroup ? normalizeAgeGroup(authUser.childAgeGroup) : undefined,
       });
       setLessons(allLessons || []);
       setLoading(false);
@@ -48,9 +50,10 @@ export default function DashboardPage() {
     loadData();
   }, [authUser?.childAgeGroup, language]);
 
-  const completedList = authUser?.completedLessons || ['dars-1-tarbiyaning-ahamiyati-1-qism'];
-  const streak = authUser?.streak || 3;
-  const xp = authUser?.xp || 20;
+  const activeChild = getActiveChild(authUser);
+  const completedList = activeChild ? activeChild.completedLessons : authUser?.completedLessons || [];
+  const streak = authUser?.streak || 0;
+  const xp = authUser?.xp || 0;
   const levelInfo = calculateLevel(xp, language);
   const level = authUser?.level || levelInfo.level;
   const leaderboard = getWeeklyLeaderboard(xp, authUser?.name);
@@ -68,7 +71,7 @@ export default function DashboardPage() {
       <div className="absolute top-80 right-10 w-72 h-72 bg-sky-200/30 rounded-full blur-3xl pointer-events-none -z-10" />
 
       {/* 1. TOP GREETING & STATS BANNER */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.3 }}
@@ -119,9 +122,12 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Child profiles */}
+        <ChildSwitcher />
+
         {/* 3 Metric Cards */}
         <div className="grid grid-cols-3 gap-3 sm:gap-4 pt-2">
-          <motion.div
+          <m.div
             whileHover={{ y: -2 }}
             className="bg-amber-50/80 backdrop-blur-xs border-2 border-amber-200 rounded-2xl p-3 sm:p-4 text-center space-y-1"
           >
@@ -132,9 +138,9 @@ export default function DashboardPage() {
             <p className="text-[10px] sm:text-xs font-bold text-amber-800 uppercase tracking-wider">
               {t('dashboard.streak', 'Kunlik streak')}
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             whileHover={{ y: -2 }}
             className="bg-emerald-50/80 backdrop-blur-xs border-2 border-emerald-200 rounded-2xl p-3 sm:p-4 text-center space-y-1"
           >
@@ -145,9 +151,9 @@ export default function DashboardPage() {
             <p className="text-[10px] sm:text-xs font-bold text-emerald-800 uppercase tracking-wider">
               {t('dashboard.xp_earned', 'XP to‘plandi')}
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div
+          <m.div
             whileHover={{ y: -2 }}
             className="bg-sky-50/80 backdrop-blur-xs border-2 border-sky-200 rounded-2xl p-3 sm:p-4 text-center space-y-1"
           >
@@ -158,7 +164,7 @@ export default function DashboardPage() {
             <p className="text-[10px] sm:text-xs font-bold text-sky-800 uppercase tracking-wider">
               {t('dashboard.lessons_passed', 'Dars o‘tildi')}
             </p>
-          </motion.div>
+          </m.div>
         </div>
 
         {/* Level Progress Bar */}
@@ -171,7 +177,7 @@ export default function DashboardPage() {
             <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
           </div>
           <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
-            <motion.div
+            <m.div
               className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-xs"
               initial={{ width: 0 }}
               animate={{ width: `${levelInfo.progressPercent}%` }}
@@ -228,7 +234,7 @@ export default function DashboardPage() {
               )}
             </div>
             <div className="w-full h-2.5 bg-white rounded-full overflow-hidden border border-emerald-200">
-              <motion.div
+              <m.div
                 className="h-full bg-emerald-500 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${Math.min(100, Math.round((todayProgressMinutes / dailyGoal) * 100))}%` }}
@@ -242,11 +248,11 @@ export default function DashboardPage() {
             </p>
           </div>
         </div>
-      </motion.div>
+      </m.div>
 
       {/* 2. TODAY'S LESSON HERO CARD */}
       {currentLesson && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.35, delay: 0.1 }}
@@ -270,7 +276,7 @@ export default function DashboardPage() {
             <Play className="w-4 h-4 fill-white" />
             <span>{t('dashboard.start_today', 'Bugungi darsni boshlash')}</span>
           </Link>
-        </motion.div>
+        </m.div>
       )}
 
       {/* 3. VISUAL DUOLINGO-STYLE LEARNING PATH */}
@@ -312,18 +318,18 @@ export default function DashboardPage() {
               >
                 {/* Current node tooltip / speech bubble */}
                 {isCurrent && (
-                  <motion.div
+                  <m.div
                     initial={{ scale: 0.9, opacity: 0 }}
                     animate={{ scale: 1, opacity: 1 }}
                     className="mb-2 bg-emerald-600 text-white font-bold text-xs px-3 py-1 rounded-full shadow-md animate-subtle-bounce flex items-center gap-1.5 border border-emerald-400"
                   >
                     <Play className="w-3 h-3 fill-amber-300 text-amber-300" />
                     <span>{t('dashboard.start_here', 'BU YERDAN BOSHLANG!')}</span>
-                  </motion.div>
+                  </m.div>
                 )}
 
                 {/* Node Button */}
-                <motion.button
+                <m.button
                   whileHover={{ scale: isLocked ? 1 : 1.08 }}
                   whileTap={{ scale: isLocked ? 1 : 0.94 }}
                   type="button"
@@ -344,7 +350,7 @@ export default function DashboardPage() {
                   ) : (
                     <Lock className="w-6 h-6 text-slate-400" />
                   )}
-                </motion.button>
+                </m.button>
 
                 {/* Label under node */}
                 <div className="mt-2 text-center max-w-[140px] sm:max-w-[180px]">
@@ -448,7 +454,7 @@ export default function DashboardPage() {
       <AnimatePresence>
         {selectedLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -501,7 +507,7 @@ export default function DashboardPage() {
                   <ArrowRight className="w-4 h-4" />
                 </Link>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

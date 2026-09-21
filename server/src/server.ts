@@ -24,6 +24,7 @@ async function bootstrap() {
   // Auto-start Telegram Bot Polling if token is provided and not in webhook mode
   if (TelegramBotEngine.isConfigured()) {
     console.log(`🤖 Telegram Bot: Bot token aniqlandi.`);
+    TelegramBotEngine.startReminderScheduler();
     if (process.env.BOT_MODE !== 'webhook') {
       TelegramBotEngine.startPolling().catch((err) => {
         console.warn('[TelegramBot] Polling boshlashda xatolik:', err.message);
