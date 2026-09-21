@@ -327,6 +327,7 @@ export default function DashboardPage() {
                     <span>{t('dashboard.start_here', 'BU YERDAN BOSHLANG!')}</span>
                   </m.div>
                 )}
+                
 
                 {/* Node Button */}
                 <m.button
