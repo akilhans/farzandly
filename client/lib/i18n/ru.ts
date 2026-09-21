@@ -5,6 +5,7 @@ const ru: Record<string, string> = {
     'nav.dashboard': 'Roadmap',
     'nav.courses': 'Уроки',
     'nav.articles': 'Статьи',
+    'nav.kids': 'Детский мир',
     'nav.premium': 'Премиум',
     'nav.login': 'Войти',
     'nav.logout': 'Выйти',

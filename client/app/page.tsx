@@ -14,6 +14,8 @@ import {
   Crown,
   Flame,
   Star,
+  Sparkles,
+  HelpCircle,
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { START_LESSON_HREF } from '@/lib/site';
@@ -315,6 +317,99 @@ export default async function HomePage() {
               <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
                 <T k="home.53" /></p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* BOLALAR OLAMI SHOWCASE */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-gradient-to-br from-emerald-50 via-white to-amber-50/50 rounded-3xl border-2 border-emerald-200/80 p-6 sm:p-10 space-y-8">
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-emerald-100 pb-6">
+            <div className="space-y-2">
+              <div className="inline-flex items-center gap-1.5 text-xs font-black text-emerald-800 bg-emerald-100/80 border border-emerald-200 px-3 py-1 rounded-full uppercase tracking-wider">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>Yangi bo‘lim</span>
+              </div>
+              <h2 className="text-2xl sm:text-4xl font-black text-slate-800 tracking-tight">
+                Bolalar olami: Ertaklar, She’rlar va Topishmoqlar
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 max-w-2xl leading-relaxed">
+                Farzandingiz bilan unumli vaqt o‘tkazish, birgalikda mutolaa qilish hamda zehnini o‘stirish uchun eng sara xazina.
+              </p>
+            </div>
+
+            <Link
+              href="/bolalar"
+              className="btn-primary text-xs sm:text-sm py-3 px-5 inline-flex items-center gap-2 self-start md:self-auto shrink-0 shadow-sm"
+            >
+              <span>Barchasini ko‘rish</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Link
+              href="/bolalar?tab=ertaklar"
+              className="bg-white rounded-2xl border border-slate-200/90 p-6 hover:border-emerald-500 hover:shadow-md hover:-translate-y-1 transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-emerald-50 border border-emerald-200 text-emerald-600 flex items-center justify-center font-black group-hover:bg-emerald-600 group-hover:text-white transition-colors">
+                  <BookOpen className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-slate-800 group-hover:text-emerald-700 transition-colors">
+                  10 ta Ibratli ertak
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  «Ochko‘z bo‘ri», «Boylik topgan bola», «Toshbaqaning hikoyasi» kabi bolaga axloq va hikmat ulashuvchi milliy ertaklar.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-slate-100 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span>Ertaklarni mutolaa qilish</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            <Link
+              href="/bolalar?tab=sherlar"
+              className="bg-white rounded-2xl border border-slate-200/90 p-6 hover:border-emerald-500 hover:shadow-md hover:-translate-y-1 transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 border border-sky-200 text-sky-600 flex items-center justify-center font-black group-hover:bg-sky-600 group-hover:text-white transition-colors">
+                  <Heart className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-slate-800 group-hover:text-emerald-700 transition-colors">
+                  46 ta Bolalar she’ri
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  To‘rt fasl (bahor, yoz, kuz, qish), maktab, odob-axloq va matematika haqida ifodali yod olinadigan she’rlar.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-slate-100 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span>She’rlarni o‘qish</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
+
+            <Link
+              href="/bolalar?tab=topishmoqlar"
+              className="bg-white rounded-2xl border border-slate-200/90 p-6 hover:border-emerald-500 hover:shadow-md hover:-translate-y-1 transition-all group flex flex-col justify-between"
+            >
+              <div className="space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600 flex items-center justify-center font-black group-hover:bg-amber-600 group-hover:text-white transition-colors">
+                  <HelpCircle className="w-6 h-6" />
+                </div>
+                <h3 className="text-lg font-black text-slate-800 group-hover:text-emerald-700 transition-colors">
+                  Hayvonlar haqida topishmoqlar
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-500 leading-relaxed">
+                  Interaktiv ochiladigan javoblar, «Tasodifiy topishmoq» o‘yini va zehnni charxlovchi 15 ta qiziqarli topishmoq.
+                </p>
+              </div>
+              <div className="pt-4 mt-4 border-t border-slate-100 text-xs font-bold text-emerald-600 flex items-center gap-1">
+                <span>Topishmoqlarni topish</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+              </div>
+            </Link>
           </div>
         </div>
       </section>

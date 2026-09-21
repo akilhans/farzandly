@@ -3,7 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass } from 'lucide-react';
+import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass, Sparkles } from 'lucide-react';
 import { START_LESSON_HREF } from '@/lib/site';
 import { T } from '@/components/T';
 
@@ -72,7 +72,8 @@ export function Footer() {
               />
             </Link>
             <p className="text-slate-300 text-sm leading-relaxed max-w-sm">
-              <T k="footer.9" /></p>
+              <T k="footer.9" />
+            </p>
             <div className="pt-2">
               <Link
                 href={START_LESSON_HREF}
@@ -90,42 +91,56 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.12" /></Link>
+                  <T k="footer.12" />
+                </Link>
               </li>
               <li>
                 <Link href="/darslar" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.13" /></Link>
+                  <T k="footer.13" />
+                </Link>
               </li>
               <li>
                 <Link href="/maqolalar" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.14" /></Link>
+                  <T k="footer.14" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/bolalar" className="hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-1.5 text-emerald-400">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Bolalar olami (Ertak & She’rlar)</span>
+                </Link>
               </li>
               <li>
                 <Link href="/premium" className="hover:text-amber-400 transition-colors">
-                  <T k="footer.15" /></Link>
+                  <T k="footer.15" />
+                </Link>
               </li>
             </ul>
           </div>
 
-          {/* Popular articles */}
+          {/* Bolalar olami & Topishmoqlar */}
           <div>
-            <p className="font-bold text-slate-200 text-base mb-3"><T k="footer.16" /></p>
+            <p className="font-bold text-slate-200 text-base mb-3">Bolalar uchun</p>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
+                <Link href="/bolalar?tab=ertaklar" className="hover:text-emerald-400 transition-colors">
+                  10 ta sara ibratli ertak
+                </Link>
+              </li>
+              <li>
+                <Link href="/bolalar?tab=sherlar" className="hover:text-emerald-400 transition-colors">
+                  Fasllar va maktab she’rlari
+                </Link>
+              </li>
+              <li>
+                <Link href="/bolalar?tab=topishmoqlar" className="hover:text-emerald-400 transition-colors">
+                  Hayvonlar haqida topishmoqlar
+                </Link>
+              </li>
+              <li>
                 <Link href="/maqolalar/bolani-urmasdan-tarbiyalash" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.17" /></Link>
-              </li>
-              <li>
-                <Link href="/maqolalar/bola-gapga-quloq-solmasa" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.18" /></Link>
-              </li>
-              <li>
-                <Link href="/maqolalar/bola-telefonni-tashlamasa" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.19" /></Link>
-              </li>
-              <li>
-                <Link href="/maqolalar/3-yoshli-bola-tarbiyasi" className="hover:text-emerald-400 transition-colors">
-                  <T k="footer.20" /></Link>
+                  <T k="footer.17" />
+                </Link>
               </li>
             </ul>
           </div>
