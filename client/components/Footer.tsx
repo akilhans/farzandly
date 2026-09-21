@@ -124,7 +124,7 @@ export function Footer() {
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <Link href="/bolalar?tab=ertaklar" className="hover:text-emerald-400 transition-colors">
-                  10 ta sara ibratli ertak
+                  15 ta sara ibratli ertak
                 </Link>
               </li>
               <li>

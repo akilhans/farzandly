@@ -182,6 +182,92 @@ export const kidsTales: Tale[] = [
       "— Shunga ham xafa bo‘lasanmi?, — debdi oyisi jilmayib. — U sening suvdagi aksing-ku. Quyosh botayotganda hamma yoq qorong‘u bo‘la boshlaydi va aksing yo‘qoladi. Ertaga kun chiqishi bilan “do‘sting” suvda yana paydo bo‘ladi. Endi esa yotib uxla, — debdi oyisi."
     ],
     "readingMinutes": 2
+  },
+{
+    "id": "ertak-11",
+    "slug": "ertak-11-ikki-tabib",
+    "number": 11,
+    "title": "Ikki tabib",
+    "author": "O‘zbek xalq ertagi",
+    "moral": "Hasad va xusumat insonni tubanlikka yetaklar, saxovat, aql va kechirimlilik esa hurmat keltiradi.",
+    "readingMinutes": 4,
+    "paragraphs": [
+      "Bir bor ekan, bir yo‘q ekan, qadim zamonda Buxoro shahrida kambag‘al Ahmad supurgichi bo‘lgan ekan. Uning xotini va bir o‘g‘li bor ekan. Qiynalsa ham er-xotin o‘g‘lini maktabga beribdi. O‘g‘li odobli, aqlli, zehnli bo‘lganidan qiyinchiliklarni yengib, maktabni bitirgach, madrasaga kiribdi.",
+      "Otasi har kuni supurgi boylab sotib, bolasini qo‘llab turibdi. Nihoyat o‘g‘li madrasani ham yaxshi tamomlabdi. Bolaning nomi Odil ekan. Odilni o‘qitgan mullalar uning qobiliyatiga qoyil qolibdilar. Ota-onasi endi og‘zimiz oshga yetdi, deb suyunganlarida, mudarrislar “Bola hali yosh, domlalik unga to‘g‘ri kelmaydi”, deb unga ish bermabdilar. Lekin bola idrokli bo‘lib, domlalar bilmagan narsalarni bilar ekan. Odil ishsiz qolganidan ota-onasi qayg‘urib, o‘g‘liga hunar o‘rgatishga ahd qilishibdi. Odilga ham bu gap ma’qul tushibdi.",
+      "Otasi maxsido‘z kosib o‘rtog‘iga shogirdlikka bermoqchi bo‘lib, o‘g‘lini yetaklab ketayotsa, Yusufboy tabib ularni do‘konga taklif qilib, hol-ahvol so‘ragach:\n— Bu bola kim? — debdi.\n— O‘g‘lim, ismi Odil, yaqinda madrasani tugatdi, mudarrislar yosh, deb ish berishmadi. Shuning uchun o‘g‘limni maxsido‘z o‘rtog‘imga shogirdlikka olib ketyapman, — debdi Ahmad aka.",
+      "Yusufboy tabibning farzandi yo‘q ekan, u:\n— Ahmad aka, o‘g‘lingizni menga shogirdlikka bersangiz. Dori tayyorlash va tabibchilikni o‘rganadi. Men o‘zim sizga yordam qilib turaman, o‘g‘lingiz ham xabar olib turadi. O‘g‘lingizni o‘zimga o‘g‘il qilib olsam. Kampirim ham xursand bo‘lardi. Uyingizga tez-tez yuborib turaman, — debdi. Ahmad aka o‘ylab ko‘rib, rozi bo‘libdi. Yusufboy tabibnikida o‘g‘lini qoldirib, o‘zi qaytib ketibdi.",
+      "Yusufboy tabib Odil bilan suhbatlashib, do‘konidagi dorilarning nomlari bilan tanishtirib, narxlarini aytibdi, do‘konni qanday tutish to‘g‘risida ham tushuntiribdi. Bir necha kun o‘tmay tabibning ishi yurishib ketibdi. Yusufboy tabib ham “O‘g‘lim qutli keldi”, deb suyunibdi. Yusufboy tabib oqko‘ngil odam ekan, u Odilning ota-onasiga yordam berib turibdi. Odil esa tabiblik hunarini o‘rgana boshlabdi. Yusufboy tabibning shon-shuhrati butun shaharga tarqalibdi.",
+      "Kunlardan bir kun shu shaharning qozisi o‘g‘lini Yusufboy tabibning oldiga olib kelib:\n— Shu o‘g‘limga hunaringizni o‘rgatsangiz, — deb iltimos qilibdi. Qozi o‘g‘lining odamlarni tuzatishini emas, balki ko‘proq mol-dunyo topishini o‘ylab shunday qilgan ekan. Yusufboy tabib ham yo‘q deya olmasdan qozining o‘g‘lini shogirdlikka olibdi. Uning ismi Jobir ekan. Jobir tabiblikka unchalik qiziqmasa ham, otasidan qo‘rqqanidan o‘rgana boshlabdi. Yusufboy tabib ham Odil bilan Jobirga birdek qarar, ikkalasiga ham tabiblik sir-asrorlarini birdek o‘rgatar ekan.",
+      "Oradan bir necha yillar o‘tibdi. Odil bilan Jobir bir-biridan qolishmaydigan tabib bo‘lib yetishibdilar. Kunlardan bir kun Yusufboy tabib ikkala shogirdini oldiga chaqirib:\n— O‘g‘illarim, mana, ikkalang ham tabiblikni o‘rganib oldilaring. Endi senlarga nasihatim shuki, puli yo‘q ekan deb dori bermasdan kambag‘al, beva-bechoralarni qiynamanglar. El-yurt oldida ta’naga qolmanglar. Aql bilan ish qilib, manmanlikka berilmasdan, bir-biring bilan maslahatlashib ish tutinglar. Endi sizlarga ruxsat, tabiblik qilaverishinglar mumkin, — deb ularga oq fotiha berib jo‘natibdi. Oradan bir necha kun o‘tgandan keyin Yusufboy tabib olamdan o‘tibdi.",
+      "Odil ustozining o‘lganini eshitib, borib ta’ziyasi o‘tguncha ustozinikida bo‘libdi. Jobir eshitsa ham qadam bosmabdi. Ikkalasi bir shaharda tabibchilik qilishar ekan. Odil kambag‘al, beva-bechoralarga rahmdillik qilib, dori-darmonlarni tekinga berib yuborar ekan. Boylardan esa ikki hissa oshiq olar ekan. Jobir Odilning obro‘si ko‘tarilib ketayotganini ko‘rolmabdi. Otasining gapiga kirib, kunlardan bir kun Odilning oldiga kelib:\n— Odil, senga bir maslahat bilan keldim. Menimcha ikki tabibga bir shahar torlik qiladi, shaharda yo sen, yo men bo‘lishim kerak, — debdi.",
+      "Odil unga:\n— Shahar keng, senga hech zararim tegayotgani yo‘q, seni ham menga zararing tekkani yo‘q. Undan ko‘ra, kelishib ishlayversak bo‘lmaydimi? — debdi. Jobir unga:\n— Kel, bo‘lmasa baxtimizni sinaymiz: bir-birimizni mehmon qilamiz. Birinchi bo‘lib sen biznikiga kelasan, oldingga nima taom qo‘ysam yeysan. Keyin men senikiga mehmonga boraman, men ham nima bersang yeb, nima ichirsang ichaman. Nima bo‘lsa peshanamizdan ko‘ramiz. Shunga nima deysan? — debdi. Odil ham noiloj rozi bo‘libdi.",
+      "Oradan bir necha kun o‘tgandan keyin Jobir Odilni uyiga chaqiribdi. Odil esa mehmondorchilikka bormasdan avval besh-o‘n chelak sut olib kelib qo‘yibdi. Keyin mehmon bo‘lib, Jobirning uyiga boribdi. Jobir Odilning oldiga dasturxon yozibdi va dasturxonni noz-ne’matlar bilan to‘ldirib tashlabdi. Ziyofat orasida bir piyola zahar olib kelib Odilning qo‘liga beribdi. Odil zaharni ichibdi-yu, uyiga ketibdi. Odil uyiga borib, chelakdagi sutlarni ichib, oshqozonini tozalab, zaharlanishdan qutulib qolibdi.",
+      "Oradan bir necha kun o‘tibdi. Shart bo‘yicha Odil Jobirni mehmonga chaqiribdi va oldiga dasturxon yozibdi. Mehmonni juda yaxshilab ziyofat qilibdi. Jobir ham uyiga sutni g‘amlab kelgan ekan. U sergaklanib, Odil qachon zahar berishini kutibdi. Odil esa Jobirga zahar bermasdan oldiga yaxshi taomlar qo‘yib, yaxshi so‘zlar bilan kuzatibdi. Jobir o‘zining qilgan ishiga pushaymon bo‘lib, Odildan uzr so‘rabdi. Shundan keyin bir-biriga ozor bermasdan, bir-biri bilan maslahatlashib ish qilibdilar."
+    ]
+  },
+  {
+    "id": "ertak-12",
+    "slug": "ertak-12-sirli-tush",
+    "number": 12,
+    "title": "Sirli tush",
+    "author": "O‘zbek xalq ertagi",
+    "moral": "Aql-idrok, sabr-toqat, mehr va halol mehnat insonni har qanday kulfatdan asrab, yuksak saodatga yetkazadi.",
+    "readingMinutes": 6,
+    "paragraphs": [
+      "Bor ekan, yo‘q ekan, och ekan, to‘q ekan, qadim zamonda, Bag‘dod tomonda Zunnun nomli podsho yashar ekan. Podshoning bir necha xotinlari bo‘lib, hech biridan farzand ko‘rmabdi. Farzandsizlik alami podshoning jon-jonidan o‘tibdi. Oxirgi marta uylanishga qasd qilib, boy ham, kambag‘al ham bo‘lmagan bir kishining qiziga uylanibdi. U homilador bo‘lib, dunyoda go‘zallikda tengi yo‘q bir qiz tug‘ibdi. Qizga Oina deb ism qo‘yibdilar. Oina kundan-kunga katta bo‘la boshlabdi. U juda ham ziyrak, aqlli qiz bo‘lib o‘sibdi. Sakkiz-o‘n yoshlarida qiz podsholik ishlarida otasiga yordam bera boshlabdi.",
+      "Podsho toj-taxtimga, davlatimga ega bo‘ladigan qizim bor deb, xotirjam bo‘lib maishatga berilib ketibdi. Kunlardan bir kun podsho ko‘shkda uxlab qolgan ekan, bir qush sharq tomondan uchib kelib, uning boshida ikki marta “g‘aq-g‘aq” deb, g‘arb tomonga uchib ketibdi va birozdan so‘ng g‘arbdan qaytib kelib, yana “g‘aq-g‘aq” deb sharq tomonga uchib ketibdi. Podsho uyg‘onib qarasa tushi ekan. Podsho ko‘rgan tushining ta’birini bilmoqchi bo‘lib, ulamolarni to‘plabdi, ammo hech kim aytolmay podsho ularni jazolamoqchi bo‘lganda, dono qiz — Oina ta’birni aytibdi:\n— Hurmatli padar, qushning sharqdan g‘arbga uchib ketayotib aytgani “Yaxshi xotin gadoni shoh qiladi”, g‘arbdan sharqqa qaytishidagisi esa “Yomon xotin erni gado qiladi”, deganidir.",
+      "Bu gapni eshitgan podsho g‘azablanib: “Meni podsholik darajasiga yetkazgan sening onang emas!” deb Oinani o‘limga buyuribdi. Vazirlar qizni o‘ldirmaslik uchun podshoni ko‘ndirib, uni dasht-biyobonga qo‘l-oyog‘ini bog‘lab tashlab kelibdilar. Oina biyobonda ikki kun yotgach, uni bir o‘tinchi yigit qutqaribdi. Yigitning ismi Salom bo‘lib, u juda halol va qanoatli yigit ekan.",
+      "Oina Salomga yordam bera boshlabdi. Salom o‘tin tersa, Oina ham teribdi. Keyinchalik Oina chiroyli do‘ppilar tikib, Salomga bozorga sotishga beribdi. Salom birinchi do‘ppini bir tillaga sotib, bozordagi qalandardan “Boshing bilan kirib, oyog‘ing bilan chiqqin” degan hikmatni sotib olibdi. Ikkinchi do‘ppi puliga qalandardan “Bugungi achchig‘ingni ertaga qo‘y” degan hikmatni, uchinchi safar esa “Har kimniki o‘ziga, oy ko‘rinar ko‘ziga” degan hikmatni sotib olibdi. Oina erining bu ishlaridan avvaliga ranjisa-da, taqdirga tan beribdi.",
+      "Salom karvon bilan uzoq safarga chiqibdi. Yo‘lda suvsiz cho‘lga duch kelibdilar. Quduqqa tushgan har bir kishining boshi kesilib chiqayotganida, Salom qalandarning “Boshing bilan kirib, oyog‘ing bilan chiqqin” degan gapini eslab, oyog‘idan osilib quduqqa tushibdi. U yerda ikki dev bahslashayotgan ekan: biri toshbaqani, biri qizni chiroyli deb turgan ekan. Salomdan so‘rashganda, u “Har kimniki o‘ziga, oy ko‘rinar ko‘ziga” deb javob berib, devlarni xursand qilibdi. Devlar suv yo‘lini ochib, Salomga son-sanoqsiz tilla va gavhar in’om etibdilar.",
+      "Salom boylik bilan shaharga qaytganda, yarim kechada o‘z yerto‘lasiga kirsa, xotini Oinaning yonida yosh bir yigit uxlab yotganini ko‘ribdi. Jahli chiqib, pichoq tortmoqchi bo‘lganida, “Bugungi achchig‘ingni ertaga qo‘y” degan hikmat esiga tushib, pichog‘ini qaytaribdi. Xotinini uyg‘otib so‘rasa, bu yigit uning o‘zi safardaligida tug‘ilgan suyukli o‘g‘li Qaldirg‘ochbek ekan! Salom shoshilib xato qilmaganiga behad shukr qilibdi.",
+      "Oina erining keltirgan boyliklari bilan o‘zining zolim otasinikiga o‘xshash muhtasham saroy qildiribdi. Podshoni va onasini saroyga mehmonga chaqirib, ularga o‘zining kimligini va “Yaxshi xotin gadoni shoh qiladi” degan haqiqatni isbotlab beribdi. Podsho o‘z qilmishiga qattiq pushaymon bo‘lib tavba qilibdi va toj-u taxtini nabirasi Qaldirg‘ochbekka topshirib, barchalari murod-maqsadlariga yetibdilar."
+    ]
+  },
+  {
+    "id": "ertak-13",
+    "slug": "ertak-13-kuygan-chol",
+    "number": 13,
+    "title": "Kuygan chol",
+    "author": "O‘zbek xalq ertagi",
+    "moral": "Bema’ni o‘jarlik, gap talashish va qaysarlik insonni bor-yo‘g‘idan ayiradi.",
+    "readingMinutes": 2,
+    "paragraphs": [
+      "O‘tgan zamonda bir chol bilan kampir yashagan ekan. Ularning bitta eshaklari bor ekan. Bu eshakni sug‘orish, ovqatlantirish sansalor bo‘lib, doimo ular bir-birlari bilan urishar ekanlar. Bir kuni chol zerikib kampirga:\n— Hadeb mojaro qilib urishgandan ko‘ra, senga aytadigan bir gapim bor. Uch kunga muhlat qo‘yamiz. Kimki uch kunga qadar gapirsa, eshagimizni sug‘orish, ovqatlantirish o‘shaning bo‘yniga tushadi, — debdi.",
+      "Bu gap kampirga ma’qul tushibdi. Ular ikki kun bir-birlari bilan gaplashmay qo‘yishibdi. Uchinchi kuni kampir zerikib qo‘shnisinikiga chiqib ketsa, uylariga o‘g‘ri kirib hamma yoqni ship-shiydam qilib ketibdi, shunda ham chol indamabdi. Kampir kelib ko‘rsa ahvol shunday, u qo‘shnisinikiga chiqib, unga butun bo‘lgan voqealarni aytibdi.",
+      "Qo‘shnisining rahmi kelib, qizidan bir kosa issiq sho‘rva chiqarib berishni so‘rabdi. Qiz bir kosa sho‘rvani ko‘tarib chiqsa, voqea haligidek emish. Qiz cholga:\n— Ha, tog‘a, nimaga bunday qilib o‘tiribsiz? — desa, chol boshini ko‘rsatib, “To namatgacha olib ketishdi”, deb ishora qilibdi, qiz sho‘rvani boshimga to‘k deyapti, deb o‘ylabdi-da, issiq sho‘rvani boshiga quyib, boshini kuydirib qo‘yibdi.",
+      "Buni eshitib kampir yugurib chiqibdi:\n— Ha, nimaga bunaqa qilib o‘tiribsiz? — deganda, chol quvonib:\n— Ana, yutqizding, kampir, endi eshak sug‘orish, ovqatlantirish o‘zingning bo‘yningga tushdi, — debdi. Shunday qilib, o‘rinsiz qaysarlik tufayli ular bor-yo‘g‘idan ajralishib qolgan ekanlar."
+    ]
+  },
+  {
+    "id": "ertak-14",
+    "slug": "ertak-14-opa-uka",
+    "number": 14,
+    "title": "Opa-uka",
+    "author": "O‘zbek xalq ertagi",
+    "moral": "Qardoshlik mehri, mehr-oqibat va vafodorlik har qanday yovuzlik va sehr-joduni yengadi.",
+    "readingMinutes": 5,
+    "paragraphs": [
+      "Bir bor ekan, bir yo‘q ekan, qadim zamonda bir bechora chol va uning ko‘p bolalari bor ekan. Qashshoqlikdan qiynalgan chol bolalarini tog‘ga olib borib, do‘lana qoqib berib, o‘zi yashirincha qochib ketibdi. Bolalar har tomonga tarqab, ulardan bir qiz va uning kichik ukasi birgalikda yo‘lga tushibdilar.",
+      "Yo‘lda bola juda chanqabdi. Suv ko‘ringanda opasi “Ichma, kiyikning suvi, ichsang kiyik bo‘lib qolasan” desa ham, bola chidolmay ichibdi va kiyik bo‘lib qolibdi. Qiz yig‘lab-yig‘lab kiyik ukasini yetaklab, ko‘prik ostida panoh topibdi. Shu payt ovga chiqqan podsho qizni ko‘rib yoqtirib qolibdi va saroyga olib borib, to‘y qilib o‘z nikohiga olibdi.",
+      "Vaqt o‘tib qiz homilador bo‘libdi. Podshoning hasadgo‘y katta xotinlari podsho safarga ketganda hiyla bilan qizni hovuzga itarib yuboribdilar. Hovuz tubida ilonlar unga mehr ko‘rsatib, uy qurib beribdi va qiz u yerda ikki egizak o‘g‘il tug‘ibdi. Kanizak esa qizning kiyimini kiyib, o‘zini xotin qilib ko‘rsatibdi va podsho qaytgach, kiyikni so‘yishni talab qilibdi.",
+      "Navkarlar kiyikni so‘ymoqchi bo‘lganda, kiyik hovuz atrofida aylanib nola qilibdi:\n«Mis qozonlar osildi,\nOshpichoqlar qayraldi,\nChiqmaysizmi, opajon,\nHovuzingiz tagidan?»\n\nOpasi esa hovuz qa’ridan javob beribdi:\n«O‘ng yoqda oltin beshik,\nChap yoqda kumush beshik,\nTagimda zarvar gilam,\nQanday chiqay, ukajon?!»",
+      "Podsho bu sirli nolani eshitib, zudlik bilan hovuz suvini to‘ktiribdi. Hovuz tubidagi gumbazdan sog‘-omon kichik xotini va ikki chaqalog‘ini topibdi. Haqiqat yuzaga chiqib, xiyonatkorlar jazosini olibdi. Kiyik bo‘lib qolgan ukasini esa mohir tabiblar davolab, yana asl inson holiga keltiribdilar. Opa-uka, podsho va farzandlar baxtli-saodatli umr kechiribdilar."
+    ]
+  },
+  {
+    "id": "ertak-15",
+    "slug": "ertak-15-qirq-yolg-on",
+    "number": 15,
+    "title": "Qirq yolg‘on",
+    "author": "O‘zbek xalq ertagi",
+    "moral": "Zukkolik, aql-zakovat va hozirjavoblik eng murakkab sharoitda ham insonni g‘olib qiladi.",
+    "readingMinutes": 6,
+    "paragraphs": [
+      "Bor ekan, yo‘q ekan, qadim zamonda bir boy o‘tib, undan uch o‘g‘liga g‘alati meros qolibdi: bittasiga shoti (narvon), bittasiga childirma, bittasiga uchta qari ko‘r eshak tegibdi. Kenja o‘g‘il o‘z eshaklarini yo‘lda uchragan sichqon, qo‘ng‘iz va uyquga yaxshilik bilan hadya qilibdi-da, bir shaharga yetib borib, baqqolga shogird bo‘libdi.",
+      "Bu shahar xoni bog‘ darvozasiga nog‘ora o‘rnatib, “Kim to‘xtamasdan qirq yolg‘on aytsa, qizimni unga beraman, eplay olmasa o‘limga hukm qilaman” deb e’lon qilgan ekan. Yigit tasodifan nog‘orani chalib, xon huzuriga tushib qolibdi. Yigit hech dovdiramasdan osmondagi qushlar, xumdagi xazina va uch merganning g‘aroyib sarguzashtlari haqida shunday usta va qiziqarli to‘qimalarni to‘xtovsiz so‘zlab beribdiki, xon uning hozirjavobligiga qoyil qolib, qizini berishga rozi bo‘libdi.",
+      "Biroq hasadgo‘y vazir va bir ayyor kampir yigitga hiyla ishlatib, uni xon oldida sharmanda qilishga urinibdilar. Xon yigitni qiyin shart bilan uzoq manzilga sarson qilib jo‘natibdi. Shunda yigitning qadimgi yaxshiliklari o‘ziga qaytibdi: o‘sha sichqon, qo‘ng‘iz va uyqu yordamga kelib, yovuz dushmanlarning makrini chilparchin qilibdilar.",
+      "Yigit berilgan og‘ir vazifani ortig‘i bilan uddalab, yuksak obro‘-e’tibor bilan qaytib kelibdi. Xon o‘z so‘zida turib, adolatli va dono yigitga qizini uzatib, katta to‘y beribdi. Shunday qilib, zukko yigit murod-maqsadiga yetib, el-yurt mehrini qozongan ekan."
+    ]
   }
 ];
 
