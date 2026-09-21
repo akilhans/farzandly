@@ -129,7 +129,7 @@ export default function PremiumPage() {
               </li>
               <li className="flex items-center gap-2.5 text-slate-400">
                 <Lock className="w-4 h-4 shrink-0 text-slate-400" />
-                <span className="line-through">11–66-darslar (Chuqurlashtirilgan bosqichlar)</span>
+                <span className="line-through">11–69-darslar (Chuqurlashtirilgan bosqichlar)</span>
               </li>
               <li className="flex items-center gap-2.5 text-slate-400">
                 <Lock className="w-4 h-4 shrink-0 text-slate-400" />
@@ -158,7 +158,7 @@ export default function PremiumPage() {
               <span>Premium kontent</span>
               <Crown className="w-5 h-5 text-amber-500 fill-amber-500" />
             </h3>
-            <p className="text-xs text-slate-500">Barcha 66 ta dars va ilmiy-amaliy materiallar to‘plami</p>
+            <p className="text-xs text-slate-500">Barcha 69 ta dars va ilmiy-amaliy materiallar to‘plami</p>
 
             <div className="text-3xl font-black text-slate-900">
               {billingCycle === 'yearly' ? '179 000' : '219 000'}{' '}
@@ -177,7 +177,7 @@ export default function PremiumPage() {
             <ul className="space-y-3 text-xs sm:text-sm text-slate-700 pt-4 border-t border-slate-100">
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-bold text-slate-900">Barcha 66 ta dars to‘liq va cheklovsiz ochiq</span>
+                <span className="font-bold text-slate-900">Barcha 69 ta dars to‘liq va cheklovsiz ochiq</span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />

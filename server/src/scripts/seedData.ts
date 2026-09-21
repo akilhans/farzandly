@@ -14885,3 +14885,7 @@ export const seedArticles = [
     "publishedAt": "2026-09-21T12:00:00.000Z"
   }
 ];
+
+// Merge content generated from content/farzand-tarbiyasi.txt (see build_extra_content.py)
+import { applyExtraContent } from './seedExtra.js';
+applyExtraContent({ courses: seedCourses, lessons: seedLessons, articles: seedArticles, paths: seedLearningPaths });

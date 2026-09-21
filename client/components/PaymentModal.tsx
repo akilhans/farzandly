@@ -68,7 +68,7 @@ export default function PaymentModal({ isOpen, onClose, defaultPlan = 'monthly' 
             Premium kontentni faollashtirish
           </h2>
           <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-            Barcha 66 ta dars, amaliy topshiriqlar, audio-hikmatlar va ilmiy tahlillarni to‘liq cheklovsiz oching.
+            Barcha 69 ta dars, amaliy topshiriqlar, audio-hikmatlar va ilmiy tahlillarni to‘liq cheklovsiz oching.
           </p>
         </div>
 

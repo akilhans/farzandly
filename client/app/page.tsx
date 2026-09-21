@@ -443,7 +443,7 @@ export default async function HomePage() {
               Farzandingiz kelajagiga eng afzal sarmoya
             </h2>
             <p className="text-sm sm:text-base text-emerald-100/90 leading-relaxed font-medium">
-              Barcha 66 ta dars, Fitrat pedagogikasi, Rahimov School tajribasi va 30 buyuk mutafakkir ensiklopediyasi. Yillik obunada <span className="font-bold text-amber-300">oyiga atigi 179 000 so‘m</span> (yoki oylik 219 000 so‘m).
+              Barcha 69 ta dars, Fitrat pedagogikasi, Rahimov School tajribasi va 30 buyuk mutafakkir ensiklopediyasi. Yillik obunada <span className="font-bold text-amber-300">oyiga atigi 179 000 so‘m</span> (yoki oylik 219 000 so‘m).
             </p>
             <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               <Link

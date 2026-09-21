@@ -840,7 +840,7 @@ export default function ProfilePage() {
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 mt-1 font-medium">
                   {isPrem
-                    ? `Barcha 66 ta dars, audio-hikmatlar va ilmiy maqolalar to‘liq ochiq. ${
+                    ? `Barcha 69 ta dars, audio-hikmatlar va ilmiy maqolalar to‘liq ochiq. ${
                         user?.premiumExpiresAt
                           ? `Amal qilish muddati: ${new Date(user.premiumExpiresAt).toLocaleDateString('uz-UZ')}`
                           : 'Muddatsiz obuna'
