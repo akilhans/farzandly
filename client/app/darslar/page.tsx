@@ -7,11 +7,15 @@ import { Clock, BookOpen, Crown, ArrowRight, Baby } from 'lucide-react';
 import { api, Course, AgeGroup } from '@/lib/api';
 import { useI18n } from '@/context/LanguageContext';
 import SearchForm from '@/components/SearchForm';
+import Pagination from '@/components/Pagination';
+
+const PAGE_SIZE = 6;
 
 function DarslarContent() {
   const searchParams = useSearchParams();
   const ageGroupParam = searchParams.get('ageGroup') || undefined;
   const categoryParam = searchParams.get('category') || undefined;
+  const pageParam = searchParams.get('page') || undefined;
   const { language, t } = useI18n();
 
   const [courses, setCourses] = useState<Course[]>([]);
@@ -31,6 +35,12 @@ function DarslarContent() {
     }
     load();
   }, [ageGroupParam, categoryParam, language]);
+
+  const rawPage = parseInt(pageParam || '1', 10);
+  const currentPage = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
+  const totalPages = Math.max(1, Math.ceil(courses.length / PAGE_SIZE));
+  const page = Math.min(currentPage, totalPages);
+  const paginatedCourses = courses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
@@ -80,7 +90,7 @@ function DarslarContent() {
 
       {/* Course Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-4">
-        {courses.map((course) => (
+        {paginatedCourses.map((course) => (
           <div
             key={course.slug}
             className="card-farzandly p-6 flex flex-col justify-between hover:border-emerald-500 hover:-translate-y-1 transition-all group"
@@ -132,6 +142,19 @@ function DarslarContent() {
           </div>
         ))}
       </div>
+
+      {!loading && courses.length === 0 && (
+        <p className="text-center text-slate-500 py-10">
+          {t('courses.empty', 'Darslar topilmadi')}
+        </p>
+      )}
+
+      <Pagination
+        page={page}
+        totalPages={totalPages}
+        basePath="/darslar"
+        params={{ ageGroup: ageGroupParam, category: categoryParam }}
+      />
     </div>
   );
 }
