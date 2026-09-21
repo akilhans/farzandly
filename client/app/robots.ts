@@ -1,14 +1,14 @@
 import { MetadataRoute } from 'next';
+import { SITE_URL } from '@/lib/site';
 
 export default function robots(): MetadataRoute.Robots {
-  const baseUrl = 'https://farzandly.uz';
-
   return {
     rules: {
       userAgent: '*',
-      allow: ['/', '/maqolalar', '/maqolalar/', '/kurslar', '/kurslar/', '/premium'],
-      disallow: ['/dashboard', '/dars/', '/profil', '/api/'],
+      allow: '/',
+      disallow: ['/dashboard', '/dars/', '/profil', '/admin', '/kirish', '/api/'],
     },
-    sitemap: `${baseUrl}/sitemap.xml`,
+    sitemap: `${SITE_URL}/sitemap.xml`,
+    host: SITE_URL,
   };
 }

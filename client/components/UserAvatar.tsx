@@ -12,6 +12,9 @@ interface UserAvatarProps {
   showBadge?: boolean;
 }
 
+// Served from /public (source artwork lives in /content/profile.png)
+const DEFAULT_AVATAR = '/profile.png';
+
 const sizeStyles = {
   xs: {
     container: 'w-6 h-6 rounded-lg text-[10px]',
@@ -48,36 +51,31 @@ export default function UserAvatar({
   className = '',
   showBadge = true,
 }: UserAvatarProps) {
-  const [imageError, setImageError] = useState(false);
-
-  React.useEffect(() => {
-    setImageError(false);
-  }, [photoUrl]);
+  const [failedUrl, setFailedUrl] = useState<string | null>(null);
 
   const styles = sizeStyles[size] || sizeStyles.md;
 
   const cleanName = name.replace(/^@/, '').trim() || 'Farzandly';
-  const initials = cleanName.slice(0, 2).toUpperCase();
-
   const isTelegramUser = Boolean(telegramUsername || name.startsWith('@'));
+  const src = photoUrl && photoUrl !== failedUrl ? photoUrl : DEFAULT_AVATAR;
 
   return (
     <div className={`relative shrink-0 select-none ${className}`}>
-      {photoUrl && !imageError ? (
-        <img
-          src={photoUrl}
-          alt={name}
-          onError={() => setImageError(true)}
-          className={`${styles.container} object-cover border-2 border-emerald-400/80 shadow-sm`}
-        />
-      ) : (
-        <div
-          className={`${styles.container} bg-gradient-to-tr from-[#1B7FB0] to-[#229ED9] text-white font-black flex items-center justify-center shadow-md border-2 border-white/50 tracking-wider`}
-          title={name}
-        >
-          {initials}
-        </div>
-      )}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={src}
+        alt={cleanName}
+        title={cleanName}
+        width={96}
+        height={96}
+        loading="lazy"
+        decoding="async"
+        referrerPolicy="no-referrer"
+        onError={() => {
+          if (photoUrl && src === photoUrl) setFailedUrl(photoUrl);
+        }}
+        className={`${styles.container} object-cover border-2 border-emerald-400/80 shadow-sm bg-slate-200`}
+      />
 
       {/* Verified Telegram Badge */}
       {showBadge && isTelegramUser && (

@@ -1,52 +1,29 @@
 import { MetadataRoute } from 'next';
 import { seedArticles, seedCourses } from '@/lib/seedData';
+import { SITE_URL } from '@/lib/site';
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://farzandly.uz';
+// Stable date so the sitemap doesn't claim every URL changed on each request
+const BUILD_DATE = new Date();
 
+export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
-    {
-      url: baseUrl,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 1.0,
-    },
-    {
-      url: `${baseUrl}/onboarding`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/maqolalar`,
-      lastModified: new Date(),
-      changeFrequency: 'daily',
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/kurslar`,
-      lastModified: new Date(),
-      changeFrequency: 'weekly',
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/premium`,
-      lastModified: new Date(),
-      changeFrequency: 'monthly',
-      priority: 0.7,
-    },
+    { url: SITE_URL, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 1.0 },
+    { url: `${SITE_URL}/onboarding`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/maqolalar`, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/kurslar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/premium`, lastModified: BUILD_DATE, changeFrequency: 'monthly', priority: 0.7 },
   ];
 
   const articleRoutes: MetadataRoute.Sitemap = seedArticles.map((article) => ({
-    url: `${baseUrl}/maqolalar/${article.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly',
+    url: `${SITE_URL}/maqolalar/${article.slug}`,
+    lastModified: article.publishedAt ? new Date(article.publishedAt) : BUILD_DATE,
+    changeFrequency: 'monthly',
     priority: 0.8,
   }));
 
   const courseRoutes: MetadataRoute.Sitemap = seedCourses.map((course) => ({
-    url: `${baseUrl}/kurslar/${course.slug}`,
-    lastModified: new Date(),
+    url: `${SITE_URL}/kurslar/${course.slug}`,
+    lastModified: BUILD_DATE,
     changeFrequency: 'weekly',
     priority: 0.8,
   }));

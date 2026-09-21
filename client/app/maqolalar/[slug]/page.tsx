@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { cache } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -16,6 +16,17 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import ArticleContentReader from '@/components/ArticleContentReader';
+import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/site';
+import { seedArticles } from '@/lib/seedData';
+
+// Deduplicates the fetch between generateMetadata() and the page render
+const getArticle = cache((slug: string) => api.getArticleBySlug(slug));
+
+export const revalidate = 3600;
+
+export function generateStaticParams() {
+  return seedArticles.filter((a) => a.isPublished !== false).map((a) => ({ slug: a.slug }));
+}
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -23,68 +34,84 @@ interface ArticlePageProps {
 
 export async function generateMetadata({ params }: ArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await api.getArticleBySlug(slug);
+  const article = await getArticle(slug);
 
   if (!article) {
-    return {
-      title: 'Maqola topilmadi | Farzandly',
-    };
+    return { title: 'Maqola topilmadi', robots: { index: false, follow: false } };
   }
 
+  const url = `/maqolalar/${article.slug}`;
+  const title = (article.seoTitle || article.title).replace(/\s*\|\s*Farzandly\s*$/i, '');
+  const description = article.seoDescription || article.excerpt;
+
   return {
-    title: `${article.seoTitle || article.title} | Farzandly`,
-    description: article.seoDescription || article.excerpt,
+    title: { absolute: `${title} | ${SITE_NAME}` },
+    description,
     keywords: article.tags,
-    alternates: {
-      canonical: `https://farzandly.uz/maqolalar/${article.slug}`,
-    },
+    alternates: { canonical: url },
     openGraph: {
       title: article.title,
       description: article.excerpt,
       type: 'article',
-      url: `https://farzandly.uz/maqolalar/${article.slug}`,
+      url,
+      siteName: SITE_NAME,
+      locale: 'uz_UZ',
       publishedTime: article.publishedAt,
+      modifiedTime: article.publishedAt,
+      section: article.categorySlug,
+      tags: article.tags,
+      images: [{ url: '/logo.png', width: 778, height: 192, alt: SITE_NAME }],
     },
     twitter: {
       card: 'summary_large_image',
       title: article.title,
       description: article.excerpt,
+      images: ['/logo.png'],
     },
   };
 }
 
 export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = await api.getArticleBySlug(slug);
+  const article = await getArticle(slug);
 
   if (!article) {
     notFound();
   }
 
   // JSON-LD Structured Data Schema
+  const articleUrl = absoluteUrl(`/maqolalar/${article.slug}`);
   const jsonLd = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
-    headline: article.title,
-    description: article.excerpt,
-    author: {
-      '@type': 'Organization',
-      name: 'Farzandly Pedagogik Tahririyati',
-      url: 'https://farzandly.uz',
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Farzandly',
-      logo: {
-        '@type': 'ImageObject',
-        url: 'https://farzandly.uz/logo.png',
+    '@graph': [
+      {
+        '@type': 'Article',
+        headline: article.title,
+        description: article.excerpt,
+        image: [absoluteUrl('/logo.png')],
+        inLanguage: 'uz',
+        keywords: (article.tags || []).join(', '),
+        articleSection: article.categorySlug,
+        author: { '@type': 'Organization', name: 'Farzandly Pedagogik Tahririyati', url: SITE_URL },
+        publisher: {
+          '@type': 'Organization',
+          name: SITE_NAME,
+          logo: { '@type': 'ImageObject', url: absoluteUrl('/logo.png') },
+        },
+        datePublished: article.publishedAt,
+        dateModified: article.publishedAt,
+        mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
+        isAccessibleForFree: !article.isPremium,
       },
-    },
-    datePublished: article.publishedAt,
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `https://farzandly.uz/maqolalar/${article.slug}`,
-    },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Asosiy', item: SITE_URL },
+          { '@type': 'ListItem', position: 2, name: 'Maqolalar', item: absoluteUrl('/maqolalar') },
+          { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl },
+        ],
+      },
+    ],
   };
 
   return (
@@ -96,7 +123,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       />
 
       {/* Breadcrumb navigation */}
-      <nav className="flex items-center gap-2 text-xs font-bold text-slate-400">
+      <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-bold text-slate-400">
         <Link href="/" className="hover:text-emerald-700">
           Asosiy
         </Link>

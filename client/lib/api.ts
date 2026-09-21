@@ -179,7 +179,11 @@ export async function apiClient<T>(endpoint: string, config: RequestConfig = {})
     const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
     try {
+      const isServer = typeof window === 'undefined';
       const response = await fetch(url, {
+        ...(isServer && (!customConfig.method || customConfig.method === 'GET')
+          ? ({ next: { revalidate: 300 } } as RequestInit)
+          : {}),
         ...customConfig,
         headers,
         signal: controller.signal,
@@ -218,16 +222,8 @@ export async function apiClient<T>(endpoint: string, config: RequestConfig = {})
 // Client fetch helper using centralized network layer
 const fetchFromApi = apiClient;
 
-// Fallback demo data
-import {
-  seedCategories,
-  seedAgeGroups,
-  seedAchievements,
-  seedCourses,
-  seedLearningPaths,
-  seedLessons,
-  seedArticles,
-} from './seedData';
+// Fallback demo data — loaded lazily so the ~1MB seed file stays out of the main client bundle
+const loadSeed = () => import('./seedData');
 import { calculateLevel, calculateStreak, checkAchievements } from './gamification';
 
 function localizeEntity<T extends Record<string, any>>(item: T, lang: string = 'uz'): T {
@@ -248,14 +244,14 @@ export const api = {
   // Categories
   async getCategories(lang: string = 'uz'): Promise<Category[]> {
     const data = await fetchFromApi<Category[]>(`/categories?lang=${lang}`);
-    const items = data || (seedCategories as unknown as Category[]);
+    const items = data || ((await loadSeed()).seedCategories as unknown as Category[]);
     return items.map((c) => localizeEntity(c, lang));
   },
 
   // Age Groups
   async getAgeGroups(lang: string = 'uz'): Promise<AgeGroup[]> {
     const data = await fetchFromApi<AgeGroup[]>(`/age-groups?lang=${lang}`);
-    const items = data || (seedAgeGroups as unknown as AgeGroup[]);
+    const items = data || ((await loadSeed()).seedAgeGroups as unknown as AgeGroup[]);
     return items.map((ag) => localizeEntity(ag, lang));
   },
 
@@ -271,6 +267,7 @@ export const api = {
     const data = await fetchFromApi<Article[]>(`/articles?${query.toString()}`);
     if (data) return data.map((a) => localizeEntity(a, lang));
 
+    const { seedArticles } = await loadSeed();
     let res = seedArticles as unknown as Article[];
     if (params?.category) res = res.filter((a) => a.categorySlug === params.category);
     if (params?.ageGroup) res = res.filter((a) => a.ageGroup === params.ageGroup);
@@ -284,6 +281,7 @@ export const api = {
   async getArticleBySlug(slug: string, lang: string = 'uz'): Promise<Article | null> {
     const data = await fetchFromApi<Article>(`/articles/${slug}?lang=${lang}`);
     if (data) return localizeEntity(data, lang);
+    const { seedArticles } = await loadSeed();
     const item = (seedArticles.find((a) => a.slug === slug) as unknown as Article) || null;
     return item ? localizeEntity(item, lang) : null;
   },
@@ -299,6 +297,7 @@ export const api = {
     const data = await fetchFromApi<Course[]>(`/courses?${query.toString()}`);
     if (data) return data.map((c) => localizeEntity(c, lang));
 
+    const { seedCourses } = await loadSeed();
     let res = seedCourses as unknown as Course[];
     if (params?.ageGroup) res = res.filter((c) => c.ageGroup === params.ageGroup);
     if (params?.category) res = res.filter((c) => c.categorySlug === params.category);
@@ -308,6 +307,7 @@ export const api = {
   async getCourseBySlug(slug: string, lang: string = 'uz'): Promise<Course | null> {
     const data = await fetchFromApi<Course>(`/courses/${slug}?lang=${lang}`);
     if (data) return localizeEntity(data, lang);
+    const { seedCourses, seedLessons } = await loadSeed();
     const course = seedCourses.find((c) => c.slug === slug) as unknown as Course;
     if (course) {
       const lessons = (seedLessons.filter((l) => l.courseSlug === slug) as unknown as Lesson[]).map((l) =>
@@ -322,6 +322,7 @@ export const api = {
   async getLearningPaths(ageGroup?: string, lang: string = 'uz'): Promise<LearningPath[]> {
     const data = await fetchFromApi<LearningPath[]>(`/learning-paths?${ageGroup ? `ageGroup=${ageGroup}&` : ''}lang=${lang}`);
     if (data) return data.map((p) => localizeEntity(p, lang));
+    const { seedLearningPaths } = await loadSeed();
     let paths = seedLearningPaths as unknown as LearningPath[];
     if (ageGroup) paths = paths.filter((lp) => lp.ageGroup === ageGroup);
     return paths.map((p) => localizeEntity(p, lang));
@@ -330,6 +331,7 @@ export const api = {
   async getLearningPathBySlug(slug: string, lang: string = 'uz'): Promise<LearningPath | null> {
     const data = await fetchFromApi<LearningPath>(`/learning-paths/${slug}?lang=${lang}`);
     if (data) return localizeEntity(data, lang);
+    const { seedLearningPaths, seedLessons } = await loadSeed();
     const path = seedLearningPaths.find((p) => p.slug === slug) as unknown as LearningPath;
     if (path) {
       const lessons = (seedLessons.filter((l) => path.lessonSlugs.includes(l.slug)) as unknown as Lesson[]).map((l) =>
@@ -351,6 +353,7 @@ export const api = {
     const data = await fetchFromApi<Lesson[]>(`/lessons?${query.toString()}`);
     if (data) return data.map((l) => localizeEntity(l, lang));
 
+    const { seedLessons } = await loadSeed();
     let res = seedLessons as unknown as Lesson[];
     if (params?.courseSlug) res = res.filter((l) => l.courseSlug === params.courseSlug);
     if (params?.ageGroup) res = res.filter((l) => l.ageGroup === params.ageGroup);
@@ -360,6 +363,7 @@ export const api = {
   async getLessonByIdOrSlug(idOrSlug: string, lang: string = 'uz'): Promise<Lesson | null> {
     const data = await fetchFromApi<Lesson>(`/lessons/${idOrSlug}?lang=${lang}`);
     if (data) return localizeEntity(data, lang);
+    const { seedLessons } = await loadSeed();
     const lesson = (seedLessons.find((l) => l.slug === idOrSlug) as unknown as Lesson) || null;
     return lesson ? localizeEntity(lesson, lang) : null;
   },
@@ -367,7 +371,7 @@ export const api = {
   // Achievements
   async getAchievements(lang: string = 'uz'): Promise<Achievement[]> {
     const data = await fetchFromApi<Achievement[]>(`/achievements?lang=${lang}`);
-    const items = data || (seedAchievements as unknown as Achievement[]);
+    const items = data || ((await loadSeed()).seedAchievements as unknown as Achievement[]);
     return items.map((a) => localizeEntity(a, lang));
   },
 
@@ -403,6 +407,7 @@ export const api = {
       achievements: [],
       subscriptionStatus: 'free',
     };
+    const { seedLearningPaths } = await loadSeed();
     return {
       user: demoUser,
       startingPath: seedLearningPaths.find((lp) => lp.ageGroup === payload.childAgeGroup) || seedLearningPaths[0],
