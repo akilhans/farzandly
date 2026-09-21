@@ -15129,5 +15129,83 @@ export const seedArticles = [
       "isPremium": true,
       "isPublished": true,
       "publishedAt": "2026-09-21T12:00:00.000Z"
+    },
+{
+    "title": "Jazosiz tarbiya: Nega jazo samarasiz va bolaga nima uchun baqirmaslik kerak?",
+    "slug": "jazosiz-tarbiya-nega-jazo-samarasiz-adem-gunesh",
+    "excerpt": "Adem Güneş: Jazo ota-onaning ojizligi ifodasi, soxta itoat illuziyasi, bolalik jarohatlari, baqirishning asoratlari va «Soxta Men» xavfi.",
+    "content": "Adem Güneş: «Jazosiz tarbiya» (Cezasız Eğitim) — 1-qism\nMuallif: Adem Güneş (Turkchadan Javohir Usmon tarjimasi asosida)\n\n1. Jazo nima? Ota-onaning chorasizlik va ojizlik ifodasi\nKo‘pchilik ota-onalar jazoni tarbiyaning ajralmas vositasi deb hisoblaydi: «Jazolamasam gapga kirmaydi», «Bir urishib bermasam to‘xtamaydi». \nAmmo pedagogika fanlari doktori Adem Güneş bu qarashni tubdan rad etadi. Jazo — tarbiya vositasi emas, balki tarbiyada ojiz qolgan, boshqa yo‘l topolmagan ota-onaning chorasizlik va hissiy tushkunlik nidosidir.\nBola noto‘g‘ri ish qilganda unga baqirish, burchakka turg‘izish, o‘yinchog‘ini tortib olish yoki jismoniy jazolash orqali ota-ona o‘zining ichki g‘azabini bolaga to‘kadi, xolos. Bu jarayonda bola xatosini anglamaydi, balki o‘zini himoya qilish, yolg‘on gapirish va ota-onasidan qochish instinktini rivojlantiradi.\n\n2. «Soxta itoat» (Itaat illüzyonu) xavfi\nJazo yordamida tezkor natijaga erishish mumkin: bola qo‘rqqanidan baqiriqni eshitiboq jim bo‘ladi yoki aytilgan ishni qiladi. Ota-onaga esa jazo go‘yo «ish berayotgandek» ko‘rinadi.\nAslida bu — «soxta itoat»dir. \nBola o‘z xatosini tushungani uchun emas, balki jazodan va qattiq og‘riqdan qo‘rqqani uchun bo‘ysunadi. Jazo bor ekan — itoat bor; jazo qo‘llaydigan kattalar ketishi bilan bola o‘sha yomon qiliqni ikki barobar ko‘proq qilib takrorlaydi. Shuning uchun ham jazoga tayanib katta bo‘lgan bolalar ko‘chada, maktabda yoki balog‘atga yetgach mutlaqo boshqarib bo‘lmas holatga keladi.\n\n3. Jazo bolada shakllantiradigan 4 ta halokatli tuyg‘u\nTadqiqotlar va yillik amaliy kuzatuvlar shuni ko‘rsatadiki, doimiy jazo ostida o‘sgan bolada to‘rtta xavfli psixologik holat rivojlanadi:\n• Qasos va intiqom hissi: Bola ich-ichidan jazolagan odamdan (ota yoki onadan) nafratlana boshlaydi va fursat poylab ularni ranjitishga urinadi.\n• Yolg‘onchilik va ayyorlik: Bola «xato qildim, buni tuzatishim kerak» deb o‘ylamaydi, balki «keyingi safar shunday qilayki, ota-onam bilmay qolsin» degan fikr bilan yashaydi. Jazo — yolg‘onchilikning eng birinchi onasidir.\n• O‘zini qadrsiz his qilish: Jazo bolaning ichki «men»ini sindiradi. U o‘zini hech kimga kerakmas, faqat jazolarga loyiq, nuqsonli inson deb biladi.\n• Tajovuzkorlik: Uyda jazoga uchragan bola ko‘chada o‘zidan zaifroq ukasini, sinfdoshini yoki hayvonlarni azoblab, ichidagi bosimni chiqaradi.\n\n4. Nega bolaga baqirish miya rivojlanishiga zahar kabi ta’sir qiladi?\nOta-ona bolaga baqirganda bolaning miyasida «tashvish va xavf» markazi (amigdala) ishga tushadi. Bu vaqtda miyaning fikrlash, tahlil qilish va o‘rganish markazi bo‘lgan prefrontal po‘stloq butunlay bloklanadi.\nDemak, siz bolaga baqirib tushuntirayotganingizda, u sizning bitta ham dono so‘zingizni eshitmaydi va tushunmaydi; uning butun vujudi faqatgina omon qolish va xavfdan qutulishga qaratilgan bo‘ladi. Baqirish — so‘z bilan berilgan jismoniy tarsakidir.\n\n5. «Soxta Men» (False Self): Kattalarni rozi qilish uchun o‘z hislarini o‘ldirgan bola fojiasi\nJazolardan charchagan bola oxir-oqibat ota-onaga yoqish uchun o‘zining asl fe’l-atvorini, his-tuyg‘ularini berkitib, «yoqimtoy, itoatkor, hech narsaga e’tiroz bildirmaydigan» soxta shaxsiyat niqobini kiyadi.\nBunday bolalar ulg‘aygach:\n• «Yo‘q» deyishni bilmaydigan, har kimning yetagiga ergashadigan bo‘lib qoladi;\n• O‘z orzu-istaklarini anglay olmaydi;\n• Hayotdan doimiy charchoq, bo‘shliq va tushkunlik (depressiya) his qiladi.\n\n6. Jazosiz tarbiyalash mumkinmi?\nAdem Güneşning qat’iy xulosasi: Ha, nafaqat mumkin, balki sog‘lom inson yetishtirishning yagona to‘g‘ri yo‘lidir!\nJazosiz tarbiya — bu bolani o‘z holiga tashlab qo‘yish, uning har qanday xarxashasiga ko‘nish degani emas. Jazosiz tarbiya — bu bolaga qat’iyat va shafqat, tushunish va xavfsiz hissiy aloqa orqali hayot qoidalarini o‘rgatish demakdir.",
+    "categorySlug": "tarbiya-asoslari",
+    "ageGroup": "3-5",
+    "readingTimeMinutes": 10,
+    "tags": [
+      "jazosiz tarbiya",
+      "adem gunesh",
+      "jazo zararlari",
+      "baqirmasdan tarbiyalash",
+      "soxta itoat",
+      "bolalar psixologiyasi"
+    ],
+    "seoTitle": "Jazosiz tarbiya: Nega jazo samarasiz? | Adem Güneş",
+    "seoDescription": "Adem Güneşning «Jazosiz tarbiya» kitobi asosida: jazo nima uchun samarasiz, baqirishning ruhiy asoratlari va soxta itoatdan qutulish yo‘llari.",
+    "isPublished": true,
+    "publishedAt": "2026-09-21T17:00:00.000Z",
+    "isPremium": false,
+    "translations": {
+      "uz": {
+        "title": "Jazosiz tarbiya: Nega jazo samarasiz va bolaga nima uchun baqirmaslik kerak?",
+        "excerpt": "Adem Güneş: Jazo ota-onaning ojizligi ifodasi, soxta itoat illuziyasi, bolalik jarohatlari, baqirishning asoratlari va «Soxta Men» xavfi.",
+        "content": "Adem Güneş: «Jazosiz tarbiya» (Cezasız Eğitim) — 1-qism..."
+      },
+      "en": {
+        "title": "Education Without Punishment: Why Punishment Fails and Why We Must Not Yell at Children",
+        "excerpt": "Dr. Adem Güneş on why punishment breeds resentment rather than responsibility, the illusion of false obedience, and healing childhood wounds.",
+        "content": "Education Without Punishment — Part 1 by Dr. Adem Güneş..."
+      },
+      "ru": {
+        "title": "Воспитание без наказания: почему наказание бесполезно и почему нельзя кричать на детей",
+        "excerpt": "Адем Гюнеш: наказание как признак беспомощности родителей, иллюзия ложного послушания и вред крика для детской психики.",
+        "content": "Воспитание без наказания — Часть 1 по книге Адема Гюнеша..."
+      }
     }
+  },
+  {
+    "title": "Jazosiz intizom va xavfsiz bog‘lanish sirlari: Chegara qo‘yish, mukofot xatosi va tabiiy oqibatlar",
+    "slug": "jazosiz-intizom-va-xavfsiz-boglanish-adem-gunesh",
+    "excerpt": "Adem Güneş: Mukofot va poraning ichki motivatsiyani o'ldirishi, xavfsiz hissiy bog'lanish (Bağlanma), tabiiy oqibatlar va ota-onaning o'zini davolashi.",
+    "content": "Adem Güneş: «Jazosiz tarbiya» (Cezasız Eğitim) — 2-qism\nMuallif: Adem Güneş (Turkchadan Javohir Usmon tarjimasi asosida)\n\n1. Mukofot — jazoning boshqacha kiyingan ko‘rinishidir\nKo‘pchilik ota-onalar jazo o‘rniga mukofot berishni ijobiy pedagogika deb o‘ylaydi: «Agar xonangni yig‘ishtirsang, shirinlik olib beraman», «Besh baho olsang, velosiped olib beraman».\nAdem Güneş shuni ta’kidlaydiki: Mukofot ham huddi jazo kabi shartli tarbiyadir.\n• Mukofot ichki motivatsiyani o‘ldiradi: Bola o‘z xonasini toza tutish insoniy burch ekanligi uchun emas, faqat shirinlik olish uchun yig‘ishtiradi.\n• Bola savdogarga aylanadi: Vaqt o‘tishi bilan bola oddiy oilaviy yordam uchun ham haq talab qila boshlaydi: «Menga nima berasan?».\n• Mukofot to‘xtasa — xulq to‘xtaydi: Sovg‘a berilmagan kuni bola kitob o‘qishdan ham, tartibli bo‘lishdan ham voz kechadi.\nTavsiya: Moddiy mukofot o‘rniga samimiy muloqot, mehrli quchoqlash va «Sening bu harakating menga juda katta yordam bo‘ldi, rahmat bolajonim» degan ruhiy e’tirof yetarlidir.\n\n2. Xavfsiz hissiy bog‘lanish (Güvenli Bağlanma) — Tarbiya poydevori\nBolaning qulog‘iga gap kirishi uchun avvalo uning qalbi bilan ota-onaning qalbi o‘rtasida simsiz ko‘prik — xavfsiz bog‘lanish qurilishi lozim.\nAgar bola o‘zini ota-onasining yonida xavfsiz, sevimli va qabul qilingan his qilmasa, unga aytilgan dunyoning eng dono nasihatlari ham eshikdan nariga o‘tmaydi.\nXavfsiz bog‘lanish qanday o‘rnatiladi?\n• Bola gapirayotganda telefonni chetga surib, ko‘zlariga qarash;\n• Xato qilganda darhol tergov qilmasdan, avval uning hissini tushunish («Ko‘ryapman, juda xafa bo‘libsan»);\n• Ota-ona quchog‘i — bolaning har qanday dovuldan panoh topadigan eng tinch bandargohi bo‘lishi shart.\n\n3. Jazosiz chegara qo‘yishning 5 oltin qoidasi\nChegara — jazo degani emas. Chegara — bolaga dunyoning xavfsiz va tushunarli ekanligini his qildiruvchi qoidalardir.\n1. Ko‘z darajasiga tushish: Yuqoridan turib buyruq bermang, egilib, bolaning ko‘z darajasiga keling.\n2. Qisqa va lo‘nda gapirish: O‘n daqiqalik ma’ruza bolaning qulog‘ini charchatadi. Fikringizni 1–2 ta qisqa jumla bilan ayting.\n3. Hissiy xotirjamlik va qat’iyat: Qoidani jahl bilan emas, mutlaq osoyishtalik bilan bildiring. Ovozingizdagi qat’iyat bolani ishontiradi.\n4. Ijobiy tilni qo‘llash: «Yugurma!» (man etish) o‘rniga «Sekin yuramiz» (to‘g‘ri harakatni ko‘rsatish) deng.\n5. Muqobil variant taklif qilish: «Devorga chizish mumkin emas, lekin mana bu qog‘ozga xohlagancha chizishing mumkin».\n\n4. Tabiiy oqibatlar qoidasi (Natural Consequences)\nJazo — bu sun’iy ravishda o‘ylab topilgan alamdir (masalan: ovqat yemading — multfilm ko‘rmaysan). Bu ikkisi o‘rtasida mantiqiy bog‘liqlik yo‘q.\nTabiiy oqibat esa — hayotning o‘zidan saboq olishdir:\n• O‘yinchog‘ini urib sindirdimi? Unga baqirmang, yangisini ham darhol olib bermang. U singan o‘yinchoqqa qarab, narsalarni asrash kerakligini tabiiy tushunadi.\n• Ertalab paypog‘ini kiyishni cho‘zib, maktabga kech qoldimi? Siz asabiylashmang, o‘qituvchisiga tushuntirib uzr so‘rash mas’uliyatini uning o‘ziga qo‘yib bering.\n\n5. Ota-onaning o‘zini tarbiyalashi va kechirim madaniyati\nAdem Güneş kitob oxirida eng ta’sirli xulosani beradi:\n«Biz bolamizga baqirayotgan paytda, aslida bolaga emas, o‘z bolaligimizdagi kamsitilgan, tushunilmagan va og‘riq chekkan o‘z ichki bolamizga baqirayotgan bo‘lamiz».\nAgar ota-ona o‘z ichidagi charchoqni, asabiylikni va bolalik jarohatlarini davolamasa, u o‘z bolasiga chinakam shafqat ko‘rsata olmaydi.\nBolani tarbiyalash — o‘z nafsini tarbiyalashdan boshlanadi. Har bir ota-ona xato qilishi tabiiy, ammo o‘z vaqtida boladan: «Kechir bolajonim, o‘shanda juda charchagan edim, senga nohaq ovozimni ko‘tardim» deb uzr so‘ray olish — eng oliy murabbiylik fazilatidir.",
+    "categorySlug": "tarbiya-asoslari",
+    "ageGroup": "3-5",
+    "readingTimeMinutes": 12,
+    "tags": [
+      "jazosiz tarbiya",
+      "adem gunesh",
+      "mukofot xatosi",
+      "chegara qoyish",
+      "xavfsiz boglanish",
+      "tabiiy oqibatlar"
+    ],
+    "seoTitle": "Jazosiz intizom va xavfsiz bog‘lanish | Adem Güneş",
+    "seoDescription": "Adem Güneş — Jazosiz intizom sirlari: mukofot va jazo xatosi, bolaga to'g'ri chegara qo'yish, hissiy bog'lanish va tabiiy oqibatlar orqali tarbiyalash.",
+    "isPublished": true,
+    "publishedAt": "2026-09-21T17:30:00.000Z",
+    "isPremium": false,
+    "translations": {
+      "uz": {
+        "title": "Jazosiz intizom va xavfsiz bog‘lanish sirlari: Chegara qo‘yish, mukofot xatosi va tabiiy oqibatlar",
+        "excerpt": "Adem Güneş: Mukofot va poraning ichki motivatsiyani o'ldirishi, xavfsiz hissiy bog'lanish (Bağlanma), tabiiy oqibatlar va ota-onaning o'zini davolashi.",
+        "content": "Adem Güneş: «Jazosiz tarbiya» (Cezasız Eğitim) — 2-qism..."
+      },
+      "en": {
+        "title": "Discipline Without Punishment and Secure Attachment: Boundaries, Reward Trap, and Natural Consequences",
+        "excerpt": "Dr. Adem Güneş on why rewards act as conditional bribes, establishing empathetic boundaries, and the power of natural consequences.",
+        "content": "Discipline Without Punishment — Part 2 by Dr. Adem Güneş..."
+      },
+      "ru": {
+        "title": "Дисциплина без наказаний и надежная привязанность: границы, ошибка наград и естественные последствия",
+        "excerpt": "Адем Гюнеш о том, почему награды убивают внутреннюю мотивацию, как устанавливать границы без крика и исцелять детские травмы родителей.",
+        "content": "Дисциплина без наказаний — Часть 2 по книге Адема Гюнеша..."
+      }
+    }
+  }
 ];
