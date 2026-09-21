@@ -1,36 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, CheckCircle2, Send, ShieldCheck, BookOpen, Compass } from 'lucide-react';
-import { api } from '@/lib/api';
+import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass } from 'lucide-react';
 
 export function Footer() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [msg, setMsg] = useState('');
-
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!email || !email.includes('@')) {
-      setStatus('error');
-      setMsg('Iltimos, to‘g‘ri elektron pochta manzilini kiriting');
-      return;
-    }
-
-    setStatus('loading');
-    try {
-      await api.subscribeNewsletter(email);
-      setStatus('success');
-      setMsg('Rahmat! Siz muvaffaqiyatli obuna bo‘ldingiz.');
-      setEmail('');
-    } catch {
-      setStatus('error');
-      setMsg('Xatolik yuz berdi. Keyinroq qayta urinib ko‘ring.');
-    }
-  };
-
   return (
     <footer className="bg-slate-900 text-white mt-auto border-t-4 border-emerald-600">
       {/* Top trust band */}
@@ -52,8 +27,8 @@ export function Footer() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-bold text-sm text-slate-100">Zamonaviy pedagogika</p>
-                <p className="text-xs text-slate-400">Ilmiy isbotlangan usullar</p>
+                <p className="font-bold text-sm text-slate-100">Ilmiy asoslangan</p>
+                <p className="text-xs text-slate-400">Psixologlar tavsiyasi</p>
               </div>
             </div>
 
@@ -82,7 +57,7 @@ export function Footer() {
 
       {/* Main footer content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
             <Link href="/" className="inline-flex items-center gap-2.5">
@@ -160,38 +135,6 @@ export function Footer() {
                 </Link>
               </li>
             </ul>
-          </div>
-
-          {/* Newsletter */}
-          <div className="space-y-3">
-            <p className="font-bold text-slate-200 text-base">Haftalik tavsiyalar</p>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              Har haftada 1 ta eng zarur amaliy maslahat va o‘rganish vazifasini pochtangizda oling.
-            </p>
-            <form onSubmit={handleSubscribe} className="space-y-2">
-              <div className="relative">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Email manzilingiz"
-                  className="w-full bg-slate-800 text-white placeholder-slate-400 text-xs px-3.5 py-2.5 rounded-xl border border-slate-700 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={status === 'loading'}
-                className="w-full btn-secondary text-xs py-2 px-3 flex items-center justify-center gap-1.5"
-              >
-                <span>{status === 'loading' ? 'Yuborilmoqda...' : 'Obuna bo‘lish'}</span>
-                <Send className="w-3.5 h-3.5" />
-              </button>
-              {msg && (
-                <p className={`text-xs ${status === 'success' ? 'text-emerald-400' : 'text-rose-400'}`}>
-                  {msg}
-                </p>
-              )}
-            </form>
           </div>
         </div>
 
