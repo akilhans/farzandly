@@ -355,17 +355,91 @@ export class DataService {
     return newUser;
   }
 
+  // Email User Authentication
+  static async createOrUpdateEmailUser(data: {
+    name: string;
+    email: string;
+    passwordHash: string;
+  }) {
+    if (isDbConnected()) {
+      const existing = await User.findOne({ email: data.email });
+      if (existing) {
+        throw new Error('Bu email manzili allaqachon ro‘yxatdan o‘tgan');
+      }
+
+      const user = new User({
+        name: data.name,
+        email: data.email,
+        passwordHash: data.passwordHash,
+        authProvider: 'email',
+        childAgeGroup: '3-5',
+        selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
+        dailyGoalMinutes: 10,
+        xp: 15,
+        streak: 1,
+        level: 'Boshlovchi',
+        completedLessons: [],
+        achievements: ['ilk-qadam'],
+        subscriptionStatus: 'free',
+        photoUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(data.name)}`,
+      });
+      await user.save();
+      return user;
+    }
+
+    // In-memory
+    const existing = Object.values(memoryUsers).find((u: any) => u.email === data.email);
+    if (existing) {
+      throw new Error('Bu email manzili allaqachon ro‘yxatdan o‘tgan');
+    }
+
+    const id = `email-${Date.now()}`;
+    const newUser = {
+      _id: id,
+      name: data.name,
+      email: data.email,
+      passwordHash: data.passwordHash,
+      authProvider: 'email',
+      childAgeGroup: '3-5',
+      selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
+      dailyGoalMinutes: 10,
+      xp: 15,
+      streak: 1,
+      level: 'Boshlovchi',
+      completedLessons: [],
+      achievements: ['ilk-qadam'],
+      subscriptionStatus: 'free',
+      photoUrl: `https://api.dicebear.com/7.x/bottts/svg?seed=${encodeURIComponent(data.name)}`,
+    };
+    memoryUsers[id] = newUser;
+    return newUser;
+  }
+
+  static async verifyEmailUser(email: string, passwordHash: string) {
+    if (isDbConnected()) {
+      const user = await User.findOne({ email });
+      if (!user) return null;
+      if (user.passwordHash !== passwordHash) return null;
+      return user;
+    }
+
+    const user = Object.values(memoryUsers).find((u: any) => u.email === email);
+    if (!user) return null;
+    if (user.passwordHash !== passwordHash) return null;
+    return user;
+  }
+
   static async getUserByIdOrTelegram(idOrTg: string) {
     if (isDbConnected()) {
       if (mongoose.Types.ObjectId.isValid(idOrTg)) {
         const u = await User.findById(idOrTg);
         if (u) return u;
       }
-      return await User.findOne({ $or: [{ telegramId: idOrTg }, { _id: idOrTg }] });
+      return await User.findOne({ $or: [{ telegramId: idOrTg }, { email: idOrTg }, { _id: idOrTg }] });
     }
     const byKey = memoryUsers[idOrTg];
     if (byKey) return byKey;
-    const byTg = Object.values(memoryUsers).find((u: any) => u.telegramId === idOrTg);
+    const byTg = Object.values(memoryUsers).find((u: any) => u.telegramId === idOrTg || u.email === idOrTg);
     return byTg || memoryUsers['demo-user'] || null;
   }
 

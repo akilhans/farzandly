@@ -136,28 +136,87 @@ export interface UserProgressData {
   }>;
 }
 
-// Client fetch helper
-async function fetchFromApi<T>(endpoint: string, options?: RequestInit): Promise<T | null> {
-  try {
-    const res = await fetch(`${API_BASE}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(options?.headers || {}),
-      },
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) {
-      console.warn(`API xatolik: ${res.status} on ${endpoint}`);
-      return null;
-    }
-    const data = await res.json();
-    return data.data ?? data;
-  } catch (err) {
-    console.warn(`API serverga ulanib bo'lmadi (${endpoint}):`, (err as Error).message);
-    return null;
+export class ApiError extends Error {
+  statusCode: number;
+  details?: any;
+
+  constructor(message: string, statusCode: number, details?: any) {
+    super(message);
+    this.name = 'ApiError';
+    this.statusCode = statusCode;
+    this.details = details;
   }
 }
+
+function getAuthHeader(): Record<string, string> {
+  if (typeof window !== 'undefined') {
+    const token = localStorage.getItem('farzandly_auth_token');
+    if (token) {
+      return { Authorization: `Bearer ${token}` };
+    }
+  }
+  return {};
+}
+
+export interface RequestConfig extends RequestInit {
+  retries?: number;
+  timeoutMs?: number;
+}
+
+export async function apiClient<T>(endpoint: string, config: RequestConfig = {}): Promise<T | null> {
+  const { retries = 1, timeoutMs = 7000, ...customConfig } = config;
+  const url = endpoint.startsWith('http') ? endpoint : `${API_BASE}${endpoint}`;
+
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...getAuthHeader(),
+    ...((customConfig.headers as Record<string, string>) || {}),
+  };
+
+  let attempts = 0;
+  while (attempts <= retries) {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
+    try {
+      const response = await fetch(url, {
+        ...customConfig,
+        headers,
+        signal: controller.signal,
+      });
+      clearTimeout(timeoutId);
+
+      if (!response.ok) {
+        let errData: any;
+        try {
+          errData = await response.json();
+        } catch {
+          errData = { message: response.statusText };
+        }
+        throw new ApiError(errData?.message || `HTTP ${response.status}`, response.status, errData);
+      }
+
+      const json = await response.json();
+      return (json.data ?? json) as T;
+    } catch (err: any) {
+      clearTimeout(timeoutId);
+      attempts++;
+      // Only retry idempotent GET requests
+      const isIdempotent = !customConfig.method || customConfig.method === 'GET';
+      if (attempts > retries || !isIdempotent) {
+        if (process.env.NODE_ENV !== 'production') {
+          console.warn(`[Farzandly API Error] (${endpoint}):`, err.message || err);
+        }
+        return null;
+      }
+      await new Promise((resolve) => setTimeout(resolve, attempts * 250));
+    }
+  }
+  return null;
+}
+
+// Client fetch helper using centralized network layer
+const fetchFromApi = apiClient;
 
 // Fallback demo data
 import {

@@ -395,6 +395,77 @@ export class AuthController {
   }
 
   /**
+   * Email + Password Registration
+   */
+  static async emailRegister(req: Request, res: Response) {
+    try {
+      const { name, email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Email va parol kiritilishi shart' });
+      }
+      if (password.length < 6) {
+        return res.status(400).json({ success: false, message: 'Parol kamida 6 ta belgidan iborat bo‘lishi kerak' });
+      }
+
+      const cleanEmail = email.trim().toLowerCase();
+      const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+      const displayName = name ? name.trim() : cleanEmail.split('@')[0];
+
+      const user = await DataService.createOrUpdateEmailUser({
+        name: displayName,
+        email: cleanEmail,
+        passwordHash,
+      });
+
+      const token = `email_token_${user._id}_${Date.now()}`;
+      res.json({
+        success: true,
+        message: 'Muvaffaqiyatli ro‘yxatdan o‘tdingiz',
+        data: {
+          user,
+          token,
+        },
+      });
+    } catch (error: any) {
+      console.error('[Email Register Error]:', error);
+      res.status(500).json({ success: false, message: error.message || 'Ro‘yxatdan o‘tishda xatolik yuz berdi' });
+    }
+  }
+
+  /**
+   * Email + Password Login
+   */
+  static async emailLogin(req: Request, res: Response) {
+    try {
+      const { email, password } = req.body;
+      if (!email || !password) {
+        return res.status(400).json({ success: false, message: 'Email va parol kiritilishi shart' });
+      }
+
+      const cleanEmail = email.trim().toLowerCase();
+      const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
+
+      const user = await DataService.verifyEmailUser(cleanEmail, passwordHash);
+      if (!user) {
+        return res.status(401).json({ success: false, message: 'Email yoki parol noto‘g‘ri' });
+      }
+
+      const token = `email_token_${user._id}_${Date.now()}`;
+      res.json({
+        success: true,
+        message: 'Xush kelibsiz!',
+        data: {
+          user,
+          token,
+        },
+      });
+    } catch (error: any) {
+      console.error('[Email Login Error]:', error);
+      res.status(500).json({ success: false, message: error.message || 'Kirishda xatolik yuz berdi' });
+    }
+  }
+
+  /**
    * Logout
    */
   static async logout(req: Request, res: Response) {

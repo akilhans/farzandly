@@ -17,6 +17,10 @@ authRouter.post('/telegram', AuthController.telegramAuth);
 authRouter.get('/telegram/avatar/:id', AuthController.getUserAvatar);
 authRouter.get('/telegram/user/:id', AuthController.getTelegramUserProfile);
 
+// Email Authentication & Registration
+authRouter.post('/email/register', AuthController.emailRegister);
+authRouter.post('/email/login', AuthController.emailLogin);
+
 // Get current user session
 authRouter.get('/me', AuthController.getMe);
 

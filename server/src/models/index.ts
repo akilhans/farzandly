@@ -50,10 +50,11 @@ export interface IUser extends Document {
   firstName?: string;
   lastName?: string;
   email?: string;
+  passwordHash?: string;
   telegramId?: string;
   telegramUsername?: string;
   photoUrl?: string;
-  authProvider: 'telegram' | 'guest';
+  authProvider: 'telegram' | 'guest' | 'email';
   childAgeGroup: string;
   selectedInterests: string[];
   dailyGoalMinutes: number;
@@ -73,11 +74,12 @@ const UserSchema = new Schema<IUser>({
   name: { type: String, default: 'Ota-ona' },
   firstName: { type: String },
   lastName: { type: String },
-  email: { type: String, sparse: true },
+  email: { type: String, sparse: true, index: true },
+  passwordHash: { type: String },
   telegramId: { type: String, sparse: true, index: true },
   telegramUsername: { type: String },
   photoUrl: { type: String },
-  authProvider: { type: String, default: 'guest', enum: ['telegram', 'guest'] },
+  authProvider: { type: String, default: 'guest', enum: ['telegram', 'guest', 'email'] },
   childAgeGroup: { type: String, default: '3-5' },
   selectedInterests: [{ type: String }],
   dailyGoalMinutes: { type: Number, default: 10 },

@@ -404,23 +404,6 @@ export default function ProfilePage() {
             </motion.div>
           </div>
 
-          {/* Telegram Sync Tip */}
-          {isAuthenticated && (
-            <div className="bg-sky-50/80 border border-sky-200 rounded-2xl p-4 flex items-start gap-3 text-xs text-slate-600">
-              <div className="p-2 rounded-xl bg-[#229ED9] text-white shrink-0 mt-0.5">
-                <Send className="w-4 h-4 -rotate-12" />
-              </div>
-              <div className="space-y-1 flex-1">
-                <p className="font-bold text-slate-800">
-                  Telegram profil rasmi qanday sinxronlanadi?
-                </p>
-                <p className="text-slate-500 leading-relaxed">
-                  Telegram ilovangizda <b>Sozlamalar &gt; Maxfiylik va xavfsizlik &gt; Profil rasmi</b> qismida <b>«Hamma»</b> tanlangan bo‘lsa, rasmingiz Farzandly ga avtomatik ulanadi.
-                </p>
-              </div>
-            </div>
-          )}
-
           {/* Achievements Grid */}
           <div className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 space-y-6 shadow-sm">
             <div className="space-y-1">

@@ -7,6 +7,7 @@ export interface TelegramUser {
   _id: string;
   telegramId?: string;
   telegramUsername?: string;
+  email?: string;
   name: string;
   firstName?: string;
   lastName?: string;
@@ -42,6 +43,8 @@ interface AuthContextType {
     auth_date?: number | string;
     hash?: string;
   }) => Promise<boolean>;
+  loginWithEmail: (email: string, password: string) => Promise<{ success: boolean; message?: string }>;
+  registerWithEmail: (name: string, email: string, password: string) => Promise<{ success: boolean; message?: string }>;
   loginDemoTelegram: (persona?: 'aziza' | 'jasur' | 'dilnoza' | 'dadakhonov') => Promise<void>;
   logout: () => void;
   updateUserProgress: (xpToAdd: number, lessonSlug: string) => void;
@@ -233,6 +236,77 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
     setIsLoading(false);
     return true;
+  };
+
+  const registerWithEmail = async (
+    name: string,
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; message?: string }> => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/auth/email/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setIsLoading(false);
+        return { success: false, message: data.message || 'Ro‘yxatdan o‘tishda xatolik yuz berdi' };
+      }
+
+      const loggedUser = data.data.user;
+      const authToken = data.data.token;
+      setUser(loggedUser);
+      setToken(authToken);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('farzandly_auth_user', JSON.stringify(loggedUser));
+        localStorage.setItem('farzandly_auth_token', authToken);
+        localStorage.setItem('farzandly_user', JSON.stringify(loggedUser));
+      }
+      setIsLoading(false);
+      return { success: true, message: data.message };
+    } catch {
+      setIsLoading(false);
+      return { success: false, message: 'Serverga ulanishda xatolik. Qaytadan urinib ko‘ring.' };
+    }
+  };
+
+  const loginWithEmail = async (
+    email: string,
+    password: string
+  ): Promise<{ success: boolean; message?: string }> => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`${API_BASE}/auth/email/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        setIsLoading(false);
+        return { success: false, message: data.message || 'Email yoki parol noto‘g‘ri' };
+      }
+
+      const loggedUser = data.data.user;
+      const authToken = data.data.token;
+      setUser(loggedUser);
+      setToken(authToken);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('farzandly_auth_user', JSON.stringify(loggedUser));
+        localStorage.setItem('farzandly_auth_token', authToken);
+        localStorage.setItem('farzandly_user', JSON.stringify(loggedUser));
+      }
+      setIsLoading(false);
+      return { success: true };
+    } catch {
+      setIsLoading(false);
+      return { success: false, message: 'Serverga ulanishda xatolik. Qaytadan urinib ko‘ring.' };
+    }
   };
 
   const loginDemoTelegram = async (persona: 'aziza' | 'jasur' | 'dilnoza' | 'dadakhonov' = 'aziza') => {
@@ -428,9 +502,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       value={{
         user,
         token,
-        isAuthenticated: user?.authProvider === 'telegram',
+        isAuthenticated: Boolean(user && user.authProvider !== 'guest' && user._id !== 'guest-user'),
         isLoading,
         loginWithTelegram,
+        loginWithEmail,
+        registerWithEmail,
         loginDemoTelegram,
         logout,
         updateUserProgress,
