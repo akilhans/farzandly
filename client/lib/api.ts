@@ -270,7 +270,11 @@ export const api = {
     if (params?.lang) query.set('lang', params.lang);
 
     const data = await fetchFromApi<Article[]>(`/articles?${query.toString()}`);
-    if (data) return data.map((a) => localizeEntity(a, lang));
+    if (data) {
+      return data
+        .map((a) => localizeEntity(a, lang))
+        .sort((a, b) => (Boolean(a.isPremium) === Boolean(b.isPremium) ? 0 : a.isPremium ? 1 : -1));
+    }
 
     const { seedArticles } = await loadSeed();
     let res = seedArticles as unknown as Article[];
@@ -280,7 +284,9 @@ export const api = {
       const q = params.search.toLowerCase();
       res = res.filter((a) => a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q));
     }
-    return res.map((a) => localizeEntity(a, lang));
+    return res
+      .map((a) => localizeEntity(a, lang))
+      .sort((a, b) => (Boolean(a.isPremium) === Boolean(b.isPremium) ? 0 : a.isPremium ? 1 : -1));
   },
 
   async getArticleBySlug(slug: string, lang: string = 'uz'): Promise<Article | null> {

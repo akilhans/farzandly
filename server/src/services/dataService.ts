@@ -113,7 +113,7 @@ export class DataService {
           { excerpt: { $regex: filters.search, $options: 'i' } },
         ];
       }
-      results = await Article.find(query).sort({ publishedAt: -1 });
+      results = await Article.find(query).sort({ isPremium: 1, publishedAt: -1 });
     } else {
       results = memoryArticles;
       if (filters?.categorySlug) {
@@ -126,6 +126,7 @@ export class DataService {
         const q = filters.search.toLowerCase();
         results = results.filter((a) => a.title.toLowerCase().includes(q) || a.excerpt.toLowerCase().includes(q));
       }
+      results = [...results].sort((a, b) => (Boolean(a.isPremium) === Boolean(b.isPremium) ? 0 : a.isPremium ? 1 : -1));
     }
     return results.map((a: any) => localizeEntity(a, lang));
   }

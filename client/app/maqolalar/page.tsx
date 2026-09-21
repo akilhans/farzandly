@@ -32,7 +32,7 @@ export async function generateMetadata({ searchParams }: MaqolalarProps): Promis
 
 export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
   const params = await searchParams;
-  const [allArticles, categories] = await Promise.all([
+  const [rawArticles, categories] = await Promise.all([
     api.getArticles({
       category: params.category,
       ageGroup: params.ageGroup,
@@ -40,6 +40,12 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
     }),
     api.getCategories(),
   ]);
+
+  // Tekin (bepul) maqolalar birinchi sahifada ketma-ket boshida turadi
+  const allArticles = [...rawArticles].sort((a, b) => {
+    if (Boolean(a.isPremium) === Boolean(b.isPremium)) return 0;
+    return a.isPremium ? 1 : -1;
+  });
 
   const totalPages = Math.max(1, Math.ceil(allArticles.length / PAGE_SIZE));
   const page = Math.min(parsePage(params.page), totalPages);
