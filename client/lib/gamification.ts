@@ -166,6 +166,8 @@ export function calculateStreak(lastActiveDateStr?: string | Date, currentStreak
  */
 export function playChimeSound(type: 'correct' | 'wrong' | 'victory' | 'bonus' = 'correct') {
   if (typeof window === 'undefined') return;
+  const isSoundEnabled = localStorage.getItem('farzandly_sound_enabled');
+  if (isSoundEnabled === 'false') return;
 
   try {
     const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
