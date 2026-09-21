@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Heart, CheckCircle2, Send, ShieldCheck, BookOpen, Compass } from 'lucide-react';
 import { api } from '@/lib/api';
 
@@ -84,13 +85,14 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href="/" className="flex items-center gap-2.5">
-              <div className="w-10 h-10 rounded-2xl bg-emerald-500 border-b-4 border-emerald-700 flex items-center justify-center text-white">
-                <Heart className="w-5 h-5 text-amber-200 fill-amber-200" />
-              </div>
-              <span className="text-2xl font-black tracking-tight text-white">
-                Farzand<span className="text-emerald-400">ly</span>
-              </span>
+            <Link href="/" className="inline-flex items-center gap-2.5">
+              <Image
+                src="/logo-white.png"
+                alt="Farzandly"
+                width={160}
+                height={40}
+                className="h-9 w-auto object-contain"
+              />
             </Link>
             <p className="text-slate-300 text-sm leading-relaxed max-w-sm">
               Farzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.

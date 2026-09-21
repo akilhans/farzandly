@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -55,20 +56,19 @@ export function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2.5 group">
             <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-emerald-600 border-b-4 border-emerald-800 flex items-center justify-center text-white shadow-sm"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.96 }}
+              className="flex items-center"
             >
-              <Heart className="w-5 h-5 text-amber-200 fill-amber-200" />
+              <Image
+                src="/logo.png"
+                alt="Farzandly"
+                width={160}
+                height={40}
+                className="h-8 sm:h-9 w-auto object-contain"
+                priority
+              />
             </motion.div>
-            <div className="flex flex-col">
-              <span className="text-xl sm:text-2xl font-black tracking-tight text-slate-800 flex items-center gap-1">
-                Farzand<span className="text-emerald-600">ly</span>
-              </span>
-              <span className="text-[10px] uppercase font-bold tracking-wider text-slate-400 -mt-1 hidden sm:block">
-                {t('nav.academy')}
-              </span>
-            </div>
           </Link>
 
           {/* Desktop Nav */}
