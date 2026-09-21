@@ -222,7 +222,7 @@ export class TelegramBotService {
    * Send login notification to user via bot
    */
   static async sendLoginNotification(userId: string | number, name: string): Promise<boolean> {
-    const appUrl = process.env.CLIENT_URL || 'https://farzandly.vercel.app';
+    const appUrl = process.env.CLIENT_URL || 'https://farzandly.uz';
     const message = `🌿 <b>Farzandly platformasiga xush kelibsiz!</b>\n\nAssalomu alaykum, <b>${name}</b>.\nHisobingizga muvaffaqiyatli kirdingiz.\n\n📚 O‘quv rejangizni davom ettiring:\n👉 <a href="${appUrl}/dashboard">${appUrl}/dashboard</a>`;
     return this.sendMessage(userId, message, 'HTML');
   }

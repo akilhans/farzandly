@@ -26,7 +26,7 @@ export async function POST(request: Request) {
     const resolvedRedirectUri =
       redirectUri ||
       process.env.TELEGRAM_REDIRECT_URI ||
-      'https://farzandly.vercel.app/kirish/callback';
+      'https://farzandly.uz/kirish/callback';
 
     console.log('[Telegram OIDC Vercel] Exchanging code...', {
       clientId: resolvedClientId,

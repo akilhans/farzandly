@@ -46,7 +46,7 @@ export class TelegramBotEngine {
   }
 
   static getClientUrl(): string {
-    return (process.env.CLIENT_URL || 'https://farzandly.vercel.app').replace(/\/$/, '');
+    return (process.env.CLIENT_URL || 'https://farzandly.uz').replace(/\/$/, '');
   }
 
   static isConfigured(): boolean {

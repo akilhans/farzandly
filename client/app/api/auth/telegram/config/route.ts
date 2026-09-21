@@ -8,7 +8,7 @@ export async function GET() {
 
   const redirectUri =
     process.env.TELEGRAM_REDIRECT_URI ||
-    'https://farzandly.vercel.app/kirish/callback';
+    'https://farzandly.uz/kirish/callback';
 
   return NextResponse.json({
     success: true,

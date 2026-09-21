@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '';
-const CLIENT_URL = (process.env.NEXT_PUBLIC_APP_URL || process.env.CLIENT_URL || 'https://farzandly.vercel.app').replace(/\/$/, '');
+const CLIENT_URL = (process.env.NEXT_PUBLIC_APP_URL || process.env.CLIENT_URL || 'https://farzandly.uz').replace(/\/$/, '');
 
 const PARENTING_TIPS = [
   {

@@ -10,7 +10,7 @@ export class AuthController {
    */
   static async getConfig(req: Request, res: Response) {
     const clientId = process.env.TELEGRAM_CLIENT_ID || '891291780';
-    const redirectUri = process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.vercel.app/kirish/callback';
+    const redirectUri = process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.uz/kirish/callback';
 
     res.json({
       success: true,
@@ -30,7 +30,7 @@ export class AuthController {
       const redirectUri =
         (req.query.redirectUri as string) ||
         process.env.TELEGRAM_REDIRECT_URI ||
-        'https://farzandly.vercel.app/kirish/callback';
+        'https://farzandly.uz/kirish/callback';
 
       const state = crypto.randomBytes(16).toString('hex');
       const authUrl = `https://oauth.telegram.org/auth?client_id=${encodeURIComponent(
@@ -81,7 +81,7 @@ export class AuthController {
       const clientSecret =
         process.env.TELEGRAM_CLIENT_SECRET || 'O8WVosrTnxL4eEKz42Z14G3b3QoPph_IWSonUx7mwjJ_Nl5o2IWKbw';
       const resolvedRedirectUri =
-        redirectUri || process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.vercel.app/kirish/callback';
+        redirectUri || process.env.TELEGRAM_REDIRECT_URI || 'https://farzandly.uz/kirish/callback';
 
       console.log('[Telegram OIDC] Exchanging code with oauth.telegram.org/token...', {
         clientId: resolvedClientId,

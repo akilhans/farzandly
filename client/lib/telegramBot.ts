@@ -149,7 +149,7 @@ export class TelegramBotClient {
     const token = this.getBotToken();
     if (!token) return false;
 
-    const appUrl = process.env.CLIENT_URL || 'https://farzandly.vercel.app';
+    const appUrl = process.env.CLIENT_URL || 'https://farzandly.uz';
     const message = `🌿 <b>Farzandly platformasiga xush kelibsiz!</b>\n\nAssalomu alaykum, <b>${name}</b>.\nFarzandly hisobingizga muvaffaqiyatli kirdingiz.\n\n📚 O‘quv rejangizni davom ettiring:\n👉 <a href="${appUrl}/dashboard">${appUrl}/dashboard</a>`;
 
     try {
