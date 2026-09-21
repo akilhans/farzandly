@@ -6,6 +6,7 @@ const fireConfetti = (opts: import('canvas-confetti').Options) => import('canvas
 import { Star, CheckCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { playChimeSound } from '@/lib/gamification';
+import { T } from '@/components/T';
 
 interface Props {
   articleSlug: string;
@@ -40,11 +41,9 @@ export default function ArticleCompleteButton({ articleSlug }: Props) {
         </div>
         <div>
           <h4 className="text-sm font-bold text-slate-800">
-            Maqolani o‘qib bo‘ldingizmi?
-          </h4>
+            <T k="complete.1" /></h4>
           <p className="text-xs text-slate-500">
-            Bilimingizni mustahkamlab, profilingiz uchun qo‘shimcha 5 XP to‘plang.
-          </p>
+            <T k="complete.2" /></p>
         </div>
       </div>
 
@@ -61,12 +60,12 @@ export default function ArticleCompleteButton({ articleSlug }: Props) {
         {completed ? (
           <>
             <CheckCircle className="w-4 h-4 text-emerald-200" />
-            <span>O‘qildi (+5 XP olindi)</span>
+            <span><T k="complete.3" /></span>
           </>
         ) : (
           <>
             <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
-            <span>O‘qib bo‘ldim (+5 XP)</span>
+            <span><T k="complete.4" /></span>
           </>
         )}
       </button>

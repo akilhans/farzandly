@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { BookOpen, Clock, Crown, Play, SearchX } from 'lucide-react';
 import { api } from '@/lib/api';
 import SearchForm from '@/components/SearchForm';
+import { T } from '@/components/T';
 
 interface Props {
   searchParams: Promise<{ q?: string }>;
@@ -24,8 +25,8 @@ export default async function SearchPage({ searchParams }: Props) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-10 sm:py-14 space-y-8">
       <div className="space-y-3 text-center">
-        <h1 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight">Qidiruv</h1>
-        <p className="text-sm text-slate-500">Darslar va maqolalar bo‘yicha mavzu qidiring.</p>
+        <h1 className="text-3xl sm:text-4xl font-black text-slate-800 tracking-tight"><T k="srch.1" /></h1>
+        <p className="text-sm text-slate-500"><T k="srch.2" /></p>
       </div>
 
       <SearchForm defaultValue={query} autoFocus={!query} />
@@ -33,16 +34,16 @@ export default async function SearchPage({ searchParams }: Props) {
       {query.length >= 2 && !hasResults && (
         <div className="text-center py-12 space-y-4">
           <SearchX className="w-12 h-12 text-slate-300 mx-auto" />
-          <p className="font-bold text-slate-700">«{query}» bo‘yicha hech narsa topilmadi</p>
-          <p className="text-sm text-slate-500">Boshqa so‘z bilan urinib ko‘ring yoki barcha darslarni ko‘rib chiqing.</p>
-          <Link href="/darslar" className="btn-primary inline-flex px-6 py-3 text-sm">Barcha darslar</Link>
+          <p className="font-bold text-slate-700">«{query}<T k="srch.3" /></p>
+          <p className="text-sm text-slate-500"><T k="srch.4" /></p>
+          <Link href="/darslar" className="btn-primary inline-flex px-6 py-3 text-sm"><T k="srch.5" /></Link>
         </div>
       )}
 
       {lessons.length > 0 && (
         <section className="space-y-3" aria-labelledby="lessons-h">
           <h2 id="lessons-h" className="text-xl font-black text-slate-800 flex items-center gap-2">
-            <Play className="w-5 h-5 text-emerald-600" /> Darslar ({lessons.length})
+            <Play className="w-5 h-5 text-emerald-600" /> <T k="srch.6" />{lessons.length})
           </h2>
           <ul className="space-y-3">
             {lessons.map((l) => (
@@ -57,10 +58,9 @@ export default async function SearchPage({ searchParams }: Props) {
                   </div>
                   {l.isPremium ? (
                     <span className="shrink-0 text-[10px] font-black text-amber-800 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <Crown className="w-3 h-3" /> Premium
-                    </span>
+                      <Crown className="w-3 h-3" /> <T k="srch.7" /></span>
                   ) : (
-                    <span className="shrink-0 text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">BEPUL</span>
+                    <span className="shrink-0 text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md"><T k="srch.8" /></span>
                   )}
                 </Link>
               </li>
@@ -72,7 +72,7 @@ export default async function SearchPage({ searchParams }: Props) {
       {articles.length > 0 && (
         <section className="space-y-3" aria-labelledby="articles-h">
           <h2 id="articles-h" className="text-xl font-black text-slate-800 flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-emerald-600" /> Maqolalar ({articles.length})
+            <BookOpen className="w-5 h-5 text-emerald-600" /> <T k="srch.9" />{articles.length})
           </h2>
           <ul className="space-y-3">
             {articles.map((a) => (

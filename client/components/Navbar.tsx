@@ -12,6 +12,7 @@ import {
   Menu,
   X,
   Compass,
+  Home,
   BookOpen,
   Layers,
   Crown,
@@ -25,6 +26,8 @@ import {
 import { useAuth } from '@/context/AuthContext';
 import { useI18n, Language } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
+import { calculateLevel } from '@/lib/gamification';
+import { T } from '@/components/T';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -43,7 +46,7 @@ export function Navbar() {
   const currentLangObj = languages.find((l) => l.code === language) || languages[0];
 
   const navLinks = [
-    { href: '/', label: t('nav.home'), icon: Compass },
+    { href: '/', label: t('nav.home'), icon: Home },
     { href: '/dashboard', label: t('nav.dashboard'), icon: Compass },
     { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
@@ -66,14 +69,14 @@ export function Navbar() {
                 alt="Farzandly"
                 width={160}
                 height={40}
-                className="h-8 sm:h-9 w-auto object-contain"
+                className="h-8 sm:h-9 w-auto min-[360px]:min-w-[104px] object-contain"
                 priority
               />
             </m.div>
           </Link>
 
           {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-1.5 lg:gap-2">
+          <nav className="hidden xl:flex items-center gap-1.5 xl:gap-2">
             {navLinks.map((item) => {
               const isActive = pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href));
               const Icon = item.icon;
@@ -99,7 +102,7 @@ export function Navbar() {
           {/* Right Action / Stats / Language / Auth */}
           <div className="flex items-center gap-2 sm:gap-2.5">
             {/* Gamification Stats (Streak & XP) */}
-            <div className="flex items-center gap-1.5 sm:gap-2 bg-slate-50/80 backdrop-blur-xs border-2 border-slate-200/80 rounded-2xl px-2.5 py-1.5">
+            <div className="hidden min-[480px]:flex items-center gap-1.5 sm:gap-2 bg-slate-50/80 backdrop-blur-xs border-2 border-slate-200/80 rounded-2xl px-2.5 py-1.5">
               <div className="flex items-center gap-1 text-xs sm:text-sm font-bold text-amber-600" title={t('stats.streak')}>
                 <Flame className="w-4 h-4 text-orange-500 fill-orange-500 animate-pulse" />
                 <span>{user?.streak ?? 1}</span>
@@ -159,7 +162,7 @@ export function Navbar() {
             <Link
               href="/qidiruv"
               aria-label="Qidiruv"
-              className="p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all"
+              className="hidden sm:inline-flex p-2 rounded-xl text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition-all"
             >
               <Search className="w-5 h-5" />
             </Link>
@@ -184,8 +187,7 @@ export function Navbar() {
                     </p>
                     <p className="text-[10px] text-emerald-600 font-bold leading-none flex items-center gap-1 mt-0.5">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 inline-block animate-pulse" />
-                      Telegram
-                    </p>
+                      <T k="navx.1" /></p>
                   </div>
                   <ChevronDown className="w-3.5 h-3.5 text-slate-400 hidden sm:block" />
                 </button>
@@ -209,7 +211,7 @@ export function Navbar() {
                         />
                         <div className="overflow-hidden">
                           <p className="text-xs font-black text-slate-800 truncate">{user.name}</p>
-                          <p className="text-[11px] text-emerald-600 font-bold">{user.level}</p>
+                          <p className="text-[11px] text-emerald-600 font-bold">{calculateLevel(user.xp || 0, language).level}</p>
                         </div>
                       </div>
 
@@ -219,7 +221,7 @@ export function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl"
                       >
                         <UserIcon className="w-4 h-4 text-emerald-600" />
-                        <span>Mening profilim</span>
+                        <span><T k="navx.2" /></span>
                       </Link>
 
                       <Link
@@ -228,7 +230,7 @@ export function Navbar() {
                         className="flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 rounded-xl"
                       >
                         <Compass className="w-4 h-4 text-emerald-600" />
-                        <span>O‘quv xaritam</span>
+                        <span><T k="navx.3" /></span>
                       </Link>
 
                       <div className="pt-1 border-t border-slate-100">
@@ -241,7 +243,7 @@ export function Navbar() {
                           className="w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold text-rose-600 hover:bg-rose-50 rounded-xl text-left"
                         >
                           <LogOut className="w-4 h-4" />
-                          <span>Chiqish</span>
+                          <span><T k="navx.4" /></span>
                         </button>
                       </div>
                     </m.div>
@@ -251,17 +253,16 @@ export function Navbar() {
             ) : (
               <Link
                 href="/kirish"
-                className="bg-[#229ED9] hover:bg-[#1f8ec4] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl border-b-4 border-[#18729e] active:translate-y-1 active:border-b-0 transition-all flex items-center gap-1.5 shadow-sm"
+                className="whitespace-nowrap shrink-0 bg-[#229ED9] hover:bg-[#1f8ec4] text-white text-xs sm:text-sm font-bold px-3.5 sm:px-4 py-2 sm:py-2.5 rounded-2xl border-b-4 border-[#18729e] active:translate-y-1 active:border-b-0 transition-all flex items-center gap-1.5 shadow-sm"
               >
                 <Send className="w-3.5 h-3.5 -rotate-12" />
-                <span className="hidden sm:inline">Telegram orqali</span> kirish
-              </Link>
+                <span className="hidden sm:inline"><T k="navx.5" /></span> <T k="navx.6" /></Link>
             )}
 
             {/* Mobile menu button */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
+              className="xl:hidden p-2 rounded-xl text-slate-600 hover:bg-slate-100"
               aria-label="Menyu"
             >
               {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
@@ -277,8 +278,16 @@ export function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-white/95 backdrop-blur-md border-b-2 border-slate-200 px-4 pt-2 pb-6 space-y-2 overflow-hidden"
+            className="xl:hidden bg-white/95 backdrop-blur-md border-b-2 border-slate-200 px-4 pt-2 pb-6 space-y-2 overflow-hidden"
           >
+            <Link
+              href="/qidiruv"
+              onClick={() => setMobileMenuOpen(false)}
+              className="sm:hidden flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-bold text-slate-600 hover:bg-slate-50"
+            >
+              <Search className="w-5 h-5" />
+              <span>{t('search.btn')}</span>
+            </Link>
             {navLinks.map((item) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -306,7 +315,7 @@ export function Navbar() {
                 className="flex items-center gap-3 px-4 py-3 rounded-2xl text-base font-bold text-slate-700 hover:bg-slate-50"
               >
                 <UserIcon className="w-5 h-5 text-emerald-600" />
-                <span>Mening profilim</span>
+                <span><T k="navx.7" /></span>
               </Link>
 
               {/* Mobile Language Switcher */}
@@ -338,7 +347,7 @@ export function Navbar() {
                   className="w-full flex items-center justify-center gap-2 py-3 bg-[#229ED9] text-white font-black text-sm rounded-2xl shadow-sm"
                 >
                   <Send className="w-4 h-4 -rotate-12" />
-                  <span>Telegram orqali kirish</span>
+                  <span><T k="navx.8" /></span>
                 </Link>
               )}
             </div>

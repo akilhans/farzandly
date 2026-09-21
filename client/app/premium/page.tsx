@@ -19,8 +19,11 @@ import {
 } from 'lucide-react';
 import PaymentModal from '@/components/PaymentModal';
 import { START_LESSON_HREF } from '@/lib/site';
+import { T } from '@/components/T';
+import { useI18n } from '@/context/LanguageContext';
 
 export default function PremiumPage() {
+  const { t } = useI18n();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -33,24 +36,7 @@ export default function PremiumPage() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const faqs = [
-    {
-      q: "Qaysi darslar va maqolalar bepul taqdim etiladi?",
-      a: "Platformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya» darslari hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi har bir ota-ona uchun umrbod bepul. Boshqa barcha chuqurlashtirilgan 56 ta dars, barcha audio-hikmatlar va ilmiy tahliliy maqolalar Premium kontent hisoblanadi.",
-    },
-    {
-      q: "To‘lov qanday amalga oshiriladi?",
-      a: "To‘lovni 5614 6819 0401 4390 kartasiga (Uzcard/Humo) o‘tkazasiz va to‘lov chekini Telegram orqali t.me/dadakhonov profiliga yuborasiz. Chek tekshirilgach, hisobingiz 10-15 daqiqa ichida faollashtiriladi.",
-    },
-    {
-      q: "Yillik to‘lovning afzalligi nimada?",
-      a: "Yillik obunada narx oyiga atigi 179 000 so‘mga tushadi (oylik 219 000 so‘m o‘rniga). Bu orqali siz yil davomida deyarli 500 000 so‘m tejab qolasiz va butun yil davomida barcha yangi kontentlardan foydalanasiz.",
-    },
-    {
-      q: "Premium kontentda nimalar bor?",
-      a: "Abdulloh Domla darslari to‘liq silsilasi (55 dars), Xadicha Kubro Tongarning Fitrat pedagogikasi, Aziz Rahimovning zamonaviy ta’lim va intizom metodikasi, 30 jildlik buyuk allomalar ensiklopediyasi, amaliy mashg‘ulotlar, har kungi testlar va bolalar psixologiyasi bo‘yicha to‘liq bazaga ega bo‘lasiz.",
-    },
-  ];
+  const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`prem.faq${n}.q`), a: t(`prem.faq${n}.a`) }));
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
@@ -58,14 +44,12 @@ export default function PremiumPage() {
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-900 border border-amber-300 px-4 py-1 rounded-full text-xs font-black">
           <Crown className="w-4 h-4 fill-amber-700" />
-          <span>FARZANDLY PREMIUM KONTENT</span>
+          <span><T k="prem.1" /></span>
         </div>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">
-          Farzand tarbiyasiga eng yaxshi sarmoya
-        </h1>
+          <T k="prem.2" /></h1>
         <p className="text-sm sm:text-base text-slate-600 font-medium">
-          Farzandingizning hissiy xotirjamligi va yuksak odob-axloqi uchun to‘liq Premium kontent bazasini oching.
-        </p>
+          <T k="prem.3" /></p>
 
         {/* Toggle */}
         <div className="pt-4 flex items-center justify-center">
@@ -79,8 +63,7 @@ export default function PremiumPage() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              Oylik to‘lov
-            </button>
+              <T k="prem.4" /></button>
             <button
               type="button"
               onClick={() => setBillingCycle('yearly')}
@@ -90,14 +73,13 @@ export default function PremiumPage() {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span>Yillik obuna</span>
+              <span><T k="prem.5" /></span>
               <span className={`text-[10px] px-2 py-0.5 rounded-md font-black ${
                 billingCycle === 'yearly'
                   ? 'bg-amber-400 text-slate-950'
                   : 'bg-emerald-100 text-emerald-800'
               }`}>
-                OYIGA 179 000 SO‘M
-              </span>
+                <T k="prem.6" /></span>
             </button>
           </div>
         </div>
@@ -108,96 +90,92 @@ export default function PremiumPage() {
         {/* FREE TIER */}
         <div className="card-farzandly p-8 flex flex-col justify-between space-y-6">
           <div className="space-y-4">
-            <h3 className="text-xl font-bold text-slate-800">Bepul asosiy ta’lim</h3>
-            <p className="text-xs text-slate-500">Platforma bilan tanishuvchi har bir ota-ona uchun</p>
+            <h3 className="text-xl font-bold text-slate-800"><T k="prem.7" /></h3>
+            <p className="text-xs text-slate-500"><T k="prem.8" /></p>
             <div className="text-3xl font-black text-slate-800">
-              0 <span className="text-sm font-bold text-slate-400">so‘m / umrbod</span>
+              0 <span className="text-sm font-bold text-slate-400"><T k="prem.9" /></span>
             </div>
 
             <ul className="space-y-3 text-xs sm:text-sm text-slate-600 pt-4 border-t border-slate-100">
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-semibold text-slate-800">1–10-darslar (Tarbiya asoslari)</span>
+                <span className="font-semibold text-slate-800"><T k="prem.10" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>«Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi</span>
+                <span><T k="prem.11" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Kunlik streak va bilim tekshirish testlari</span>
+                <span><T k="prem.12" /></span>
               </li>
               <li className="flex items-center gap-2.5 text-slate-400">
                 <Lock className="w-4 h-4 shrink-0 text-slate-400" />
-                <span className="line-through">11–69-darslar (Chuqurlashtirilgan bosqichlar)</span>
+                <span className="line-through"><T k="prem.13" /></span>
               </li>
               <li className="flex items-center gap-2.5 text-slate-400">
                 <Lock className="w-4 h-4 shrink-0 text-slate-400" />
-                <span className="line-through">Barcha tahliliy va psixologik maqolalar</span>
+                <span className="line-through"><T k="prem.14" /></span>
               </li>
               <li className="flex items-center gap-2.5 text-slate-400">
                 <Lock className="w-4 h-4 shrink-0 text-slate-400" />
-                <span className="line-through">Fitrat pedagogikasi va zamonaviy ta’lim sirlari</span>
+                <span className="line-through"><T k="prem.15" /></span>
               </li>
             </ul>
           </div>
 
           <Link href={START_LESSON_HREF} className="w-full btn-outline text-sm py-3.5 text-center">
-            Bepul darslarni boshlash
-          </Link>
+            <T k="prem.16" /></Link>
         </div>
 
         {/* PREMIUM TIER */}
         <div className="rounded-3xl bg-white border-2 border-amber-400 border-b-8 p-8 shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-amber-400 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl tracking-wider">
-            To‘liq to‘plam
-          </div>
+            <T k="prem.17" /></div>
 
           <div className="space-y-4">
             <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-              <span>Premium kontent</span>
+              <span><T k="prem.18" /></span>
               <Crown className="w-5 h-5 text-amber-500 fill-amber-500" />
             </h3>
-            <p className="text-xs text-slate-500">Barcha 69 ta dars va ilmiy-amaliy materiallar to‘plami</p>
+            <p className="text-xs text-slate-500"><T k="prem.19" /></p>
 
             <div className="text-3xl font-black text-slate-900">
               {billingCycle === 'yearly' ? '179 000' : '219 000'}{' '}
-              <span className="text-sm font-bold text-slate-400">so‘m / oyiga</span>
+              <span className="text-sm font-bold text-slate-400"><T k="prem.20" /></span>
             </div>
             {billingCycle === 'yearly' ? (
               <p className="text-xs font-bold text-emerald-600">
-                Yillik tarif: har oy 40 000 so‘m tejang (eng ommabop tanlov)
-              </p>
+                <T k="prem.21" /></p>
             ) : (
               <p className="text-xs font-bold text-slate-500">
-                Har oy 219 000 so‘m to‘lanadi
-              </p>
+                <T k="prem.22" /></p>
             )}
 
             <ul className="space-y-3 text-xs sm:text-sm text-slate-700 pt-4 border-t border-slate-100">
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span className="font-bold text-slate-900">Barcha 69 ta dars to‘liq va cheklovsiz ochiq</span>
+                <span className="font-bold text-slate-900"><T k="prem.23" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Fitrat pedagogikasi: Qalb va nafs tarbiyasi silsilasi</span>
+                <span><T k="prem.24" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Rahimov School metodikasi: Brain Rot va gadjetlardan himoya</span>
+                <span><T k="prem.25" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>30 buyuk alloma tarbiya usullari va kitobxonlik</span>
+                <span><T k="prem.26" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Barcha tahliliy eksklyuziv maqolalar to‘plami</span>
+                <span><T k="prem.27" /></span>
               </li>
               <li className="flex items-center gap-2.5">
                 <Check className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span>Har dars uchun amaliy topshiriq va sertifikat imkoniyati</span>
+                <span><T k="prem.28" /></span>
               </li>
             </ul>
           </div>
@@ -208,7 +186,7 @@ export default function PremiumPage() {
             className="w-full btn-gold text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/20"
           >
             <Crown className="w-4 h-4 fill-slate-950" />
-            <span>Premium kontentni faollashtirish</span>
+            <span><T k="prem.29" /></span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -219,25 +197,23 @@ export default function PremiumPage() {
         <div className="text-center space-y-2">
           <div className="inline-flex items-center gap-2 bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-3.5 py-1 rounded-full text-xs font-black">
             <ShieldCheck className="w-4 h-4" />
-            <span>TEZKOR TO‘LOV QO‘LLANMASI</span>
+            <span><T k="prem.30" /></span>
           </div>
           <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
-            2 daqiqada to‘lov qiling va o‘qishni boshlang
-          </h2>
+            <T k="prem.31" /></h2>
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl mx-auto font-medium">
-            Karta raqamiga pul o‘tkazib, chekni Telegramda administratorga yuboring.
-          </p>
+            <T k="prem.32" /></p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
           {/* Card info */}
           <div className="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between gap-3">
             <div>
-              <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">To‘lov kartasi:</div>
+              <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider"><T k="prem.33" /></div>
               <div className="text-lg sm:text-xl font-mono font-black text-amber-400 mt-1">
                 {cardNumber}
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">Uzcard / Humo</div>
+              <div className="text-xs text-slate-300 mt-0.5"><T k="prem.34" /></div>
             </div>
             <button
               type="button"
@@ -247,12 +223,12 @@ export default function PremiumPage() {
               {copied ? (
                 <>
                   <CheckCheck className="w-4 h-4 text-emerald-400" />
-                  <span className="text-emerald-300">Nusxalandi!</span>
+                  <span className="text-emerald-300"><T k="prem.35" /></span>
                 </>
               ) : (
                 <>
                   <Copy className="w-4 h-4" />
-                  <span>Karta raqamini nusxalash</span>
+                  <span><T k="prem.36" /></span>
                 </>
               )}
             </button>
@@ -261,11 +237,11 @@ export default function PremiumPage() {
           {/* Telegram send check */}
           <div className="bg-slate-800/90 border border-slate-700 rounded-2xl p-4 flex flex-col justify-between gap-3">
             <div>
-              <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider">Chekni yuborish:</div>
+              <div className="text-[11px] text-slate-400 font-bold uppercase tracking-wider"><T k="prem.37" /></div>
               <div className="text-lg sm:text-xl font-black text-white mt-1 flex items-center gap-1.5">
-                <span>t.me/dadakhonov</span>
+                <span><T k="prem.38" /></span>
               </div>
-              <div className="text-xs text-slate-300 mt-0.5">Administrator profili</div>
+              <div className="text-xs text-slate-300 mt-0.5"><T k="prem.39" /></div>
             </div>
             <a
               href="https://t.me/dadakhonov"
@@ -274,7 +250,7 @@ export default function PremiumPage() {
               className="btn-gold text-xs font-black py-2.5 px-3.5 rounded-xl flex items-center justify-center gap-2 text-slate-950 transition-all cursor-pointer shadow-md"
             >
               <Send className="w-4 h-4" />
-              <span>Chekni yuborish (t.me/dadakhonov)</span>
+              <span><T k="prem.40" /></span>
             </a>
           </div>
         </div>
@@ -283,8 +259,7 @@ export default function PremiumPage() {
       {/* FAQ Accordion */}
       <div className="bg-white rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-10 space-y-6 max-w-3xl mx-auto">
         <h3 className="text-xl font-black text-slate-800 text-center">
-          Ko‘p beriladigan savollar
-        </h3>
+          <T k="prem.41" /></h3>
 
         <div className="space-y-4">
           {faqs.map((faq, idx) => (

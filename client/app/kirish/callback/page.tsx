@@ -4,12 +4,15 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Send, CheckCircle2, AlertCircle, ArrowRight, Loader2 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
+import { T } from '@/components/T';
 
 function TelegramCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { loginWithTelegram, setAuthenticatedSession } = useAuth();
+  const { t } = useI18n();
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
   const [errorMessage, setErrorMessage] = useState('');
@@ -22,7 +25,7 @@ function TelegramCallbackContent() {
 
     if (errorParam) {
       setStatus('error');
-      setErrorMessage(errorDesc || errorParam || 'Telegram avtorizatsiyani bekor qildi');
+      setErrorMessage(errorDesc || errorParam || t('cb.cancelled'));
       return;
     }
 
@@ -142,10 +145,9 @@ function TelegramCallbackContent() {
             <Send className="w-8 h-8 -rotate-12 translate-x-0.5" />
           </div>
           <div className="space-y-1">
-            <h2 className="text-xl font-black text-slate-800">Telegram tekshirilmoqda...</h2>
+            <h2 className="text-xl font-black text-slate-800"><T k="cb.1" /></h2>
             <p className="text-xs text-slate-500 font-medium">
-              Hisobingiz maʼlumotlari xavfsiz tasdiqlanmoqda, bir oz kuting.
-            </p>
+              <T k="cb.2" /></p>
           </div>
           <div className="flex justify-center pt-2">
             <Loader2 className="w-6 h-6 text-[#229ED9] animate-spin" />
@@ -164,12 +166,12 @@ function TelegramCallbackContent() {
             />
           </div>
           <div className="space-y-1">
-            <h2 className="text-2xl font-black text-slate-800">Xush kelibsiz!</h2>
+            <h2 className="text-2xl font-black text-slate-800"><T k="cb.3" /></h2>
             <p className="text-sm font-bold text-emerald-700">
-              {userData?.name ? `${userData.name}, profilingiz ulandi` : 'Telegram profilingiz muvaffaqiyatli ulandi'}
+              {userData?.name ? t('cb.linked_named', undefined, { name: userData.name }) : t('cb.linked')}
             </p>
           </div>
-          <p className="text-xs text-slate-400">O‘quv paneliga yo‘naltirilmoqdasiz...</p>
+          <p className="text-xs text-slate-400"><T k="cb.4" /></p>
         </div>
       )}
 
@@ -179,7 +181,7 @@ function TelegramCallbackContent() {
             <AlertCircle className="w-9 h-9" />
           </div>
           <div className="space-y-2">
-            <h2 className="text-xl font-black text-slate-800">Ulanishda xatolik yuz berdi</h2>
+            <h2 className="text-xl font-black text-slate-800"><T k="cb.5" /></h2>
             <p className="text-xs sm:text-sm text-rose-600 font-medium bg-rose-50 border border-rose-200 p-3 rounded-2xl">
               {errorMessage}
             </p>
@@ -190,7 +192,7 @@ function TelegramCallbackContent() {
               onClick={() => router.push('/kirish')}
               className="w-full btn-primary py-3 px-5 rounded-2xl text-sm font-black flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>Kirish sahifasiga qaytish</span>
+              <span><T k="cb.6" /></span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

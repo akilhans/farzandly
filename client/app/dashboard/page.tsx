@@ -30,6 +30,7 @@ import UserAvatar from '@/components/UserAvatar';
 import ChildSwitcher from '@/components/ChildSwitcher';
 import { getActiveChild, normalizeAgeGroup } from '@/lib/children';
 import { calculateLevel, getWeeklyLeaderboard } from '@/lib/gamification';
+import { T } from '@/components/T';
 
 export default function DashboardPage() {
   const { user: authUser } = useAuth();
@@ -55,7 +56,7 @@ export default function DashboardPage() {
   const streak = authUser?.streak || 0;
   const xp = authUser?.xp || 0;
   const levelInfo = calculateLevel(xp, language);
-  const level = authUser?.level || levelInfo.level;
+  const level = levelInfo.level; // localized from XP
   const leaderboard = getWeeklyLeaderboard(xp, authUser?.name);
   const dailyGoal = authUser?.dailyGoalMinutes || 10;
   const todayProgressMinutes = Math.min(dailyGoal, Math.max(5, (completedList.length % 3 + 1) * 5));
@@ -65,7 +66,7 @@ export default function DashboardPage() {
   const currentLesson = lessons.find((l) => !completedList.includes(l.slug)) || lessons[0];
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 relative">
+    <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 relative overflow-x-clip">
       {/* Ambient background blur elements */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-80 right-10 w-72 h-72 bg-sky-200/30 rounded-full blur-3xl pointer-events-none -z-10" />
@@ -103,7 +104,7 @@ export default function DashboardPage() {
             {authUser?.isPremium ? (
               <div className="inline-flex items-center gap-1.5 bg-amber-100 border border-amber-300 text-amber-900 px-3 py-1.5 rounded-2xl text-xs font-black shadow-xs">
                 <Crown className="w-3.5 h-3.5 fill-amber-700" />
-                <span>PREMIUM KONTENT</span>
+                <span><T k="dash.1" /></span>
               </div>
             ) : (
               <Link
@@ -111,7 +112,7 @@ export default function DashboardPage() {
                 className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 px-3 py-1.5 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-xs"
               >
                 <Crown className="w-3.5 h-3.5 fill-amber-700" />
-                <span>PREMIUM KONTENT</span>
+                <span><T k="dash.2" /></span>
               </Link>
             )}
 
@@ -172,9 +173,9 @@ export default function DashboardPage() {
           <div className="flex items-center justify-between text-xs font-bold text-slate-500">
             <span className="flex items-center gap-1.5 text-slate-700">
               <Award className="w-3.5 h-3.5 text-emerald-600" />
-              <span>{levelInfo.level} ({levelInfo.levelIndex}-daraja)</span>
+              <span>{levelInfo.level} ({levelInfo.levelIndex}<T k="dash.3" /></span>
             </span>
-            <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
+            <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} <T k="dash.4" /></span>
           </div>
           <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
             <m.div
@@ -193,9 +194,9 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between text-xs font-bold text-slate-600">
               <span className="flex items-center gap-1 text-amber-700">
                 <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
-                <span>Haftalik streak</span>
+                <span><T k="dash.5" /></span>
               </span>
-              <span className="text-slate-400 text-[11px]">{streak} kun ketma-ket</span>
+              <span className="text-slate-400 text-[11px]">{streak} <T k="dash.6" /></span>
             </div>
             <div className="flex items-center justify-between gap-1">
               {['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'].map((day, idx) => {
@@ -223,14 +224,13 @@ export default function DashboardPage() {
             <div className="flex items-center justify-between text-xs font-bold">
               <span className="flex items-center gap-1 text-emerald-800">
                 <Target className="w-3.5 h-3.5 text-emerald-600" />
-                <span>Kunlik maqsad: {dailyGoal} daqiqa</span>
+                <span><T k="dash.7" />{" "}{dailyGoal} <T k="dash.8" /></span>
               </span>
               {isGoalReached ? (
                 <span className="bg-emerald-200/80 text-emerald-900 text-[10px] px-2 py-0.5 rounded-full font-black">
-                  Bajarildi 🎯
-                </span>
+                  <T k="dash.9" /></span>
               ) : (
-                <span className="text-slate-500 text-[11px]">{todayProgressMinutes}/{dailyGoal} daqiqa</span>
+                <span className="text-slate-500 text-[11px]">{todayProgressMinutes}/{dailyGoal} <T k="dash.10" /></span>
               )}
             </div>
             <div className="w-full h-2.5 bg-white rounded-full overflow-hidden border border-emerald-200">
@@ -243,8 +243,8 @@ export default function DashboardPage() {
             </div>
             <p className="text-[11px] text-emerald-700 font-medium">
               {isGoalReached
-                ? 'Tabriklaymiz! Bugungi tarbiya rejangiz to‘liq bajarildi.'
-                : `Yana ${dailyGoal - todayProgressMinutes} daqiqa dars o‘tib, kunlik streakni mustahkamlang.`}
+                ? t('dash.goal_done')
+                : t('dash.goal_left', undefined, { n: dailyGoal - todayProgressMinutes })}
             </p>
           </div>
         </div>
@@ -378,15 +378,13 @@ export default function DashboardPage() {
           <div className="space-y-0.5">
             <span className="text-xs font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
               <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
-              <span>Zumrad ligasi • 1-o‘rin sari</span>
+              <span><T k="dash.11" /></span>
             </span>
             <h3 className="text-lg sm:text-xl font-black text-slate-800">
-              Haftalik ota-onalar peshqadamlari
-            </h3>
+              <T k="dash.12" /></h3>
           </div>
           <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-auto">
-            Hafta yakunlanishiga 3 kun qoldi
-          </span>
+            <T k="dash.13" /></span>
         </div>
 
         <div className="space-y-2.5">
@@ -426,11 +424,10 @@ export default function DashboardPage() {
                       <span>{item.name}</span>
                       {item.isCurrentUser && (
                         <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.2 rounded-md">
-                          Siz
-                        </span>
+                          <T k="dash.14" /></span>
                       )}
                     </p>
-                    <p className="text-[10px] text-slate-400 font-bold">{item.badge}</p>
+                    <p className="text-[10px] text-slate-400 font-bold">{calculateLevel(item.xp, language).level}</p>
                   </div>
                 </div>
               </div>
@@ -438,12 +435,11 @@ export default function DashboardPage() {
               <div className="flex items-center gap-3">
                 <div className="hidden sm:flex items-center gap-1 text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">
                   <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
-                  <span>{item.streak} kun</span>
+                  <span>{item.streak} <T k="dash.15" /></span>
                 </div>
                 <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 flex items-center gap-1">
                   <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
-                  {item.xp} XP
-                </span>
+                  {item.xp} <T k="dash.16" /></span>
               </div>
             </div>
           ))}

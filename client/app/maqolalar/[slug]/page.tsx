@@ -18,6 +18,7 @@ import { api } from '@/lib/api';
 import ArticleContentReader from '@/components/ArticleContentReader';
 import { SITE_NAME, SITE_URL, START_LESSON_HREF, absoluteUrl } from '@/lib/site';
 import { seedArticles } from '@/lib/seedData';
+import { T, Tr } from '@/components/T';
 
 // Deduplicates the fetch between generateMetadata() and the page render
 const getArticle = cache((slug: string) => api.getArticleBySlug(slug));
@@ -73,11 +74,12 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
 
 export default async function ArticleDetailPage({ params }: ArticlePageProps) {
   const { slug } = await params;
-  const article = await getArticle(slug);
+  const [article, categories] = await Promise.all([getArticle(slug), api.getCategories()]);
 
   if (!article) {
     notFound();
   }
+  const category = categories.find((c) => c.slug === article.categorySlug);
 
   // JSON-LD Structured Data Schema
   const articleUrl = absoluteUrl(`/maqolalar/${article.slug}`);
@@ -125,46 +127,41 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       {/* Breadcrumb navigation */}
       <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-xs font-bold text-slate-400">
         <Link href="/" className="hover:text-emerald-700">
-          Asosiy
-        </Link>
+          <T k="art.1" /></Link>
         <ChevronRight className="w-3.5 h-3.5" />
         <Link href="/maqolalar" className="hover:text-emerald-700">
-          Maqolalar
-        </Link>
+          <T k="art.2" /></Link>
         <ChevronRight className="w-3.5 h-3.5" />
-        <span className="text-slate-600 line-clamp-1">{article.title}</span>
+        <span className="text-slate-600 line-clamp-1"><Tr data={article.translations} field="title" fb={article.title} /></span>
       </nav>
 
       {/* Article Header */}
       <header className="space-y-4 border-b border-slate-200 pb-6">
         <div className="flex flex-wrap items-center gap-2 text-xs font-bold">
           <span className="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-full uppercase tracking-wider">
-            {article.categorySlug}
+            {category ? <Tr data={category.translations} field="name" fb={category.name} /> : article.categorySlug}
           </span>
           <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
-            {article.ageGroup} yosh
-          </span>
+            {article.ageGroup} <T k="art.3" /></span>
           {article.isPremium ? (
             <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full font-black text-[11px]">
               <Crown className="w-3.5 h-3.5 fill-amber-700" />
-              <span>PREMIUM KONTENT</span>
+              <span><T k="art.4" /></span>
             </span>
           ) : (
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-black text-[11px]">
-              BEPUL
-            </span>
+              <T k="art.5" /></span>
           )}
           <span className="flex items-center gap-1 text-slate-400 ml-auto">
-            <Clock className="w-3.5 h-3.5" /> {article.readingTimeMinutes} daqiqa o‘qish
-          </span>
+            <Clock className="w-3.5 h-3.5" /> {article.readingTimeMinutes} <T k="art.6" /></span>
         </div>
 
         <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight leading-tight">
-          {article.title}
+          <Tr data={article.translations} field="title" fb={article.title} />
         </h1>
 
         <p className="text-base sm:text-lg text-slate-600 leading-relaxed font-medium">
-          {article.excerpt}
+          <Tr data={article.translations} field="excerpt" fb={article.excerpt} />
         </p>
       </header>
 
@@ -190,31 +187,28 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       <div className="rounded-3xl bg-gradient-to-br from-emerald-600 to-teal-800 text-white p-6 sm:p-10 border-b-8 border-emerald-950 shadow-xl space-y-4">
         <div className="inline-flex items-center gap-2 bg-emerald-500/40 text-emerald-100 px-3 py-1 rounded-full text-xs font-bold">
           <Heart className="w-3.5 h-3.5 text-amber-300 fill-amber-300" />
-          <span>AMALIY TARBIYA MASHG‘ULOTI</span>
+          <span><T k="art.7" /></span>
         </div>
 
         <h2 className="text-2xl sm:text-3xl font-black leading-snug">
-          Bu mavzuni chuqurroq o‘rganmoqchimisiz?
-        </h2>
+          <T k="art.8" /></h2>
 
         <p className="text-xs sm:text-sm text-emerald-100 leading-relaxed max-w-xl">
-          Nazariyani bilish yetarli emas. Farzandly interaktiv platformasida har kuni 5 daqiqa amaliy mashqlar va testlar orqali farzandingiz bilan til topishishni o‘rganing.
-        </p>
+          <T k="art.9" /></p>
 
         <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
           <Link
             href={START_LESSON_HREF}
             className="w-full sm:w-auto btn-gold text-sm sm:text-base px-6 py-3.5 flex items-center justify-center gap-2"
           >
-            <span>Bepul darsni boshlash</span>
+            <span><T k="art.10" /></span>
             <ArrowRight className="w-4 h-4" />
           </Link>
           <Link
             href="/darslar"
             className="w-full sm:w-auto text-xs sm:text-sm font-bold text-emerald-100 hover:text-white px-4 py-2 text-center"
           >
-            Barcha darslar bilan tanishish →
-          </Link>
+            <T k="art.11" /></Link>
         </div>
       </div>
     </article>

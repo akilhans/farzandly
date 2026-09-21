@@ -16,6 +16,7 @@
 }
 
 body {
+  overflow-x: clip; /* decorative blur blobs must never cause sideways scrolling */
   background-color: #faf7f2;
   color: #1e293b;
   font-family: 'Supreme', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;

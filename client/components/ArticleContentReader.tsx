@@ -7,6 +7,7 @@ import { useAuth } from '@/context/AuthContext';
 import { Article } from '@/lib/api';
 import ArticleCompleteButton from '@/components/ArticleCompleteButton';
 import PaymentModal from '@/components/PaymentModal';
+import { T } from '@/components/T';
 
 interface ArticleContentReaderProps {
   article: Article;
@@ -58,29 +59,27 @@ export default function ArticleContentReader({ article }: ArticleContentReaderPr
           <div className="space-y-2">
             <span className="inline-flex items-center gap-1.5 text-xs font-black uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-full">
               <Lock className="w-3.5 h-3.5" />
-              <span>PREMIUM KONTENT</span>
+              <span><T k="reader.1" /></span>
             </span>
             <h3 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-              Maqolaning to‘liq qismi Premium obunachilar uchun
-            </h3>
+              <T k="reader.2" /></h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              Ushbu ilmiy-amaliy maqola va uning ichidagi qadam-baqadam tavsiyalarni to‘liq o‘qish uchun Farzandly Premium kontentni faollashtiring.
-            </p>
+              <T k="reader.3" /></p>
           </div>
 
           {/* Pricing Highlight */}
           <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-left space-y-2">
-            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider">Tariflar:</div>
+            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider"><T k="reader.4" /></div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
-              <span>Oylik to‘lov:</span>
-              <span className="text-emerald-700 font-black">219 000 so‘m / oy</span>
+              <span><T k="reader.5" /></span>
+              <span className="text-emerald-700 font-black"><T k="reader.6" /></span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
-              <span>Yillik to‘lov (tejamkor):</span>
-              <span className="text-emerald-700 font-black">oyiga 179 000 so‘m</span>
+              <span><T k="reader.7" /></span>
+              <span className="text-emerald-700 font-black"><T k="reader.8" /></span>
             </div>
             <div className="text-[11px] text-slate-500 pt-1 border-t border-amber-200/60">
-              Karta: <span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> • Chekni yuborish: <span className="font-bold text-slate-700">t.me/dadakhonov</span>
+              <T k="reader.9" />{" "}<span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> <T k="reader.10" />{" "}<span className="font-bold text-slate-700"><T k="reader.11" /></span>
             </div>
           </div>
 
@@ -91,7 +90,7 @@ export default function ArticleContentReader({ article }: ArticleContentReaderPr
               className="w-full btn-gold text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/25"
             >
               <Crown className="w-4 h-4 fill-slate-950" />
-              <span>Premium kontentni faollashtirish</span>
+              <span><T k="reader.12" /></span>
               <ArrowRight className="w-4 h-4" />
             </button>
 
@@ -99,7 +98,7 @@ export default function ArticleContentReader({ article }: ArticleContentReaderPr
               href="/maqolalar/islomda-farzand-tarbiyasining-5-oltin-qoidasi"
               className="w-full btn-outline text-xs sm:text-sm py-3 flex items-center justify-center gap-2"
             >
-              <span>Bepul maqolani o‘qish (5 oltin qoida)</span>
+              <span><T k="reader.13" /></span>
             </Link>
           </div>
         </div>

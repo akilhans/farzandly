@@ -30,6 +30,7 @@ import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import { playChimeSound } from '@/lib/gamification';
 import PaymentModal from '@/components/PaymentModal';
+import { T } from '@/components/T';
 
 export default function LessonRunnerPage() {
   const params = useParams();
@@ -214,14 +215,10 @@ export default function LessonRunnerPage() {
     return (
       <div className="max-w-md mx-auto px-4 py-16 text-center space-y-4">
         <h2 className="text-xl font-bold text-slate-800">
-          {language === 'en' ? 'Lesson not found' : language === 'ru' ? 'Урок не найден' : 'Dars topilmadi'}
+          {t('lsn.not_found_title')}
         </h2>
         <p className="text-xs text-slate-500">
-          {language === 'en'
-            ? 'This lesson does not exist or has been removed.'
-            : language === 'ru'
-            ? 'Данный урок не существует или был удален.'
-            : 'Ushbu dars mavjud emas yoki o‘chirilgan.'}
+          {t('lsn.not_found_desc')}
         </p>
         <Link href="/dashboard" className="btn-primary text-sm px-6 py-2.5 inline-block">
           {t('lesson.continue_learning')}
@@ -244,29 +241,28 @@ export default function LessonRunnerPage() {
           <div className="space-y-2">
             <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-850 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-full">
               <Lock className="w-3.5 h-3.5" />
-              <span>PREMIUM KONTENT</span>
+              <span><T k="lsn.1" /></span>
             </span>
             <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
               {lesson.title}
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-              «1–10-darslar: Tarbiya asoslari» darslari barcha uchun mutlaqo bepul. 11-darsdan boshlab barcha chuqurlashtirilgan darslar, amaliy topshiriqlar va video/audio tahlillar Premium obunachilar uchundir.
-            </p>
+              <T k="lsn.2" /></p>
           </div>
 
           {/* Pricing Highlight */}
           <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-left space-y-2">
-            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider">Tariflar:</div>
+            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider"><T k="lsn.3" /></div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
-              <span>Oylik to‘lov:</span>
-              <span className="text-emerald-700 font-black">219 000 so‘m / oy</span>
+              <span><T k="lsn.4" /></span>
+              <span className="text-emerald-700 font-black"><T k="lsn.5" /></span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
-              <span>Yillik to‘lov (tejamkor):</span>
-              <span className="text-emerald-700 font-black">oyiga 179 000 so‘m</span>
+              <span><T k="lsn.6" /></span>
+              <span className="text-emerald-700 font-black"><T k="lsn.7" /></span>
             </div>
             <div className="text-[11px] text-slate-500 pt-1 border-t border-amber-200/60">
-              Karta: <span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> • Chekni yuborish: <span className="font-bold text-slate-700">t.me/dadakhonov</span>
+              <T k="lsn.8" />{" "}<span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> <T k="lsn.9" />{" "}<span className="font-bold text-slate-700"><T k="lsn.10" /></span>
             </div>
           </div>
 
@@ -277,14 +273,14 @@ export default function LessonRunnerPage() {
               className="w-full btn-gold text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/25"
             >
               <Crown className="w-4 h-4 fill-slate-950" />
-              <span>Premium kontentni faollashtirish</span>
+              <span><T k="lsn.11" /></span>
             </button>
 
             <Link
               href="/darslar/tarbiya-asoslari-va-boshlangich-himoya"
               className="w-full btn-outline text-xs sm:text-sm py-3 flex items-center justify-center gap-2"
             >
-              <span>Bepul darslarga o‘tish (1–10 darslar)</span>
+              <span><T k="lsn.12" /></span>
             </Link>
           </div>
         </div>
@@ -327,7 +323,7 @@ export default function LessonRunnerPage() {
 
           <div className="flex items-center gap-1 text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200 shadow-xs">
             <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
-            <span>+{earnedXp} XP</span>
+            <span>+{earnedXp} <T k="lsn.13" /></span>
           </div>
         </div>
 
@@ -425,7 +421,7 @@ export default function LessonRunnerPage() {
                   className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 max-w-sm mx-auto flex items-center justify-center gap-2 text-amber-900 font-bold text-xs sm:text-sm shadow-xs"
                 >
                   <Sparkles className="w-4 h-4 text-amber-600 fill-amber-500" />
-                  <span>A’lochi bonusi: +5 XP mukofotlandi! (100% to‘g‘ri)</span>
+                  <span><T k="lsn.14" /></span>
                 </m.div>
               )}
 
@@ -437,7 +433,7 @@ export default function LessonRunnerPage() {
                 >
                   <div className="flex items-center justify-center gap-1.5 text-purple-700 font-black text-xs uppercase tracking-wider">
                     <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
-                    <span>Yangi nishon ochildi!</span>
+                    <span><T k="lsn.15" /></span>
                   </div>
                   <p className="font-extrabold text-sm text-slate-800">
                     {unlockedBadges.join(', ')}
@@ -451,7 +447,7 @@ export default function LessonRunnerPage() {
                     onClick={() => router.push(`/dars/${nextLessonSlug}`)}
                     className="w-full sm:w-auto flex-1 btn-primary text-base py-4 flex items-center justify-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>Keyingi darsga o‘tish</span>
+                    <span><T k="lsn.16" /></span>
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 ) : null}

@@ -9,7 +9,7 @@ export const LANGUAGES: Language[] = ['uz', 'en', 'ru'];
 export interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
-  t: (key: string, fallback?: string) => string;
+  t: (key: string, fallback?: string, vars?: Record<string, string | number>) => string;
 }
 
 type Dict = Record<string, string>;
@@ -77,7 +77,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   );
 
   const t = useCallback(
-    (key: string, fallback?: string): string => dict[key] || uz[key] || fallback || key,
+    (key: string, fallback?: string, vars?: Record<string, string | number>): string => {
+      const raw = dict[key] ?? uz[key] ?? fallback ?? key;
+      return vars ? raw.replace(/\{(\w+)\}/g, (_, name) => String(vars[name] ?? `{${name}}`)) : raw;
+    },
     [dict]
   );
 

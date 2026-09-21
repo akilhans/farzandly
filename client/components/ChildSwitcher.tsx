@@ -4,17 +4,19 @@ import Link from 'next/link';
 import { Baby, Plus } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { getActiveChild } from '@/lib/children';
+import { useI18n } from '@/context/LanguageContext';
 
 /** Quick switch between the parent's children — each has their own age group and progress. */
 export default function ChildSwitcher() {
   const { user, updateUserProfile } = useAuth();
+  const { t } = useI18n();
   const children = user?.children || [];
   const active = getActiveChild(user);
 
   if (!user) return null;
 
   return (
-    <div className="flex flex-wrap items-center gap-2" role="group" aria-label="Farzandni tanlash">
+    <div className="flex flex-wrap items-center gap-2" role="group" aria-label={t('child.pick')}>
       {children.map((child) => {
         const isActive = active?.id === child.id;
         return (
@@ -40,7 +42,7 @@ export default function ChildSwitcher() {
         className="inline-flex items-center gap-1 px-3 py-1.5 rounded-2xl text-xs font-bold border-2 border-dashed border-slate-300 text-slate-500 hover:border-emerald-400 hover:text-emerald-700 transition-all"
       >
         <Plus className="w-3.5 h-3.5" />
-        <span>{children.length ? 'Farzand qo‘shish' : 'Farzandlarni sozlash'}</span>
+        <span>{children.length ? t('child.add') : t('child.setup')}</span>
       </Link>
     </div>
   );

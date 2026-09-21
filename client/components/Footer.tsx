@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass } from 'lucide-react';
 import { START_LESSON_HREF } from '@/lib/site';
+import { T } from '@/components/T';
 
 export function Footer() {
   return (
@@ -18,8 +19,8 @@ export function Footer() {
                 <BookOpen className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-bold text-sm text-slate-100">Islomiy manbalar</p>
-                <p className="text-xs text-slate-400">Sunnat va hikmatlar</p>
+                <p className="font-bold text-sm text-slate-100"><T k="footer.1" /></p>
+                <p className="text-xs text-slate-400"><T k="footer.2" /></p>
               </div>
             </div>
 
@@ -28,8 +29,8 @@ export function Footer() {
                 <ShieldCheck className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-bold text-sm text-slate-100">Ilmiy asoslangan</p>
-                <p className="text-xs text-slate-400">Psixologlar tavsiyasi</p>
+                <p className="font-bold text-sm text-slate-100"><T k="footer.3" /></p>
+                <p className="text-xs text-slate-400"><T k="footer.4" /></p>
               </div>
             </div>
 
@@ -38,8 +39,8 @@ export function Footer() {
                 <CheckCircle2 className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-bold text-sm text-slate-100">Amaliy yondashuv</p>
-                <p className="text-xs text-slate-400">Kunlik 5 daqiqalik odat</p>
+                <p className="font-bold text-sm text-slate-100"><T k="footer.5" /></p>
+                <p className="text-xs text-slate-400"><T k="footer.6" /></p>
               </div>
             </div>
 
@@ -48,8 +49,8 @@ export function Footer() {
                 <Heart className="w-5 h-5" />
               </div>
               <div>
-                <p className="font-bold text-sm text-slate-100">O‘zbek oilalari uchun</p>
-                <p className="text-xs text-slate-400">Milliy va madaniy muhit</p>
+                <p className="font-bold text-sm text-slate-100"><T k="footer.7" /></p>
+                <p className="text-xs text-slate-400"><T k="footer.8" /></p>
               </div>
             </div>
           </div>
@@ -71,14 +72,13 @@ export function Footer() {
               />
             </Link>
             <p className="text-slate-300 text-sm leading-relaxed max-w-sm">
-              Farzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.
-            </p>
+              <T k="footer.9" /></p>
             <div className="pt-2">
               <Link
                 href={START_LESSON_HREF}
                 className="btn-primary text-sm px-5 py-2.5 inline-flex items-center gap-2"
               >
-                <span>Tarbiyani boshlash</span>
+                <span><T k="footer.10" /></span>
                 <Compass className="w-4 h-4" />
               </Link>
             </div>
@@ -86,54 +86,46 @@ export function Footer() {
 
           {/* Quick links */}
           <div>
-            <p className="font-bold text-slate-200 text-base mb-3">O‘rganish</p>
+            <p className="font-bold text-slate-200 text-base mb-3"><T k="footer.11" /></p>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <Link href="/dashboard" className="hover:text-emerald-400 transition-colors">
-                  O‘quv yo‘lim
-                </Link>
+                  <T k="footer.12" /></Link>
               </li>
               <li>
                 <Link href="/darslar" className="hover:text-emerald-400 transition-colors">
-                  Barcha darslar
-                </Link>
+                  <T k="footer.13" /></Link>
               </li>
               <li>
                 <Link href="/maqolalar" className="hover:text-emerald-400 transition-colors">
-                  Foydali maqolalar
-                </Link>
+                  <T k="footer.14" /></Link>
               </li>
               <li>
                 <Link href="/premium" className="hover:text-amber-400 transition-colors">
-                  Farzandly Premium
-                </Link>
+                  <T k="footer.15" /></Link>
               </li>
             </ul>
           </div>
 
           {/* Popular articles */}
           <div>
-            <p className="font-bold text-slate-200 text-base mb-3">Dolzarb mavzular</p>
+            <p className="font-bold text-slate-200 text-base mb-3"><T k="footer.16" /></p>
             <ul className="space-y-2 text-sm text-slate-400">
               <li>
                 <Link href="/maqolalar/bolani-urmasdan-tarbiyalash" className="hover:text-emerald-400 transition-colors">
-                  Urmasdan tarbiyalash
-                </Link>
+                  <T k="footer.17" /></Link>
               </li>
               <li>
                 <Link href="/maqolalar/bola-gapga-quloq-solmasa" className="hover:text-emerald-400 transition-colors">
-                  Bola gapga quloq solmasa
-                </Link>
+                  <T k="footer.18" /></Link>
               </li>
               <li>
                 <Link href="/maqolalar/bola-telefonni-tashlamasa" className="hover:text-emerald-400 transition-colors">
-                  Telefon va ekran vaqti
-                </Link>
+                  <T k="footer.19" /></Link>
               </li>
               <li>
                 <Link href="/maqolalar/3-yoshli-bola-tarbiyasi" className="hover:text-emerald-400 transition-colors">
-                  3 yosh inqirozi
-                </Link>
+                  <T k="footer.20" /></Link>
               </li>
             </ul>
           </div>
@@ -141,9 +133,9 @@ export function Footer() {
 
         {/* Bottom bar */}
         <div className="border-t border-slate-800 mt-12 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© {new Date().getFullYear()} Farzandly. Barcha huquqlar himoyalangan.</p>
+          <p>© {new Date().getFullYear()} <T k="footer.21" /></p>
           <p className="flex items-center gap-1">
-            O‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
+            <T k="footer.22" />{" "}<Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
           </p>
         </div>
       </div>

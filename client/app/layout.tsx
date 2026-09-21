@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import { T } from "@/components/T";
 import MotionProvider from "@/components/MotionProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
@@ -130,13 +131,13 @@ export default function RootLayout({
         </Script>
       </head>
       <body className="min-h-full flex flex-col bg-[#FAF7F2] text-slate-800 antialiased selection:bg-emerald-200 selection:text-emerald-900">
-        <a
+        <LanguageProvider>
+          <a
           href="#main-content"
           className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-[100] focus:bg-white focus:text-emerald-800 focus:font-bold focus:px-4 focus:py-2 focus:rounded-xl focus:shadow-lg"
         >
-          Asosiy tarkibga o‘tish
-        </a>
-        <LanguageProvider>
+          <T k="a11y.skip" />
+          </a>
           <AuthProvider>
             <MotionProvider>
               <Navbar />

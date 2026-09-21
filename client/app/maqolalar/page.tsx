@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import SearchForm from '@/components/SearchForm';
 import Pagination, { EmptyArticles } from '@/components/Pagination';
 import type { Metadata } from 'next';
+import { T, Tr } from '@/components/T';
 
 const PAGE_SIZE = 9;
 
@@ -49,14 +50,11 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
       {/* Header */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-3.5 py-1 rounded-full">
-          Ota-onalar kutubxonasi
-        </span>
+          <T k="arts.1" /></span>
         <h1 className="text-3xl sm:text-5xl font-black text-slate-800 tracking-tight">
-          Foydali tarbiya maqolalari
-        </h1>
+          <T k="arts.2" /></h1>
         <p className="text-sm sm:text-base text-slate-500">
-          Islomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy tavsiyalarga asoslangan ilmiy-ommabop maqolalar.
-        </p>
+          <T k="arts.3" /></p>
       </div>
 
       <SearchForm className="max-w-2xl mx-auto" />
@@ -71,8 +69,7 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
               : 'bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50'
           }`}
         >
-          Barchasi
-        </Link>
+          <T k="arts.4" /></Link>
         {categories.map((cat) => {
           const isActive = params.category === cat.slug;
           return (
@@ -85,7 +82,7 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
                   : 'bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50'
               }`}
             >
-              {cat.name}
+              <Tr data={cat.translations} field="name" fb={cat.name} />
             </Link>
           );
         })}
@@ -102,17 +99,15 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
               {/* Badges */}
               <div className="flex items-center justify-between gap-2 text-xs">
                 <span className="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-lg">
-                  {article.categorySlug}
+                  {(() => { const c = categories.find((x) => x.slug === article.categorySlug); return c ? <Tr data={c.translations} field="name" fb={c.name} /> : article.categorySlug; })()}
                 </span>
                 <div className="flex items-center gap-2">
                   {article.isPremium ? (
                     <span className="text-[10px] font-black text-amber-850 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                      <Crown className="w-3 h-3 fill-amber-700 text-amber-700" /> PREMIUM KONTENT
-                    </span>
+                      <Crown className="w-3 h-3 fill-amber-700 text-amber-700" /> <T k="arts.5" /></span>
                   ) : (
                     <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">
-                      BEPUL
-                    </span>
+                      <T k="arts.6" /></span>
                   )}
                   <span className="flex items-center gap-1 text-slate-400 font-medium">
                     <Clock className="w-3.5 h-3.5" />
@@ -123,25 +118,24 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
 
               {/* Title */}
               <h2 className="text-xl font-bold text-slate-800 group-hover:text-emerald-700 transition-colors leading-snug">
-                <Link href={`/maqolalar/${article.slug}`}>{article.title}</Link>
+                <Link href={`/maqolalar/${article.slug}`}><Tr data={article.translations} field="title" fb={article.title} /></Link>
               </h2>
 
               {/* Excerpt */}
               <p className="text-xs sm:text-sm text-slate-500 leading-relaxed line-clamp-3">
-                {article.excerpt}
+                <Tr data={article.translations} field="excerpt" fb={article.excerpt} />
               </p>
             </div>
 
             {/* Read CTA */}
             <div className="pt-5 mt-4 border-t border-slate-100 flex items-center justify-between">
               <span className="text-xs font-bold text-slate-400 flex items-center gap-1">
-                <Baby className="w-3.5 h-3.5" /> {article.ageGroup} yosh
-              </span>
+                <Baby className="w-3.5 h-3.5" /> {article.ageGroup} <T k="arts.7" /></span>
               <Link
                 href={`/maqolalar/${article.slug}`}
                 className="text-xs font-black text-emerald-600 flex items-center gap-1 group-hover:gap-2 transition-all"
               >
-                <span>To‘liq o‘qish</span>
+                <span><T k="arts.8" /></span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </Link>
             </div>

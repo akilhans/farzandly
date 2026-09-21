@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { api, Course } from '@/lib/api';
 import { useI18n } from '@/context/LanguageContext';
+import { T } from '@/components/T';
 
 export default function CourseDetailClient({ slug, initialCourse = null }: { slug: string; initialCourse?: Course | null }) {
   const { language, t } = useI18n();
@@ -37,18 +38,16 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
   if (loading) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center text-slate-400">
-        Yuklanmoqda...
-      </div>
+        <T k="course.1" /></div>
     );
   }
 
   if (!course) {
     return (
       <div className="max-w-4xl mx-auto px-4 py-16 text-center space-y-4">
-        <h2 className="text-2xl font-bold text-slate-800">Dars to‘plami topilmadi</h2>
+        <h2 className="text-2xl font-bold text-slate-800"><T k="course.2" /></h2>
         <Link href="/darslar" className="btn-primary inline-flex">
-          Barcha darslar
-        </Link>
+          <T k="course.3" /></Link>
       </div>
     );
   }
@@ -138,12 +137,10 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
               <div className="flex items-center gap-3 shrink-0">
                 {lesson.isPremium ? (
                   <span className="text-[10px] font-black text-amber-850 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
-                    <Lock className="w-2.5 h-2.5 text-amber-700" /> Premium
-                  </span>
+                    <Lock className="w-2.5 h-2.5 text-amber-700" /> <T k="course.4" /></span>
                 ) : (
                   <span className="text-xs font-bold text-emerald-700 hidden sm:inline">
-                    +{lesson.xpReward} XP
-                  </span>
+                    +{lesson.xpReward} <T k="course.5" /></span>
                 )}
                 <Link
                   href={`/dars/${lesson.slug}`}

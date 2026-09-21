@@ -42,6 +42,7 @@ import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 import { AGE_GROUP_OPTIONS, MAX_CHILDREN, normalizeAgeGroup, type ChildProfile } from '@/lib/children';
 import { calculateLevel, playChimeSound } from '@/lib/gamification';
+import { T } from '@/components/T';
 
 const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
@@ -80,7 +81,7 @@ export default function ProfilePage() {
 
   useEffect(() => {
     async function loadAchievements() {
-      const ach = await api.getAchievements();
+      const ach = await api.getAchievements(language);
       setAchievements(ach || []);
       setLoading(false);
     }
@@ -90,7 +91,7 @@ export default function ProfilePage() {
       const soundPref = localStorage.getItem('farzandly_sound_enabled');
       if (soundPref === 'false') setSoundEnabled(false);
     }
-  }, []);
+  }, [language]);
 
   // Synchronize state when user changes
   useEffect(() => {
@@ -112,7 +113,7 @@ export default function ProfilePage() {
   const xp = user?.xp || 0;
   const streak = user?.streak || 0;
   const levelInfo = calculateLevel(xp, language);
-  const level = user?.level || levelInfo.level;
+  const level = levelInfo.level; // localized from XP
 
   const isPrem = Boolean(
     (user?.isPremium || user?.subscriptionStatus === 'premium') &&
@@ -224,7 +225,7 @@ export default function ProfilePage() {
             className="fixed top-20 right-4 sm:right-8 z-50 bg-emerald-700 text-white px-5 py-3 rounded-2xl shadow-xl border-2 border-emerald-500 flex items-center gap-2.5 font-bold text-sm"
           >
             <CheckCircle className="w-5 h-5 text-emerald-300" />
-            <span>Sozlamalar muvaffaqiyatli saqlandi!</span>
+            <span><T k="prof.1" /></span>
           </m.div>
         )}
       </AnimatePresence>
@@ -285,26 +286,22 @@ export default function ProfilePage() {
                 {isPrem ? (
                   <span className="bg-amber-100 text-amber-900 border border-amber-300 text-xs font-black px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
                     <Crown className="w-3.5 h-3.5 fill-amber-700" />
-                    PREMIUM
-                  </span>
+                    <T k="prof.2" /></span>
                 ) : (
                   <span className="bg-slate-100 text-slate-600 text-xs font-bold px-2.5 py-0.5 rounded-full">
-                    BEPUL
-                  </span>
+                    <T k="prof.3" /></span>
                 )}
 
                 {isAdmin && (
                   <span className="bg-purple-100 text-purple-900 border border-purple-300 text-xs font-black px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
                     <ShieldCheck className="w-3.5 h-3.5" />
-                    ADMIN
-                  </span>
+                    <T k="prof.4" /></span>
                 )}
 
                 {isAuthenticated && (
                   <span className="bg-sky-50 text-[#229ED9] border border-sky-200 text-xs font-bold px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
                     <Send className="w-3 h-3 -rotate-12" />
-                    Telegram
-                  </span>
+                    <T k="prof.5" /></span>
                 )}
               </div>
 
@@ -312,7 +309,7 @@ export default function ProfilePage() {
                 {user?.telegramUsername && !user?.name?.startsWith('@') ? (
                   <span className="font-bold text-[#229ED9]">@{user.telegramUsername} • </span>
                 ) : null}
-                Farzand: <span className="font-bold text-slate-700">{user?.childAgeGroup || '3-5'} yosh</span> • Kunlik maqsad: <span className="font-bold text-slate-700">{user?.dailyGoalMinutes || 10} daqiqa</span>
+                <T k="prof.6" />{" "}<span className="font-bold text-slate-700">{user?.childAgeGroup || '3-5'} <T k="prof.7" /></span> <T k="prof.8" />{" "}<span className="font-bold text-slate-700">{user?.dailyGoalMinutes || 10} <T k="prof.9" /></span>
               </p>
             </div>
 
@@ -324,7 +321,7 @@ export default function ProfilePage() {
                   className="inline-flex items-center gap-1.5 bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 font-black text-xs px-3.5 py-1.5 rounded-xl shadow-xs transition-all cursor-pointer"
                 >
                   <ShieldCheck className="w-4 h-4 text-amber-800" />
-                  <span>Admin paneli</span>
+                  <span><T k="prof.10" /></span>
                 </Link>
               )}
 
@@ -349,8 +346,8 @@ export default function ProfilePage() {
           {/* Progress to Next Level Bar */}
           <div className="pt-2 space-y-1.5 max-w-md">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-              <span className="text-slate-700">{levelInfo.level} ({levelInfo.levelIndex}-daraja)</span>
-              <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
+              <span className="text-slate-700">{levelInfo.level} ({levelInfo.levelIndex}<T k="prof.11" /></span>
+              <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} <T k="prof.12" /></span>
             </div>
             <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
               <m.div
@@ -376,7 +373,7 @@ export default function ProfilePage() {
           }`}
         >
           <Trophy className="w-4 h-4" />
-          <span>Statistika va Yutuqlar</span>
+          <span><T k="prof.13" /></span>
         </button>
 
         <button
@@ -389,7 +386,7 @@ export default function ProfilePage() {
           }`}
         >
           <Settings className="w-4 h-4" />
-          <span>Sozlamalar</span>
+          <span><T k="prof.14" /></span>
         </button>
       </div>
 
@@ -402,24 +399,24 @@ export default function ProfilePage() {
               <div className="w-10 h-10 mx-auto rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-1.5">
                 <Flame className="w-6 h-6 fill-orange-500" />
               </div>
-              <span className="text-xl sm:text-2xl font-black text-slate-800">{streak} kun</span>
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Uzluksiz streak</p>
+              <span className="text-xl sm:text-2xl font-black text-slate-800">{streak} <T k="prof.15" /></span>
+              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase"><T k="prof.16" /></p>
             </m.div>
 
             <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-1.5">
                 <Star className="w-6 h-6 fill-amber-500" />
               </div>
-              <span className="text-xl sm:text-2xl font-black text-slate-800">{xp} XP</span>
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">To‘plangan ballar</p>
+              <span className="text-xl sm:text-2xl font-black text-slate-800">{xp} <T k="prof.17" /></span>
+              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase"><T k="prof.18" /></p>
             </m.div>
 
             <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5">
                 <CheckCircle className="w-6 h-6 text-emerald-600" />
               </div>
-              <span className="text-xl sm:text-2xl font-black text-slate-800">{completed.length} ta</span>
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Darslar o‘tildi</p>
+              <span className="text-xl sm:text-2xl font-black text-slate-800">{completed.length} <T k="prof.19" /></span>
+              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase"><T k="prof.20" /></p>
             </m.div>
 
             <m.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
@@ -429,7 +426,7 @@ export default function ProfilePage() {
               <span className="text-xl sm:text-2xl font-black text-slate-800">
                 {achievements.filter((a) => (user?.achievements && user.achievements.includes(a.code)) || xp >= a.xpRequired).length} / {achievements.length}
               </span>
-              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Ochilgan nishonlar</p>
+              <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase"><T k="prof.21" /></p>
             </m.div>
           </div>
 
@@ -437,11 +434,9 @@ export default function ProfilePage() {
           <div className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 space-y-6 shadow-sm">
             <div className="space-y-1">
               <h2 className="text-xl sm:text-2xl font-black text-slate-800">
-                Yutuqlar va nishonlar (12 ta)
-              </h2>
+                <T k="prof.22" /></h2>
               <p className="text-xs sm:text-sm text-slate-500">
-                Darslarni o‘zlashtirib, yangi fazilatli ota-ona nishonlarini qo‘lga kiriting.
-              </p>
+                <T k="prof.23" /></p>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -476,8 +471,7 @@ export default function ProfilePage() {
                         <h3 className="font-bold text-slate-800 text-sm">{ach.title}</h3>
                         {isUnlocked ? (
                           <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
-                            Ochilgan 🏆
-                          </span>
+                            <T k="prof.24" /></span>
                         ) : (
                           <span className="text-[10px] font-bold text-slate-400 bg-slate-200/70 px-2 py-0.5 rounded-md">
                             {progress}%
@@ -487,7 +481,7 @@ export default function ProfilePage() {
                       <p className="text-xs text-slate-500 leading-relaxed">{ach.description}</p>
                       <div className="space-y-1 pt-1">
                         <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
-                          <span>Talab: {ach.xpRequired} XP {ach.streakRequired > 0 && `• ${ach.streakRequired} kun streak`}</span>
+                          <span><T k="prof.25" />{" "}{ach.xpRequired} <T k="prof.26" />{" "}{ach.streakRequired > 0 && `• ${t('prof.streak_days', undefined, { n: ach.streakRequired })}`}</span>
                         </div>
                         {!isUnlocked && (
                           <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
@@ -511,27 +505,25 @@ export default function ProfilePage() {
           <div className="card-farzandly p-6 sm:p-8 space-y-6">
             <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg border-b border-slate-100 pb-3">
               <UserIcon className="w-5 h-5 text-emerald-600" />
-              <h2>Shaxsiy ma’lumotlar</h2>
+              <h2><T k="prof.27" /></h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 block">
-                  Ismingiz (yoki murojaat shakli):
-                </label>
+                  <T k="prof.28" /></label>
                 <input
                   type="text"
                   value={formName}
                   onChange={(e) => setFormName(e.target.value)}
-                  placeholder="masalan: Aziza Rahimova"
+                  placeholder={t('prof.name_ph')}
                   className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-2.5 text-sm font-medium focus:outline-hidden focus:border-emerald-500 transition-all"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-xs font-bold text-slate-700 block">
-                  Telefon raqamingiz:
-                </label>
+                  <T k="prof.29" /></label>
                 <input
                   type="tel"
                   value={formPhone}
@@ -543,8 +535,7 @@ export default function ProfilePage() {
 
               <div className="space-y-1.5 sm:col-span-2">
                 <label className="text-xs font-bold text-slate-700 block">
-                  Telegram Username:
-                </label>
+                  <T k="prof.30" /></label>
                 <div className="relative">
                   <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">
                     @
@@ -558,8 +549,7 @@ export default function ProfilePage() {
                   />
                 </div>
                 <p className="text-[11px] text-slate-400">
-                  Telegram profilingiz nomi orqali yutuqlaringiz va Premium maqomingiz oson topiladi.
-                </p>
+                  <T k="prof.31" /></p>
               </div>
             </div>
           </div>
@@ -568,14 +558,13 @@ export default function ProfilePage() {
           <div className="card-farzandly p-6 sm:p-8 space-y-6">
             <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg border-b border-slate-100 pb-3">
               <Baby className="w-5 h-5 text-emerald-600" />
-              <h2>Farzand va ta’lim parametrlari</h2>
+              <h2><T k="prof.32" /></h2>
             </div>
 
             {/* Farzandlar (child profiles) */}
             <div className="space-y-3">
               <label className="text-xs font-bold text-slate-700 block">
-                Farzandlaringiz (har birining o‘z yoshi va o‘quv yo‘li bo‘ladi):
-              </label>
+                <T k="prof.33" /></label>
               <div className="flex flex-wrap gap-2">
                 {formChildren.map((child) => {
                   const isActive = child.id === (formActiveChildId || formChildren[0]?.id);
@@ -594,7 +583,7 @@ export default function ProfilePage() {
                       <button
                         type="button"
                         onClick={() => removeChild(child.id)}
-                        aria-label={`${child.name} profilini o‘chirish`}
+                        aria-label={t('prof.remove_child', undefined, { name: child.name })}
                         className="px-2 py-1.5 text-slate-400 hover:text-red-600 cursor-pointer"
                       >
                         <X className="w-3.5 h-3.5" />
@@ -603,7 +592,7 @@ export default function ProfilePage() {
                   );
                 })}
                 {formChildren.length === 0 && (
-                  <p className="text-xs text-slate-500">Hali farzand qo‘shilmagan. Ism yozing va pastdagi yoshni tanlab qo‘shing.</p>
+                  <p className="text-xs text-slate-500"><T k="prof.34" /></p>
                 )}
               </div>
               {formChildren.length < MAX_CHILDREN && (
@@ -628,8 +617,7 @@ export default function ProfilePage() {
                     disabled={!newChildName.trim()}
                     className="btn-primary text-xs px-4 py-2.5 gap-1 disabled:opacity-50 cursor-pointer"
                   >
-                    <Plus className="w-3.5 h-3.5" /> Qo‘shish
-                  </button>
+                    <Plus className="w-3.5 h-3.5" /> <T k="prof.35" /></button>
                 </div>
               )}
             </div>
@@ -637,8 +625,7 @@ export default function ProfilePage() {
             {/* Yosh guruhi */}
             <div className="space-y-2">
               <label className="text-xs font-bold text-slate-700 block">
-                Tanlangan farzandning yosh guruhi (tavsiya etiluvchi darslar shunga moslashadi):
-              </label>
+                <T k="prof.36" /></label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
                 {ageGroupOptions.map((ag) => {
                   const isSelected = formAgeGroup === ag.code;
@@ -654,10 +641,10 @@ export default function ProfilePage() {
                       }`}
                     >
                       <div className="text-xs font-black text-slate-800 flex items-center justify-between">
-                        <span>{ag.label}</span>
+                        <span>{t(`age.label.${ag.code}`, ag.label)}</span>
                         {isSelected && <Check className="w-3.5 h-3.5 text-emerald-600" />}
                       </div>
-                      <div className="text-[11px] text-slate-500 mt-0.5 leading-snug">{ag.desc}</div>
+                      <div className="text-[11px] text-slate-500 mt-0.5 leading-snug">{t(`age.desc.${ag.code}`, ag.desc)}</div>
                     </button>
                   );
                 })}
@@ -667,8 +654,7 @@ export default function ProfilePage() {
             {/* Kunlik ta'lim maqsadi */}
             <div className="space-y-2 pt-2">
               <label className="text-xs font-bold text-slate-700 block">
-                Kunlik ta’lim maqsadi:
-              </label>
+                <T k="prof.37" /></label>
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
                 {[5, 10, 15, 20].map((min) => {
                   const isSelected = formDailyGoal === min;
@@ -683,7 +669,7 @@ export default function ProfilePage() {
                           : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
                       }`}
                     >
-                      <div className="text-base font-black">{min} daqiqa</div>
+                      <div className="text-base font-black">{min} <T k="prof.38" /></div>
                       <div className="text-[10px] text-slate-500 mt-0.5">
                         {min === 5 ? 'Boshlang‘ich' : min === 10 ? 'Tavsiya etiladi' : min === 15 ? 'Faol ota-ona' : 'Intensiv'}
                       </div>
@@ -696,14 +682,13 @@ export default function ProfilePage() {
             {/* Qiziqish mavzulari */}
             <div className="space-y-2 pt-2">
               <label className="text-xs font-bold text-slate-700 block">
-                Sizni eng ko‘p qiziqtirgan tarbiya mavzulari:
-              </label>
+                <T k="prof.39" /></label>
               <div className="flex flex-wrap gap-2">
-                {availableInterests.map((interest) => {
+                {availableInterests.map((interest, interestIdx) => {
                   const isSelected = formInterests.includes(interest);
                   return (
                     <button
-                      key={interest}
+                      key={t(`interest.${interestIdx}`, interest)}
                       type="button"
                       onClick={() => toggleInterest(interest)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
@@ -725,7 +710,7 @@ export default function ProfilePage() {
           <div className="card-farzandly p-6 sm:p-8 space-y-6">
             <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg border-b border-slate-100 pb-3">
               <Sliders className="w-5 h-5 text-emerald-600" />
-              <h2>Platforma sozlamalari</h2>
+              <h2><T k="prof.40" /></h2>
             </div>
 
             {/* Tilni tanlash */}
@@ -735,8 +720,8 @@ export default function ProfilePage() {
                   <Globe className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-slate-800">Interfeys tili</div>
-                  <div className="text-xs text-slate-500">Platformadagi barcha matnlar tili</div>
+                  <div className="text-sm font-bold text-slate-800"><T k="prof.41" /></div>
+                  <div className="text-xs text-slate-500"><T k="prof.42" /></div>
                 </div>
               </div>
 
@@ -769,8 +754,8 @@ export default function ProfilePage() {
                   {soundEnabled ? <Volume2 className="w-5 h-5" /> : <VolumeX className="w-5 h-5 text-slate-400" />}
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-slate-800">Ovozli effektlar (Chimes)</div>
-                  <div className="text-xs text-slate-500">Darslardagi to‘g‘ri javob va g‘alaba ohanglari</div>
+                  <div className="text-sm font-bold text-slate-800"><T k="prof.43" /></div>
+                  <div className="text-xs text-slate-500"><T k="prof.44" /></div>
                 </div>
               </div>
 
@@ -779,10 +764,9 @@ export default function ProfilePage() {
                   type="button"
                   onClick={() => playChimeSound('correct')}
                   className="btn-outline text-[11px] px-2.5 py-1.5 cursor-pointer"
-                  title="Ovozni sinab ko‘rish"
+                  title={t('prof.sound_try')}
                 >
-                  Sinab ko‘rish 🎵
-                </button>
+                  <T k="prof.45" /></button>
                 <button
                   type="button"
                   onClick={() => handleSoundToggle(!soundEnabled)}
@@ -804,8 +788,8 @@ export default function ProfilePage() {
                   <Bell className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-sm font-bold text-slate-800">Kunlik dars eslatmasi</div>
-                  <div className="text-xs text-slate-500">Telegram bot har kuni tanlangan vaqtda keyingi darsingizni eslatadi</div>
+                  <div className="text-sm font-bold text-slate-800"><T k="prof.46" /></div>
+                  <div className="text-xs text-slate-500"><T k="prof.47" /></div>
                 </div>
               </div>
 
@@ -816,10 +800,9 @@ export default function ProfilePage() {
                   rel="noopener noreferrer"
                   className="btn-secondary text-xs px-4 py-2.5 gap-1.5"
                 >
-                  <Send className="w-3.5 h-3.5" /> Botda sozlash
-                </a>
+                  <Send className="w-3.5 h-3.5" /> <T k="prof.48" /></a>
               ) : (
-                <span className="text-xs font-bold text-slate-500">Botga <code>/eslatma</code> yuboring</span>
+                <span className="text-xs font-bold text-slate-500"><T k="prof.49" />{" "}<code><T k="prof.50" /></code> <T k="prof.51" /></span>
               )}
             </div>
           </div>
@@ -828,24 +811,28 @@ export default function ProfilePage() {
           <div className="card-farzandly p-6 sm:p-8 space-y-5">
             <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg border-b border-slate-100 pb-3">
               <Crown className="w-5 h-5 text-amber-500" />
-              <h2>Obuna holati va Hisob</h2>
+              <h2><T k="prof.52" /></h2>
             </div>
 
             <div className="p-4 rounded-2xl bg-amber-50/70 border-2 border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-black uppercase text-amber-900 bg-amber-200/80 px-2.5 py-0.5 rounded-md">
-                    {isPrem ? 'Premium Faol ⭐' : 'Bepul Tarif'}
+                    {isPrem ? t('prof.prem_active') : t('prof.free_plan')}
                   </span>
                 </div>
                 <p className="text-xs sm:text-sm text-slate-700 mt-1 font-medium">
                   {isPrem
-                    ? `Barcha 69 ta dars, audio-hikmatlar va ilmiy maqolalar to‘liq ochiq. ${
+                    ? `${t('prof.prem_desc')} ${
                         user?.premiumExpiresAt
-                          ? `Amal qilish muddati: ${new Date(user.premiumExpiresAt).toLocaleDateString('uz-UZ')}`
-                          : 'Muddatsiz obuna'
+                          ? t('prof.prem_expires', undefined, {
+                              date: new Date(user.premiumExpiresAt).toLocaleDateString(
+                                language === 'ru' ? 'ru-RU' : language === 'en' ? 'en-GB' : 'uz-UZ'
+                              ),
+                            })
+                          : t('prof.prem_forever')
                       }`
-                    : 'Hozirda faqat 1–10-darslar va asosiy maqolalar ochiq. To‘liq darslarni ochish uchun Premium kontentni faollashtiring.'}
+                    : t('prof.free_desc')}
                 </p>
               </div>
 
@@ -855,7 +842,7 @@ export default function ProfilePage() {
                   className="btn-gold text-xs sm:text-sm px-4 py-2.5 inline-flex items-center justify-center gap-2 text-slate-950 font-black shrink-0 cursor-pointer shadow-md"
                 >
                   <Crown className="w-4 h-4 fill-slate-950" />
-                  <span>Premiumni yoqish</span>
+                  <span><T k="prof.53" /></span>
                 </Link>
               )}
             </div>
@@ -863,14 +850,12 @@ export default function ProfilePage() {
             {isAdmin && (
               <div className="p-4 rounded-2xl bg-purple-50 border border-purple-200 flex items-center justify-between gap-3">
                 <div className="text-xs text-purple-900 font-medium">
-                  Siz platforma ma’murisiz. Boshqa foydalanuvchilarni Premium qilish uchun panel:
-                </div>
+                  <T k="prof.54" /></div>
                 <Link
                   href="/admin"
                   className="bg-purple-600 hover:bg-purple-700 text-white text-xs font-bold px-3 py-1.5 rounded-xl shrink-0"
                 >
-                  Admin paneli →
-                </Link>
+                  <T k="prof.55" /></Link>
               </div>
             )}
           </div>
@@ -883,7 +868,7 @@ export default function ProfilePage() {
               className="w-full sm:w-auto btn-primary text-sm sm:text-base px-8 py-3.5 flex items-center justify-center gap-2 shadow-lg shadow-emerald-600/20 cursor-pointer"
             >
               <Save className="w-4 h-4" />
-              <span>Sozlamalarni saqlash</span>
+              <span><T k="prof.56" /></span>
             </button>
           </div>
         </div>
