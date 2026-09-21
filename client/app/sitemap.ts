@@ -9,7 +9,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: SITE_URL, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 1.0 },
     { url: `${SITE_URL}/maqolalar`, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 0.9 },
-    { url: `${SITE_URL}/darslar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/darslar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.9 },
+    { url: `${SITE_URL}/bolalar`, lastModified: BUILD_DATE, changeFrequency: 'daily', priority: 0.9 },
+    { url: `${SITE_URL}/ertaklar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/sherlar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/topishmoqlar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
+    { url: `${SITE_URL}/maqollar`, lastModified: BUILD_DATE, changeFrequency: 'weekly', priority: 0.8 },
     { url: `${SITE_URL}/premium`, lastModified: BUILD_DATE, changeFrequency: 'monthly', priority: 0.7 },
   ];
 

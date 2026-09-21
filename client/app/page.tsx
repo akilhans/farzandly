@@ -24,6 +24,45 @@ import { T, Tr } from '@/components/T';
 
 const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
+const homeFaqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: [
+    {
+      '@type': 'Question',
+      name: 'Farzandly platformasi nima va uning asosiy maqsadi qanday?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Farzandly — o‘zbek ota-onalari uchun islomiy qadriyatlar va zamonaviy bolalar psixologiyasini uyg‘unlashtirgan innovatsion raqamli platforma. Unda har kuni o‘rganish mumkin bo‘lgan 5 daqiqalik darslar, ilmiy-amaliy maqolalar va bolalar uchun ibratli kontentlar jamlangan.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Platformadagi darslar va maqolalar bepulmi?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Ha, Farzandly platformasidagi 1–10-darslar, barcha asosiy tarbiya maqolalari hamda Bolalar olamidagi barcha ertaklar, she’rlar, topishmoqlar va maqollar mutlaqo bepul.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Bolalar olami bo‘limida qanday materiallar bor?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Bolalar olami bo‘limida 15 ta sara o‘zbek xalq ertagi, fasllar va maktab haqidagi she’rlar, bolalar zehnini o‘stiruvchi topishmoqlar hamda 89 ta odob va axloq maqollari qulay ko‘rinishda jamlangan.',
+      },
+    },
+    {
+      '@type': 'Question',
+      name: 'Farzandly Telegram boti bilan qanday ishlaydi?',
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: 'Farzandly rasmiy Telegram boti orqali darslarni to‘g‘ridan-to‘g‘ri Telegram Mini App ichida o‘qish, kunlik eslatmalar olish va shaxsiy o‘sish ko‘rsatkichlarini kuzatib borish mumkin.',
+      },
+    },
+  ],
+};
+
 export default async function HomePage() {
   const [categories, ageGroups, sampleArticles] = await Promise.all([
     api.getCategories(),
@@ -33,6 +72,12 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 relative overflow-x-clip">
+      {/* Schema.org FAQ Rich Snippet */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}
+      />
+
       {/* Ambient background blur elements */}
       <div className="absolute top-10 left-1/4 w-96 h-96 bg-emerald-200/40 rounded-full blur-3xl pointer-events-none -z-10" />
       <div className="absolute top-64 right-10 w-80 h-80 bg-amber-200/30 rounded-full blur-3xl pointer-events-none -z-10" />
