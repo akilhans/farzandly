@@ -641,8 +641,26 @@ export class TelegramBotEngine {
           );
 
           if (!res.ok) {
-            console.warn(`[TelegramBotEngine] getUpdates failed: ${res.status}`);
-            await new Promise((resolve) => setTimeout(resolve, 3000));
+            const errData = (await res.json().catch(() => ({}))) as any;
+            const desc = errData.description || '';
+
+            if (res.status === 409) {
+              if (desc.includes('webhook')) {
+                console.warn('[TelegramBotEngine] 409 Conflict: Webhook faol. Webhook o‘chirilmoqda...');
+                await this.deleteWebhook();
+                await new Promise((resolve) => setTimeout(resolve, 3000));
+                continue;
+              } else {
+                console.warn(
+                  '[TelegramBotEngine] 409 Conflict: Boshqa bot instansi ham ayni paytda getUpdates chaqiryapti (masalan: lokal kompyuter va Railway bir vaqtda). Iltimos, faqat bitta instansni ishga tushiring.'
+                );
+                await new Promise((resolve) => setTimeout(resolve, 10000));
+                continue;
+              }
+            }
+
+            console.warn(`[TelegramBotEngine] getUpdates failed: ${res.status} (${desc})`);
+            await new Promise((resolve) => setTimeout(resolve, 5000));
             continue;
           }
 
