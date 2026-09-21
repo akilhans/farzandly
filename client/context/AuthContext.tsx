@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { calculateLevel, checkAchievements, calculateStreak } from '@/lib/gamification';
 
 export interface TelegramUser {
   _id: string;
@@ -19,7 +20,12 @@ export interface TelegramUser {
   completedLessons: string[];
   achievements: string[];
   subscriptionStatus: string;
+  isPremium?: boolean;
+  premiumExpiresAt?: string;
+  role?: 'user' | 'admin';
+  phone?: string;
   authProvider?: string;
+  lastActiveDate?: string;
 }
 
 interface AuthContextType {
@@ -36,11 +42,12 @@ interface AuthContextType {
     auth_date?: number | string;
     hash?: string;
   }) => Promise<boolean>;
-  loginDemoTelegram: (persona?: 'aziza' | 'jasur' | 'dilnoza') => Promise<void>;
+  loginDemoTelegram: (persona?: 'aziza' | 'jasur' | 'dilnoza' | 'dadakhonov') => Promise<void>;
   logout: () => void;
   updateUserProgress: (xpToAdd: number, lessonSlug: string) => void;
   updateUserProfile: (updates: Partial<TelegramUser>) => void;
   setAuthenticatedSession: (user: TelegramUser, token: string) => void;
+  setPremiumStatus: (userIdOrUsername: string, durationMonths: number) => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -228,7 +235,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
-  const loginDemoTelegram = async (persona: 'aziza' | 'jasur' | 'dilnoza' = 'aziza') => {
+  const loginDemoTelegram = async (persona: 'aziza' | 'jasur' | 'dilnoza' | 'dadakhonov' = 'aziza') => {
     const demoProfiles = {
       aziza: {
         id: 998901234567,
@@ -250,6 +257,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         last_name: 'Sobirova',
         username: 'dilnoza_pedagog',
         photo_url: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      },
+      dadakhonov: {
+        id: 777000111222,
+        first_name: 'Dadakhonov',
+        last_name: 'Admin',
+        username: 'dadakhonov',
+        photo_url: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80',
       },
     };
 
@@ -281,21 +295,23 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const updateUserProgress = (xpToAdd: number, lessonSlug: string) => {
     setUser((prev) => {
       if (!prev) return null;
-      const newXp = prev.xp + xpToAdd;
+      const newXp = (prev.xp || 0) + xpToAdd;
       const newCompleted = prev.completedLessons.includes(lessonSlug)
         ? prev.completedLessons
         : [...prev.completedLessons, lessonSlug];
 
-      let newLevel = prev.level;
-      if (newXp >= 100) newLevel = 'Tajribali ota-ona';
-      else if (newXp >= 50) newLevel = 'Ongli ota-ona';
-      else if (newXp >= 20) newLevel = "O‘rganuvchi";
+      const newStreak = calculateStreak(prev.lastActiveDate, prev.streak);
+      const levelInfo = calculateLevel(newXp);
+      const achResult = checkAchievements(newXp, newStreak, newCompleted, prev.achievements);
 
-      const updated = {
+      const updated: TelegramUser = {
         ...prev,
         xp: newXp,
+        streak: newStreak,
+        lastActiveDate: new Date().toISOString(),
         completedLessons: newCompleted,
-        level: newLevel,
+        level: levelInfo.level,
+        achievements: achResult.unlocked,
       };
 
       if (typeof window !== 'undefined') {
@@ -328,6 +344,85 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const setPremiumStatus = async (userIdOrUsername: string, durationMonths: number): Promise<boolean> => {
+    const cleanTarget = userIdOrUsername.trim().replace(/^@/, '');
+    const now = new Date();
+    const expiresAt = new Date(now);
+    if (durationMonths === 12) {
+      expiresAt.setDate(now.getDate() + 365);
+    } else if (durationMonths === 1) {
+      expiresAt.setDate(now.getDate() + 30);
+    } else {
+      expiresAt.setTime(0);
+    }
+
+    const isNowPremium = durationMonths > 0;
+    const isoExpires = durationMonths > 0 ? expiresAt.toISOString() : undefined;
+
+    // 1. If modifying current active session
+    if (user && (user._id === userIdOrUsername || user.telegramUsername?.toLowerCase() === cleanTarget.toLowerCase())) {
+      const updated: TelegramUser = {
+        ...user,
+        isPremium: isNowPremium,
+        subscriptionStatus: isNowPremium ? 'premium' : 'free',
+        premiumExpiresAt: isoExpires,
+      };
+      setUser(updated);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('farzandly_auth_user', JSON.stringify(updated));
+      }
+    }
+
+    // 2. Persist in local user registry
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('farzandly_users_registry') || '[]';
+        const list: TelegramUser[] = JSON.parse(raw);
+        const idx = list.findIndex(
+          (u) => u._id === userIdOrUsername || u.telegramUsername?.toLowerCase() === cleanTarget.toLowerCase()
+        );
+        if (idx >= 0) {
+          list[idx].isPremium = isNowPremium;
+          list[idx].subscriptionStatus = isNowPremium ? 'premium' : 'free';
+          list[idx].premiumExpiresAt = isoExpires;
+        } else {
+          list.push({
+            _id: `user_${Date.now()}`,
+            name: `@${cleanTarget}`,
+            telegramUsername: cleanTarget,
+            childAgeGroup: '3-5',
+            selectedInterests: [],
+            dailyGoalMinutes: 10,
+            xp: 0,
+            streak: 1,
+            level: 'Boshlovchi ota-ona',
+            completedLessons: [],
+            achievements: [],
+            subscriptionStatus: isNowPremium ? 'premium' : 'free',
+            isPremium: isNowPremium,
+            premiumExpiresAt: isoExpires,
+          });
+        }
+        localStorage.setItem('farzandly_users_registry', JSON.stringify(list));
+      } catch {
+        // ignore
+      }
+    }
+
+    // 3. Sync to backend API if available
+    try {
+      await fetch(`${API_BASE}/admin/set-premium`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userIdOrUsername: cleanTarget, durationMonths, expiresAt: isoExpires }),
+      });
+    } catch {
+      // offline
+    }
+
+    return true;
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -341,6 +436,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateUserProgress,
         updateUserProfile,
         setAuthenticatedSession,
+        setPremiumStatus,
       }}
     >
       {children}

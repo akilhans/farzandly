@@ -1,3 +1,4 @@
+@import url('https://api.fontshare.com/v2/css?f[]=chubbo@600,700,800,900&f[]=supreme@400,500,600,700&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -18,9 +19,14 @@
 body {
   background-color: #faf7f2;
   color: #1e293b;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Supreme', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading, .font-chubbo {
+  font-family: 'Chubbo', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: -0.02em;
 }
 
 /* 3D Duolingo-inspired Tactile Buttons */

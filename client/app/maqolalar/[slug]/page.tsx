@@ -12,8 +12,10 @@ import {
   ChevronRight,
   ShieldCheck,
   Share2,
+  Crown,
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import ArticleContentReader from '@/components/ArticleContentReader';
 
 interface ArticlePageProps {
   params: Promise<{ slug: string }>;
@@ -115,6 +117,16 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
           <span className="bg-slate-100 text-slate-600 px-3 py-1 rounded-full">
             {article.ageGroup} yosh
           </span>
+          {article.isPremium ? (
+            <span className="inline-flex items-center gap-1 bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full font-black text-[11px]">
+              <Crown className="w-3.5 h-3.5 fill-amber-700" />
+              <span>PREMIUM KONTENT</span>
+            </span>
+          ) : (
+            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-black text-[11px]">
+              BEPUL
+            </span>
+          )}
           <span className="flex items-center gap-1 text-slate-400 ml-auto">
             <Clock className="w-3.5 h-3.5" /> {article.readingTimeMinutes} daqiqa o‘qish
           </span>
@@ -129,10 +141,8 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
         </p>
       </header>
 
-      {/* Article Body Content with styled typography */}
-      <div className="prose prose-slate max-w-none space-y-6 text-slate-700 text-base sm:text-lg leading-relaxed font-normal whitespace-pre-line">
-        {article.content}
-      </div>
+      {/* Article Body Content Reader with Paywall Guard */}
+      <ArticleContentReader article={article} />
 
       {/* Tags */}
       {article.tags && article.tags.length > 0 && (

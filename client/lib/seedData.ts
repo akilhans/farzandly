@@ -1,5 +1,11 @@
-// Auto-generated 55-lesson Islamic Child Rearing Dataset for Farzandly
-// Based on content/islomda_farzand_tarbiyasi/Islomda_Farzand_Tarbiyasi_1_55_Barcha_Darslar.txt
+// Farzandly Master Dataset (55-lesson Islamic Child Rearing + Dynamic farzand-tarbiyasi.txt Content)
+// Includes:
+// - Abdulloh Domla 55 Darslik Silsilasi
+// - Xadicha Kubro Tongar ("Barkamol farzand tarbiyasi" Fitrat pedagogikasi)
+// - Aziz Rahimov (Rahimov School ta'lim va tarbiya suhbati, affordance, 4 sarmoya)
+// - 30 jildlik biografik to'plam (Sharq, G'arb va zamon daholari, klip tafakkur)
+// - Jasur va mustaqil farzand (Muammolar, sabablar va 4 amaliy yechim)
+// - Dynamic Gamification (12 Badges, XP levels, Streaks)
 
 export const seedCategories = [
   {
@@ -268,6 +274,28 @@ export const seedAchievements = [
     }
   },
   {
+    "code": "haftalik-chempion",
+    "title": "Haftalik qahramon",
+    "description": "7 kunlik uzluksiz tarbiya o'rganish maromiga erishdingiz",
+    "icon": "Crown",
+    "xpRequired": 105,
+    "streakRequired": 7,
+    "translations": {
+      "uz": {
+        "title": "Haftalik qahramon",
+        "description": "7 kunlik uzluksiz tarbiya o'rganish maromiga erishdingiz"
+      },
+      "en": {
+        "title": "Weekly Champion",
+        "description": "Achieved a 7-day uninterrupted study streak!"
+      },
+      "ru": {
+        "title": "Герой недели",
+        "description": "Достигли непрерывного 7-дневного ритма обучения!"
+      }
+    }
+  },
+  {
     "code": "ongli-ota-ona",
     "title": "Ongli ota-ona",
     "description": "10 ta to'liq tarbiya darsini yakunlab, ilk modulni tamomladingiz",
@@ -286,6 +314,94 @@ export const seedAchievements = [
       "ru": {
         "title": "Осознанный родитель",
         "description": "Завершили 10 уроков и освоили первый модуль!"
+      }
+    }
+  },
+  {
+    "code": "fitrat-kashfiyotchisi",
+    "title": "Fitrat kashfiyotchisi",
+    "description": "Xadicha Kubro Tongar asari asosidagi Fitrat pedagogikasi darslarini o'zlashtirdingiz",
+    "icon": "Heart",
+    "xpRequired": 180,
+    "streakRequired": 4,
+    "translations": {
+      "uz": {
+        "title": "Fitrat kashfiyotchisi",
+        "description": "Xadicha Kubro Tongar asari asosidagi Fitrat pedagogikasi darslarini o'zlashtirdingiz"
+      },
+      "en": {
+        "title": "Fitrah Explorer",
+        "description": "Mastered the Fitrah pedagogy lessons based on Hadice Kubra Tongar!"
+      },
+      "ru": {
+        "title": "Исследователь фитры",
+        "description": "Освоили педагогику фитры по урокам Хадиджи Кюбры Тонгар!"
+      }
+    }
+  },
+  {
+    "code": "sabr-va-adolat",
+    "title": "G'azabni yenguvchi",
+    "description": "Jahlni jilovlashning 4 qadami va ovoz me'yori darslarini a'lo bahoda yakunladingiz",
+    "icon": "Shield",
+    "xpRequired": 220,
+    "streakRequired": 6,
+    "translations": {
+      "uz": {
+        "title": "G'azabni yenguvchi",
+        "description": "Jahlni jilovlashning 4 qadami va ovoz me'yori darslarini a'lo bahoda yakunladingiz"
+      },
+      "en": {
+        "title": "Master of Patience",
+        "description": "Conquered the 4 steps of anger management and voice modulation!"
+      },
+      "ru": {
+        "title": "Победитель гнева",
+        "description": "Освоили 4 шага обуздания гнева и культуру спокойного тона!"
+      }
+    }
+  },
+  {
+    "code": "kitobxon-murabbiy",
+    "title": "Kitobxon murabbiy",
+    "description": "30 buyuk mutafakkir va klip tafakkurdan asrash darslarini yakunladingiz",
+    "icon": "BookOpen",
+    "xpRequired": 260,
+    "streakRequired": 7,
+    "translations": {
+      "uz": {
+        "title": "Kitobxon murabbiy",
+        "description": "30 buyuk mutafakkir va klip tafakkurdan asrash darslarini yakunladingiz"
+      },
+      "en": {
+        "title": "Bookish Mentor",
+        "description": "Completed lessons on the 30 great polymaths and beating clip-thinking!"
+      },
+      "ru": {
+        "title": "Наставник-книголюб",
+        "description": "Изучили 30 великих мыслителей и защиту от клипового мышления!"
+      }
+    }
+  },
+  {
+    "code": "talim-innovatori",
+    "title": "Ta'lim innovatori",
+    "description": "Aziz Rahimovning zamonaviy ta'lim metodikasi va 4 turdagi sarmoya darslarini o'rgandingiz",
+    "icon": "Compass",
+    "xpRequired": 300,
+    "streakRequired": 8,
+    "translations": {
+      "uz": {
+        "title": "Ta'lim innovatori",
+        "description": "Aziz Rahimovning zamonaviy ta'lim metodikasi va 4 turdagi sarmoya darslarini o'rgandingiz"
+      },
+      "en": {
+        "title": "Educational Innovator",
+        "description": "Learned modern pedagogical principles and 4 capital types from Aziz Rahimov!"
+      },
+      "ru": {
+        "title": "Инноватор образования",
+        "description": "Освоили методики современного образования и 4 вида капитала от Азиза Рахимова!"
       }
     }
   },
@@ -312,24 +428,68 @@ export const seedAchievements = [
     }
   },
   {
-    "code": "haftalik-chempion",
-    "title": "Haftalik qahramon",
-    "description": "7 kunlik uzluksiz tarbiya o'rganish maromiga erishdingiz",
-    "icon": "Crown",
-    "xpRequired": 105,
-    "streakRequired": 7,
+    "code": "14-kunlik-afsona",
+    "title": "14 kunlik sabr timsoli",
+    "description": "Ketma-ket 14 kun davomida biror kunni qoldirmasdan tarbiya sirlarini o'rgandingiz",
+    "icon": "Flame",
+    "xpRequired": 500,
+    "streakRequired": 14,
     "translations": {
       "uz": {
-        "title": "Haftalik qahramon",
-        "description": "7 kunlik uzluksiz tarbiya o'rganish maromiga erishdingiz"
+        "title": "14 kunlik sabr timsoli",
+        "description": "Ketma-ket 14 kun davomida biror kunni qoldirmasdan tarbiya sirlarini o'rgandingiz"
       },
       "en": {
-        "title": "Weekly Champion",
-        "description": "Achieved a 7-day uninterrupted study streak!"
+        "title": "14-Day Legend",
+        "description": "Achieved an extraordinary 14-day study streak without missing a day!"
       },
       "ru": {
-        "title": "Герой недели",
-        "description": "Достигли непрерывного 7-дневного ритма обучения!"
+        "title": "14 дней стойкости",
+        "description": "14 дней непрерывного обучения без единого пропуска!"
+      }
+    }
+  },
+  {
+    "code": "mukammal-bilimdon",
+    "title": "A'lochi ota-ona",
+    "description": "Interaktiv mini-testlarni 100% aniqlik bilan yechib, yuqori savodxonlik ko'rsatdingiz",
+    "icon": "CheckCircle",
+    "xpRequired": 650,
+    "streakRequired": 15,
+    "translations": {
+      "uz": {
+        "title": "A'lochi ota-ona",
+        "description": "Interaktiv mini-testlarni 100% aniqlik bilan yechib, yuqori savodxonlik ko'rsatdingiz"
+      },
+      "en": {
+        "title": "Perfect Scholar",
+        "description": "Scored 100% across multiple interactive quizzes with high parenting literacy!"
+      },
+      "ru": {
+        "title": "Отличный родитель",
+        "description": "Сдали тесты на 100% с высочайшей родительской грамотностью!"
+      }
+    }
+  },
+  {
+    "code": "donishmand-murabbiy",
+    "title": "Donishmand murabbiy",
+    "description": "1000 dan ortiq XP to'plab, eng yuqori darajadagi fazilatli ota-ona maqomiga erishdingiz",
+    "icon": "Crown",
+    "xpRequired": 1000,
+    "streakRequired": 30,
+    "translations": {
+      "uz": {
+        "title": "Donishmand murabbiy",
+        "description": "1000 dan ortiq XP to'plab, eng yuqori darajadagi fazilatli ota-ona maqomiga erishdingiz"
+      },
+      "en": {
+        "title": "Wise Grandmaster",
+        "description": "Earned 1000+ XP and achieved the highest parenting wisdom honor!"
+      },
+      "ru": {
+        "title": "Мудрый наставник",
+        "description": "Набрали 1000+ XP и достигли высшего почетного статуса мудрого родителя!"
       }
     }
   }
@@ -463,6 +623,110 @@ export const seedCourses = [
       "ru": {
         "title": "Уроки 41–55: Исламский этикет и воспитание в период взросления",
         "description": "Этикет приветствия, трапезы, общения, визитов, наставления, а также нравственное и половое воспитание."
+      }
+    }
+  },
+  {
+    "title": "Xadicha Kubro Tongar: Fitrat pedagogikasi va onalik nuri",
+    "slug": "barkamol-farzand-fitrat-pedagogikasi",
+    "description": "Ahsani taqvim siri, Qur'oniy tarbiyaning 3 bosqichi, oqila onalik, qalb kasalliklaridan poklanish va nafs tarbiyasi.",
+    "ageGroup": "0-2",
+    "categorySlug": "tarbiya-asoslari",
+    "isPremium": true,
+    "estimatedMinutes": 30,
+    "totalLessons": 4,
+    "icon": "Heart",
+    "color": "#059669",
+    "translations": {
+      "uz": {
+        "title": "Xadicha Kubro Tongar: Fitrat pedagogikasi va onalik nuri",
+        "description": "Ahsani taqvim siri, Qur'oniy tarbiyaning 3 bosqichi, oqila onalik, qalb kasalliklaridan poklanish va nafs tarbiyasi."
+      },
+      "en": {
+        "title": "Hadice Kubra Tongar: Fitrah Pedagogy & Motherhood Light",
+        "description": "The secret of Ahsanu Taqweem, 3 Quranic stages of child rearing, emotional cleansing, and nurturing the soul."
+      },
+      "ru": {
+        "title": "Хадиджа Кюбра Тонгар: Педагогика фитры и свет материнства",
+        "description": "Тайна Ахсану Таквим, 3 коранических этапа воспитания, мудрое материнство и очищение сердца."
+      }
+    }
+  },
+  {
+    "title": "Aziz Rahimov: Zamonaviy ta'lim va tarbiya sirlari",
+    "slug": "zamonaviy-tarbiya-va-talim-sirlari",
+    "description": "Rahimov School asoschisi bilan ta'lim va tarbiya farqi, Brain Rot va gadjetlar taqiqi, Vigotskiy nazariyasi hamda 4 turdagi sarmoya.",
+    "ageGroup": "10-13",
+    "categorySlug": "soglom-turmush",
+    "isPremium": true,
+    "estimatedMinutes": 25,
+    "totalLessons": 3,
+    "icon": "Compass",
+    "color": "#2563EB",
+    "translations": {
+      "uz": {
+        "title": "Aziz Rahimov: Zamonaviy ta'lim va tarbiya sirlari",
+        "description": "Rahimov School asoschisi bilan ta'lim va tarbiya farqi, Brain Rot va gadjetlar taqiqi, Vigotskiy nazariyasi hamda 4 turdagi sarmoya."
+      },
+      "en": {
+        "title": "Aziz Rahimov: Secrets of Modern Education & Upbringing",
+        "description": "Dialogue with Rahimov School founder on education vs upbringing, Brain Rot, Vygotsky theory, and 4 forms of capital."
+      },
+      "ru": {
+        "title": "Азиз Рахимов: Секреты современного образования и воспитания",
+        "description": "Беседа с основателем Rahimov School: различие воспитания и обучения, запрет гаджетов, теория Выготского и 4 вида капитала."
+      }
+    }
+  },
+  {
+    "title": "Jasur va mustaqil farzand: Muammolar va yechimlar",
+    "slug": "jasur-va-mustaqil-farzand-tarbiyasi",
+    "description": "O'smirlik davri xususiyatlari, halol luqma, qo'rquvni yengish, mardlik sifatlari va ota-ona o'rtasidagi devorni yo'qotish.",
+    "ageGroup": "14+",
+    "categorySlug": "bola-ruhiyati",
+    "isPremium": true,
+    "estimatedMinutes": 20,
+    "totalLessons": 2,
+    "icon": "Shield",
+    "color": "#D97706",
+    "translations": {
+      "uz": {
+        "title": "Jasur va mustaqil farzand: Muammolar va yechimlar",
+        "description": "O'smirlik davri xususiyatlari, halol luqma, qo'rquvni yengish, mardlik sifatlari va ota-ona o'rtasidagi devorni yo'qotish."
+      },
+      "en": {
+        "title": "Raising Brave & Independent Children: Problems & Solutions",
+        "description": "Adolescent psychology, halal sustenance, overcoming anxiety, cultivating courage, and bridging generation gaps."
+      },
+      "ru": {
+        "title": "Смелый и самостоятельный ребенок: Проблемы и решения",
+        "description": "Особенности подросткового возраста, халяльный удел, преодоление страхов, мужество и разрушение барьеров с родителями."
+      }
+    }
+  },
+  {
+    "title": "Farzand va kitobxonlik: 30 buyuk mutafakkir",
+    "slug": "kitobxonlik-va-30-mutafakkir",
+    "description": "Klip tafakkurdan asrash, bolalar xonasidagi 3 ta deraza (Sharq, G'arb va zamon daholari), oltin yosh (7-12) va mutolaa san'ati.",
+    "ageGroup": "6-9",
+    "categorySlug": "odob-axloq",
+    "isPremium": true,
+    "estimatedMinutes": 20,
+    "totalLessons": 2,
+    "icon": "BookOpen",
+    "color": "#8B5CF6",
+    "translations": {
+      "uz": {
+        "title": "Farzand va kitobxonlik: 30 buyuk mutafakkir",
+        "description": "Klip tafakkurdan asrash, bolalar xonasidagi 3 ta deraza (Sharq, G'arb va zamon daholari), oltin yosh (7-12) va mutolaa san'ati."
+      },
+      "en": {
+        "title": "Children & Reading: 30 Great Polymaths",
+        "description": "Defeating clip-thinking, 3 windows in a child room (East, West, modern visionaries), and golden reading years (7-12)."
+      },
+      "ru": {
+        "title": "Дети и чтение: 30 великих мыслителей",
+        "description": "Защита от клипового мышления, 3 окна в детской комнате (Восток, Запад, современные гении) и золотой возраст чтения (7-12)."
       }
     }
   }
@@ -684,6 +948,98 @@ export const seedLearningPaths = [
         "title": "Полный мастер-курс из 55 уроков",
         "description": "Исчерпывающая программа, охватывающая все 55 уроков исламского воспитания детей.",
         "targetAudience": "Все осознанные родители"
+      }
+    }
+  },
+  {
+    "title": "Fitrat va Qalb Tarbiyasi Yo'li (0–5 yosh)",
+    "slug": "fitrat-pedagogikasi-yoli",
+    "description": "Xadicha Kubro Tongar asari asosida: bolaning darajasiga chiqish, Qur'oniy 3 bosqich, emizish, g'azabni yengish va qalb pokligi.",
+    "ageGroup": "0-2",
+    "targetAudience": "Chaqaloq va kichik yoshdagi bolalarning ota-onalari, onalar",
+    "lessonSlugs": [
+      "bolaning-darajasiga-chiqish",
+      "fitrat-pedagogikasi-quroniy-asoslar",
+      "ota-onalik-masuliyati-va-qalb-tarbiyasi",
+      "bola-ruhiyati-va-nafs-tarbiyasi"
+    ],
+    "badgeIcon": "Heart",
+    "translations": {
+      "uz": {
+        "title": "Fitrat va Qalb Tarbiyasi Yo'li (0–5 yosh)",
+        "description": "Xadicha Kubro Tongar asari asosida: bolaning darajasiga chiqish, Qur'oniy 3 bosqich, emizish, g'azabni yengish va qalb pokligi.",
+        "targetAudience": "Chaqaloq va kichik yoshdagi bolalarning ota-onalari, onalar"
+      },
+      "en": {
+        "title": "Fitrah & Heart Parenting Path (Ages 0–5)",
+        "description": "Based on Hadice Kubra Tongar: rising to child's level, 3 Quranic stages, breastfeeding, anger mastery, and emotional purity.",
+        "targetAudience": "Parents of infants and toddlers, mindful mothers"
+      },
+      "ru": {
+        "title": "Путь фитры и воспитания сердца (0–5 лет)",
+        "description": "По трудам Хадиджи Кюбры Тонгар: подъем на уровень чистоты ребенка, 3 этапа Корана, грудное вскармливание, обуздание гнева.",
+        "targetAudience": "Родители младенцев и малышей, осознанные мамы"
+      }
+    }
+  },
+  {
+    "title": "Yetakchi va Ijodkor Farzand Yo'li (6–13 yosh)",
+    "slug": "yetakchi-va-ijodkor-farzand-yoli",
+    "description": "Aziz Rahimov va 30 mutafakkir to'plami: ta'limda 'nega' savoli, klip tafakkurdan asrash, Kumon uslubi va 4 turdagi sarmoya.",
+    "ageGroup": "6-9",
+    "targetAudience": "Maktab yoshidagi bolalar ota-onalari, ustozlar",
+    "lessonSlugs": [
+      "kitob-ekran-va-klip-tafakkur",
+      "xazinadagi-uch-deraza-va-30-daho",
+      "talim-va-tarbiyada-nega-savoli",
+      "osmir-yosh-va-diqqatni-asrash",
+      "tashabbuskorlik-va-tort-sarmoya"
+    ],
+    "badgeIcon": "BookOpen",
+    "translations": {
+      "uz": {
+        "title": "Yetakchi va Ijodkor Farzand Yo'li (6–13 yosh)",
+        "description": "Aziz Rahimov va 30 mutafakkir to'plami: ta'limda 'nega' savoli, klip tafakkurdan asrash, Kumon uslubi va 4 turdagi sarmoya.",
+        "targetAudience": "Maktab yoshidagi bolalar ota-onalari, ustozlar"
+      },
+      "en": {
+        "title": "Leader & Creative Child Path (Ages 6–13)",
+        "description": "Aziz Rahimov & 30 Polymaths: asking 'Why' in education, beating clip-thinking, Kumon self-study, and 4 capital types.",
+        "targetAudience": "Parents of school-aged children, teachers"
+      },
+      "ru": {
+        "title": "Путь лидера и созидателя (6–13 лет)",
+        "description": "Азиз Рахимов и 30 мыслителей: вопрос 'Зачем' в учебе, защита от клипового мышления, метод Кумон и 4 вида капитала.",
+        "targetAudience": "Родители школьников, педагоги"
+      }
+    }
+  },
+  {
+    "title": "Mustaqil va Jasur Shaxs Yo'li (14+ yosh)",
+    "slug": "mustaqil-va-jasur-shaxs-yoli",
+    "description": "O'smirlik inqirozini yengish, ota-ona va farzand o'rtasidagi devorni yo'qotish, halol luqma va mardlik sifatlari.",
+    "ageGroup": "14+",
+    "targetAudience": "O'smirlar ota-onalari va murabbiylar",
+    "lessonSlugs": [
+      "jasur-farzand-poydevori",
+      "osmirlik-inqirozi-va-yechimlar"
+    ],
+    "badgeIcon": "Shield",
+    "translations": {
+      "uz": {
+        "title": "Mustaqil va Jasur Shaxs Yo'li (14+ yosh)",
+        "description": "O'smirlik inqirozini yengish, ota-ona va farzand o'rtasidagi devorni yo'qotish, halol luqma va mardlik sifatlari.",
+        "targetAudience": "O'smirlar ota-onalari va murabbiylar"
+      },
+      "en": {
+        "title": "Independent & Courageous Character Path (Ages 14+)",
+        "description": "Overcoming adolescent crises, breaking generation walls, halal sustenance, and noble courage.",
+        "targetAudience": "Parents of teens and youth mentors"
+      },
+      "ru": {
+        "title": "Путь самостоятельной и мужественной личности (14+ лет)",
+        "description": "Преодоление кризиса подросткового возраста, разрушение барьеров с родителями, халяль удел и мужество.",
+        "targetAudience": "Родители подростков и наставники"
       }
     }
   }
@@ -923,7 +1279,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -1158,7 +1515,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -1393,7 +1751,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -1628,7 +1987,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -1863,7 +2223,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -2098,7 +2459,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -2333,7 +2695,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -2568,7 +2931,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -2803,7 +3167,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "tarbiya-asoslari-va-boshlangich-himoya",
@@ -3038,7 +3403,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": false
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -3273,7 +3639,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -3508,7 +3875,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -3743,7 +4111,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -3978,7 +4347,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -4213,7 +4583,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -4448,7 +4819,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -4683,7 +5055,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -4918,7 +5291,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -5153,7 +5527,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "shaxsiy-ibrat-salomatlik-va-aqliy-tarbiya",
@@ -5388,7 +5763,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -5623,7 +5999,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -5858,7 +6235,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -6093,7 +6471,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -6328,7 +6707,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -6563,7 +6943,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -6798,7 +7179,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -7033,7 +7415,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -7268,7 +7651,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -7503,7 +7887,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "ruhiy-qatiyat-taqvo-va-gozal-xulq",
@@ -7738,7 +8123,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -7973,7 +8359,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -8208,7 +8595,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -8443,7 +8831,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -8678,7 +9067,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -8913,7 +9303,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -9148,7 +9539,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -9383,7 +9775,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -9618,7 +10011,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -9853,7 +10247,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "oila-ota-ona-va-jamiyat-haqlari",
@@ -10088,7 +10483,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -10323,7 +10719,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -10558,7 +10955,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -10793,7 +11191,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -11028,7 +11427,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -11263,7 +11663,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -11498,7 +11899,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -11733,7 +12135,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -11968,7 +12371,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -12203,7 +12607,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -12438,7 +12843,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -12673,7 +13079,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -12908,7 +13315,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -13143,7 +13551,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -13378,7 +13787,8 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
   },
   {
     "courseSlug": "islomiy-odoblar-va-balogat-davri",
@@ -13613,7 +14023,668 @@ export const seedLessons = [
           }
         ]
       }
-    }
+    },
+    "isPremium": true
+  },
+  {
+    "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+    "title": "Bolaning darajasiga chiqish: Ahsani taqvim va onalik nuri",
+    "slug": "bolaning-darajasiga-chiqish",
+    "summary": "Bolaning oldida pastga tushilmaydi, aksincha uning pokiza fitrat darajasiga ko'tarilinadi. Qur'oniy onalik sayohati.",
+    "order": 1,
+    "estimatedMinutes": 6,
+    "ageGroup": "0-2",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Bolaning darajasiga tushilmaydi, aksincha chiqiladi",
+        "subtitle": "Xadicha Kubro Tongar — Barkamol farzand tarbiyasi",
+        "content": "Dastlab bu fikr g'alati tuyulishi mumkin. Axir bolalar mitti jussasi bilan bizdan pastda emasmi? Biz esa hayotiy tajribaga ega insonlarmiz.\n\nBiroq Qur'oniy haqiqat shuni ko'rsatadiki: Bolalar — «Ahsani taqvim» (eng go'zal suratda yaratilgan) fitrat egalaridir. Ular pok, beg'ubor va gunohlardan xolidir. Biz esa ulg'ayganimiz sari gunohlar ortidan asl fitratimizni xiralashtirib boramiz.\n\nDemak, ma'naviy soflik nuqtai nazaridan bolalar bizdan ancha yuqorida turadi. Shu bois ota-ona bolaning oldida pastga «tushmaydi», balki uning soflik pog'onasiga «chiqishi» lozim.",
+        "highlight": "Bolaning darajasiga tushilmaydi — uning beg'ubor, pokiza soflik cho'qqisiga chiqiladi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Bolalar orqali qalbni poklash yo'li",
+        "subtitle": "Bolalikdagi og'riqlarga shifo topish",
+        "content": "Payg'ambarimiz Muhammad (s.a.v.) muborak vujudlariga yog'ayotgan yomg'ir tomchilarini: «Bu Robbimning huzuridan yangi kelmoqda», deya erkalaganlaridek, ota-ona ham pokiza bolasi orqali o'z ruhiyatini tozalaydi.\n\nBu poklanish oson kechmaydi: o'tmishdagi bitgan jarohatlarimiz qayta og'rishi mumkin, lekin bola bilan samimiy bola bo'lishni o'rganganimiz sayin, o'z bolaligimizdan qolgan asoratlar ham shifo topadi.",
+        "example": "Farzandingiz ko'zidagi mehr va beg'uborlikka boqqaningizda, o'zingizdagi dunyo g'uborlari yuviladi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Onalik yo'lida ilohiy dastur — Qur'on",
+        "subtitle": "Eng buyuk Muallim vahiysi",
+        "content": "Qanday ota-ona bo'lishimiz, o'z fitratimizni qanday eslashimiz va bolaning yaratilish g'oyasini qanday qabul qilishimiz kerakligi haqidagi barcha savollarga Qur'oni karimdan javob izlaymiz.\n\nHar bir oyat sabr qilishni, shukrona aytishni va omonatga sodiq qolishni o'rgatadi. Bu beqiyos talabalik bo'lib, Muallim — Odam alayhissalomga so'zlarni o'rgatgan Buyuk Yaratuvchining O'zidir.",
+        "quoteSource": "Xadicha Kubro Tongar, «Barkamol farzand tarbiyasi»"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Bugungi ruhiy amaliyot",
+        "subtitle": "Soflikka intilish mashqi",
+        "content": "1. Bugun bolangiz oldida gapirayotganingizda yoki unga qarayotganingizda, o'zingizni «buyruq beruvchi xo'jayin» deb emas, «Allohning pokiza omonatiga xizmat qiluvchi murabbiy» deb his eting.\n2. Bolangizning kulgusi, quvonchi va kechirimliligiga e'tibor bering: u biroz avvalgi arazni bir zumda unutadi. Siz ham bugun uning ushbu qalb sofligidan ibrat oling.",
+        "highlight": "Bolangizdan kechirimli bo'lishni va keksiz yashashni o'rganing."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Fahmni sinash mini-testi",
+        "quizQuestion": "Nima sababdan ota-ona bolaning oldida «darajasiga tushmaydi», balki «uning darajasiga chiqadi» deyiladi?",
+        "quizOptions": [
+          "Chunki bolalar ma'naviy jihatdan pok, beg'ubor fitratda (Ahsani taqvim) bo'lib, gunohlardan xolidir",
+          "Chunki bolaning jismoniy bo'yi balandroq o'sishi kerak",
+          "Chunki ota-ona bolaga qimmatbaho sovg'alar berishi shart",
+          "Chunki bolaning aqlli bo'lishi faqat maktab baholariga bog'liq"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Bolalar «Ahsani taqvim» fitratida dunyoga keladi. Kattalar dunyo tashvishlari va xatolar bilan fitratini xiralashtirgani sababli, bolaning poklik va soflik darajasiga ko'tarilishi lozim."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+    "title": "Fitrat pedagogikasi: Qur'oniy tarbiya asoslari va 3 bosqich",
+    "slug": "fitrat-pedagogikasi-quroniy-asoslar",
+    "summary": "Qur'on hayot dasturi, Bismilloh kibri yengish kaliti, har bir bolaning o'ziga xos fitrati hamda 3 bosqichli Qur'oniy model.",
+    "order": 2,
+    "estimatedMinutes": 8,
+    "ageGroup": "0-2",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Qur'on — devordagi bezak emas, hayot dasturi",
+        "subtitle": "Yaratuvchining tarbiya qo'llanmasi",
+        "content": "Inson suv va havoga qanchalik muhtoj bo'lsa, to'g'ri ota-onalik burchini ado etishda ham Qur'onga shunchalik muhtoj. Texnika olganda foydalanish yo'riqnomasiga qaraladi. Insonni yaratgan Zot uning ruhiyati va tarbiyasini hammadan yaxshi biladi («Yaratgan zot o'zi bilmasmi?» — Mulk surasi, 14-oyat).\n\n«Bismilloh» — yaxshi ota-onalikning boshlanishi: Tarbiyani «men qilyapman» deb bilish kibrdir. Asl tarbiyachi — Robbil a'lamin. Ota-ona faqat sababchi va omonatdordir.",
+        "highlight": "Bola o'zidan emas, Allohdan ekanini e'tirof etgan ota-ona ortiqcha xavotir va kibrdan xalos bo'ladi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Har bir bola — alohida fitrat kitobi",
+        "subtitle": "Olma daraxtidan uzum kutmang",
+        "content": "Bola «bo'sh oq qog'oz» yoki «xamir» emas. Har bir go'dak o'ziga xos ilohiy dastur bilan tug'iladi. «Katta bo'lsang kim bo'lasan?» emas, «Sen aslida kimsan?» deb yondashish kerak.\n\nIchida Fotih shijoati (hazrati Umar tabiati — qat'iyatli) bor boladan Yunus muloyimligini (hazrati Usmon tabiati — hayoli, bosiq) kutish olma daraxtidan uzum kutish bilan barobardir. Chumchuqqa taqlid qilib o'z yurishini yo'qotgan qarg'a kabi o'zligini boy berishiga yo'l qo'ymang.",
+        "example": "Payg'ambarimiz (s.a.v.) Umarning shijoatini, Usmonning hayosini, Alining jasoratini o'z o'rnida qadrlab, hech kimni birovning qolipiga solmaganlar."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Tarbiyaning Qur'oniy uch bosqichi",
+        "subtitle": "Vahiy tartibidagi tarbiya formulasi",
+        "content": "Vahiyning nozil bo'lish tartibi (Alaq -> Muzammil -> Muddassir) tarbiyaning 3 bosqichini ko'rsatadi:\n\n1. O'qish / Kashf etish (0–2 yosh): «O'qi» (Alaq). Bolani majburlash emas, uning fitrati va fe'lini kuzatish davri.\n2. Amal / Namuna (2–7 yosh): «Turgin va ibodat qil» (Muzammil). Bola faqat ko'rganiga taqlid qiladi. Shaxsiy namuna («hol ilmi») orqali tarbiyalanadi.\n3. Nasihat / Da'vat (7–14 yosh): «Tur va ogohlantir» (Muddassir). Bola ibrat bo'lgan ota-onaning so'zi va nasihatini qabul qiladi.",
+        "highlight": "«Qol ilmi» (so'z) emas, «Hol ilmi» (amal) hal qiladi. Sof surasi 2-oyat: «Nima uchun o'zingiz qilmagan narsani gapirasiz?»"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Imom G'azoliy va Hudaybiya ibrati",
+        "subtitle": "Amalda ko'rsatish san'ati",
+        "content": "Imom G'azoliy bolaga asal yemaslikni aytishdan oldin, o'z tanasidan asalning ta'siri ketishi uchun 40 kun kutganlar.\nHudaybiyada sahobalar tushkunlikda turganda, Rasululloh (s.a.v.) o'zlari qurbonlik qilib ko'rsatganlaridagina hamma u zotga ergashdi.\n\nBugungi qoida: Bolangizga aytmoqchi bo'lgan har qanday nasihatni avvalo o'zingiz bajaring!",
+        "quoteSource": "Hudaybiya va Ummu Salama onamiz maslahati"
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Bilimni tekshirish",
+        "quizQuestion": "Qur'oniy 3 bosqichli tarbiya modeliga ko'ra, 2–7 yoshdagi bolaning asosiy tarbiya vositasi nima?",
+        "quizOptions": [
+          "«Hol ilmi» — ota-onaning shaxsiy amaliy namunasi va ibrati",
+          "Kun bo'yi qattiq tanbeh berish va majburlash",
+          "Faqat planshet va audio darslar eshittirish",
+          "Boshqa qo'shnilarning bolasi bilan solishtirish"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! 2–7 yosh oralig'i (Muzammil surasi asosida) «Amal va ibrat» davridir. Bola so'zga emas, ota-onaning amaliy ko'rinishiga («hol ilmi»ga) ergashadi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+    "title": "Ota-onalik mas'uliyati: Oqila ona, qalb illatlari va sabr",
+    "slug": "ota-onalik-masuliyati-va-qalb-tarbiyasi",
+    "summary": "Ota-onalik mashaqqat emas, balki ne'mat. Bilimli va oqila ona farqi, qalb illatlari va ichki sokinlik ritmi.",
+    "order": 3,
+    "estimatedMinutes": 7,
+    "ageGroup": "3-5",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Ota-onalik — mashaqqat emas, lazzatli ne'mat",
+        "subtitle": "Zavod sozlamalariga qaytish",
+        "content": "Alloh inson hayoti davom etishi uchun har bir ehtiyojga nafaqat burch, balki rohat va zavq bergan. Nasl davomiyligi bo'lgan ota-onalik ham buyuk surur ne'matidir. Qizaloqning qo'g'irchog'iga alla aytishi — fitrat sozlamasidir.\n\nAgar ota-onalik og'ir yukka aylanayotgan bo'lsa, muammo bolaning injiqligida emas, ota-onaning o'z bolaligidan qolgan jarohatlari tufayli fitrat sozlamalari buzilganidadir.",
+        "highlight": "Inson nima uchun yaratilgan bo'lsa, o'sha ish unga yengillashtiriladi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Bilimli ona va oqila ona o'rtasidagi farq",
+        "subtitle": "Ilmni 3 yo'l bilan idrok etish",
+        "content": "Axborot asrida kitoblarni yodlab olgan ota-onalar ko'p, ammo oqila bo'lish 3 xislatni talab qiladi:\n\n1. Haddini bilmoqlik: «Eng yaxshisini men bilaman» degan kibrdan tiyilish. Asl tarbiyachi Alloh ekanini tan olish.\n2. O'zini bilmoqlik: «Seni deb jahlim chiqdi» deb aybni bolaga to'nkamasdan, «Men charchadim, men g'azablandim» deya o'z emotsiyalariga egalik qilish.\n3. Maqsadini bilmoqlik: Qisqa muddatli qutulish choralariga (tahdid, yolg'on, pora) aldanmay, mustaqil shaxs yetishtirish degan oliy maqsadni ko'zlash.",
+        "example": "Oqila ona bolasining his-tuyg'ularini o'z hissiyotlaridan ajrata oladi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Qalb fikrlaydi: Qalb illatlari va Falaq surasi",
+        "subtitle": "A'rof surasi 179-oyat hikmati",
+        "content": "Qur'onda «Ongi bor-u tushunmaslar» deb emas, «Dillari (qalblari) bor-u, tushuna olmaslar» deyiladi. Voqealar avval tuyg'uni, tuyg'u fikrni, fikr xulqni shakllantiradi.\n\nQalbni xastalantiruvchi 3 illat:\n• Kibr: Bolani alohida shaxs deb bilmay, o'z mulkidek tasarruf qilish.\n• Hasad: Farzandini o'zgalar bolasi bilan solishtirish.\n• Adashgan mehr: Bolani dars deb uxlatmay, bomdod namoziga kelganda «uyqusi buzilmasin» deb rahm qilish — adashgan dunyoviy mehrdir.",
+        "quoteSource": "A'rof surasi, 179-oyat"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "«Shoshilmang!» — Ichki ritm va sabr",
+        "subtitle": "Nabaviy sunnat — xotirjamlik",
+        "content": "Bolaning sekin ovqatlanishi, kiyinishi yoki dars qilishiga toqat qilolmay, hamma ishni uning o'rniga qilib qo'yish o'ziga ishonchsizlikni keltirib chiqaradi.\n\nPayg'ambarimiz (s.a.v.) shoshqaloqlik shaytondan, xotirjamlik esa Allohdan ekanini ta'kidlaganlar. Ashaj al-Asariyning shoshilmasdan, avval kiyimini almashtirib kelganini maqtaganlar.\n\nAmaliy qadam: Bugun bolangiz o'z ishini o'zi qilishiga imkon bering, shoshiltirmang!",
+        "highlight": "Bolani o'z tabiiy tezligida, sokin va xotirjam muhitda ulg'aytiring."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Mini-test",
+        "quizQuestion": "Oqila onaning «O'zini bilmoqlik» tamoyili nimani anglatadi?",
+        "quizOptions": [
+          "O'zining his-tuyg'ulariga (g'azab, charchoq) o'zi egalik qilish va bolani asabiylashishda ayblamaslik",
+          "Faqat o'zi xohlagan qimmatbaho kiyimlarni sotib olish",
+          "Bolaning barcha injiqliklariga darhol rozilik berish",
+          "Tarbiya kitoblaridagi barcha qoidalarni so'zma-so'z yodlab olish"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Oqila ona o'z his-tuyg'ularini ajratadi. «Seni deb jahlim chiqdi» deb aybni bolaga yuklamasdan, o'zining charchog'i yoki g'azabini e'tirof etadi va uni boshqaradi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "barkamol-farzand-fitrat-pedagogikasi",
+    "title": "Bola ruhiyati: Emizish, g'azabni yengish va nafs tarbiyasi",
+    "slug": "bola-ruhiyati-va-nafs-tarbiyasi",
+    "summary": "2 yil emizish hikmati, ota-onadagi jahlni jilovlashning 4 qadami, Luqmon 19 ovoz me'yori va taomlanish me'yori.",
+    "order": 4,
+    "estimatedMinutes": 9,
+    "ageGroup": "0-2",
+    "xpReward": 25,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Emizish va ishonch tuyg'usining shakllanishi (0–2 yosh)",
+        "subtitle": "Baqara surasi 233-oyat",
+        "content": "«Onalar bolalarini to'liq ikki yil emizurlar» (Baqara, 233). Chaqaloq yig'laganda nafaqat ochlikni, balki himoyasizlik qo'rquvini ham his qiladi. Ona uni bag'riga bosib emizganda qorni bilan birga ruhi ham to'yinadi, dunyoga birlamchi ishonch shakllanadi.\n\nDastlabki 2 yilda onaning mehriga, hidiga to'ygan bola ulg'aygach onasiga qaram bo'lib qolmaydi, balki mustaqil shaxs sifatida dadil qadam tashlaydi. Mehrdan bebahra qolgan bola esa katta bo'lsa ham tobe bo'lib o'sadi.",
+        "highlight": "2 yil to'liq emizish va onaning bag'ri — kelajakdagi mustaqil shaxsning birlamchi poydevoridir."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "G'azabni jilovlashning 4 qadami",
+        "subtitle": "Hazrati Ali (r.a.) ibrati",
+        "content": "Hazrati Ali dushmanga qilich ko'targanda yuziga tupurilgani uchun uni qo'yib yuborganlar — chunki unga nafs aralashib qolishini istamadilar. Ota-ona jazolashdan oldin so'rashi kerak: «Men hozir Alloh uchun tarbiyalayapmanmi yoki alamim uchunmi?»\n\nG'azabni bosishning 4 qadami:\n1. To'xtash: Darhol javob qaytarmang, nafas rostlash uchun vaqt bering.\n2. Ko'zguga qarash: O'zining qizarib bo'rtgan yuz ifodasini ko'rish orqali hushyor tortish.\n3. Reallikka qaytish: To'kilgan narsa yuviladi, lekin bolaning singan qalbi yillar davomida tuzalmaydi.\n4. Muqobil yechim: Baqirish o'rniga hazil yoki o'yin orqali vaziyatni yumshatish.",
+        "example": "«Chumolilarni mehmon qilmoqchi bo'ldingmi?» deya to'kilgan shakar ustida tabassum qilish singan ko'ngilni saqlaydi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Hurmat va ovoz me'yori: Baqirishning zararlari",
+        "subtitle": "Luqmon surasi 19-oyat va oshiqlar masali",
+        "content": "«Yurishingda me'yorni tanla va ovozingni pasaytir, chunki ovozlarning eng yoqimsizi eshakning ovozidir» (Luqmon, 19).\n\nDonishmand masali: Insonlar bir-biriga g'azablansa, qalblari uzoqlashadi va ovozini yetkazish uchun baqirishga majbur bo'ladi. Mehr kuchaysa, sokin gapiriladi, juda chuqur muhabbatda esa faqat nigohlar kifoya qiladi. Baqirish ota-ona va bola qalbi orasidagi masofani uzaytiradi.\n\nTibbiy oqibat: Doimiy baqiriq ostida o'sgan bolada bo'y o'sishi sekinlashadi va immunitet zaiflashadi.",
+        "quoteSource": "Luqmon surasi, 19-oyat"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Nafs mayli va taomlanish me'yori",
+        "subtitle": "1/3 qoidasi va «Zavq maxluqi»",
+        "content": "Bola yig'lashi bilan uning har bir xohishini (shirinlik, telefon) darhol muhayyo qilish undagi «nafs maxluqi»ni o'stiradi. Sabr tarbiyasi: shirinlikni ovqatdan keyinga qoldirish, do'konda bitta narsa olish kelishuvi.\n\nKam yeyish — qalb hayoti: «Qorinlaringizni haddan ortiq to'ydirib, qalblaringizni o'ldirmangiz...» (Hadis). Oshqozonning 1/3 qismi taom, 1/3 qismi suv, 1/3 qismi nafas uchun bo'sh qolishi lozim. Majburlab, multfilm qo'yib ovqatlantirmang.",
+        "highlight": "Oshqozon me'yorida bo'sh tursa, tafakkur va idrok kuchayadi."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Yakuniy test",
+        "quizQuestion": "Luqmon surasi 19-oyat va oshiqlar masaliga ko'ra, insonlar bir-biriga nima sababdan baqiradilar?",
+        "quizOptions": [
+          "Qalblar bir-biridan uzoqlashgani sababli ovozini yetkazish uchun",
+          "Chunki eshitish qobiliyati pasaygan bo'ladi",
+          "Chunki ko'proq baqirgan odam haq bo'ladi",
+          "Baqirish bolaning xotirasini kuchaytiradi"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Oshiqlar masalida aytilganidek, mehr va muhabbat bor joyda shivirlash ham kifoya qiladi; qalblar g'azab tufayli uzoqlashgandagina insonlar baqirishga majbur bo'ladilar."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "zamonaviy-tarbiya-va-talim-sirlari",
+    "title": "Ta'lim va tarbiyaning farqi: «Nega?» savoli va rag'bat",
+    "slug": "talim-va-tarbiyada-nega-savoli",
+    "summary": "Rahimov School tajribasi: tarbiyada 'nega'ga o'rin yo'qligi, ta'limda affordance tamoyili, kitobxonlik rag'bati va muhandislik kelajagi.",
+    "order": 1,
+    "estimatedMinutes": 8,
+    "ageGroup": "10-13",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Tarbiyada «nega?»ga o'rin yo'q, ta'lim esa «nega?»siz yashamaydi",
+        "subtitle": "Aziz Rahimov («Dilkash» ko'rsatuvi)",
+        "content": "Tarbiya — ota-onadan, ajdodlardan va milliy qadriyatlardan so'zsiz, ko'rib o'rganiladigan odatlar yig'indisi (kattani hurmat qilish, fidoiy bo'lish, salom berish). Bunga ortiqcha savol berilmaydi.\n\nTa'lim esa «nega?»siz yashamaydi: Agar o'quvchiga o'rganayotgan narsasi hayotda nima uchun kerakligi (affordance tamoyili) tushuntirilmasa, u bilim esda qolmaydi. Odam o'z ehtiyojiga xizmat qiladigan ma'lumotnigina qabul qiladi.",
+        "highlight": "O'qituvchi fanning hayotiy zaruratini tushuntirib bera olmasa, o'quvchi nega o'qiyotganini so'rashga to'la haqli."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Tarbiyada rag'bat va havas uyg'otish",
+        "subtitle": "Kitobxonlikni statusga aylantirish",
+        "content": "Salomsiz yoki itoatsiz bolani jazolashdan ko'ra, to'g'ri harakat qilganlarni rag'batlantirish samaraliroq. Maktabda kitob o'qish majburiyat emas, obro'-e'tibor (status) belgisiga aylantirilgan (MacBook, velosiped, sayohatlar bilan rag'batlantiriladi).\n\nNatija: Birinchi yili o'quvchilarning 35%i mustaqil kitob o'qigan bo'lsa, keyingi yili bu ko'rsatkich 55%ga yetdi va doimiy o'smoqda.\n\nOdob — poydevor: Xuddi tahoratsiz ibodat qabul bo'lmaganidek, odobsiz na ta'lim, na tarbiya natija beradi.",
+        "example": "Maktabdan biror bola bahosi pastligi uchun emas, faqat tarbiyasidagi muammolar (masalan, bulling) boshqalarga ziyon keltirgani uchungina chetlatiladi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Xalqaro grantlar va muhandislik yo'nalishi",
+        "subtitle": "44 bitiruvchidan 18 nafari top universitetlarda",
+        "content": "44 nafar bitiruvchidan 18 nafari dunyoning top-100 universitetlariga 100% grant yutgan ($5M+). Nega aynan muhandislik?\n\nOson yo'nalishlarda (biznes, marketing) raqobat katta. O'zbekistonga esa dronlar, ko'priklar, elektr stansiyalar uchun mahalliy muhandislar zarur. Texnik fanni o'zlashtirgan kadr boshqa har qanday sohani tezda eplay oladi.\n\nVatanga qaytish kayfiyati: Talabalar chet elga migrant bo'lib ketish emas, bilim va sarmoya to'plab O'zbekistonga qaytish niyatida ta'lim olmoqda.",
+        "quoteSource": "Aziz Rahimov, Rahimov School"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Ota-onalar uchun amaliy qadam",
+        "subtitle": "Bolaga maqsad berish",
+        "content": "1. Bolangizdan maktabdagi fanni yodlashni talab qilishdan oldin, bu bilim kelajakda unga qanday yordam berishini hayotiy misol bilan ko'rsatib bering.\n2. Oilangizda kitobxonlikni jazo emas, eng sevimli oilaviy sharaf va bayramga aylantiring.",
+        "highlight": "Ta'limda bolaga havas va hayotiy maqsad bering."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Test savoli",
+        "quizQuestion": "Aziz Rahimov ta'lim va tarbiyaning asosiy farqini qanday ifodalaydi?",
+        "quizOptions": [
+          "Tarbiyada so'zsiz ko'rib o'rganiladi («nega»ga o'rin yo'q), ta'limda esa hayotiy zarurat («nega») tushuntirilishi shart",
+          "Tarbiya faqat pulli maktablarda beriladi",
+          "Ta'limda hech qanday savol berish mumkin emas",
+          "Ikkalasining ham hech qanday farqi yo'q"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Aziz Rahimov ta'kidlaganidek, milliy odob-axloq va qadriyatlar so'zsiz ko'rib o'rganiladi, ta'limda esa bola nima uchun o'rganayotganini (affordance) bilmasa, bilim esda qolmaydi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "zamonaviy-tarbiya-va-talim-sirlari",
+    "title": "O'smirlik xususiyatlari, gadjetlar taqiqi va Brain Rot",
+    "slug": "osmir-yosh-va-diqqatni-asrash",
+    "summary": "5-8 sinflardagi energiya, telefon taqiqi va Brain Rot xavfi, Vigotskiy nazariyasi hamda Kumon mustaqil ta'lim uslubi.",
+    "order": 2,
+    "estimatedMinutes": 8,
+    "ageGroup": "10-13",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "O'smirlik (5–8-sinflar): Tana va aql o'sishi",
+        "subtitle": "Ortiqcha bosim o'tkazmaslik qoidasi",
+        "content": "5–8-sinflarda bolaning butun energiyasi jismoniy tana o'sishiga ketadi, aqliy o'sish biroz sekinlashadi. Bu tabiiy biologik jarayondir.\n\nBu davrda bolaga ortiqcha bosim o'tkazmay, qiziqishlarini (shaxmat, robototexnika, sport, pazandachilik, kitobxonlik) saqlab qolish eng asosiy vazifa hisoblanadi.",
+        "highlight": "O'smirlikdagi o'zgarishlarni to'g'ri tushuning va unga sevimli mashg'ulot maydoni qoldiring."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Telefon taqiqi va «Brain Rot» xavfi",
+        "subtitle": "Silikon vodiysi rahbarlari tajribasi",
+        "content": "Gadjetlar va qisqa videolar (Shorts, Reels) diqqatni o'g'irlaydi va miyani toliqtiradi («Brain Rot»). Silikon vodiysidagi texnologiya rahbarlarining o'zi ham farzandlarini ekransiz (Valdorf) maktablarda o'qitadi.\n\nRahimov School da 10-sinfgacha telefon to'liq taqiqlangan. Maqsad — ota-onalar bilan kelishib, buni uyda ham nazoratga olish va bolaning jonli muloqotini saqlab qolish.",
+        "example": "Telefonsiz qolgan bola tanaffusda do'stlari bilan suhbatlashadi, kitob varaqlaydi va asab tizimi dam oladi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Vigotskiy nazariyasi: O'qituvchi shaxsiyati",
+        "subtitle": "Shaxsga mehr -> Fanga mehr",
+        "content": "O'qituvchilarni saralash mezonlari: Mehr va bolajonlik, Pedagogik mahorat, Bilim darajasi.\n\nLev Vigotskiy nazariyasiga ko'ra: O'quvchi avval o'qituvchining shaxsiyatini yaxshi ko'radi, shundan so'ng uning faniga mehr qo'yadi. Sinfdan tashqaridagi iliq munosabat sinf ichidagi o'zlashtirish samaradorligini belgilaydi.",
+        "quoteSource": "Lev Vigotskiy psixologik modeli"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Kumon metodikasi va amaliy tashabbus",
+        "subtitle": "O'quvchilar yasagan asboblar",
+        "content": "Laboratoriyada fizika jihozlari yo'qligida o'quvchilar nazariyani o'rganib, asboblarni 3,5 oyda o'zlari yasadilar. Ular bozor narxidan 5–7 barobar arzon va 99% aniqlikda ishlab, boshqa maktablarga sotish tashabbusi bilan chiqdilar.\n\nYaponiyaning Kumon metodikasi: Boshlang'ich sinflarda mustaqil o'rganish (self-studying) tizimi. Kuniga 30 daqiqa o'qituvchisiz, mantiqiy misollar yechiladi. Xatoni o'qituvchi to'g'rilamaydi, bola savollar orqali o'zi topadi.",
+        "highlight": "Bolaning tashabbusini cheklamang, unga o'z xatosini o'zi tushunishga imkon bering."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Mini-test",
+        "quizQuestion": "Vigotskiy nazariyasiga ko'ra, o'quvchining biror fanga qiziqishi qanday shakllanadi?",
+        "quizOptions": [
+          "Avval o'qituvchining shaxsiyatini yaxshi ko'radi, keyin faniga mehr qo'yadi",
+          "Faqat imtihonda 2 baho olishdan qo'rqqani uchun",
+          "Faqat repetitorga qatnagani uchun",
+          "Fan qanchalik murakkab bo'lsa, o'z-o'zidan qiziqish paydo bo'ladi"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Lev Vigotskiy nazariyasiga binoan, o'quvchi avvalo ustozning samimiy shaxsiyati va mehrini his qiladi, shundan so'ng uning fanini qadrlab o'rganadi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "zamonaviy-tarbiya-va-talim-sirlari",
+    "title": "To'rt turdagi sarmoya va bolaga 100% so'zsiz ishonch",
+    "slug": "tashabbuskorlik-va-tort-sarmoya",
+    "summary": "Moddiy, madaniy, ijtimoiy va ramziy sarmoyalar. Bolaning gapini oxirigacha eshitish va ota-onaning so'zsiz ishonchi.",
+    "order": 3,
+    "estimatedMinutes": 7,
+    "ageGroup": "10-13",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Sarmoya faqat pul emas: To'rt turdagi sarmoya",
+        "subtitle": "Pierre Bourdieu ijtimoiy sarmoya modeli",
+        "content": "Ota-onalar ko'pincha farzandiga faqat moddiy boylik qoldirishni o'ylaydi. Biroq inson hayotida 4 turdagi sarmoya mavjud:\n\n1. Moddiy sarmoya (pul, uy, mulk);\n2. Madaniy sarmoya (uy kutubxonasi, o'qilgan kitoblar, dunyoqarash);\n3. Ijtimoiy sarmoya (atrofdagi do'stlar muhiti, ustozlar, tanishlar doirasi);\n4. Ramziy sarmoya (yutuqlar, obro', nufuz, maqom).",
+        "highlight": "Moddiy sarmoya qolgan uchtasisiz havoga uchadi. Qolgan uchtasi bor insonga moddiy sarmoya o'zi keladi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Bolani jiddiy olish madaniyati",
+        "subtitle": "Gapini oxirigacha bo'lmasdan tinglash",
+        "content": "Kattalarga ko'rsatiladigan ehtirom kabi bolaning gapi, orzusi va fikri oxirigacha bo'linmasdan eshitilishi kerak.\n\nAgar bola gapirayotganda telefoningizga qarasangiz yoki «sen hali kichkinasan, tushunmaysan» desangiz, u o'z dunyosini sizga yopadi va ko'chadan yoki virtual tarmoqdan tinglovchi izlaydi.",
+        "example": "Bolangiz gap boshlaganda ishni to'xtatib, ko'ziga qarab diqqat bilan eshiting."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Ota-onaning so'zsiz 100 foizlik ishonchi",
+        "subtitle": "Eng buyuk qanot",
+        "content": "Ota-onaning so'zsiz, 100 foizlik ishonchi bolaga hayotdagi eng katta qanot bo'ladi. Ota-onasi unga ishonishini his qilgan bola noto'g'ri qadam qo'yishdan o'zini tiyadi, mas'uliyatni his qiladi va mustaqil, dadil shaxs bo'lib ulg'ayadi.\n\nAksincha, har qadamida gumonsirab, tekshiruv va hadik ostida ushlangan bola ikkiyuzlamachilikka o'rganadi.",
+        "quoteSource": "Aziz Rahimov tavsiyalari"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Oila davrasida bugungi suhbat",
+        "subtitle": "Madaniy va ijtimoiy sarmoya mashqi",
+        "content": "1. Bugun kechki ovqat paytida bolangizdan uning eng katta orzusi haqida so'rang va hech qanday e'tiroz yoki tanqidsiz, oxirigacha eshiting.\n2. «Men senga ishonaman, sen bu ishni eplay olasan» deb unga ruhiy tayanch bering.",
+        "highlight": "Ishonch ko'rgan farzand adolat va jasorat yo'lidan og'ishmaydi."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Sinov savoli",
+        "quizQuestion": "To'rt turdagi sarmoya qoidasiga ko'ra, nima sababdan moddiy sarmoyaning o'zi yetarli emas?",
+        "quizOptions": [
+          "Chunki madaniy, ijtimoiy va ramziy sarmoyasiz moddiy sarmoya tezda yo'q bo'lib ketadi",
+          "Chunki banklar bolalarga hisob ochmaydi",
+          "Chunki bolalar faqat pulni yaxshi ko'radi",
+          "Chunki maktabda pul ishlatish mumkin emas"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Aziz Rahimov ta'kidlaganidek, madaniy sarmoya (dunyoqarash, bilim) va ijtimoiy sarmoyasi (yaxshi ustozlar, muhit) bo'lmagan odamga berilgan moddiy boylik havoga uchadi. Qolgan uchtasi bor insonga esa moddiy boylik o'zi keladi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "jasur-va-mustaqil-farzand-tarbiyasi",
+    "title": "Jasur va mard farzand voyaga yetkazish asoslari",
+    "slug": "jasur-farzand-poydevori",
+    "summary": "Halol luqma, qo'rquv va hadikdan asrash, mas'uliyat yuklash hamda Venn diagrammasida umumiy nuqta topish.",
+    "order": 1,
+    "estimatedMinutes": 7,
+    "ageGroup": "14+",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Jasur va mustaqil farzand poydevori",
+        "subtitle": "5 muhim jihat",
+        "content": "Jasur va mustaqil farzand voyaga yetkazish uchun quyidagi muhim jihatlarga urg'u beriladi:\n\n1. Shaxsiy namuna va halol luqma: Bolaning ruhiy va jismoniy salohiyatida oiladagi halol rizq va muhit birinchi darajali poydevordir.\n2. Qo'rquv va hadikdan asrash: Bolani turli uydirmalar yoki tahdidlar bilan qo'rqitib tarbiyalamaslik, ularda faqat Yaratgandan qo'rqish va adolat yo'lida dadil bo'lish tuyg'usini shakllantirish.\n3. Mas'uliyat yuklash: Yoshlikdan yoshiga mos vazifalar berib, o'ziga ishonchini oshirish.\n4. Mardlik sifatlari: Sahobalar va ajdodlar hayotidan ibratli qissalarni o'rgatish.\n5. Hissiy tayanch va hurmat: Fikrini tinglash, irodasini sindirmaslik.",
+        "highlight": "Bolani qo'rquv bilan emas, adolat va o'ziga ishonch bilan tarbiyalang."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Zamonaviy asosiy muammo: Ikki begona dunyo",
+        "subtitle": "Jismoniy nazorat bor, virtual nazorat yo'q",
+        "content": "Ilgari bola ko'chada erkin yurgan, ammo nima ko'rayotgani va kim bilan do'stlashayotgani qattiq nazoratda bo'lgan. Bugun esa bola qayerda ekani (GPS, taksi) aniq, biroq uning virtual olamida kimlar bilan ekani noma'lum.\n\nBir-biriga begona ikki dunyo: Ota-ona va farzandning qiziqishlari, ko'radigan kontenti kesishmay qolgan (Venn diagrammasida umumiy nuqta yo'q). Natijada ota-ona bola uchun obro'li shaxs bo'lmay qoladi.\n\n«Inkubator» yondashuvi: Bolani faqat taqiqlar bilan bir qolipga solish uning mustaqil fikri va ijodkorligini o'ldiradi. Ularning ulg'aygach birovning ko'ziga qarab yashaydigan tobe shaxsga aylanishiga sabab bo'ladi.",
+        "example": "Farzandingiz qaysi blogerni kuzatishi va nimalarga qiziqishini o'rganib, umumiy suhbat mavzusi yarating."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Sahobalar va buyuk allomalar ibrati",
+        "subtitle": "10–20 yosh: Buyuk poydevor davri",
+        "content": "10–20 yosh oralig'i — inson tafakkuri, ijodi va g'ayrati eng yuqori nuqtaga chiqadigan davr. Tarixdagi ko'plab buyuk allomalar (Ibn Sino, Imom Buxoriy, Alisher Navoiy) asosiy asarlari va yutuqlariga aynan shu yosh oralig'ida poydevor qo'ygan.\n\nKurashuvchanlik — tabiiy xususiyat: Aka-uka o'rtasidagi tortishuvlar yoki norozilikni kaltak yoki qattiq jazo bilan bostirish emas, sport, ilm va foydali mehnatga to'g'ri yo'naltirish lozim.",
+        "quoteSource": "Islomiy tarbiya asoslari"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Mustaqillik mashg'uloti",
+        "subtitle": "Mas'uliyat berish",
+        "content": "1. Bugun farzandingizga oilaviy masalalardan birida (masalan, xarid qilish, yo'l tanlash, uyni tartibga solish) to'liq vakolat va mas'uliyat bering.\n2. Uning xatosini darhol tuzatmay, natijani o'zi ko'rishiga va to'g'irlashiga imkon bering.",
+        "highlight": "Mustaqillik mas'uliyat berilgandagina shakllanadi."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Savol",
+        "quizQuestion": "Bolani doimiy qo'rquv va qattiq «inkubator» qoliplari bilan tarbiyalash qanday salbiy oqibatga olib keladi?",
+        "quizOptions": [
+          "Bolaning mustaqil fikri o'lib, birovning ko'ziga qarab yashaydigan tobe shaxsga aylanadi",
+          "Bola juda jasur va mustaqil lider bo'lib voyaga yetadi",
+          "Bolaning jismoniy salomatligi yanada mustahkamlanadi",
+          "U barcha fanlardan faqat a'lo baho oladi"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Haddan tashqari taqiqlar va inkubator yondashuvi bolaning irodasini sindiradi, uni mustaqil qaror qabul qilolmaydigan tobe insonga aylantiradi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "jasur-va-mustaqil-farzand-tarbiyasi",
+    "title": "O'smirlik inqirozi: Sabablar, xatolar va 4 amaliy yechim",
+    "slug": "osmirlik-inqirozi-va-yechimlar",
+    "summary": "O'smirlik oldingi tarbiyaning mevasi. Taqiq o'rniga to'yimli muqobil, xatoni tan olish va 4 amaliy chora.",
+    "order": 2,
+    "estimatedMinutes": 8,
+    "ageGroup": "14+",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "O'smirlik — kutilmagan o'zgarish emas, oldingi tarbiyaning mevasi",
+        "subtitle": "Kuch to'plangan davr",
+        "content": "Ko'pchilik bola 12–15 yoshda to'satdan buzildi deb o'ylaydi. Aslida bu yosh — 10–12 yoshgacha singdirilgan moddiy va ma'naviy tarbiyaning yuzaga chiqishi. Bola kuch-quvvat to‘plagach, ichida borini namoyon qila boshlaydi.\n\nBola — ota-onaning ko'zgusi: Bolaning o'jarligi yoki jahldorligi oiladagi muhitning aksidir. O'zi telefondan bosh ko'tarmaydigan yoki kattalarga baqiradigan ota-ona boladan boshqacha natija kutolmaydi.",
+        "highlight": "Bola ulg'aygach, unga bergan ma'naviy ozuqangiz mevasini ko'rsatadi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Taqiqning o'rniga to'yimli muqobil",
+        "subtitle": "Toza suvning ta'mi",
+        "content": "Bolaga «buni qilma, uni ko'rma» deyish bilan ehtiyoj yo'qolmaydi. Zararni man qilishdan oldin uning qalb va aql ehtiyojini qondiradigan toza ma'naviy ozuqa (ilm, mehr, qiziqarli mashg'ulot) berish kerak.\n\nToza suvning ta'mini bilgan odam loyqa suv ichmaydi. Qalb va tuyg'ular tarbiyasi: Qarorlarning katta qismini his-tuyg'u (qalb) qabul qiladi, aql esa unga bahona topib beradi. Tarbiya qalbni isloh qilish bilan bo'lishi lozim.",
+        "example": "Xatoni tan olish madaniyati: Ota-onaning o'z xatosini bolasi oldida tan olishi ishonchni qaytaradi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Katta bo'lib qolgan o'smirlar bilan ishlashning 4 chorasi",
+        "subtitle": "Amaliy yechimlar yo'li",
+        "content": "1. O'rtadagi sun'iy devorni olib tashlash: Bola bilan buyruq ohangida emas, shaxs sifatida, do'stona muloqot qilish.\n2. Xatolarning ildizini o'zidan qidirish: Boladagi qiliqqa achchiqlanishdan oldin «Bunga o'zim sababchi emasmanmi?» deb o'ylash.\n3. Salohiyatli ustozga yo'naltirish: Ota-ona ta'sirini yo'qotgan bo'lsa, eng yaxshi chora — bolani kuchli, shaxsiyati to'laqonli ustozga topshirish. Bola ustozning insoniy ojizliklarini ko'rmagani sababli uning so'zini osonroq qabul qiladi.\n4. Taqiq — eng oxirgi chora: Qo'pol chora xuddi dori bilan tuzaladigan bemorni darhol operatsiya stoliga yotqizish kabidir.",
+        "quoteSource": "Muammolar va yechimlar transkripti"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "O'smir bilan do'stona suhbat",
+        "subtitle": "Devorlarni buzish",
+        "content": "1. Bugun o'smir farzandingizga hech qanday pand-nasihat qilmasdan, choy ustida uning rejalari va qiziqishlari haqida tengdoshdek suhbatlashing.\n2. Agar o'tmishda unga nisbatan adolatsizlik qilgan bo'lsangiz, samimiy uzr so'rang. Bu uning qalbida sizga nisbatan ulkan hurmat uyg'otadi.",
+        "highlight": "Samimiy uzr ota-onaning obro'sini tushirmaydi, balki yuksaltiradi."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Test savoli",
+        "quizQuestion": "O'smir yoshidagi bola ota-onasining so'zini qabul qilmay qo'ysa, eng to'g'ri pedagogik qadam nima?",
+        "quizOptions": [
+          "Bolani shaxsiyati kuchli, salohiyatli va ibratli ustozga yo'naltirish",
+          "Uyga qamab qo'yish va ovqat bermaslik",
+          "Barcha qarindoshlar oldida uni izza qilish",
+          "U bilan butunlay gaplashmay qo'yish"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Agar ota-ona o'z nufuzini yo'qotgan bo'lsa, eng to'g'ri chora — bolani shaxsiyati kuchli va ibratli ustozga topshirishdir. Bola ustozning so'zini osonroq qabul qiladi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "kitobxonlik-va-30-mutafakkir",
+    "title": "Kitob, o'yinchoq va ekran: Klip tafakkur xavfi",
+    "slug": "kitob-ekran-va-klip-tafakkur",
+    "summary": "Bola tafakkurida ekran va kitob farqi, qisqa videolarning klip tafakkur xavfi, oltin yosh (7-12) va uxlashdan oldin mutolaa.",
+    "order": 1,
+    "estimatedMinutes": 7,
+    "ageGroup": "6-9",
+    "xpReward": 20,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "Kitob, o'yinchoq va ekranning farqi",
+        "subtitle": "Tafakkur maydonini ochish",
+        "content": "O'yinchoq va multfilmlar: O'yinchoq boladagi mavjud bo'shliqni to'ldiradi, multfilm esa vaqtni band qiladi. Ekran va o'yinchoqlar zehnni faqat o'ziga bog'lab, passiv iste'molchiga aylantiradi.\n\nKitob — yangi maydon: Kitob bolaning zehnini o'zidan ajratib, keng dunyoga bog'laydi; ilgari mavjud bo'lmagan yangi tafakkur maydonini ochadi.\n\nKlip tafakkur xavfi: Kuniga ekranga tikilib, 1–3 daqiqalik qisqa videolarga o'rgangan zehn keyinchalik 10 sahifali matn yoki hikoyani o'qishga toqat qilolmaydi.",
+        "highlight": "Kitob — bolaning tasavvur qanotlarini kengaytiruvchi yagona sehrli vositadir."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Quruq shiorlardan qochish va yozgi ta'til",
+        "subtitle": "Majburlash o'rniga qiziqarli muqobil",
+        "content": "Bolani balandparvoz gaplar, qarsaklar yoki buyruq bilan kitobxon qilib bo'lmaydi. Yechim — unga qiziqarli, chiroyli bezatilgan va mazmunli muqobil berish.\n\nYozgi ta'tilni unumli o'tkazish: Yoz — vaqtni behuda sarflash emas, balki bilim zaxirasini to'plash mavsumi. Yozda sifatli biografik kitoblarni mutolaa qilgan bola yangi o'quv yiliga so'z boyligi oshgan, sabrli va tafakkuri o'sgan holda kirib boradi.",
+        "example": "Farzandingizga qiziqarli mutafakkirlar hayotidan hikoya aytib bering, uning qiziqishi kitobga o'z-o'zidan ulanadi."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Oltin yosh davri (7–12 yosh) va birga o'qish",
+        "subtitle": "Ota-onaning ovozidagi mehr",
+        "content": "7–12 yosh — bola o'z ichki dunyosini quradigan oltin davrdir. Unga singdirilgan qahramonlar va qadriyatlar umrboqiy poydevorga aylanadi.\n\nOta-ona bilan birga o'qish: Bolaga eng yaxshi sovg'a — ota-onaning ovozi orqali yetkazilgan ertak va hikoyadir. Uyqudan oldin 15–20 daqiqa birga o'qish, savol-javob qilish ota-ona va bola o'rtasidagi mehr rishtasini mustahkamlaydi.",
+        "quoteSource": "Bolalar uchun biografik to'plam qo'llanmasi"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Bugun oqshom mutolaasi",
+        "subtitle": "15 daqiqa qoidasi",
+        "content": "1. Bugun kechqurun televizor va telefonlarni o'chiring.\n2. Farzandingiz bilan birga o'tirib, u sevgan yoki yangi biografik kitobdan bir bobni birgalikda, ovoz chiqarib o'qing va qahramonning xatti-harakati haqida fikr almashing.",
+        "highlight": "Uxlashdan oldingi 15 daqiqalik samimiy mutolaa butun umrga tatigulik xotira bo'ladi."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Test",
+        "quizQuestion": "Nima sababdan 1–3 daqiqalik qisqa videolarni (Reels, TikTok) ko'p tomosha qilish o'qish qobiliyatiga ziyon keltiradi?",
+        "quizOptions": [
+          "Miyada klip tafakkur shakllanib, diqqatni uzoq matnni chuqur tushunishga jamlash qobiliyati susayadi",
+          "Chunki telefon batareyasi tez tugab qoladi",
+          "Chunki telefon har doim internet talab qiladi",
+          "Bunday videolarning kitob o'qishga hech qanday ta'siri yo'q"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Qisqa videolarga o'rgangan miya chuqur fikrlashdan toliqadi va 10 sahifali matnni tahlil qilishga sabri yetmaydigan «klip tafakkur» quliga aylanadi."
+      }
+    ],
+    "isPremium": true
+  },
+  {
+    "courseSlug": "kitobxonlik-va-30-mutafakkir",
+    "title": "Bolalar xonasidagi 3 ta deraza: 30 buyuk daho",
+    "slug": "xazinadagi-uch-deraza-va-30-daho",
+    "summary": "Sharq mutafakkirlari, G'arb ixtirochilari va zamon qahramonlari. Orzular miqyosini kengaytirish va diaspora uchun ko'prik.",
+    "order": 2,
+    "estimatedMinutes": 8,
+    "ageGroup": "6-9",
+    "xpReward": 25,
+    "isFree": true,
+    "screens": [
+      {
+        "screenIndex": 0,
+        "type": "concept",
+        "title": "To'plam tuzilishi: «Bolalar xonasidagi 3 ta deraza»",
+        "subtitle": "30 jildlik biografik to'plam",
+        "content": "To'plam jami 30 ta kitobdan iborat bo'lib, 3 ta turkumga (har birida 10 tadan biografiya) bo'lingan:\n\n1-turkum: Sharq mutafakkirlari va allomalari (Ibn Sino, Forobiy, Xorazmiy, Mirzo Ulug'bek, Ali Qushchi, Ahmad Farg'oniy, Al-Jazariy — ilk robototexnika ixtirochisi, Ibn Xaldun, Alisher Navoiy).\n2-turkum: G'arb ilmining asoschilari va ixtirochilar (Arximed, Nyuton, Galiley, Albert Eynshteyn, Tomas Edison, Nikola Tesla, Nikolay Kopernik, Lui Paster, Aleksandr Bell).\n3-turkum: San'at, sport, zamonaviy texnologiya (Leonardo da Vinchi, Muhammad Ali, Pablo Pikasso, Zaha Hadid, Aziz Sanjar, Hayao Miyazaki, Stiv Jobs, Solijon Sharipov).",
+        "highlight": "Sharq, G'arb va zamonaviy ilm yulduzlarini tanigan bolaning orzulari yuksak bo'ladi."
+      },
+      {
+        "screenIndex": 1,
+        "type": "explanation",
+        "title": "Orzular miqyosini kengaytirish",
+        "subtitle": "Bola kimga havas qilsa, shunga qarab shakllanadi",
+        "content": "Bola kimga havas qilsa, shunga qarab shakllanadi. Uning atrofidagi namunalar faqat bloger yoki arzon shoular bilan cheklanib qolsa, qiziqishlari ham tor bo'ladi.\n\n30 ta har xil soha daholari va qahramonlarini tanigan bola mayda orzular qilishdan yiroq bo'ladi. U robot yasashni Al-Jazariydan, koinotni Ulug'bekdan, jasoratni Muhammad Alidan, yangilik yaratishni Stiv Jobsdan o'rganadi.",
+        "example": "«Sen ham Al-Xorazmiy kabi yangi matematik qoidalar yarata olasan» deb uning shaxsiyatini allomalarga bog'lang."
+      },
+      {
+        "screenIndex": 2,
+        "type": "islamic_perspective",
+        "title": "Xorijdagi vatandoshlar uchun ma'naviy ko'prik",
+        "subtitle": "Ildizlarni unutmaslik",
+        "content": "Maktablar uchun qo'llanma: O'qituvchilar ushbu kitoblardan sinfdan tashqari o'qish, loyiha ishlari va munozaralar uchun tayyor manba sifatida foydalanishi mumkin.\n\nXorijdagi vatandoshlar (diaspora) uchun ko'prik: Chet elda o'sayotgan bolalarning o'zbek tilini unutmasligi, o'z ildizlari va milliy qahramonlarini tanishi uchun ushbu kitoblar o'ziga xos ma'naviy ko'prik vazifasini bajaradi.",
+        "quoteSource": "30 jildlik to'plam maqsadlari"
+      },
+      {
+        "screenIndex": 3,
+        "type": "practice",
+        "title": "Mutafakkir bilan tanishuv mashqi",
+        "subtitle": "Qahramon tanlash",
+        "content": "1. Farzandingizga 30 daho ichidan bittasini (masalan, Ibn Sino yoki Al-Jazariyni) tanlashni taklif qiling.\n2. U bilan birga ushbu alloma bolaligida qanday qiyinchiliklarni yengib o'tgani va qanday kashfiyot qilgani haqida 10 daqiqa suhbatlashing.",
+        "highlight": "Buyuk insonlarning bolaligi haqidagi qissalar bolaga eng kuchli motivatsiyadir."
+      },
+      {
+        "screenIndex": 4,
+        "type": "quiz",
+        "title": "Mini-test",
+        "quizQuestion": "«Bolalar xonasidagi 3 ta deraza» to'plamida robototexnikaning ilk ixtirochisi sifatida qaysi alloma keltirilgan?",
+        "quizOptions": [
+          "Al-Jazariy",
+          "Nikola Tesla",
+          "Tomas Edison",
+          "Stiv Jobs"
+        ],
+        "correctOptionIndex": 0,
+        "quizExplanation": "To'g'ri! Islom olamining buyuk muhandisi va olimi Al-Jazariy XII asrdayoq ilk dasturlanadigan avtomat mexanizmlar va robototexnika asoslarini yaratgan."
+      }
+    ],
+    "isPremium": true
   }
 ];
 
@@ -13653,6 +14724,142 @@ export const seedArticles = [
         "excerpt": "Важнейшие практические советы для родителей на основе курса из 55 уроков.",
         "content": "Воспитание детей в Исламе — это не просто семейное счастье, но и великий аманат перед Всевышним..."
       }
-    }
+    },
+    "isPremium": false
+  },
+  {
+    "title": "Bolaning darajasiga tushilmaydi, aksincha chiqiladi: Ahsani taqvim siri",
+    "slug": "xadicha-kubro-bolaning-darajasiga-chiqish",
+    "excerpt": "Nima uchun bolalarga pastga qarash emas, ularning ma'naviy sofligi va beg'uborligi darajasiga ko'tarilish kerak? Xadicha Kubro Tongar asaridan xulosalar.",
+    "content": "Bir necha yil avval ko‘rsatuvimga kelgan yozuvchi mehmonlardan biri shunday degan edi: «Bolaning darajasiga tushilmaydi, aksincha uning darajasiga chiqiladi».\n\nDastlab bu fikr g‘alati tuyulishi mumkin. Axir bolalar mitti jussasi, nozik barmoqlari bilan bizdan pastda emasmi? Biz esa hayotiy tajribaga ega, aqlan to‘lishgan insonlarmiz. Demak, mantiqan bola bizning darajamizga ko‘tarilishi kerakdek.\n\nBiroq bu fikr Qur’oniy haqiqat bilan izohlanadi:\n1. Bolalar — «Ahsani taqvim» (eng go‘zal suratda yaratilgan) fitrat egalaridir. Ular pok, beg‘ubor va gunohlardan xolidir.\n2. Biz esa ulg‘ayganimiz sari gunohlar ortidan asl fitratimizni xiralashtirib, pastlatib boramiz.\n\nDemak, ma’naviy soflik nuqtai nazaridan bolalar bizdan ancha yuqorida turadi. Shu bois ota-ona bolaning oldida pastga «tushmaydi», balki uning soflik pog‘onasiga «chiqishi» lozim.\n\nPayg‘ambarimiz Muhammad (s.a.v.) muborak vujudlariga yog‘ayotgan yomg‘ir tomchilarini: «Bu Robbimning huzuridan yangi kelmoqda», — deya erkalaganlaridek, ota-ona ham pokiza farzandi orqali o‘z ruhiyatini tozalashga harakat qilishi darkor.\n\nBu poklanish jarayoni oson kechmaydi: o‘tmishdagi bitgan jarohatlarimiz qayta og‘rishi mumkin, lekin bola bilan bola bo‘lishni o‘rganganimiz sayin, o‘z bolaligimizdan qolgan og‘riqli asoratlar ham davolana boradi. Har bir oyat menga sabr qilishni, shukrona aytishni va omonatga sodiq qolishni o‘rgatadi.",
+    "categorySlug": "tarbiya-asoslari",
+    "ageGroup": "0-2",
+    "readingTimeMinutes": 5,
+    "tags": [
+      "fitrat",
+      "ahsani taqvim",
+      "xadicha kubro tongar",
+      "poklik",
+      "onalar"
+    ],
+    "seoTitle": "Bolaning darajasiga tushilmaydi, aksincha chiqiladi | Farzandly",
+    "seoDescription": "Xadicha Kubro Tongar: Bolalar Ahsani taqvim fitratida pok yaratilgan. Ota-onaning bola sofligi darajasiga ko'tarilishi siri.",
+    "isPremium": true
+  },
+  {
+    "title": "Fitrat pedagogikasi: Qur’oniy tarbiya asoslari va 3 bosqichli model",
+    "slug": "fitrat-pedagogikasi-quroniy-tarbiya-uch-bosqichi",
+    "excerpt": "Vahiy nozil bo'lish tartibiga asoslangan tarbiya: Alaq (0-2 yosh kashf etish), Muzammil (2-7 yosh ibrat va hol ilmi), Muddassir (7-14 yosh nasihat).",
+    "content": "Qur’on — devordagi bezak emas, balki tirik hayot va tarbiya dasturidir. Inson suv, oziq-ovqat va havoga qanchalik muhtoj bo‘lsa, to‘g‘ri ota-onalik burchini ado etishda ham Qur’onga shunchalik muhtoj. Insonni yaratgan Zot uning ruhiyati, ehtiyoji va tarbiyasini hammadan yaxshi biladi («Yaratgan zot o‘zi bilmasmi?» — Mulk surasi, 14-oyat).\n\n1. “Bismilloh” — yaxshi ota-onalikning boshlanishi\nTarbiyani «men qilyapman, o‘zim o‘stirdim» deb bilish — kibr ildizidir. Asl tarbiyachi — Robbil a’lamin. Ota-onaning vazifasi esa faqat sababchi va omonatdor bo‘lishdir. Bola o‘zidan emas, Allohdan ekanini e’tirof etgan ota-ona har bir muammoda o‘zini yeb bitirmaydi, sababini qilib, natijani Parvardigorga havola etadi.\n\n2. Har bir bola — alohida fitrat kitobi\nBolani xamirdek istalgan shaklga solish mumkin degan qarash xatodir. Har bir go‘dak o‘ziga xos ilohiy dastur bilan dunyoga keladi. «Katta bo‘lsang, kim bo‘lasan?» emas, «Sen aslida kimsan?» deb savol berish kerak.\nIchida Fotih shijoati (hazrati Umar tabiati) bor boladan Yunus muloyimligini (hazrati Usmon tabiati) kutish olma daraxtidan uzum kutish bilan barobardir.\n\n3. Tarbiyaning Qur’oniy uch bosqichi\nVahiyning nozil bo‘lish tartibi tarbiyaning uch bosqichli modelini ko‘rsatadi:\n• 1-bosqich: O‘qish va kashf etish (0 – 2 yosh) — «O‘qi» (Alaq surasi). Bolani majburlash emas, uning fitratini sinchiklab kuzatish davri.\n• 2-bosqich: Amal va namuna (2 – 7 yosh) — «Turgin va ibodat qil» (Muzammil surasi). Bola bu davrda faqat ko‘rganiga taqlid qiladi. So‘z bilan emas, shaxsiy namuna («hol ilmi») orqali tarbiyalanadi.\n• 3-bosqich: Nasihat va yetkazish (7 – 14 yosh) — «Tur va ogohlantir» (Muddassir surasi). Bolada ma’naviy savollar uyg‘onadi; oldingi bosqichlarda o‘ziga ibrat bo‘lgan ota-onaning nasihatini qabul qiladi.\n\n«Qol ilmi» (so‘z) emas, «Hol ilmi» (amal) hal qiladi. O‘zi televizordan ko‘z uzmaydigan ota-ona bolaga kitob o‘qitolmaydi («Nima uchun o‘zingiz qilmagan narsani gapirasiz?» — Sof surasi, 2-oyat).",
+    "categorySlug": "tarbiya-asoslari",
+    "ageGroup": "0-2",
+    "readingTimeMinutes": 7,
+    "tags": [
+      "fitrat pedagogikasi",
+      "quroniy tarbiya",
+      "uch bosqich",
+      "hol ilmi",
+      "tarbiya usullari"
+    ],
+    "seoTitle": "Fitrat pedagogikasi: Qur’oniy tarbiya asoslari va 3 bosqich | Farzandly",
+    "seoDescription": "Xadicha Kubro Tongar: Vahiy tartibiga asoslangan Alaq, Muzammil va Muddassir bosqichlari hamda Hol ilmi mohiyati.",
+    "isPremium": true
+  },
+  {
+    "title": "G‘azab otiga minganda: Ota-onalar uchun jahlni bosishning 4 qadami",
+    "slug": "ota-onadagi-gazabni-jilovlashning-4-qadami",
+    "excerpt": "Hazrati Ali ibrati, Luqmon surasi 19-oyatidagi ovoz me'yori, oshiqlar masali hamda jahlni jilovlashning amaliy 4 qadami.",
+    "content": "G‘azab aql va vijdonni o‘chiradi, insonni tuzatib bo‘lmas xatolarga boshlaydi. Farzand tarbiyasida ota-ona jahl ustida bolaning irodasini sindirib qo'yishi juda oson.\n\nHazrati Ali (r.a.) ibrati: Dushmanga qilich ko‘targanda yuziga tupurilgani uchun uni qo‘yib yuborganlar — chunki unga nafs aralashgan edi. Ota-ona ham jazolashdan oldin o‘ziga savol berishi kerak: «Men hozir Alloh roziligi uchun jazolayapmanmi yoki nafsim, alamim va asabiyligim uchunmi?»\n\nG‘azabni bosishning 4 qadami:\n1. To‘xtash: Darhol javob qaytarmang, bolani boshqa xonaga chiqarib, o‘zingizga nafas rostlash uchun vaqt bering.\n2. Ko‘zguga qarash: O‘zingizning qizarib, tomirlari bo‘rtgan qo‘rqinchli yuz ifodangizni ko‘rish orqali hushyor torting.\n3. Reallikka qaytish: Qulay to‘kilgan gilam vaqt o‘tib yuviladi, lekin bolaning singan qalbi yillar davomida tuzalmasligini anglang.\n4. Muqobil yechim topish: Baqirish o‘rniga aniq tushuntirish, o‘yin yoki hazil orqali vaziyatni yumshating («Chumolilarni mehmon qilmoqchi bo‘ldingmi?»).\n\nHurmat va ovoz me’yori: Luqmon surasi 19-oyat: «Yurishingda me’yorni tanla va ovozingni pasaytir, chunki ovozlarning eng yoqimsizi eshakning ovozidir».\nDonishmand va oshiqlar masali shuni o'rgatadi: insonlar bir-biriga g'azablansa, qalblari uzoqlashadi va bir-biriga ovozini yetkazish uchun baqirishga majbur bo'ladi. Mehr kuchaysa, sokin gapiriladi. Baqirish ota-ona va bola qalbi orasidagi masofani uzaytiradi.",
+    "categorySlug": "bola-ruhiyati",
+    "ageGroup": "3-5",
+    "readingTimeMinutes": 6,
+    "tags": [
+      "gazabni yengish",
+      "sabr",
+      "hazrati ali",
+      "luqmon surasi",
+      "bola ruhiyati"
+    ],
+    "seoTitle": "G‘azab otiga minganda: Jahlni bosishning 4 qadami | Farzandly",
+    "seoDescription": "Farzand tarbiyasida ota-onaning g'azabini jilovlashning 4 amaliy qadami va ovoz me'yori madaniyati.",
+    "isPremium": true
+  },
+  {
+    "title": "Aziz Rahimov bilan suhbat: Ta’lim va tarbiyaning farqi hamda muhandislik kelajagi",
+    "slug": "aziz-rahimov-talim-va-tarbiya-suhbati",
+    "excerpt": "Rahimov School asoschisi bilan 'Dilkash' suhbati: nima uchun ta'limda 'nega' savoli zarur, Brain Rot xavfi, Kumon uslubi va 4 turdagi sarmoya.",
+    "content": "«Dilkash» ko‘rsatuvida Rahimov School asoschisi Aziz Rahimov bilan ta’lim va tarbiya mavzusida bo'lib o'tgan suhbatning eng muhim xulosalari:\n\n1. Ta’lim va tarbiyaning farqi: “Nega?” savoli\nTarbiyada “nega?”ga o‘rin yo‘q: Tarbiya — ota-onadan, ajdodlardan va milliy qadriyatlardan so‘zsiz, ko‘rib o‘rganiladigan odatlar yig‘indisi (kattani hurmat qilish, fidoiy bo‘lish, salom berish).\nTa’lim esa “nega?”siz yashamaydi: Agar o‘quvchiga o‘rganayotgan narsasi hayotda nima uchun kerakligi (affordance tamoyili) tushuntirilmasa, u bilim esda qolmaydi. Odam o‘z ehtiyojiga xizmat qiladigan ma’lumotnigina qabul qiladi.\n\n2. Tarbiyada rag‘bat va ibrat usuli\nMajburlash emas, havas uyg‘otish: Salomsiz bolani jazolashdan ko‘ra, to‘g‘ri harakat qilganlarni rag‘batlantirish samaraliroq. Maktabda kitob o‘qish majburiyat emas, obro‘-e’tibor (status) belgisiga aylantirilgan (MacBook, sayohatlar bilan rag‘batlantiriladi). Natijada birinchi yili 35% o‘quvchi kitob o‘qigan bo‘lsa, keyingi yili 55%ga yetdi.\n\n3. Nega aynan muhandislik?\n44 nafar bitiruvchidan 18 nafari dunyoning top universitetlariga 100% grant yutgan ($5M+). Oson yo‘nalishlarda (biznes, marketing) raqobat katta. O‘zbekistonga esa dronlar, ko‘priklar, elektr stansiyalar uchun mahalliy muhandislar zarur.\n\n4. Telefon taqiqi va “Brain Rot”\nGadjetlar va qisqa videolar diqqatni o‘g‘irlaydi va miyani toliqtiradi. Silikon vodiysidagi rahbarlarning o‘zi ham farzandlarini ekransiz (Valdorf) maktablarda o‘qitadi. Maktabda 10-sinfgacha telefon taqiqlangan.\n\n5. To‘rt turdagi sarmoya\nSarmoya faqat pul emas:\n1. Moddiy sarmoya (pul, mulk);\n2. Madaniy sarmoya (uy kutubxonasi, o‘qilgan kitoblar, dunyoqarash);\n3. Ijtimoiy sarmoya (muhit, ustozlar, tanishlar);\n4. Ramziy sarmoya (yutuqlar, obro‘).\nModdiy sarmoya qolgan uchtasisiz havoga uchadi. Qolgan uchtasi bor insonga moddiy sarmoya o‘zi keladi.",
+    "categorySlug": "soglom-turmush",
+    "ageGroup": "10-13",
+    "readingTimeMinutes": 8,
+    "tags": [
+      "aziz rahimov",
+      "rahimov school",
+      "talim va tarbiya",
+      "muhandislik",
+      "brain rot",
+      "sarmoya"
+    ],
+    "seoTitle": "Aziz Rahimov: Ta’lim va tarbiya suhbati | Farzandly",
+    "seoDescription": "Rahimov School asoschisi Aziz Rahimov: Ta'lim va tarbiya farqi, kitobxonlik statusi, telefon taqiqi va 4 sarmoya.",
+    "isPremium": true
+  },
+  {
+    "title": "Klip tafakkur domidan kitobxonlik sari: Bolalar xonasidagi 3 ta deraza",
+    "slug": "bolalarda-klip-tafakkur-va-30-jildlik-biografik-toplam",
+    "excerpt": "Ekranga bog'lanish va klip tafakkur xavfi, 30 buyuk mutafakkir biografiyasi, Sharq va G'arb daholari hamda oltin yosh (7-12) mutolaasi.",
+    "content": "1. Bola tafakkurida kitob, o‘yinchoq va ekranning farqi\nO‘yinchoq boladagi mavjud bo‘shliqni to‘ldiradi, multfilm esa vaqtni band qiladi. Ekran va o‘yinchoqlar zehnni passiv iste’molchiga aylantiradi.\nKitob esa bolaning zehnini o‘zidan ajratib, keng dunyoga bog‘laydi; ilgari mavjud bo‘lmagan yangi tafakkur maydonini ochadi.\nKlip tafakkur xavfi: Kuniga ekranga tikilib, 1–3 daqiqalik qisqa videolarga o‘rgangan zehn keyinchalik 10 sahifali matn yoki hikoyani o‘qishga toqat qilolmaydi.\n\n2. “Bolalar xonasidagi 3 ta deraza”: 30 jildlik biografik to‘plam\nTo‘plam jami 30 ta kitobdan iborat bo‘lib, 3 ta turkumga bo‘lingan:\n• 1-turkum: Sharq mutafakkirlari (Ibn Sino, Forobiy, Xorazmiy, Mirzo Ulug‘bek, Ali Qushchi, Ahmad Farg‘oniy, Al-Jazariy, Ibn Xaldun, Alisher Navoiy).\n• 2-turkum: G‘arb ilmining asoschilari va ixtirochilar (Arximed, Nyuton, Galiley, Albert Eynshteyn, Tomas Edison, Nikola Tesla, Nikolay Kopernik, Lui Paster, Aleksandr Bell).\n• 3-turkum: Zamon qahramonlari (Leonardo da Vinchi, Muhammad Ali, Zaha Hadid, Aziz Sanjar, Hayao Miyazaki, Stiv Jobs, Solijon Sharipov).\n\n3. To‘plamning tarbiyaviy ahamiyati\nOrzular miqyosini kengaytirish: Bola kimga havas qilsa, shunga qarab shakllanadi. Uning atrofidagi namunalar faqat bloger bilan cheklanib qolsa, qiziqishlari ham tor bo‘ladi. 30 ta har xil soha daho va qahramonlarini tanigan bola mayda orzular qilishdan yiroq bo‘ladi.\nOltin yosh davri (7–12 yosh): Bu davrda bola ichki dunyosini quradi. Bolaga eng yaxshi sovg‘a — ota-onaning ovozi orqali yetkazilgan ertak va hikoyadir. Uyqudan oldin 15–20 daqiqa birga o‘qish ota-ona va bola o‘rtasidagi munosabatni mustahkamlaydi.",
+    "categorySlug": "odob-axloq",
+    "ageGroup": "6-9",
+    "readingTimeMinutes": 6,
+    "tags": [
+      "kitobxonlik",
+      "klip tafakkur",
+      "30 mutafakkir",
+      "ibn sino",
+      "al-jazariy",
+      "bolalar kitoblari"
+    ],
+    "seoTitle": "Klip tafakkurdan kitobxonlik sari: 30 buyuk mutafakkir | Farzandly",
+    "seoDescription": "Bolalarda klip tafakkurni yengish, bolalar xonasidagi 3 deraza va 30 alloma orqali orzularni kengaytirish.",
+    "isPremium": true
+  },
+  {
+    "title": "Jasur va mustaqil farzand voyaga yetkazish: Zamonaviy xatolar va 4 yechim",
+    "slug": "jasur-va-mustaqil-farzand-tarbiyasi-muammolar-yechimlar",
+    "excerpt": "Jismoniy nazorat bor, virtual nazorat yo'q. Inkubator yondashuvi zararlari, o'smirlik inqirozi va 4 amaliy yechim.",
+    "content": "Jasur va mustaqil farzand voyaga yetkazish uchun 5 muhim poydevor zarur:\n1. Shaxsiy namuna va halol luqma: Oiladagi muhit birinchi darajali poydevordir.\n2. Qo‘rquv va hadikdan asrash: Bolani uydirmalar yoki tahdidlar bilan qo‘rqitmaslik, faqat Yaratgandan qo‘rqish va adolatda dadil bo‘lish tuyg‘usini singdirish.\n3. Mas'uliyat yuklash: Yoshlikdan yoshiga mos vazifalar berib, o‘ziga ishonchini oshirish.\n4. Mardlik sifatlari: Sahobalar va ajdodlar hayotidan ibratli qissalarni o‘rgatish.\n5. Hissiy tayanch va hurmat: Fikrini tinglash, irodasini sindirmaslik.\n\nAsosiy zamonaviy muammo va xatolar:\n• Jismoniy nazorat bor, virtual nazorat yo‘q: Bola qayerda ekani aniq, ammo virtual olamda nimalar ko‘rayotgani noma’lum. Venn diagrammasida ota-ona va bola dunyosi kesishmay qolgan.\n• “Inkubator” yondashuvi: Bolani faqat taqiqlar bilan bir qolipga solish uning tashabbusini o‘ldiradi va birovning ko‘ziga qarab yashaydigan tobe shaxsga aylantiradi.\n• O‘smirlik — kutilmagan o‘zgarish emas: 10–12 yoshgacha singdirilgan tarbiya 12–15 yoshda kuch to‘plab yuzaga chiqadi.\n\nKatta bo‘lib qolgan o‘smirlar bilan ishlashning 4 chorasi:\n1. O‘rtadagi sun’iy devorni olib tashlash: Buyruq ohangida emas, do‘stona va ochiq muloqot qilish.\n2. Xatolarning ildizini o‘zidan qidirish: «Bunga o‘zim sababchi emasmanmi?» deb o‘ylash.\n3. Salohiyatli ustozga yo‘naltirish: Ota-ona nufuzini yo‘qotgan bo‘lsa, bolani shaxsiyati to‘laqonli ustozga topshirish.\n4. Taqiq — eng oxirgi chora: Asosiy e’tiborni jazolashga emas, bolaning ichki bo‘shlig‘ini to‘ldirishga qaratish.",
+    "categorySlug": "bola-ruhiyati",
+    "ageGroup": "14+",
+    "readingTimeMinutes": 7,
+    "tags": [
+      "jasur farzand",
+      "mustaqillik",
+      "osmirlik",
+      "halol luqma",
+      "venn diagrammasi"
+    ],
+    "seoTitle": "Jasur va mustaqil farzand voyaga yetkazish | Farzandly",
+    "seoDescription": "Zamonaviy ota-onalik xatolari, o'smirlik inqirozi, inkubator yondashuvi va 4 amaliy yechim.",
+    "isPremium": true
+  },
+  {
+    "title": "Taomlanish me’yori va nafs tarbiyasi: Yurak qotishidan asrash sirlari",
+    "slug": "taomlanish-meyori-va-nafs-tarbiyasi",
+    "excerpt": "1/3 oshqozon qoidasi, 'Zavq maxluqi'ni o'stirmaslik, multfilm ostida ovqatlantirish zarari va sabr tarbiyasi.",
+    "content": "Jamiyatdagi noto‘g‘ri qarash: Bolaning semiz bo‘lishi — uning sog‘lomligi va yaxshi tarbiyaning belgisi degan yanglish stereotip mavjud.\n\nKam yeyish — qalb hayoti:\nHadisi sharif: «Qorinlaringizni haddan ortiq to‘ydirib, qalblaringizni o‘ldirmangiz. Zotan, ekin ko‘p suvdan qanday nobud bo‘lsa, qalb ham ko‘p taomdan shunday quriydi».\n\nOshqozon va yurak muvozanati: Oshqozon haddan tashqari to‘lsa, qalb nuri so‘nadi; me’yorida bo‘sh tursa, tafakkur va idrok kuchayadi.\nOshqozonning 1/3 qoidasi: Taom uchun 1/3, suv uchun 1/3 va nafas uchun 1/3 qism bo‘sh qolishi lozim.\n\nMajburlab ovqatlantirishning zarari:\nChaqaloqlikdan boshlab bolani televizor yoki telefon qo‘yib, aldab yoki majburlab tiqishtirish uning tabiiy to‘yish/ochlik reflekslarini buzadi. Bola hissiyotlarini taom bilan bosishga o‘rganadi.\n\n«Zavq maxluqi»ni o‘stirmaslik:\nBola xarxasha qilishi bilan har bir xohishini (shirinlik, telefon) darhol muhayyo qilish undagi nafsni kattalashtiradi. Vaqt o‘tishi bilan bunday bola hech narsadan qoniqmaydigan bo‘lib qoladi.\nYechim — sabr mashqi: shirinlikni ovqatdan keyinga qoldirish, do‘konga kirishdan oldin bitta narsa olish qoidasini kelishish va ro‘za maktabi orqali xohishlarni jilovlashni o‘rgatish.",
+    "categorySlug": "soglom-turmush",
+    "ageGroup": "3-5",
+    "readingTimeMinutes": 5,
+    "tags": [
+      "taomlanish meyori",
+      "nafs tarbiyasi",
+      "1/3 qoidasi",
+      "sabr",
+      "soglom bola"
+    ],
+    "seoTitle": "Taomlanish me’yori va nafs tarbiyasi | Farzandly",
+    "seoDescription": "Bolalarda taomlanish me'yori, 1/3 qoidasi, multfilm ostida ovqatlantirish zarari va nafs tarbiyasi.",
+    "isPremium": true
   }
 ];

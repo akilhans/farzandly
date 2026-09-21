@@ -19,26 +19,36 @@ import {
   HelpCircle,
   Lightbulb,
   Play,
+  Sparkles,
+  Trophy,
+  Lock,
+  Crown,
 } from 'lucide-react';
 import { api, Lesson, LessonScreen } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
+import { playChimeSound } from '@/lib/gamification';
+import PaymentModal from '@/components/PaymentModal';
 
 export default function LessonRunnerPage() {
   const params = useParams();
   const router = useRouter();
-  const { updateUserProgress } = useAuth();
+  const { user, updateUserProgress } = useAuth();
   const { language, t } = useI18n();
   const lessonId = params?.id as string;
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
+  const [nextLessonSlug, setNextLessonSlug] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [currentScreenIdx, setCurrentScreenIdx] = useState(0);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   // Quiz state
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isAnswerChecked, setIsAnswerChecked] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
+  const [hasFailedQuiz, setHasFailedQuiz] = useState(false);
+  const [quizScore, setQuizScore] = useState(100);
 
   // Video state
   const [showVideo, setShowVideo] = useState(false);
@@ -46,13 +56,26 @@ export default function LessonRunnerPage() {
   // Completed state
   const [isFinished, setIsFinished] = useState(false);
   const [earnedXp, setEarnedXp] = useState(15);
+  const [perfectBonus, setPerfectBonus] = useState(false);
+  const [unlockedBadges, setUnlockedBadges] = useState<string[]>([]);
 
   useEffect(() => {
     async function loadLesson() {
-      const data = await api.getLessonByIdOrSlug(lessonId, language);
+      const [data, all] = await Promise.all([
+        api.getLessonByIdOrSlug(lessonId, language),
+        api.getLessons({ lang: language }),
+      ]);
+
       if (data) {
         setLesson(data);
         setEarnedXp(data.xpReward || 15);
+
+        if (all && all.length > 0) {
+          const currentIdx = all.findIndex((l) => l.slug === data.slug);
+          if (currentIdx >= 0 && currentIdx < all.length - 1) {
+            setNextLessonSlug(all[currentIdx + 1].slug);
+          }
+        }
       }
       setLoading(false);
     }
@@ -75,24 +98,41 @@ export default function LessonRunnerPage() {
       setCurrentScreenIdx(currentScreenIdx + 1);
       setIsFinished(true);
 
+      // Flawless quiz bonus (+5 XP)
+      let finalXp = earnedXp;
+      const isPerfect = !hasFailedQuiz;
+      if (isPerfect) {
+        finalXp += 5;
+        setEarnedXp(finalXp);
+        setPerfectBonus(true);
+      }
+
+      // Play victory sound fanfare
+      playChimeSound('victory');
+
       // Trigger Confetti celebration
       try {
         confetti({
-          particleCount: 90,
-          spread: 80,
+          particleCount: 110,
+          spread: 85,
           origin: { y: 0.6 },
-          colors: ['#059669', '#10B981', '#F59E0B', '#0284C7'],
+          colors: ['#059669', '#10B981', '#F59E0B', '#0284C7', '#8B5CF6'],
         });
       } catch {
         // Confetti fallback
       }
 
       // Record progress to AuthContext and Backend API
-      updateUserProgress(earnedXp, lesson?.slug || lessonId);
-      await api.recordLessonProgress({
+      updateUserProgress(finalXp, lesson?.slug || lessonId);
+      const res = await api.recordLessonProgress({
         lessonSlug: lesson?.slug || lessonId,
-        xpEarned: earnedXp,
+        score: isPerfect ? 100 : 80,
+        xpEarned: finalXp,
       });
+
+      if (res && res.newlyUnlockedAchievements && res.newlyUnlockedAchievements.length > 0) {
+        setUnlockedBadges(res.newlyUnlockedAchievements);
+      }
     }
   };
 
@@ -101,10 +141,16 @@ export default function LessonRunnerPage() {
     setIsAnswerChecked(true);
     const correct = selectedOption === correctIndex;
     setIsCorrect(correct);
+
     if (correct) {
+      playChimeSound('correct');
       try {
         confetti({ particleCount: 40, spread: 50, origin: { y: 0.7 } });
       } catch {}
+    } else {
+      setHasFailedQuiz(true);
+      setQuizScore(60);
+      playChimeSound('wrong');
     }
   };
 
@@ -179,6 +225,73 @@ export default function LessonRunnerPage() {
         <Link href="/dashboard" className="btn-primary text-sm px-6 py-2.5 inline-block">
           {t('lesson.continue_learning')}
         </Link>
+      </div>
+    );
+  }
+
+  // Strict Premium Check: 1-10 are free, all others require premium
+  const isLocked = Boolean(lesson.isPremium && !user?.isPremium);
+
+  if (isLocked) {
+    return (
+      <div className="max-w-xl mx-auto px-4 py-10 sm:py-16 space-y-6">
+        <div className="bg-white rounded-3xl border-2 border-amber-400 border-b-8 shadow-2xl p-6 sm:p-10 text-center space-y-6">
+          <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-800 border-2 border-amber-300 mx-auto flex items-center justify-center shadow-inner">
+            <Crown className="w-8 h-8 fill-amber-700" />
+          </div>
+
+          <div className="space-y-2">
+            <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider text-amber-850 bg-amber-100 border border-amber-300 px-3.5 py-1 rounded-full">
+              <Lock className="w-3.5 h-3.5" />
+              <span>PREMIUM KONTENT</span>
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+              {lesson.title}
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
+              «1–10-darslar: Tarbiya asoslari» kursi barcha uchun mutlaqo bepul. 11-darsdan boshlab barcha chuqurlashtirilgan darslar, amaliy topshiriqlar va video/audio tahlillar Premium obunachilar uchundir.
+            </p>
+          </div>
+
+          {/* Pricing Highlight */}
+          <div className="p-4 rounded-2xl bg-amber-50/70 border border-amber-200 text-left space-y-2">
+            <div className="text-xs text-amber-900 font-bold uppercase tracking-wider">Tariflar:</div>
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
+              <span>Oylik to‘lov:</span>
+              <span className="text-emerald-700 font-black">219 000 so‘m / oy</span>
+            </div>
+            <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
+              <span>Yillik to‘lov (tejamkor):</span>
+              <span className="text-emerald-700 font-black">oyiga 179 000 so‘m</span>
+            </div>
+            <div className="text-[11px] text-slate-500 pt-1 border-t border-amber-200/60">
+              Karta: <span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> • Chekni yuborish: <span className="font-bold text-slate-700">t.me/dadakhonov</span>
+            </div>
+          </div>
+
+          <div className="space-y-3 pt-2">
+            <button
+              type="button"
+              onClick={() => setShowPaymentModal(true)}
+              className="w-full btn-gold text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/25"
+            >
+              <Crown className="w-4 h-4 fill-slate-950" />
+              <span>Premium kontentni faollashtirish</span>
+            </button>
+
+            <Link
+              href="/kurslar/tarbiya-asoslari-va-boshlangich-himoya"
+              className="w-full btn-outline text-xs sm:text-sm py-3 flex items-center justify-center gap-2"
+            >
+              <span>Bepul darslarga o‘tish (1–10 darslar)</span>
+            </Link>
+          </div>
+        </div>
+
+        <PaymentModal
+          isOpen={showPaymentModal}
+          onClose={() => setShowPaymentModal(false)}
+        />
       </div>
     );
   }
@@ -304,13 +417,54 @@ export default function LessonRunnerPage() {
                 </div>
               </div>
 
-              <div className="pt-4">
+              {perfectBonus && (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 max-w-sm mx-auto flex items-center justify-center gap-2 text-amber-900 font-bold text-xs sm:text-sm shadow-xs"
+                >
+                  <Sparkles className="w-4 h-4 text-amber-600 fill-amber-500" />
+                  <span>A’lochi bonusi: +5 XP mukofotlandi! (100% to‘g‘ri)</span>
+                </motion.div>
+              )}
+
+              {unlockedBadges.length > 0 && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300 rounded-2xl p-4 max-w-sm mx-auto space-y-1 text-center shadow-md"
+                >
+                  <div className="flex items-center justify-center gap-1.5 text-purple-700 font-black text-xs uppercase tracking-wider">
+                    <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
+                    <span>Yangi nishon ochildi!</span>
+                  </div>
+                  <p className="font-extrabold text-sm text-slate-800">
+                    {unlockedBadges.join(', ')}
+                  </p>
+                </motion.div>
+              )}
+
+              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+                {nextLessonSlug ? (
+                  <button
+                    onClick={() => router.push(`/dars/${nextLessonSlug}`)}
+                    className="w-full sm:w-auto flex-1 btn-primary text-base py-4 flex items-center justify-center gap-2 cursor-pointer shadow-md"
+                  >
+                    <span>Keyingi darsga o‘tish</span>
+                    <ArrowRight className="w-5 h-5" />
+                  </button>
+                ) : null}
+
                 <button
                   onClick={() => router.push('/dashboard')}
-                  className="w-full btn-primary text-base py-4 flex items-center justify-center gap-2 cursor-pointer"
+                  className={`w-full sm:w-auto py-4 px-6 text-base font-bold rounded-2xl cursor-pointer ${
+                    nextLessonSlug
+                      ? 'btn-outline'
+                      : 'w-full btn-primary flex items-center justify-center gap-2'
+                  }`}
                 >
                   <span>{t('lesson.continue_learning')}</span>
-                  <ArrowRight className="w-5 h-5" />
+                  {!nextLessonSlug && <ArrowRight className="w-5 h-5" />}
                 </button>
               </div>
             </motion.div>

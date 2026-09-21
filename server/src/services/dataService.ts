@@ -391,6 +391,73 @@ export class DataService {
     const xp = data.xpEarned || 10;
     const score = data.score || 100;
 
+    const computeLevel = (currentXp: number): string => {
+      if (currentXp >= 1000) return 'Donishmand ota-ona';
+      if (currentXp >= 600) return 'Tajribali ota-ona';
+      if (currentXp >= 350) return 'Mehrli murabbiy';
+      if (currentXp >= 200) return 'Ongli tarbiyachi';
+      if (currentXp >= 100) return 'Ongli ota-ona';
+      if (currentXp >= 40) return "O‘rganuvchi ota-ona";
+      return 'Boshlovchi ota-ona';
+    };
+
+    const computeStreak = (lastActive?: Date, currentStreak: number = 1): number => {
+      if (!lastActive) return Math.max(1, currentStreak);
+      const last = new Date(lastActive);
+      const now = new Date();
+      const lastMidnight = new Date(last.getFullYear(), last.getMonth(), last.getDate()).getTime();
+      const todayMidnight = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+      const diffDays = Math.round((todayMidnight - lastMidnight) / (1000 * 60 * 60 * 24));
+      if (diffDays === 0) return Math.max(1, currentStreak);
+      if (diffDays === 1) return Math.max(1, currentStreak) + 1;
+      return 1;
+    };
+
+    const evaluateAchievements = (
+      userXp: number,
+      userStreak: number,
+      lessons: string[],
+      existing: string[] = []
+    ): { all: string[]; newlyUnlocked: string[] } => {
+      const set = new Set(existing);
+      const newly: string[] = [];
+      const checkAndAdd = (code: string, condition: boolean) => {
+        if (condition && !set.has(code)) {
+          set.add(code);
+          newly.push(code);
+        }
+      };
+
+      checkAndAdd('ilk-qadam', lessons.length >= 1 || userXp >= 15);
+      checkAndAdd('uch-kunlik-streak', userStreak >= 3 || userXp >= 45);
+      checkAndAdd('haftalik-chempion', userStreak >= 7 || userXp >= 105);
+      checkAndAdd('ongli-ota-ona', lessons.length >= 10 || userXp >= 150);
+      checkAndAdd(
+        'fitrat-kashfiyotchisi',
+        lessons.some((s) => s.includes('fitrat') || s.includes('darajasiga')) || userXp >= 180
+      );
+      checkAndAdd(
+        'sabr-va-adolat',
+        lessons.some((s) => s.includes('gazab') || s.includes('ruhiyati') || s.includes('nafs')) ||
+          userXp >= 220
+      );
+      checkAndAdd(
+        'kitobxon-murabbiy',
+        lessons.some((s) => s.includes('kitob') || s.includes('mutafakkir') || s.includes('klip')) ||
+          userXp >= 260
+      );
+      checkAndAdd(
+        'talim-innovatori',
+        lessons.some((s) => s.includes('talim') || s.includes('sarmoya')) || userXp >= 300
+      );
+      checkAndAdd('tarbiya-ustasi', lessons.length >= 25 || userXp >= 375);
+      checkAndAdd('14-kunlik-afsona', userStreak >= 14 || userXp >= 500);
+      checkAndAdd('mukammal-bilimdon', userXp >= 650);
+      checkAndAdd('donishmand-murabbiy', userXp >= 1000);
+
+      return { all: Array.from(set), newlyUnlocked: newly };
+    };
+
     if (isDbConnected()) {
       await UserProgress.findOneAndUpdate(
         { userId: data.userId, lessonSlug: data.lessonSlug },
@@ -403,29 +470,44 @@ export class DataService {
         { upsert: true, new: true }
       );
 
+      const existingUser = await User.findById(data.userId);
+      const newXp = (existingUser?.xp || 0) + xp;
+      const newStreak = computeStreak(existingUser?.lastActiveDate, existingUser?.streak || 1);
+      const lessons = Array.from(new Set([...(existingUser?.completedLessons || []), data.lessonSlug]));
+      const achResult = evaluateAchievements(newXp, newStreak, lessons, existingUser?.achievements || []);
+      const newLevel = computeLevel(newXp);
+
       const updatedUser = await User.findByIdAndUpdate(
         data.userId,
         {
-          $inc: { xp: xp },
-          $addToSet: { completedLessons: data.lessonSlug },
+          xp: newXp,
+          streak: newStreak,
+          level: newLevel,
+          lastActiveDate: new Date(),
+          completedLessons: lessons,
+          achievements: achResult.all,
         },
         { new: true }
       );
 
-      return { success: true, updatedUser };
+      return { success: true, updatedUser, newlyUnlockedAchievements: achResult.newlyUnlocked };
     }
 
     // In-memory update
     const user = memoryUsers[data.userId] || memoryUsers['demo-user'];
+    let newlyUnlocked: string[] = [];
     if (user) {
       user.xp = (user.xp || 0) + xp;
       if (!user.completedLessons.includes(data.lessonSlug)) {
         user.completedLessons.push(data.lessonSlug);
       }
-      // Update level based on XP
-      if (user.xp >= 100) user.level = 'Tajribali ota-ona';
-      else if (user.xp >= 50) user.level = 'Ongli ota-ona';
-      else if (user.xp >= 20) user.level = "O‘rganuvchi";
+      user.streak = computeStreak(user.lastActiveDate, user.streak || 1);
+      user.lastActiveDate = new Date();
+      user.level = computeLevel(user.xp);
+
+      const achResult = evaluateAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
+      user.achievements = achResult.all;
+      newlyUnlocked = achResult.newlyUnlocked;
     }
 
     if (!memoryProgress[data.userId]) {
@@ -446,7 +528,7 @@ export class DataService {
       memoryProgress[data.userId].push(progItem);
     }
 
-    return { success: true, user, progress: progItem };
+    return { success: true, user, progress: progItem, newlyUnlockedAchievements: newlyUnlocked };
   }
 
   // Newsletter

@@ -1,6 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
-import { BookOpen, Clock, Tag, ArrowRight, Baby } from 'lucide-react';
+import { BookOpen, Clock, Tag, ArrowRight, Baby, Crown } from 'lucide-react';
 import { api } from '@/lib/api';
 
 interface MaqolalarProps {
@@ -77,10 +77,21 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
                 <span className="font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-0.5 rounded-lg">
                   {article.categorySlug}
                 </span>
-                <span className="flex items-center gap-1 text-slate-400 font-medium">
-                  <Clock className="w-3.5 h-3.5" />
-                  {article.readingTimeMinutes} daqiqa
-                </span>
+                <div className="flex items-center gap-2">
+                  {article.isPremium ? (
+                    <span className="text-[10px] font-black text-amber-850 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
+                      <Crown className="w-3 h-3 fill-amber-700 text-amber-700" /> PREMIUM KONTENT
+                    </span>
+                  ) : (
+                    <span className="text-[10px] font-black text-emerald-800 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">
+                      BEPUL
+                    </span>
+                  )}
+                  <span className="flex items-center gap-1 text-slate-400 font-medium">
+                    <Clock className="w-3.5 h-3.5" />
+                    {article.readingTimeMinutes} m
+                  </span>
+                </div>
               </div>
 
               {/* Title */}

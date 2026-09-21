@@ -52,6 +52,11 @@ export default function RootLayout({
     <html lang="uz" className="h-full scroll-smooth">
       <head>
         <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="preconnect" href="https://cdn.fontshare.com" />
+        <link
+          rel="stylesheet"
+          href="https://api.fontshare.com/v2/css?f[]=chubbo@600,700,800,900&f[]=supreme@400,500,600,700&display=swap"
+        />
         <Script
           src="https://telegram.org/js/telegram-web-app.js"
           strategy="beforeInteractive"

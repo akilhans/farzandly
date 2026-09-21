@@ -64,6 +64,9 @@ export interface IUser extends Document {
   completedLessons: string[];
   achievements: string[];
   subscriptionStatus: 'free' | 'premium' | 'trial';
+  isPremium?: boolean;
+  premiumExpiresAt?: Date;
+  role?: 'user' | 'admin';
 }
 
 const UserSchema = new Schema<IUser>({
@@ -81,10 +84,13 @@ const UserSchema = new Schema<IUser>({
   xp: { type: Number, default: 0 },
   streak: { type: Number, default: 1 },
   lastActiveDate: { type: Date, default: Date.now },
-  level: { type: String, default: 'Boshlovchi', enum: ['Boshlovchi', "O‘rganuvchi", 'Ongli ota-ona', 'Tajribali ota-ona'] },
+  level: { type: String, default: 'Boshlovchi ota-ona' },
   completedLessons: [{ type: String }],
   achievements: [{ type: String }],
   subscriptionStatus: { type: String, default: 'free', enum: ['free', 'premium', 'trial'] },
+  isPremium: { type: Boolean, default: false },
+  premiumExpiresAt: { type: Date },
+  role: { type: String, default: 'user', enum: ['user', 'admin'] },
 }, { timestamps: true });
 
 export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
@@ -101,6 +107,7 @@ export interface IArticle extends Document {
   tags: string[];
   seoTitle: string;
   seoDescription: string;
+  isPremium?: boolean;
   isPublished: boolean;
   publishedAt: Date;
   translations?: Record<string, any>;
@@ -117,6 +124,7 @@ const ArticleSchema = new Schema<IArticle>({
   tags: [{ type: String }],
   seoTitle: { type: String, required: true },
   seoDescription: { type: String, required: true },
+  isPremium: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: true },
   publishedAt: { type: Date, default: Date.now },
   translations: { type: Schema.Types.Mixed, default: {} },

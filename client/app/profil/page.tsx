@@ -20,10 +20,12 @@ import {
   Camera,
   Upload,
   Info,
+  Trophy,
 } from 'lucide-react';
 import { api, Achievement } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import UserAvatar from '@/components/UserAvatar';
+import { calculateLevel } from '@/lib/gamification';
 
 export default function ProfilePage() {
   const { user, isAuthenticated, logout, updateUserProfile } = useAuth();
@@ -43,15 +45,8 @@ export default function ProfilePage() {
   const completed = user?.completedLessons || [];
   const xp = user?.xp || 20;
   const streak = user?.streak || 3;
-  const level = user?.level || "O‘rganuvchi";
-
-  // Level progress percentage
-  const nextLevelThreshold = xp < 20 ? 20 : xp < 50 ? 50 : xp < 100 ? 100 : 200;
-  const currentThresholdBase = xp < 20 ? 0 : xp < 50 ? 20 : xp < 100 ? 50 : 100;
-  const levelProgress = Math.min(
-    100,
-    Math.round(((xp - currentThresholdBase) / (nextLevelThreshold - currentThresholdBase)) * 100)
-  );
+  const levelInfo = calculateLevel(xp);
+  const level = user?.level || levelInfo.level;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10 relative">
@@ -122,7 +117,16 @@ export default function ProfilePage() {
               </p>
             </div>
 
-            <div className="flex items-center gap-2 self-center sm:self-auto">
+            <div className="flex items-center gap-2 self-center sm:self-auto flex-wrap">
+              {(user?.telegramUsername?.toLowerCase() === 'dadakhonov' || user?.role === 'admin') && (
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center gap-1.5 bg-amber-100 hover:bg-amber-200 border border-amber-300 text-amber-900 font-black text-xs px-3.5 py-1.5 rounded-xl shadow-xs transition-all cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4 text-amber-800" />
+                  <span>Admin paneli</span>
+                </Link>
+              )}
               <span className="inline-flex items-center gap-1.5 bg-emerald-50 border-2 border-emerald-200 text-emerald-800 font-black text-xs px-3.5 py-1.5 rounded-xl shadow-xs">
                 <Award className="w-4 h-4 text-emerald-600" />
                 {level}
@@ -131,7 +135,7 @@ export default function ProfilePage() {
                 <button
                   type="button"
                   onClick={logout}
-                  className="p-2 rounded-xl border-2 border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-300 hover:bg-rose-50 transition-all"
+                  className="p-2 rounded-xl border-2 border-slate-200 text-slate-400 hover:text-rose-600 hover:border-rose-300 hover:bg-rose-50 transition-all cursor-pointer"
                   title="Chiqish"
                 >
                   <LogOut className="w-4 h-4" />
@@ -143,14 +147,14 @@ export default function ProfilePage() {
           {/* Progress to Next Level Bar */}
           <div className="pt-2 space-y-1.5 max-w-md">
             <div className="flex items-center justify-between text-xs font-bold text-slate-500">
-              <span>Daraja yuksalishi</span>
-              <span>{xp} / {nextLevelThreshold} XP</span>
+              <span className="text-slate-700">{levelInfo.level} ({levelInfo.levelIndex}-daraja)</span>
+              <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
             </div>
             <div className="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
               <motion.div
-                className="h-full bg-emerald-500 rounded-full"
+                className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full"
                 initial={{ width: 0 }}
-                animate={{ width: `${levelProgress}%` }}
+                animate={{ width: `${levelInfo.progressPercent}%` }}
                 transition={{ duration: 0.5, ease: 'easeOut' }}
               />
             </div>
@@ -175,30 +179,40 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* 3 Metric Cards with hover animations */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-5 text-center space-y-1">
-          <div className="w-10 h-10 mx-auto rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-2">
+      {/* 4 Metric Cards with hover animations */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center mb-1.5">
             <Flame className="w-6 h-6 fill-orange-500" />
           </div>
-          <span className="text-2xl font-black text-slate-800">{streak} kun</span>
-          <p className="text-xs font-bold text-slate-500 uppercase">Uzluksiz o‘rganish</p>
+          <span className="text-xl sm:text-2xl font-black text-slate-800">{streak} kun</span>
+          <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Uzluksiz streak</p>
         </motion.div>
 
-        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-5 text-center space-y-1">
-          <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-2">
+        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-1.5">
             <Star className="w-6 h-6 fill-amber-500" />
           </div>
-          <span className="text-2xl font-black text-slate-800">{xp} XP</span>
-          <p className="text-xs font-bold text-slate-500 uppercase">To‘plangan ballar</p>
+          <span className="text-xl sm:text-2xl font-black text-slate-800">{xp} XP</span>
+          <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">To‘plangan ballar</p>
         </motion.div>
 
-        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-5 text-center space-y-1">
-          <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-2">
+        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1.5">
             <CheckCircle className="w-6 h-6 text-emerald-600" />
           </div>
-          <span className="text-2xl font-black text-slate-800">{completed.length} ta</span>
-          <p className="text-xs font-bold text-slate-500 uppercase">Tugallangan darslar</p>
+          <span className="text-xl sm:text-2xl font-black text-slate-800">{completed.length} ta</span>
+          <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Darslar o‘tildi</p>
+        </motion.div>
+
+        <motion.div whileHover={{ y: -3 }} className="card-farzandly p-4 sm:p-5 text-center space-y-1">
+          <div className="w-10 h-10 mx-auto rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center mb-1.5">
+            <Trophy className="w-6 h-6 text-purple-600 fill-purple-400" />
+          </div>
+          <span className="text-xl sm:text-2xl font-black text-slate-800">
+            {achievements.filter((a) => (user?.achievements && user.achievements.includes(a.code)) || xp >= a.xpRequired).length} / {achievements.length}
+          </span>
+          <p className="text-[10px] sm:text-xs font-bold text-slate-500 uppercase">Ochilgan nishonlar</p>
         </motion.div>
       </div>
 
@@ -240,7 +254,11 @@ export default function ProfilePage() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {achievements.map((ach) => {
-            const isUnlocked = xp >= ach.xpRequired;
+            const isUnlocked =
+              (user?.achievements && user.achievements.includes(ach.code)) ||
+              (xp >= ach.xpRequired && (!ach.streakRequired || streak >= ach.streakRequired));
+            const progress = Math.min(100, Math.round((xp / Math.max(1, ach.xpRequired)) * 100));
+
             return (
               <motion.div
                 key={ach.code}
@@ -248,7 +266,7 @@ export default function ProfilePage() {
                 className={`p-4 rounded-2xl border-2 transition-all flex items-start gap-4 ${
                   isUnlocked
                     ? 'border-emerald-300 bg-emerald-50/50 shadow-xs'
-                    : 'border-slate-200 bg-slate-50 opacity-60'
+                    : 'border-slate-200 bg-slate-50/80'
                 }`}
               >
                 <div
@@ -261,19 +279,30 @@ export default function ProfilePage() {
                   {isUnlocked ? <Award className="w-6 h-6" /> : <Lock className="w-5 h-5" />}
                 </div>
 
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
+                <div className="space-y-1.5 flex-1">
+                  <div className="flex items-center justify-between gap-2">
                     <h3 className="font-bold text-slate-800 text-sm">{ach.title}</h3>
-                    {isUnlocked && (
+                    {isUnlocked ? (
                       <span className="text-[10px] font-black uppercase text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-md">
-                        Ochilgan
+                        Ochilgan 🏆
+                      </span>
+                    ) : (
+                      <span className="text-[10px] font-bold text-slate-400 bg-slate-200/70 px-2 py-0.5 rounded-md">
+                        {progress}%
                       </span>
                     )}
                   </div>
                   <p className="text-xs text-slate-500 leading-relaxed">{ach.description}</p>
-                  <p className="text-[11px] font-bold text-slate-400">
-                    Talab: {ach.xpRequired} XP {ach.streakRequired > 0 && `• ${ach.streakRequired} kun streak`}
-                  </p>
+                  <div className="space-y-1 pt-1">
+                    <div className="flex items-center justify-between text-[11px] font-bold text-slate-400">
+                      <span>Talab: {ach.xpRequired} XP {ach.streakRequired > 0 && `• ${ach.streakRequired} kun streak`}</span>
+                    </div>
+                    {!isUnlocked && (
+                      <div className="w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
+                        <div className="h-full bg-emerald-400 rounded-full" style={{ width: `${progress}%` }} />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </motion.div>
             );

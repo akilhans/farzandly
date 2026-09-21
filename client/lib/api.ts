@@ -34,6 +34,7 @@ export interface Article {
   tags: string[];
   seoTitle: string;
   seoDescription: string;
+  isPremium?: boolean;
   isPublished: boolean;
   publishedAt: string;
   translations?: Record<string, any>;
@@ -65,6 +66,7 @@ export interface Lesson {
   ageGroup: string;
   xpReward: number;
   isFree: boolean;
+  isPremium?: boolean;
   videoId?: string;
   videoUrl?: string;
   screens: LessonScreen[];
@@ -167,6 +169,7 @@ import {
   seedLessons,
   seedArticles,
 } from './seedData';
+import { calculateLevel, calculateStreak, checkAchievements } from './gamification';
 
 function localizeEntity<T extends Record<string, any>>(item: T, lang: string = 'uz'): T {
   if (!item || !lang || lang === 'uz') return item;
@@ -425,16 +428,20 @@ export const api = {
             subscriptionStatus: 'free',
           };
 
-      user.xp += payload.xpEarned || 10;
+      const xpToAdd = payload.xpEarned || 10;
+      user.xp = (user.xp || 0) + xpToAdd;
       if (!user.completedLessons.includes(payload.lessonSlug)) {
         user.completedLessons.push(payload.lessonSlug);
       }
-      if (user.xp >= 100) user.level = 'Tajribali ota-ona';
-      else if (user.xp >= 50) user.level = 'Ongli ota-ona';
-      else if (user.xp >= 20) user.level = "O‘rganuvchi";
+      user.streak = calculateStreak(user.lastActiveDate, user.streak || 1);
+      user.lastActiveDate = new Date().toISOString();
+      const levelInfo = calculateLevel(user.xp);
+      user.level = levelInfo.level;
+      const achResult = checkAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
+      user.achievements = achResult.unlocked;
 
       localStorage.setItem('farzandly_user', JSON.stringify(user));
-      return { success: true, user };
+      return { success: true, user, newlyUnlockedAchievements: achResult.newlyUnlocked };
     }
 
     return { success: true };

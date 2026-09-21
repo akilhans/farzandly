@@ -11,6 +11,7 @@ import {
   Play,
   Baby,
   ArrowRight,
+  Lock,
 } from 'lucide-react';
 import { api, Course } from '@/lib/api';
 import { useI18n } from '@/context/LanguageContext';
@@ -78,7 +79,7 @@ export default function CourseDetailPage() {
           </span>
           {course.isPremium ? (
             <span className="bg-amber-100 text-amber-800 border border-amber-300 px-3 py-1 rounded-full flex items-center gap-1">
-              <Crown className="w-3.5 h-3.5 fill-amber-700" /> {t('courses.premium_badge', 'PREMIUM KURS')}
+              <Crown className="w-3.5 h-3.5 fill-amber-700" /> {t('courses.premium_badge', 'PREMIUM KONTENT')}
             </span>
           ) : (
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full">
@@ -136,12 +137,18 @@ export default function CourseDetailPage() {
               </div>
 
               <div className="flex items-center gap-3 shrink-0">
-                <span className="text-xs font-bold text-emerald-700 hidden sm:inline">
-                  +{lesson.xpReward} XP
-                </span>
+                {lesson.isPremium ? (
+                  <span className="text-[10px] font-black text-amber-850 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-md flex items-center gap-1">
+                    <Lock className="w-2.5 h-2.5 text-amber-700" /> Premium
+                  </span>
+                ) : (
+                  <span className="text-xs font-bold text-emerald-700 hidden sm:inline">
+                    +{lesson.xpReward} XP
+                  </span>
+                )}
                 <Link
                   href={`/dars/${lesson.slug}`}
-                  className="btn-outline text-xs px-3.5 py-2 flex items-center gap-1"
+                  className="btn-outline text-xs px-3.5 py-2 flex items-center gap-1 cursor-pointer"
                 >
                   <span>{t('course_detail.lesson_btn', 'Dars')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />

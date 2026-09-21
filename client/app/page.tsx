@@ -37,9 +37,9 @@ export default async function HomePage() {
             {/* Left Content */}
             <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
               {/* Pill badge */}
-              <div className="inline-flex items-center gap-2 bg-emerald-100/70 border border-emerald-300 text-emerald-800 px-4 py-1.5 rounded-full text-xs sm:text-sm font-bold shadow-xs">
+              <div className="inline-flex items-center gap-2 bg-emerald-100/80 border border-emerald-300 text-emerald-800 px-4 py-1.5 rounded-full text-xs sm:text-sm font-black shadow-xs">
                 <Heart className="w-4 h-4 text-emerald-600 fill-emerald-600" />
-                <span>O‘zbekiston yosh ota-onalari uchun ilk raqamli platforma</span>
+                <span>1–10-darslar va asosiy qo‘llanmalar 100% bepul</span>
               </div>
 
               {/* Main Headline */}
@@ -53,24 +53,24 @@ export default async function HomePage() {
 
               {/* Subheadline */}
               <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0 font-medium">
-                Islomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy mashqlar orqali farzandingizni yaxshiroq tushunishni o‘rganing. Katta kitoblar o‘rniga har kuni atigi <span className="font-bold text-slate-800">5 daqiqa</span>.
+                Islomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy mashqlar orqali farzandingizni yaxshiroq tushunishni o‘rganing. Katta kitoblar o‘rniga har kuni atigi <span className="font-bold text-slate-900">5 daqiqa</span>.
               </p>
 
               {/* CTAs */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <Link
                   href="/onboarding"
-                  className="w-full sm:w-auto btn-primary text-base sm:text-lg px-8 py-3.5 sm:py-4 gap-3 shadow-lg shadow-emerald-600/20"
+                  className="w-full sm:w-auto btn-primary text-base sm:text-lg px-8 py-3.5 sm:py-4 gap-3 shadow-lg shadow-emerald-600/25 cursor-pointer"
                 >
-                  <span>Tarbiyani boshlash</span>
+                  <span>Hoziroq bepul boshlang</span>
                   <ArrowRight className="w-5 h-5" />
                 </Link>
 
                 <Link
                   href="/kurslar"
-                  className="w-full sm:w-auto btn-outline text-base sm:text-lg px-7 py-3.5 sm:py-4"
+                  className="w-full sm:w-auto btn-outline text-base sm:text-lg px-7 py-3.5 sm:py-4 cursor-pointer"
                 >
-                  Bepul darslarni ko‘rish
+                  Dastur bilan tanishish
                 </Link>
               </div>
 
@@ -122,9 +122,9 @@ export default async function HomePage() {
                 <div className="pt-2">
                   <Link
                     href="/dars/dars-1-tarbiyaning-ahamiyati-1-qism"
-                    className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2"
+                    className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 cursor-pointer shadow-md"
                   >
-                    <span>1-darsni boshlash (+10 XP)</span>
+                    <span>1-darsni bepul boshlash (+10 XP)</span>
                     <Star className="w-4 h-4 fill-amber-300 text-amber-300" />
                   </Link>
                 </div>
@@ -401,26 +401,29 @@ export default async function HomePage() {
 
       {/* 6. PREMIUM BANNER */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-r from-emerald-800 to-teal-900 text-white p-8 sm:p-12 border-4 border-emerald-950 shadow-2xl relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-emerald-950 to-slate-900 text-white p-8 sm:p-12 border-4 border-emerald-800 shadow-2xl relative overflow-hidden">
           <div className="max-w-2xl space-y-4">
-            <div className="inline-flex items-center gap-2 bg-amber-400 text-slate-900 px-3 py-1 rounded-full text-xs font-black">
-              <Crown className="w-4 h-4 fill-slate-900" />
-              <span>FARZANDLY PREMIUM</span>
+            <div className="inline-flex items-center gap-2 bg-amber-400 text-slate-950 px-3.5 py-1 rounded-full text-xs font-black shadow-xs">
+              <Crown className="w-4 h-4 fill-slate-950" />
+              <span>PREMIUM KONTENT</span>
             </div>
-            <h2 className="text-2xl sm:text-4xl font-black">
-              Tarbiya yo‘lingizni to‘liq oching
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight">
+              Farzandingiz kelajagiga eng afzal sarmoya
             </h2>
-            <p className="text-sm sm:text-base text-emerald-100 leading-relaxed font-medium">
-              Barcha yosh guruhlari bo‘yicha to‘liq o‘quv yo‘llari, chuqur audio darslar, yuklab olinadigan PDF qo‘llanmalar va shaxsiy tahlillar.
+            <p className="text-sm sm:text-base text-emerald-100/90 leading-relaxed font-medium">
+              Barcha 66 ta dars, Fitrat pedagogikasi, Rahimov School tajribasi va 30 buyuk mutafakkir ensiklopediyasi. Yillik obunada <span className="font-bold text-amber-300">oyiga atigi 179 000 so‘m</span> (yoki oylik 219 000 so‘m).
             </p>
-            <div className="pt-2">
+            <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">
               <Link
                 href="/premium"
-                className="btn-gold text-sm sm:text-base px-7 py-3.5 inline-flex items-center gap-2"
+                className="w-full sm:w-auto btn-gold text-sm sm:text-base px-8 py-3.5 inline-flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/20"
               >
-                <span>Premiumni ko‘rish</span>
+                <span>Premium kontentni faollashtirish</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
+              <span className="text-xs text-emerald-200 font-semibold">
+                To‘lov: 5614 6819 0401 4390 • t.me/dadakhonov
+              </span>
             </div>
           </div>
         </div>

@@ -18,11 +18,16 @@ import {
   X,
   Heart,
   User as UserIcon,
+  Trophy,
+  Target,
+  Sparkles,
+  Crown,
 } from 'lucide-react';
 import { api, Lesson } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
+import { calculateLevel, getWeeklyLeaderboard } from '@/lib/gamification';
 
 export default function DashboardPage() {
   const { user: authUser } = useAuth();
@@ -46,7 +51,12 @@ export default function DashboardPage() {
   const completedList = authUser?.completedLessons || ['dars-1-tarbiyaning-ahamiyati-1-qism'];
   const streak = authUser?.streak || 3;
   const xp = authUser?.xp || 20;
-  const level = authUser?.level || (language === 'en' ? 'Learner' : language === 'ru' ? 'Ученик' : 'O‘rganuvchi');
+  const levelInfo = calculateLevel(xp, language);
+  const level = authUser?.level || levelInfo.level;
+  const leaderboard = getWeeklyLeaderboard(xp, authUser?.name);
+  const dailyGoal = authUser?.dailyGoalMinutes || 10;
+  const todayProgressMinutes = Math.min(dailyGoal, Math.max(5, (completedList.length % 3 + 1) * 5));
+  const isGoalReached = todayProgressMinutes >= dailyGoal;
 
   // Find the first non-completed lesson
   const currentLesson = lessons.find((l) => !completedList.includes(l.slug)) || lessons[0];
@@ -85,10 +95,27 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          {/* Level Pill */}
-          <div className="inline-flex items-center gap-2 bg-emerald-50 border-2 border-emerald-200 text-emerald-800 px-4 py-2 rounded-2xl text-xs sm:text-sm font-bold self-start sm:self-auto shadow-xs">
-            <Award className="w-4 h-4 text-emerald-600" />
-            <span>{level}</span>
+          {/* Level & Premium Pills */}
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {authUser?.isPremium ? (
+              <div className="inline-flex items-center gap-1.5 bg-amber-100 border border-amber-300 text-amber-900 px-3 py-1.5 rounded-2xl text-xs font-black shadow-xs">
+                <Crown className="w-3.5 h-3.5 fill-amber-700" />
+                <span>PREMIUM KONTENT</span>
+              </div>
+            ) : (
+              <Link
+                href="/premium"
+                className="inline-flex items-center gap-1.5 bg-amber-50 hover:bg-amber-100 border border-amber-300 text-amber-900 px-3 py-1.5 rounded-2xl text-xs font-black transition-all cursor-pointer shadow-xs"
+              >
+                <Crown className="w-3.5 h-3.5 fill-amber-700" />
+                <span>PREMIUM KONTENT</span>
+              </Link>
+            )}
+
+            <div className="inline-flex items-center gap-2 bg-emerald-50 border-2 border-emerald-200 text-emerald-800 px-3.5 py-1.5 rounded-2xl text-xs sm:text-sm font-bold shadow-xs">
+              <Award className="w-4 h-4 text-emerald-600" />
+              <span>{level}</span>
+            </div>
           </div>
         </div>
 
@@ -132,6 +159,88 @@ export default function DashboardPage() {
               {t('dashboard.lessons_passed', 'Dars o‘tildi')}
             </p>
           </motion.div>
+        </div>
+
+        {/* Level Progress Bar */}
+        <div className="pt-2 border-t border-slate-100 space-y-1.5">
+          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+            <span className="flex items-center gap-1.5 text-slate-700">
+              <Award className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{levelInfo.level} ({levelInfo.levelIndex}-daraja)</span>
+            </span>
+            <span className="text-emerald-700">{xp} / {levelInfo.nextLevelXp} XP</span>
+          </div>
+          <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+            <motion.div
+              className="h-full bg-gradient-to-r from-emerald-500 to-teal-500 rounded-full shadow-xs"
+              initial={{ width: 0 }}
+              animate={{ width: `${levelInfo.progressPercent}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+        </div>
+
+        {/* 7-Day Weekly Streak & Daily Goal Strip */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          {/* Weekly Streak Mon-Sun */}
+          <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200 flex flex-col justify-between gap-2">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-600">
+              <span className="flex items-center gap-1 text-amber-700">
+                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
+                <span>Haftalik streak</span>
+              </span>
+              <span className="text-slate-400 text-[11px]">{streak} kun ketma-ket</span>
+            </div>
+            <div className="flex items-center justify-between gap-1">
+              {['Du', 'Se', 'Ch', 'Pa', 'Ju', 'Sh', 'Ya'].map((day, idx) => {
+                const isActive = idx < Math.min(streak, 7);
+                return (
+                  <div key={day} className="flex-1 flex flex-col items-center gap-0.5">
+                    <span className="text-[10px] font-bold text-slate-400">{day}</span>
+                    <div
+                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-xl flex items-center justify-center text-xs font-black transition-all ${
+                        isActive
+                          ? 'bg-orange-500 text-white shadow-xs scale-105'
+                          : 'bg-white border border-slate-200 text-slate-300'
+                      }`}
+                    >
+                      <Flame className={`w-3.5 h-3.5 ${isActive ? 'fill-amber-200 text-white' : 'text-slate-300'}`} />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Daily Goal Tracking */}
+          <div className="bg-emerald-50/70 rounded-2xl p-3 border border-emerald-200 flex flex-col justify-between gap-2">
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="flex items-center gap-1 text-emerald-800">
+                <Target className="w-3.5 h-3.5 text-emerald-600" />
+                <span>Kunlik maqsad: {dailyGoal} daqiqa</span>
+              </span>
+              {isGoalReached ? (
+                <span className="bg-emerald-200/80 text-emerald-900 text-[10px] px-2 py-0.5 rounded-full font-black">
+                  Bajarildi 🎯
+                </span>
+              ) : (
+                <span className="text-slate-500 text-[11px]">{todayProgressMinutes}/{dailyGoal} daqiqa</span>
+              )}
+            </div>
+            <div className="w-full h-2.5 bg-white rounded-full overflow-hidden border border-emerald-200">
+              <motion.div
+                className="h-full bg-emerald-500 rounded-full"
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(100, Math.round((todayProgressMinutes / dailyGoal) * 100))}%` }}
+                transition={{ duration: 0.5 }}
+              />
+            </div>
+            <p className="text-[11px] text-emerald-700 font-medium">
+              {isGoalReached
+                ? 'Tabriklaymiz! Bugungi tarbiya rejangiz to‘liq bajarildi.'
+                : `Yana ${dailyGoal - todayProgressMinutes} daqiqa dars o‘tib, kunlik streakni mustahkamlang.`}
+            </p>
+          </div>
         </div>
       </motion.div>
 
@@ -257,7 +366,85 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4. LESSON MODAL POPUP (WHEN CLICKING A NODE) */}
+      {/* 4. HAFTALIK OTA-ONALAR LIGASI (LEADERBOARD) */}
+      <div className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 space-y-5 shadow-sm">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <div className="space-y-0.5">
+            <span className="text-xs font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
+              <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
+              <span>Zumrad ligasi • 1-o‘rin sari</span>
+            </span>
+            <h3 className="text-lg sm:text-xl font-black text-slate-800">
+              Haftalik ota-onalar peshqadamlari
+            </h3>
+          </div>
+          <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-auto">
+            Hafta yakunlanishiga 3 kun qoldi
+          </span>
+        </div>
+
+        <div className="space-y-2.5">
+          {leaderboard.map((item) => (
+            <div
+              key={item.rank}
+              className={`p-3 sm:p-3.5 rounded-2xl border-2 flex items-center justify-between transition-all ${
+                item.isCurrentUser
+                  ? 'bg-emerald-50/90 border-emerald-400 shadow-sm ring-2 ring-emerald-100'
+                  : 'bg-slate-50/70 border-slate-200'
+              }`}
+            >
+              <div className="flex items-center gap-3 sm:gap-4">
+                <span
+                  className={`w-6 sm:w-7 text-center font-black text-sm sm:text-base ${
+                    item.rank === 1
+                      ? 'text-amber-500'
+                      : item.rank === 2
+                      ? 'text-slate-400'
+                      : item.rank === 3
+                      ? 'text-amber-700'
+                      : 'text-slate-500'
+                  }`}
+                >
+                  #{item.rank}
+                </span>
+
+                <div className="flex items-center gap-2.5 sm:gap-3">
+                  <UserAvatar
+                    name={item.name}
+                    photoUrl={item.avatar}
+                    telegramUsername={item.username}
+                    size="sm"
+                  />
+                  <div>
+                    <p className="text-xs sm:text-sm font-black text-slate-800 flex items-center gap-1.5">
+                      <span>{item.name}</span>
+                      {item.isCurrentUser && (
+                        <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.2 rounded-md">
+                          Siz
+                        </span>
+                      )}
+                    </p>
+                    <p className="text-[10px] text-slate-400 font-bold">{item.badge}</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <div className="hidden sm:flex items-center gap-1 text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">
+                  <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
+                  <span>{item.streak} kun</span>
+                </div>
+                <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 flex items-center gap-1">
+                  <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
+                  {item.xp} XP
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 5. LESSON MODAL POPUP (WHEN CLICKING A NODE) */}
       <AnimatePresence>
         {selectedLesson && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-md">
