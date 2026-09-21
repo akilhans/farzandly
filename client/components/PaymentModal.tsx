@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Crown, Copy, CheckCheck, Send, ShieldCheck, X, LogIn, Lock, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -11,15 +11,21 @@ interface PaymentModalProps {
   defaultPlan?: 'monthly' | 'yearly';
 }
 
-export default function PaymentModal({ isOpen, onClose, defaultPlan = 'yearly' }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, defaultPlan = 'monthly' }: PaymentModalProps) {
   const { user, isAuthenticated } = useAuth();
   const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>(defaultPlan);
   const [copied, setCopied] = useState(false);
 
+  useEffect(() => {
+    if (isOpen) {
+      setSelectedPlan(defaultPlan);
+    }
+  }, [isOpen, defaultPlan]);
+
   if (!isOpen) return null;
 
   const cardNumber = '5614 6819 0401 4390';
-  const isActuallyLoggedIn = Boolean(user && user.authProvider === 'telegram');
+  const isActuallyLoggedIn = Boolean(user && user.authProvider !== 'guest' && user._id !== 'guest-user');
 
   const handleCopyCard = () => {
     navigator.clipboard.writeText(cardNumber.replace(/\s+/g, ''));
@@ -77,7 +83,7 @@ export default function PaymentModal({ isOpen, onClose, defaultPlan = 'yearly' }
                 To‘lovdan oldin hisobingizga kiring
               </h3>
               <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                To‘lov chekingizni shaxsingizga bog‘lashimiz va hisobingizga Premium maqomini yoqib berishimiz uchun avval Telegram orqali profilingizga kirishingiz lozim.
+                To‘lov chekingizni shaxsingizga bog‘lashimiz va hisobingizga Premium maqomini yoqib berishimiz uchun avval profilingizga kirishingiz lozim.
               </p>
             </div>
             <Link
@@ -85,7 +91,7 @@ export default function PaymentModal({ isOpen, onClose, defaultPlan = 'yearly' }
               className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
               <LogIn className="w-4 h-4" />
-              <span>Telegram orqali kirish</span>
+              <span>Hisobingizga kirish</span>
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

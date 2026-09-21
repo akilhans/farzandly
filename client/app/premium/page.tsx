@@ -20,7 +20,7 @@ import {
 import PaymentModal from '@/components/PaymentModal';
 
 export default function PremiumPage() {
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('yearly');
+  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
@@ -72,8 +72,10 @@ export default function PremiumPage() {
             <button
               type="button"
               onClick={() => setBillingCycle('monthly')}
-              className={`px-4 py-2 rounded-xl transition-all cursor-pointer ${
-                billingCycle === 'monthly' ? 'bg-white text-slate-800 shadow-xs' : 'text-slate-500'
+              className={`px-4 py-2 rounded-xl transition-all cursor-pointer font-bold ${
+                billingCycle === 'monthly'
+                  ? 'bg-emerald-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Oylik to‘lov
@@ -81,14 +83,18 @@ export default function PremiumPage() {
             <button
               type="button"
               onClick={() => setBillingCycle('yearly')}
-              className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer ${
+              className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
                 billingCycle === 'yearly'
                   ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-500'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <span>Yillik obuna</span>
-              <span className="bg-amber-400 text-slate-950 text-[10px] px-2 py-0.5 rounded-md font-black">
+              <span className={`text-[10px] px-2 py-0.5 rounded-md font-black ${
+                billingCycle === 'yearly'
+                  ? 'bg-amber-400 text-slate-950'
+                  : 'bg-emerald-100 text-emerald-800'
+              }`}>
                 OYIGA 179 000 SO‘M
               </span>
             </button>
