@@ -3,6 +3,11 @@ import { AuthController } from '../controllers/authController.js';
 
 export const authRouter = Router();
 
+// Telegram Bot Deep-Link Auth Session (e.g. /start <sessionId>)
+authRouter.post('/telegram/session', AuthController.createBotSession);
+authRouter.get('/telegram/session/:sessionId', AuthController.checkBotSession);
+authRouter.get('/telegram/session', AuthController.checkBotSession);
+
 // Telegram OIDC Configuration & OAuth URL
 authRouter.get('/telegram/config', AuthController.getConfig);
 authRouter.get('/telegram/login-url', AuthController.getLoginUrl);

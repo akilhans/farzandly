@@ -1,4 +1,5 @@
 import { DataService } from './dataService.js';
+import { TelegramSessionService } from './telegramSessionService.js';
 
 export interface TelegramBotOptions {
   token?: string;
@@ -53,6 +54,34 @@ export class TelegramBotEngine {
     const token = this.getBotToken();
     // Valid Telegram bot tokens contain a colon (e.g. 891291780:AA...)
     return Boolean(token && token.includes(':'));
+  }
+
+  private static cachedBotUsername: string | null = null;
+
+  /**
+   * Get bot username dynamically from environment or Telegram API
+   */
+  static async getBotUsername(): Promise<string> {
+    if (this.cachedBotUsername) return this.cachedBotUsername;
+    const envBot = (process.env.TELEGRAM_BOT_USERNAME || process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '')
+      .replace(/^@/, '')
+      .trim();
+    if (envBot) {
+      this.cachedBotUsername = envBot;
+      return envBot;
+    }
+    if (this.isConfigured()) {
+      try {
+        const me = await this.getMe();
+        if (me?.result?.username) {
+          this.cachedBotUsername = me.result.username;
+          return me.result.username;
+        }
+      } catch (err: any) {
+        console.warn('[TelegramBotEngine] getBotUsername error:', err.message);
+      }
+    }
+    return 'farzandlybot';
   }
 
   /**
@@ -283,8 +312,42 @@ export class TelegramBotEngine {
     const lower = text.toLowerCase();
     const is = (...variants: string[]) => variants.some((v) => lower === v.toLowerCase());
 
-    if (lower.startsWith('/start eslatma')) return this.sendReminderSettings(chatId, from);
-    if (lower.startsWith('/start')) return this.sendWelcomeMessage(chatId, from);
+    // Handle /start with deep link session or parameters
+    const startMatch = text.match(/^\/start(?:@\w+)?(?:\s+(.+))?$/i);
+    if (startMatch) {
+      const startParam = (startMatch[1] || '').trim();
+      if (startParam) {
+        if (startParam.toLowerCase() === 'eslatma') {
+          return this.sendReminderSettings(chatId, from);
+        }
+
+        // Check if startParam is an active web login session!
+        const authUser = await TelegramSessionService.authenticateSession(startParam, from);
+        if (authUser) {
+          const clientUrl = this.getClientUrl();
+          const displayName = authUser.name || from.first_name || 'Ota-ona';
+
+          const confirmText =
+            `🌿 <b>Farzandly platformasiga xush kelibsiz!</b>\n\n` +
+            `Assalomu alaykum, <b>${this.esc(displayName)}</b>!\n\n` +
+            `✅ <b>Hisobingiz muvaffaqiyatli tasdiqlandi.</b>\n` +
+            `Brauzeringizdagi sahifa avtomatik yangilanadi va profilingiz ochiladi.\n\n` +
+            `Agar sahifa avtomatik ochilmagan bo‘lsa, quyidagi tugma orqali to‘g‘ridan-to‘g‘ri saytga o‘tishingiz mumkin:`;
+
+          await this.sendMessage(chatId, confirmText, {
+            reply_markup: {
+              inline_keyboard: [
+                [{ text: '🚀 Saytga kirish', url: `${clientUrl}/dashboard` }],
+                [{ text: '📱 Telegram Mini Appda ochish', web_app: { url: clientUrl } }],
+              ],
+            },
+          });
+          return;
+        }
+      }
+
+      return this.sendWelcomeMessage(chatId, from);
+    }
     // `/kurslar` kept as a backward-compatible alias of `/darslar`
     if (is('/darslar', '/kurslar', '📚 Darslar', '📚 Kurslar')) return this.sendCoursesList(chatId, from);
     if (is('/maqolalar', '📖 Maqolalar')) return this.sendArticlesList(chatId, from);

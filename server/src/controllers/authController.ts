@@ -2,9 +2,90 @@ import { Request, Response } from 'express';
 import crypto from 'crypto';
 import { DataService } from '../services/dataService.js';
 import { TelegramBotService } from '../services/telegramBotService.js';
+import { TelegramSessionService } from '../services/telegramSessionService.js';
+import { TelegramBotEngine } from '../services/telegramBotEngine.js';
 import { z } from 'zod';
 
 export class AuthController {
+  /**
+   * Create a new Telegram Bot Deep-Link login session (e.g. https://t.me/farzandlybot?start=uuid)
+   * POST /api/auth/telegram/session
+   */
+  static async createBotSession(req: Request, res: Response) {
+    try {
+      const session = TelegramSessionService.createSession(10);
+      const botUsername = await TelegramBotEngine.getBotUsername();
+      const botUrl = `https://t.me/${botUsername}?start=${session.sessionId}`;
+      const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=260x260&margin=1&data=${encodeURIComponent(
+        botUrl
+      )}`;
+
+      res.status(201).json({
+        success: true,
+        data: {
+          sessionId: session.sessionId,
+          botUsername,
+          botUrl,
+          qrCodeUrl,
+          expiresIn: 600, // 10 minutes
+        },
+      });
+    } catch (error: any) {
+      console.error('[createBotSession Error]:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Telegram sessiyasini yaratishda xatolik yuz berdi',
+      });
+    }
+  }
+
+  /**
+   * Check status of Telegram Bot Deep-Link session
+   * GET /api/auth/telegram/session/:sessionId or GET /api/auth/telegram/session?sessionId=...
+   */
+  static async checkBotSession(req: Request, res: Response) {
+    try {
+      const sessionId = (req.params.sessionId || req.query.sessionId) as string;
+      if (!sessionId) {
+        return res.status(400).json({
+          success: false,
+          message: 'sessionId ko‘rsatilmadi',
+        });
+      }
+
+      const session = TelegramSessionService.getSession(sessionId);
+      if (!session) {
+        return res.json({
+          success: true,
+          status: 'expired',
+          message: 'Sessiya topilmadi yoki muddati tugagan',
+        });
+      }
+
+      if (session.status === 'authenticated') {
+        return res.json({
+          success: true,
+          status: 'authenticated',
+          data: {
+            user: session.user,
+            token: session.token,
+          },
+        });
+      }
+
+      return res.json({
+        success: true,
+        status: 'pending',
+      });
+    } catch (error: any) {
+      console.error('[checkBotSession Error]:', error);
+      res.status(500).json({
+        success: false,
+        message: 'Sessiyani tekshirishda xatolik yuz berdi',
+      });
+    }
+  }
+
   /**
    * Return Telegram OIDC public configuration
    */

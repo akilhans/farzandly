@@ -15,6 +15,12 @@ import {
   Lock,
   User,
   Loader2,
+  ExternalLink,
+  QrCode,
+  Smartphone,
+  X,
+  RefreshCw,
+  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { T } from '@/components/T';
@@ -22,7 +28,7 @@ import { useI18n } from '@/context/LanguageContext';
 
 export default function KirishPage() {
   const router = useRouter();
-  const { isAuthenticated, loginWithEmail, registerWithEmail } = useAuth();
+  const { isAuthenticated, loginWithEmail, registerWithEmail, setAuthenticatedSession } = useAuth();
   const { t } = useI18n();
 
   const [mode, setMode] = useState<'login' | 'register'>('login');
@@ -40,7 +46,87 @@ export default function KirishPage() {
       router.replace('/dashboard');
     }
   }, [isAuthenticated, router]);
+  // Telegram Bot Deep-Link Auth state (@farzandlybot?start=uuid)
+  const [tgSession, setTgSession] = useState<{
+    sessionId: string;
+    botUrl: string;
+    botUsername: string;
+    qrCodeUrl: string;
+  } | null>(null);
+  const [isTgModalOpen, setIsTgModalOpen] = useState(false);
+  const [tgLoading, setTgLoading] = useState(false);
+  const [tgStatus, setTgStatus] = useState<'idle' | 'waiting' | 'success' | 'expired' | 'error'>('idle');
+  const pollIntervalRef = React.useRef<NodeJS.Timeout | null>(null);
 
+  const stopPolling = () => {
+    if (pollIntervalRef.current) {
+      clearInterval(pollIntervalRef.current);
+      pollIntervalRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => stopPolling();
+  }, []);
+
+  const handleTelegramBotLogin = async () => {
+    stopPolling();
+    setTgLoading(true);
+    setTgStatus('waiting');
+    setErrorMessage('');
+
+    try {
+      const res = await fetch('/api/auth/telegram/session', {
+        method: 'POST',
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.success || !data.data) {
+        throw new Error(data.message || 'Telegram sessiyasini yaratib bo‘lmadi');
+      }
+
+      const session = data.data;
+      setTgSession(session);
+      setIsTgModalOpen(true);
+
+      const isMobile =
+        typeof navigator !== 'undefined' &&
+        /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+      if (isMobile) {
+        window.open(session.botUrl, '_blank');
+      }
+
+      // Start polling every 1.5 seconds
+      pollIntervalRef.current = setInterval(async () => {
+        try {
+          const checkRes = await fetch(
+            `/api/auth/telegram/session?sessionId=${encodeURIComponent(session.sessionId)}`
+          );
+          const checkData = await checkRes.json();
+
+          if (checkData.status === 'authenticated' && checkData.data) {
+            stopPolling();
+            setTgStatus('success');
+            setAuthenticatedSession(checkData.data.user, checkData.data.token);
+            setTimeout(() => {
+              router.push('/dashboard');
+            }, 800);
+          } else if (checkData.status === 'expired') {
+            stopPolling();
+            setTgStatus('expired');
+          }
+        } catch (pollErr) {
+          console.warn('Telegram auth polling error:', pollErr);
+        }
+      }, 1500);
+    } catch (err: any) {
+      console.error('Telegram bot login error:', err);
+      setTgStatus('error');
+      setErrorMessage(err.message || 'Telegram orqali kirishda xatolik yuz berdi');
+    } finally {
+      setTgLoading(false);
+    }
+  };
   // Official Telegram OIDC Login
   const handleTelegramOidcLogin = () => {
     const clientId =
@@ -342,15 +428,25 @@ export default function KirishPage() {
             <T k="login.8" /></div>
         </div>
 
-        {/* Official Telegram Login Button */}
-        <div>
+        {/* Telegram Bot Deep-link Login (Vena AI style) */}
+        <div className="space-y-2">
           <button
             type="button"
-            onClick={handleTelegramOidcLogin}
-            className="w-full bg-[#229ED9] hover:bg-[#1f8fc4] active:scale-[0.99] text-white font-semibold py-2.5 px-4 rounded-xl shadow-sm flex items-center justify-center gap-2.5 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#229ED9] focus-visible:ring-offset-2"
+            onClick={handleTelegramBotLogin}
+            disabled={tgLoading}
+            className="w-full bg-[#229ED9] hover:bg-[#1f8fc4] active:scale-[0.99] disabled:opacity-75 text-white font-semibold py-3 px-4 rounded-xl shadow-md shadow-sky-500/20 flex items-center justify-center gap-2.5 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#229ED9] focus-visible:ring-offset-2"
           >
-            <Send className="w-4 h-4 -rotate-12" aria-hidden="true" />
-            <span><T k="login.9" /></span>
+            {tgLoading ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" />
+                <span>Telegram botga ulanmoqda...</span>
+              </>
+            ) : (
+              <>
+                <Send className="w-4 h-4 -rotate-12" aria-hidden="true" />
+                <span>Telegram orqali tezkor kirish</span>
+              </>
+            )}
           </button>
         </div>
 
@@ -358,9 +454,118 @@ export default function KirishPage() {
         <div className="pt-2 border-t border-slate-100 flex items-start gap-2.5 text-xs text-slate-500 leading-relaxed">
           <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" aria-hidden="true" />
           <p>
-            <T k="login.10" /></p>
+            <T k="login.10" />
+          </p>
         </div>
       </m.div>
+
+      {/* Telegram Deep-Link Auth Modal */}
+      <AnimatePresence>
+        {isTgModalOpen && tgSession && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+            <m.div
+              initial={{ opacity: 0, scale: 0.95, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 10 }}
+              transition={{ duration: 0.2 }}
+              className="w-full max-w-sm bg-white rounded-3xl p-6 shadow-2xl border border-slate-100 relative text-center space-y-4"
+            >
+              {/* Close button */}
+              <button
+                type="button"
+                onClick={() => {
+                  stopPolling();
+                  setIsTgModalOpen(false);
+                }}
+                className="absolute right-4 top-4 text-slate-400 hover:text-slate-600 rounded-full p-1 transition-colors"
+                aria-label="Yopish"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Telegram Icon */}
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-[#229ED9] text-white flex items-center justify-center shadow-lg shadow-sky-500/25">
+                <Send className="w-7 h-7 -rotate-12 translate-x-0.5 -translate-y-0.5" />
+              </div>
+
+              <div>
+                <h3 className="text-lg font-bold text-slate-900 font-display">
+                  Telegram orqali tasdiqlash
+                </h3>
+                <p className="text-xs text-slate-500 mt-1">
+                  @{tgSession.botUsername || 'farzandlybot'} rasmiy boti
+                </p>
+              </div>
+
+              {/* QR Code Container */}
+              <div className="relative mx-auto w-52 h-52 p-3 bg-slate-50 rounded-2xl border border-slate-200 flex items-center justify-center">
+                {tgStatus === 'success' ? (
+                  <div className="flex flex-col items-center justify-center text-emerald-600 space-y-2">
+                    <CheckCircle2 className="w-16 h-16 animate-bounce" />
+                    <span className="text-xs font-semibold text-slate-700">Muvaffaqiyatli kirdingiz!</span>
+                  </div>
+                ) : (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={tgSession.qrCodeUrl}
+                    alt="Telegram Bot Auth QR Code"
+                    className="w-full h-full object-contain rounded-lg"
+                  />
+                )}
+              </div>
+
+              {/* Status indicator badge */}
+              <div className="py-1">
+                {tgStatus === 'waiting' && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-50 text-sky-700 text-xs font-medium border border-sky-200">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
+                    </span>
+                    <span>Botda «START» tugmasini bosing...</span>
+                  </div>
+                )}
+                {tgStatus === 'success' && (
+                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-200">
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <span>Tasdiqlandi! Sahifa ochilmoqda...</span>
+                  </div>
+                )}
+                {tgStatus === 'expired' && (
+                  <div className="space-y-2">
+                    <span className="text-xs text-amber-600 font-medium block">
+                      Sessiya muddati tugadi.
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleTelegramBotLogin}
+                      className="inline-flex items-center gap-1.5 text-xs text-sky-600 hover:text-sky-700 font-semibold"
+                    >
+                      <RefreshCw className="w-3.5 h-3.5" />
+                      Qayta urinish
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Direct Open Bot Button */}
+              <a
+                href={tgSession.botUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full bg-[#229ED9] hover:bg-[#1f8fc4] active:scale-[0.99] text-white font-semibold py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 text-sm shadow-sm transition-all"
+              >
+                <span>Telegram botni ochish</span>
+                <ExternalLink className="w-4 h-4" />
+              </a>
+
+              <p className="text-[11px] text-slate-400 leading-tight">
+                Telefoningiz kamerasi orqali QR kodni skanerlang yoki yuqoridagi tugma orqali botga o‘ting.
+              </p>
+            </m.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
