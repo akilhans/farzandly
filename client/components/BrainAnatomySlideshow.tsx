@@ -11,6 +11,7 @@ import {
   Maximize2,
 } from 'lucide-react';
 import { GalleryImage } from '@/lib/healthData';
+import { useI18n } from '@/context/LanguageContext';
 
 interface BrainAnatomySlideshowProps {
   slides: GalleryImage[];
@@ -21,8 +22,10 @@ const DEFAULT_ANATOMY_IMAGE = '/body basics/default-anatomy.svg';
 
 export default function BrainAnatomySlideshow({
   slides,
-  lang = 'uz',
+  lang: propLang,
 }: BrainAnatomySlideshowProps) {
+  const { language } = useI18n();
+  const lang = propLang || (language === 'ru' || language === 'en' ? language : 'uz');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slideErrors, setSlideErrors] = useState<Record<number, boolean>>({});
 
