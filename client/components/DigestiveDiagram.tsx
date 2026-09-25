@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { Info, CheckCircle2, ChevronRight, Activity, Stethoscope } from 'lucide-react';
+import { useI18n } from '@/context/LanguageContext';
 
 interface OrganInfo {
   id: string;
@@ -95,7 +96,9 @@ interface DigestiveDiagramProps {
   lang?: 'uz' | 'en' | 'ru';
 }
 
-export default function DigestiveDiagram({ highlightOrgan = 'esophagus', lang = 'uz' }: DigestiveDiagramProps) {
+export default function DigestiveDiagram({ highlightOrgan = 'esophagus', lang: propLang }: DigestiveDiagramProps) {
+  const { language } = useI18n();
+  const lang = propLang || (language === 'ru' || language === 'en' ? language : 'uz');
   const [selectedOrgan, setSelectedOrgan] = useState<OrganInfo>(
     ORGANS.find((o) => o.id === highlightOrgan) || ORGANS[1]
   );

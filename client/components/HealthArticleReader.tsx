@@ -23,9 +23,9 @@ import {
 import { HealthTopic } from '@/lib/healthData';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
+import { useI18n } from '@/context/LanguageContext';
 import DigestiveDiagram from '@/components/DigestiveDiagram';
 import BrainAnatomySlideshow from '@/components/BrainAnatomySlideshow';
-import FlagIcon from '@/components/FlagIcon';
 
 interface HealthArticleReaderProps {
   topic: HealthTopic;
@@ -33,10 +33,11 @@ interface HealthArticleReaderProps {
 
 export default function HealthArticleReader({ topic }: HealthArticleReaderProps) {
   const { user } = useAuth();
+  const { language } = useI18n();
+  const lang = (language === 'ru' || language === 'en' ? language : 'uz') as 'uz' | 'en' | 'ru';
   const isUserPremium = Boolean(user?.isPremium || user?.subscriptionStatus === 'premium');
   const isPaywalled = Boolean(topic.isPremium && !isUserPremium);
 
-  const [lang, setLang] = useState<'uz' | 'en' | 'ru'>('uz');
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [earnedXP, setEarnedXP] = useState(0);
   const [xpToast, setXpToast] = useState<{ show: boolean; amount: number }>({ show: false, amount: 0 });
@@ -246,43 +247,6 @@ export default function HealthArticleReader({ topic }: HealthArticleReaderProps)
               <Clock className="w-3.5 h-3.5" />
               {topic.readingMinutes} {texts.readTime}
             </span>
-          </div>
-
-          {/* Trilingual Toggle: O'zbekcha / English / Русский */}
-          <div className="inline-flex items-center bg-slate-100 p-1 rounded-2xl border border-slate-200 text-xs font-bold gap-0.5">
-            <button
-              onClick={() => setLang('uz')}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 ${
-                lang === 'uz'
-                  ? 'bg-emerald-600 text-white shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <FlagIcon country="uz" size="sm" />
-              <span>O‘zbekcha</span>
-            </button>
-            <button
-              onClick={() => setLang('en')}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 ${
-                lang === 'en'
-                  ? 'bg-emerald-600 text-white shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <FlagIcon country="en" size="sm" />
-              <span>English</span>
-            </button>
-            <button
-              onClick={() => setLang('ru')}
-              className={`px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5 ${
-                lang === 'ru'
-                  ? 'bg-emerald-600 text-white shadow-xs font-black'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <FlagIcon country="ru" size="sm" />
-              <span>Русский</span>
-            </button>
           </div>
         </div>
 
