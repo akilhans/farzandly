@@ -44,11 +44,14 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
   const url = `/maqolalar/${article.slug}`;
   const title = (article.seoTitle || article.title).replace(/\s*\|\s*Farzandly\s*$/i, '');
   const description = article.seoDescription || article.excerpt;
+  const keywords = Array.from(
+    new Set(['farzand tarbiyalash', 'farzand tarbiyasi', 'bola tarbiyasi', 'bolalar psixologiyasi', ...(article.tags || [])])
+  );
 
   return {
     title: { absolute: `${title} | ${SITE_NAME}` },
     description,
-    keywords: article.tags,
+    keywords,
     alternates: { canonical: url },
     openGraph: {
       title: article.title,
@@ -60,8 +63,8 @@ export async function generateMetadata({ params }: ArticlePageProps): Promise<Me
       publishedTime: article.publishedAt,
       modifiedTime: article.publishedAt,
       section: article.categorySlug,
-      tags: article.tags,
-      images: [{ url: '/logo.png', width: 778, height: 192, alt: SITE_NAME }],
+      tags: keywords,
+      images: [{ url: '/logo.png', width: 778, height: 192, alt: `${article.title} — Farzandly` }],
     },
     twitter: {
       card: 'summary_large_image',
@@ -83,25 +86,49 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
 
   // JSON-LD Structured Data Schema
   const articleUrl = absoluteUrl(`/maqolalar/${article.slug}`);
+  const articleKeywords = Array.from(
+    new Set(['farzand tarbiyalash', 'farzand tarbiyasi', 'bolalar psixologiyasi', ...(article.tags || [])])
+  ).join(', ');
+
   const jsonLd = {
     '@context': 'https://schema.org',
     '@graph': [
       {
-        '@type': 'Article',
+        '@type': ['Article', 'BlogPosting'],
+        '@id': `${articleUrl}#article`,
         headline: article.title,
         description: article.excerpt,
         image: [absoluteUrl('/logo.png')],
         inLanguage: 'uz',
-        keywords: (article.tags || []).join(', '),
-        articleSection: article.categorySlug,
-        author: { '@type': 'Organization', name: 'Farzandly Pedagogik Tahririyati', url: SITE_URL },
+        keywords: articleKeywords,
+        articleSection: category ? category.name : article.categorySlug,
+        about: [
+          { '@type': 'Thing', name: 'Farzand tarbiyalash' },
+          { '@type': 'Thing', name: 'Bolalar psixologiyasi' },
+        ],
+        speakable: {
+          '@type': 'SpeakableSpecification',
+          cssSelector: ['h1', 'article header p'],
+        },
+        author: {
+          '@type': 'Organization',
+          name: 'Farzandly Pedagogik Tahririyati',
+          url: SITE_URL,
+          logo: absoluteUrl('/logo.png'),
+        },
         publisher: {
           '@type': 'Organization',
           name: SITE_NAME,
-          logo: { '@type': 'ImageObject', url: absoluteUrl('/logo.png') },
+          url: SITE_URL,
+          logo: {
+            '@type': 'ImageObject',
+            url: absoluteUrl('/logo.png'),
+            width: 778,
+            height: 192,
+          },
         },
-        datePublished: article.publishedAt,
-        dateModified: article.publishedAt,
+        datePublished: article.publishedAt || '2025-01-01T00:00:00.000Z',
+        dateModified: article.publishedAt || '2025-01-01T00:00:00.000Z',
         mainEntityOfPage: { '@type': 'WebPage', '@id': articleUrl },
         isAccessibleForFree: !article.isPremium,
       },
@@ -109,7 +136,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
         '@type': 'BreadcrumbList',
         itemListElement: [
           { '@type': 'ListItem', position: 1, name: 'Asosiy', item: SITE_URL },
-          { '@type': 'ListItem', position: 2, name: 'Maqolalar', item: absoluteUrl('/maqolalar') },
+          { '@type': 'ListItem', position: 2, name: 'Tarbiya maqolalari', item: absoluteUrl('/maqolalar') },
           { '@type': 'ListItem', position: 3, name: article.title, item: articleUrl },
         ],
       },

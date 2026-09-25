@@ -393,3 +393,174 @@ const NewsletterSubscriberSchema = new Schema<INewsletterSubscriber>({
 }, { timestamps: true });
 
 export const NewsletterSubscriber = mongoose.models.NewsletterSubscriber || mongoose.model<INewsletterSubscriber>('NewsletterSubscriber', NewsletterSubscriberSchema);
+
+// ======================== HEALTH TOPIC (BODY BASICS) ========================
+export interface IHealthSection {
+  title: string;
+  titleUz?: string;
+  titleRu?: string;
+  paragraphs: string[];
+  paragraphsUz?: string[];
+  paragraphsRu?: string[];
+  highlightBox?: {
+    title: string;
+    titleUz?: string;
+    titleRu?: string;
+    text: string;
+    textUz?: string;
+    textRu?: string;
+    type?: 'info' | 'tip' | 'warning';
+  };
+}
+
+export interface IPronunciationTerm {
+  term: string;
+  phonetic: string;
+  meaningUz: string;
+  meaningEn: string;
+  meaningRu: string;
+}
+
+export interface IGalleryImage {
+  url: string;
+  labelUz: string;
+  labelEn: string;
+  labelRu: string;
+  descriptionUz?: string;
+  descriptionEn?: string;
+  descriptionRu?: string;
+}
+
+export interface IHealthQuiz {
+  question: string;
+  questionUz: string;
+  questionRu: string;
+  options: string[];
+  optionsUz: string[];
+  optionsRu: string[];
+  correctIndex: number;
+  explanation: string;
+  explanationUz: string;
+  explanationRu: string;
+  xpReward?: number;
+}
+
+export interface IHealthTopic extends Document {
+  id: string;
+  slug: string;
+  title: string;
+  titleUz: string;
+  titleRu: string;
+  subtitle: string;
+  subtitleUz: string;
+  subtitleRu: string;
+  system: string;
+  systemUz: string;
+  systemRu: string;
+  category: string;
+  isPremium?: boolean;
+  readingMinutes: number;
+  medicallyReviewedBy: string;
+  reviewDate: string;
+  heroImage?: string;
+  diagramImage?: string;
+  galleryImages?: IGalleryImage[];
+  pronunciations?: IPronunciationTerm[];
+  sections: IHealthSection[];
+  funFacts: Array<{ en: string; uz: string; ru: string }>;
+  takeaways: Array<{ en: string; uz: string; ru: string }>;
+  quiz: IHealthQuiz[];
+  translations?: Record<string, any>;
+}
+
+const HealthTopicSchema = new Schema<IHealthTopic>({
+  id: { type: String, required: true },
+  slug: { type: String, required: true, unique: true, index: true },
+  title: { type: String, required: true },
+  titleUz: { type: String, required: true },
+  titleRu: { type: String, required: true },
+  subtitle: { type: String, required: true },
+  subtitleUz: { type: String, required: true },
+  subtitleRu: { type: String, required: true },
+  system: { type: String, required: true },
+  systemUz: { type: String, required: true },
+  systemRu: { type: String, required: true },
+  category: { type: String, default: 'body-basics', index: true },
+  isPremium: { type: Boolean, default: false },
+  readingMinutes: { type: Number, default: 5 },
+  medicallyReviewedBy: { type: String, default: 'KidsHealth Medical Experts' },
+  reviewDate: { type: String, default: '2026' },
+  heroImage: { type: String },
+  diagramImage: { type: String },
+  galleryImages: [
+    {
+      url: { type: String, required: true },
+      labelUz: { type: String, required: true },
+      labelEn: { type: String, required: true },
+      labelRu: { type: String, required: true },
+      descriptionUz: { type: String },
+      descriptionEn: { type: String },
+      descriptionRu: { type: String },
+    },
+  ],
+  pronunciations: [
+    {
+      term: { type: String, required: true },
+      phonetic: { type: String, required: true },
+      meaningUz: { type: String, required: true },
+      meaningEn: { type: String, required: true },
+      meaningRu: { type: String, required: true },
+    },
+  ],
+  sections: [
+    {
+      title: { type: String, required: true },
+      titleUz: { type: String },
+      titleRu: { type: String },
+      paragraphs: [{ type: String }],
+      paragraphsUz: [{ type: String }],
+      paragraphsRu: [{ type: String }],
+      highlightBox: {
+        title: { type: String },
+        titleUz: { type: String },
+        titleRu: { type: String },
+        text: { type: String },
+        textUz: { type: String },
+        textRu: { type: String },
+        type: { type: String, default: 'info' },
+      },
+    },
+  ],
+  funFacts: [
+    {
+      en: { type: String, required: true },
+      uz: { type: String, required: true },
+      ru: { type: String, required: true },
+    },
+  ],
+  takeaways: [
+    {
+      en: { type: String, required: true },
+      uz: { type: String, required: true },
+      ru: { type: String, required: true },
+    },
+  ],
+  quiz: [
+    {
+      question: { type: String, required: true },
+      questionUz: { type: String, required: true },
+      questionRu: { type: String, required: true },
+      options: [{ type: String }],
+      optionsUz: [{ type: String }],
+      optionsRu: [{ type: String }],
+      correctIndex: { type: Number, required: true },
+      explanation: { type: String, required: true },
+      explanationUz: { type: String, required: true },
+      explanationRu: { type: String, required: true },
+      xpReward: { type: Number, default: 10 },
+    },
+  ],
+  translations: { type: Schema.Types.Mixed, default: {} },
+}, { timestamps: true });
+
+export const HealthTopic = mongoose.models.HealthTopic || mongoose.model<IHealthTopic>('HealthTopic', HealthTopicSchema);

@@ -6,6 +6,7 @@ const uz: Record<string, string> = {
     'nav.courses': 'Darslar',
     'nav.articles': 'Maqolalar',
     'nav.kids': 'Bolalar olami',
+    'nav.health': 'Salomatlik',
     'nav.premium': 'Premium',
     'nav.login': 'Kirish',
     'nav.logout': 'Chiqish',

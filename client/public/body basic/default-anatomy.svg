@@ -1,0 +1,92 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.8" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.2" />
+    </linearGradient>
+    <filter id="blurFilter" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="30" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="url(#bgGrad)" />
+  
+  <!-- Glowing background elements -->
+  <circle cx="400" cy="280" r="180" fill="url(#glow)" filter="url(#blurFilter)" />
+  <circle cx="400" cy="300" r="120" fill="#047857" opacity="0.3" filter="url(#blurFilter)" />
+
+  <!-- Grid pattern overlay -->
+  <g stroke="#10b981" stroke-width="0.5" opacity="0.15">
+    <line x1="100" y1="0" x2="100" y2="600" />
+    <line x1="200" y1="0" x2="200" y2="600" />
+    <line x1="300" y1="0" x2="300" y2="600" />
+    <line x1="400" y1="0" x2="400" y2="600" />
+    <line x1="500" y1="0" x2="500" y2="600" />
+    <line x1="600" y1="0" x2="600" y2="600" />
+    <line x1="700" y1="0" x2="700" y2="600" />
+    <line x1="0" y1="100" x2="800" y2="100" />
+    <line x1="0" y1="200" x2="800" y2="200" />
+    <line x1="0" y1="300" x2="800" y2="300" />
+    <line x1="0" y1="400" x2="800" y2="400" />
+    <line x1="0" y1="500" x2="800" y2="500" />
+  </g>
+
+  <!-- Central Stethoscope & Human Body Anatomy Silhouette -->
+  <g transform="translate(400, 270) scale(1.1)">
+    <!-- Heart pulse line behind -->
+    <path d="M-220,50 L-140,50 L-110,10 L-80,90 L-50,-20 L-20,70 L10,50 L220,50" 
+          fill="none" stroke="#34d399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity="0.4" />
+
+    <!-- Head / Brain outline -->
+    <ellipse cx="0" cy="-110" rx="45" ry="52" fill="#065f46" stroke="#34d399" stroke-width="3.5" />
+    <!-- Brain folds representation -->
+    <path d="M-25,-120 Q-10,-140 0,-120 Q15,-140 25,-120" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round" />
+    <path d="M-30,-100 Q-15,-85 0,-105 Q15,-85 30,-100" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round" />
+    <path d="M0,-130 L0,-90" fill="none" stroke="#a7f3d0" stroke-width="2.5" stroke-dasharray="4,4" />
+
+    <!-- Neck -->
+    <rect x="-16" y="-60" width="32" height="30" rx="6" fill="#047857" stroke="#34d399" stroke-width="3" />
+
+    <!-- Torso / Chest outline -->
+    <path d="M-75,-30 C-85,30 -70,120 -50,140 L50,140 C70,120 85,30 75,-30 Z" 
+          fill="#064e3b" stroke="#34d399" stroke-width="3.5" />
+
+    <!-- Lungs & Respiratory outline -->
+    <path d="M-45,-10 C-55,20 -40,60 -20,65 C-10,65 -15,10 -25,-10 Z" fill="#047857" stroke="#6ee7b7" stroke-width="2.5" />
+    <path d="M45,-10 C55,20 40,60 20,65 C10,65 15,10 25,-10 Z" fill="#047857" stroke="#6ee7b7" stroke-width="2.5" />
+
+    <!-- Heart at center -->
+    <path d="M-5,15 C-5,5 -22,5 -22,22 C-22,35 -5,48 -5,55 C-5,48 12,35 12,22 C12,5 -5,5 -5,15 Z" 
+          fill="#f43f5e" stroke="#ffe4e6" stroke-width="2" />
+
+    <!-- Glowing points on spine and nervous system -->
+    <circle cx="0" cy="-50" r="4" fill="#fbbf24" />
+    <circle cx="0" cy="-20" r="4" fill="#fbbf24" />
+    <circle cx="0" cy="10" r="4" fill="#fbbf24" />
+    <circle cx="0" cy="40" r="4" fill="#fbbf24" />
+    <circle cx="0" cy="70" r="4" fill="#fbbf24" />
+    <circle cx="0" cy="100" r="4" fill="#fbbf24" />
+    <line x1="0" y1="-50" x2="0" y2="120" stroke="#fcd34d" stroke-width="2" stroke-dasharray="3,3" />
+
+    <!-- Stethoscope loops around -->
+    <path d="M-35,-20 C-65,-10 -90,40 -80,90 C-70,130 -30,165 0,165 C30,165 70,130 80,90 C90,40 65,-10 35,-20" 
+          fill="none" stroke="#e2e8f0" stroke-width="4.5" stroke-linecap="round" />
+    <!-- Chest piece of stethoscope -->
+    <circle cx="0" cy="165" r="14" fill="#94a3b8" stroke="#f8fafc" stroke-width="3" />
+    <circle cx="0" cy="165" r="7" fill="#0f172a" />
+  </g>
+
+  <!-- Title Badge -->
+  <g transform="translate(400, 520)">
+    <rect x="-190" y="-24" width="380" height="48" rx="24" fill="#065f46" stroke="#34d399" stroke-width="2" />
+    <text x="0" y="6" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="900" fill="#ffffff" text-anchor="middle" letter-spacing="1">
+      TANA SIRLARI • BODY BASICS
+    </text>
+  </g>
+</svg>

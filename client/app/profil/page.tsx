@@ -39,6 +39,7 @@ import {
 import { api, Achievement } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
+import FlagIcon from '@/components/FlagIcon';
 import UserAvatar from '@/components/UserAvatar';
 import { AGE_GROUP_OPTIONS, MAX_CHILDREN, normalizeAgeGroup, type ChildProfile } from '@/lib/children';
 import { calculateLevel, playChimeSound } from '@/lib/gamification';
@@ -727,21 +728,22 @@ export default function ProfilePage() {
 
               <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200">
                 {[
-                  { code: 'uz', label: 'O‘zbek' },
-                  { code: 'en', label: 'English' },
-                  { code: 'ru', label: 'Русский' },
+                  { code: 'uz' as const, label: 'O‘zbek' },
+                  { code: 'en' as const, label: 'English' },
+                  { code: 'ru' as const, label: 'Русский' },
                 ].map((lang) => (
                   <button
                     key={lang.code}
                     type="button"
-                    onClick={() => setLanguage(lang.code as any)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                    onClick={() => setLanguage(lang.code)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer inline-flex items-center gap-1.5 ${
                       language === lang.code
-                        ? 'bg-emerald-600 text-white shadow-xs'
+                        ? 'bg-emerald-600 text-white shadow-xs font-black'
                         : 'text-slate-600 hover:text-slate-900'
                     }`}
                   >
-                    {lang.label}
+                    <FlagIcon country={lang.code} size="sm" />
+                    <span>{lang.label}</span>
                   </button>
                 ))}
               </div>

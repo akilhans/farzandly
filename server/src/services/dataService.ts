@@ -10,6 +10,7 @@ import {
   User,
   UserProgress,
   NewsletterSubscriber,
+  HealthTopic,
 } from '../models/index.js';
 import {
   seedCategories,
@@ -20,6 +21,7 @@ import {
   seedLessons,
   seedArticles,
 } from '../scripts/seedData.js';
+import { seedHealthTopics } from '../scripts/seedHealthData.js';
 
 // In-memory fallback state if MongoDB is not connected
 let memoryCategories = [...seedCategories];
@@ -29,6 +31,7 @@ let memoryCourses = [...seedCourses];
 let memoryLearningPaths = [...seedLearningPaths];
 let memoryLessons = [...seedLessons];
 let memoryArticles = [...seedArticles];
+let memoryHealthTopics = [...seedHealthTopics];
 let memoryUsers: Record<string, any> = {
   'demo-user': {
     _id: 'demo-user',
@@ -707,5 +710,47 @@ export class DataService {
       memoryNewsletter.push(email);
     }
     return { success: true, email };
+  }
+
+  // ======================== HEALTH TOPICS (BODY BASICS) ========================
+  static async getHealthTopics(lang: string = 'uz') {
+    let items;
+    if (isDbConnected()) {
+      try {
+        items = await HealthTopic.find().sort({ readingMinutes: 1 });
+        if (!items || items.length === 0) {
+          items = memoryHealthTopics;
+        }
+      } catch {
+        items = memoryHealthTopics;
+      }
+    } else {
+      items = memoryHealthTopics;
+    }
+    return items.map((t: any) => localizeEntity(t, lang));
+  }
+
+  static async getHealthTopicBySlug(slug: string, lang: string = 'uz') {
+    let item;
+    if (isDbConnected()) {
+      try {
+        item = await HealthTopic.findOne({ slug });
+      } catch {
+        item = null;
+      }
+    }
+    if (!item) {
+      item = memoryHealthTopics.find((t: any) => t.slug === slug);
+    }
+    return item ? localizeEntity(item, lang) : null;
+  }
+
+  static async recordHealthQuiz(slug: string, score: number = 100, xpEarned: number = 10, userId: string = 'demo-user') {
+    return this.recordProgress({
+      userId,
+      lessonSlug: `health-${slug}`,
+      score,
+      xpEarned,
+    });
   }
 }

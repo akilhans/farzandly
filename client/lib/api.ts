@@ -1,6 +1,14 @@
 // API client for Farzandly
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+export type {
+  HealthTopic,
+  HealthSection,
+  GalleryImage,
+  PronunciationTerm,
+  HealthQuizItem,
+} from './healthData';
+
 export interface Category {
   _id?: string;
   name: string;
@@ -566,4 +574,99 @@ export const api = {
     }
     return { success: true, message: 'Obuna muvaffaqiyatli qabul qilindi!' };
   },
+
+  // Health: Body Basics
+  async getHealthTopics(lang: string = 'uz', category?: string) {
+    const query = `lang=${lang}${category ? `&category=${category}` : ''}`;
+    const res = await fetch(`${API_BASE}/health-topics?${query}`, { cache: 'no-store' }).catch(() => null);
+    if (res && res.ok) {
+      return await res.json();
+    }
+    if (typeof window !== 'undefined') {
+      const localRes = await fetch(`/api/health-topics?${query}`, { cache: 'no-store' }).catch(() => null);
+      if (localRes && localRes.ok) {
+        return await localRes.json();
+      }
+    }
+    const { healthTopics } = await import('./healthData');
+    let data = healthTopics;
+    if (category) data = data.filter((t) => t.category === category);
+    return { status: 'ok', count: data.length, data };
+  },
+
+  async getHealthTopicBySlug(slug: string, lang: string = 'uz') {
+    const res = await fetch(`${API_BASE}/health-topics/${slug}?lang=${lang}`, { cache: 'no-store' }).catch(() => null);
+    if (res && res.ok) {
+      return await res.json();
+    }
+    if (typeof window !== 'undefined') {
+      const localRes = await fetch(`/api/health-topics/${slug}?lang=${lang}`, { cache: 'no-store' }).catch(() => null);
+      if (localRes && localRes.ok) {
+        return await localRes.json();
+      }
+    }
+    const { healthTopics } = await import('./healthData');
+    const topic = healthTopics.find((t) => t.slug === slug || t.id === slug) || null;
+    return { status: 'ok', data: topic };
+  },
+
+  async recordHealthQuiz(slug: string, score: number, xpEarned: number = 10, userId?: string) {
+    const res = await fetch(`${API_BASE}/health-topics/${slug}/quiz`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ score, xpEarned, userId }),
+    }).catch(() => null);
+
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('farzandly_user');
+      let user = stored
+        ? JSON.parse(stored)
+        : {
+            _id: 'demo-user',
+            name: 'Ota-ona',
+            childAgeGroup: '3-5',
+            selectedInterests: ['Bola xulqi'],
+            dailyGoalMinutes: 10,
+            xp: 0,
+            streak: 1,
+            level: 'Boshlovchi',
+            completedLessons: [],
+            achievements: ['ilk-qadam'],
+            subscriptionStatus: 'free',
+          };
+      user.xp = (user.xp || 0) + xpEarned;
+      if (!user.completedHealthQuizzes) {
+        user.completedHealthQuizzes = [];
+      }
+      if (!user.completedHealthQuizzes.includes(slug)) {
+        user.completedHealthQuizzes.push(slug);
+      }
+      user.streak = calculateStreak(user.lastActiveDate, user.streak || 1);
+      user.lastActiveDate = new Date().toISOString();
+      const levelInfo = calculateLevel(user.xp);
+      user.level = levelInfo.level;
+      const achResult = checkAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
+      user.achievements = achResult.unlocked;
+
+      localStorage.setItem('farzandly_user', JSON.stringify(user));
+
+      // Dispatch custom storage event so header or profile updates XP in real-time
+      try {
+        window.dispatchEvent(new Event('farzandly_user_updated'));
+      } catch (e) {}
+
+      return {
+        success: true,
+        xpEarned,
+        user,
+        newlyUnlockedAchievements: achResult.newlyUnlocked,
+      };
+    }
+
+    if (res && res.ok) {
+      return await res.json();
+    }
+    return { success: true, xpEarned };
+  },
 };
+

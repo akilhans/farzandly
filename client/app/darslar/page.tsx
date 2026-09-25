@@ -8,6 +8,7 @@ import { api, Course, AgeGroup } from '@/lib/api';
 import { useI18n } from '@/context/LanguageContext';
 import SearchForm from '@/components/SearchForm';
 import Pagination from '@/components/Pagination';
+import { absoluteUrl } from '@/lib/site';
 
 const PAGE_SIZE = 6;
 
@@ -42,8 +43,26 @@ function DarslarContent() {
   const page = Math.min(currentPage, totalPages);
   const paginatedCourses = courses.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const itemListJsonLd = courses.length > 0 ? {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: paginatedCourses.map((c, idx) => ({
+      '@type': 'ListItem',
+      position: (page - 1) * PAGE_SIZE + idx + 1,
+      url: absoluteUrl(`/darslar/${c.slug}`),
+      name: c.title,
+      description: c.description,
+    })),
+  } : null;
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+      {itemListJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+        />
+      )}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-3.5 py-1 rounded-full">
           {t('courses.badge', 'Strukturali dasturlar')}
