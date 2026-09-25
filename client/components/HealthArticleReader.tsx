@@ -24,6 +24,7 @@ import { HealthTopic } from '@/lib/healthData';
 import { api } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
+import { playChimeSound } from '@/lib/gamification';
 import DigestiveDiagram from '@/components/DigestiveDiagram';
 import BrainAnatomySlideshow from '@/components/BrainAnatomySlideshow';
 
@@ -68,6 +69,7 @@ export default function HealthArticleReader({ topic }: HealthArticleReaderProps)
     setQuizAnswers((prev) => ({ ...prev, [qIdx]: optIdx }));
 
     if (optIdx === correctIdx) {
+      playChimeSound('correct');
       const reward = 10;
       setEarnedXP((prev) => prev + reward);
       setXpToast({ show: true, amount: reward });
@@ -78,6 +80,15 @@ export default function HealthArticleReader({ topic }: HealthArticleReaderProps)
       } catch (err) {
         console.error('Quiz progress save error:', err);
       }
+    } else {
+      playChimeSound('wrong');
+    }
+
+    const nextCount = Object.keys(quizAnswers).length + 1;
+    if (nextCount === topic.quiz.length) {
+      setTimeout(() => {
+        playChimeSound('victory');
+      }, 400);
     }
   };
 
