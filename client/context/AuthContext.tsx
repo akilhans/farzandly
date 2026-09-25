@@ -3,6 +3,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { calculateLevel, checkAchievements, calculateStreak } from '@/lib/gamification';
 import type { ChildProfile } from '@/lib/children';
+import { api } from '@/lib/api';
+
+/** Only a real Mongo _id can be looked up on the server — synthetic ids (guest-user, tg-123, demo-user) can't. */
+const isServerBackedId = (id?: string) => Boolean(id && /^[0-9a-fA-F]{24}$/.test(id));
 
 export interface TelegramUser {
   _id: string;
@@ -143,6 +147,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(false);
     }
   }, []);
+
+  // Re-sync with the server's copy of the profile on load, so a device that only has a
+  // stale cached snapshot (e.g. from an earlier login, before other devices/the bot moved
+  // xp/streak/level forward) catches up instead of showing frozen local numbers forever.
+  useEffect(() => {
+    if (typeof window === 'undefined' || !isServerBackedId(user?._id)) return;
+    let cancelled = false;
+
+    api.getUserProgress(user!._id).then((progressData) => {
+      if (cancelled || !progressData?.user) return;
+      const freshUser = progressData.user as unknown as TelegramUser;
+      setUser((prev) => (prev ? { ...prev, ...freshUser } : freshUser));
+      localStorage.setItem('farzandly_auth_user', JSON.stringify(freshUser));
+      localStorage.setItem('farzandly_user', JSON.stringify(freshUser));
+    });
+
+    return () => {
+      cancelled = true;
+    };
+    // Re-run only when the logged-in account changes (login/logout), not on every local xp tick.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user?._id]);
 
   const loginWithTelegram = async (tgData: {
     id: string | number;

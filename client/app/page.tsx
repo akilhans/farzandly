@@ -1,4 +1,5 @@
 import React from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import {
   ArrowRight,
@@ -14,51 +15,132 @@ import {
   Crown,
   Flame,
   Star,
-  Sparkles,
   HelpCircle,
 } from 'lucide-react';
 import { api } from '@/lib/api';
-import { START_LESSON_HREF } from '@/lib/site';
+import { SITE_NAME, SITE_URL, SITE_KEYWORDS, START_LESSON_HREF, DEFAULT_OG_IMAGE, absoluteUrl } from '@/lib/site';
 import SearchForm from '@/components/SearchForm';
 import { T, Tr } from '@/components/T';
 
 const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
-const homeFaqJsonLd = {
+export const metadata: Metadata = {
+  title: 'Farzand tarbiyalash va bolalar psixologiyasi platformasi',
+  description:
+    'Farzand tarbiyalash bo‘yicha islomiy qadriyatlar va zamonaviy bolalar psixologiyasiga asoslangan mikro-darslar, ertaklar va amaliy qo‘llanmalar. Har kuni 5 daqiqada farzandingizni yaxshiroq tushuning.',
+  keywords: SITE_KEYWORDS,
+  alternates: { canonical: '/' },
+  openGraph: {
+    title: `Farzand tarbiyalash va bolalar psixologiyasi | ${SITE_NAME}`,
+    description:
+      'Farzand tarbiyalash bo‘yicha islomiy qadriyatlar va zamonaviy psixologiyaga asoslangan raqamli ta\'lim platformasi. 5 daqiqalik darslar, ertaklar va amaliy tavsiyalar.',
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    locale: 'uz_UZ',
+    type: 'website',
+    images: [{ url: DEFAULT_OG_IMAGE, width: 778, height: 192, alt: `${SITE_NAME} — Farzand tarbiyalash` }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: `Farzand tarbiyalash va bolalar psixologiyasi | ${SITE_NAME}`,
+    description: 'Farzand tarbiyalash bo‘yicha har kuni 5 daqiqalik audio va matnli darslar.',
+    images: [DEFAULT_OG_IMAGE],
+  },
+};
+
+const homeSchemaJsonLd = {
   '@context': 'https://schema.org',
-  '@type': 'FAQPage',
-  mainEntity: [
+  '@graph': [
     {
-      '@type': 'Question',
-      name: 'Farzandly platformasi nima va uning asosiy maqsadi qanday?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Farzandly — o‘zbek ota-onalari uchun islomiy qadriyatlar va zamonaviy bolalar psixologiyasini uyg‘unlashtirgan innovatsion raqamli platforma. Unda har kuni o‘rganish mumkin bo‘lgan 5 daqiqalik darslar, ilmiy-amaliy maqolalar va bolalar uchun ibratli kontentlar jamlangan.',
+      '@type': 'WebPage',
+      '@id': `${SITE_URL}/#webpage`,
+      url: SITE_URL,
+      name: 'Farzand tarbiyalash va bolalar psixologiyasi platformasi | Farzandly',
+      description:
+        'Farzand tarbiyalash bo‘yicha islomiy qadriyatlar va zamonaviy bolalar psixologiyasiga asoslangan mikro-darslar, ertaklar va amaliy qo‘llanmalar.',
+      inLanguage: 'uz',
+      isPartOf: { '@id': `${SITE_URL}/#website` },
+      about: [
+        { '@type': 'Thing', name: 'Farzand tarbiyalash' },
+        { '@type': 'Thing', name: 'Farzand tarbiyasi' },
+        { '@type': 'Thing', name: 'Bolalar psixologiyasi' },
+        { '@type': 'Thing', name: 'Islomiy tarbiya' },
+        { '@type': 'Thing', name: 'Ota-onalik ko‘nikmalari' },
+        { '@type': 'Thing', name: 'Chaqaloq parvarishi' },
+      ],
+      breadcrumb: {
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+          {
+            '@type': 'ListItem',
+            position: 1,
+            name: 'Asosiy',
+            item: SITE_URL,
+          },
+        ],
       },
     },
     {
-      '@type': 'Question',
-      name: 'Platformadagi darslar va maqolalar bepulmi?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Ha, Farzandly platformasidagi 1–10-darslar, barcha asosiy tarbiya maqolalari hamda Bolalar olamidagi barcha ertaklar, she’rlar, topishmoqlar va maqollar mutlaqo bepul.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Bolalar olami bo‘limida qanday materiallar bor?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Bolalar olami bo‘limida 15 ta sara o‘zbek xalq ertagi, fasllar va maktab haqidagi she’rlar, bolalar zehnini o‘stiruvchi topishmoqlar hamda 89 ta odob va axloq maqollari qulay ko‘rinishda jamlangan.',
-      },
-    },
-    {
-      '@type': 'Question',
-      name: 'Farzandly Telegram boti bilan qanday ishlaydi?',
-      acceptedAnswer: {
-        '@type': 'Answer',
-        text: 'Farzandly rasmiy Telegram boti orqali darslarni to‘g‘ridan-to‘g‘ri Telegram Mini App ichida o‘qish, kunlik eslatmalar olish va shaxsiy o‘sish ko‘rsatkichlarini kuzatib borish mumkin.',
-      },
+      '@type': 'FAQPage',
+      '@id': `${SITE_URL}/#faq`,
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Farzand tarbiyalashda nimalarga ko‘proq e’tibor berish lozim?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Farzand tarbiyalashda ota-onaning shaxsiy ibrati, hissiy iliqlik, farzand bilan muntazam muloqot va uning yosh bosqichlariga mos talablar qo‘yish eng asosiy omillardir. Farzandly platformasi har kuni 5 daqiqa ichida amaliy va ilmiy tasdiqlangan tarbiya usullarini taqdim etadi.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Bolalardagi injiqlik (tantrum) paytida ota-ona qanday yo‘l tutishi kerak?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Bolada injiqlik paydo bo‘lganda avvalo xotirjamlikni saqlash, baqirmaslik, uning hissiyotlarini tan olish (validatsiya) va xavfsiz muhitda tinchlanishiga ko‘maklashish lozim. Maxsus darslarimizda tantrum bilan ishlashning 4 bosqichli amaliy texnikasi o‘rgatiladi.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Farzandly platformasi nima va uning asosiy maqsadi qanday?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Farzandly — o‘zbek ota-onalari uchun islomiy qadriyatlar va zamonaviy bolalar psixologiyasini uyg‘unlashtirgan innovatsion raqamli platforma. Unda har kuni o‘rganish mumkin bo‘lgan 5 daqiqalik darslar, ilmiy-amaliy maqolalar va bolalar uchun ibratli kontentlar jamlangan.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Farzand tarbiyasida ekran vaqti va gadjetlarga qancha ruxsat berish mumkin?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'JSST (Jahon sog‘liqni saqlash tashkiloti) tavsiyasiga ko‘ra, 2 yoshgacha bo‘lgan bolalarga ekran tavsiya etilmaydi, 2-5 yoshdagi bolalar uchun kuniga 1 soatdan oshmasligi lozim. Farzandly’da gadjet qaramligining oldini olish bo‘yicha alohida darslar mavjud.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Platformadagi darslar va maqolalar bepulmi?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Ha, Farzandly platformasidagi 1–10-darslar, barcha asosiy tarbiya maqolalari hamda Bolalar olamidagi barcha ertaklar, she’rlar, topishmoqlar va maqollar mutlaqo bepul.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Bolalar olami bo‘limida qanday materiallar bor?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Bolalar olami bo‘limida 15 ta sara o‘zbek xalq ertagi, fasllar va maktab haqidagi she’rlar, bolalar zehnini o‘stiruvchi topishmoqlar hamda 89 ta odob va axloq maqollari qulay ko‘rinishda jamlangan.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Farzandly Telegram boti bilan qanday ishlaydi?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Farzandly rasmiy Telegram boti orqali darslarni to‘g‘ridan-to‘g‘ri Telegram Mini App ichida o‘qish, kunlik eslatmalar olish va shaxsiy o‘sish ko‘rsatkichlarini kuzatib borish mumkin.',
+          },
+        },
+      ],
     },
   ],
 };
@@ -72,10 +154,10 @@ export default async function HomePage() {
 
   return (
     <div className="space-y-16 sm:space-y-24 pb-20 relative overflow-x-clip">
-      {/* Schema.org FAQ Rich Snippet */}
+      {/* Schema.org WebPage & FAQ Rich Snippet */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeFaqJsonLd) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(homeSchemaJsonLd) }}
       />
 
       {/* Ambient background blur elements */}

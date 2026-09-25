@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import SearchForm from '@/components/SearchForm';
 import Pagination, { EmptyArticles } from '@/components/Pagination';
 import type { Metadata } from 'next';
+import { absoluteUrl } from '@/lib/site';
 import { T, Tr } from '@/components/T';
 
 const PAGE_SIZE = 9;
@@ -24,7 +25,8 @@ export async function generateMetadata({ searchParams }: MaqolalarProps): Promis
   // Filtered/searched views are duplicates of the main list — keep them out of the index
   const filtered = Boolean(params.category || params.ageGroup || params.search);
   return {
-    title: page > 1 ? `Tarbiya maqolalari — ${page}-sahifa` : 'Tarbiya maqolalari',
+    title: page > 1 ? `Farzand tarbiyalash maqolalari — ${page}-sahifa` : 'Farzand tarbiyalash maqolalari',
+    description: 'Farzand tarbiyalash, zamonaviy bolalar psixologiyasi va ota-onalik amaliyotiga oid sara maqolalar.',
     alternates: { canonical: page > 1 ? `/maqolalar?page=${page}` : '/maqolalar' },
     ...(filtered ? { robots: { index: false, follow: true } } : {}),
   };
@@ -51,8 +53,25 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
   const page = Math.min(parsePage(params.page), totalPages);
   const articles = allArticles.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
+  const itemListJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: articles.map((article, idx) => ({
+      '@type': 'ListItem',
+      position: (page - 1) * PAGE_SIZE + idx + 1,
+      url: absoluteUrl(`/maqolalar/${article.slug}`),
+      name: article.title,
+      description: article.excerpt,
+    })),
+  };
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
+      {/* Schema.org ItemList */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
       {/* Header */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <span className="text-xs font-black uppercase tracking-widest text-emerald-700 bg-emerald-100 px-3.5 py-1 rounded-full">

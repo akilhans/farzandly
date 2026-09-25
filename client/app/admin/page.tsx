@@ -251,6 +251,27 @@ export default function AdminPage() {
         </button>
       </div>
 
+      {/* Instagram Post Studio Banner */}
+      <div className="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-emerald-600/30">
+        <div className="space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-0.5 rounded-full text-xs font-bold">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Marketing & SMM Studiyasi</span>
+          </div>
+          <h3 className="text-xl font-black text-white">Instagram Post Card Studio</h3>
+          <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
+            1080×1350 formatdagi estetik post kartochkalari, 4 ta shablon va 1 klikda tayyor PNG eksport.
+          </p>
+        </div>
+        <Link
+          href="/instagram"
+          className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm px-5 py-3 rounded-xl shrink-0 inline-flex items-center gap-2 transition-all shadow-md active:scale-95"
+        >
+          <span>Studio-ni ochish</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
+
       {/* Action Notification */}
       {actionSuccess && (
         <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-400 text-emerald-900 flex items-start gap-3 shadow-xs animate-in fade-in duration-300">

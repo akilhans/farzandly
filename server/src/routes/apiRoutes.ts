@@ -42,6 +42,11 @@ apiRouter.post('/users/onboarding', ApiController.onboarding);
 apiRouter.get('/users/progress', ApiController.getUserProgress);
 apiRouter.post('/users/progress', ApiController.recordUserProgress);
 
+// Health Section: Body Basics
+apiRouter.get('/health-topics', ApiController.getHealthTopics);
+apiRouter.get('/health-topics/:slug', ApiController.getHealthTopicBySlug);
+apiRouter.post('/health-topics/:slug/quiz', ApiController.recordHealthQuiz);
+
 // Newsletter
 apiRouter.post('/newsletter/subscribe', ApiController.subscribeNewsletter);
 

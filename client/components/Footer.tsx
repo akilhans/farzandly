@@ -3,11 +3,15 @@
 import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass, Baby } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Heart, CheckCircle2, ShieldCheck, BookOpen, Compass, Baby, Camera, Activity } from 'lucide-react';
 import { START_LESSON_HREF } from '@/lib/site';
 import { T } from '@/components/T';
 
 export function Footer() {
+  const pathname = usePathname();
+  if (pathname?.startsWith('/instagram')) return null;
+
   return (
     <footer className="bg-slate-900 text-white mt-auto border-t-4 border-emerald-600">
       {/* Top trust band */}
@@ -111,8 +115,26 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/salomatlik" className="hover:text-emerald-400 font-bold transition-colors inline-flex items-center gap-1.5 text-teal-400">
+                  <Activity className="w-3.5 h-3.5" />
+                  <span>Salomatlik (Body Basics)</span>
+                </Link>
+              </li>
+              <li>
+                <Link href="/jazosiz-tarbiya" className="hover:text-amber-300 font-bold transition-colors inline-flex items-center gap-1.5 text-amber-400">
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span>Jazosiz tarbiya (Adem Güneş)</span>
+                </Link>
+              </li>
+              <li>
                 <Link href="/premium" className="hover:text-amber-400 transition-colors">
                   <T k="footer.15" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/instagram" className="hover:text-emerald-400 text-emerald-400/90 font-medium transition-colors inline-flex items-center gap-1.5">
+                  <Camera className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Instagram Post Studio</span>
                 </Link>
               </li>
             </ul>
@@ -122,6 +144,11 @@ export function Footer() {
           <div>
             <p className="font-bold text-slate-200 text-base mb-3">Bolalar uchun</p>
             <ul className="space-y-2 text-sm text-slate-400">
+              <li>
+                <Link href="/salomatlik/burp-ovqat-hazm-qilish-tizimi" className="hover:text-teal-400 text-teal-300 font-bold transition-colors inline-flex items-center gap-1">
+                  <span>&quot;Burp!&quot; — Nega kekiramiz?</span>
+                </Link>
+              </li>
               <li>
                 <Link href="/bolalar?tab=ertaklar" className="hover:text-emerald-400 transition-colors">
                   15 ta sara ibratli ertak

@@ -16,6 +16,7 @@ export async function POST() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
     });
 
     const data = await res.json();
@@ -52,6 +53,7 @@ export async function GET(req: NextRequest) {
     const res = await fetch(`${API_BASE}/auth/telegram/session/${encodeURIComponent(sessionId)}`, {
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
     });
 
     const data = await res.json();

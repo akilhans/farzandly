@@ -1,0 +1,138 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 650" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#064e3b" />
+      <stop offset="100%" stop-color="#022c22" />
+    </linearGradient>
+    <linearGradient id="bodyGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.35" />
+      <stop offset="100%" stop-color="#059669" stop-opacity="0.2" />
+    </linearGradient>
+    <filter id="glow2" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <rect width="800" height="650" rx="24" fill="url(#bgGrad2)" />
+
+  <!-- Title Badge -->
+  <g transform="translate(40, 30)">
+    <rect x="0" y="0" width="340" height="34" rx="17" fill="#059669" fill-opacity="0.2" stroke="#34d399" stroke-width="1.5" />
+    <circle cx="18" cy="17" r="6" fill="#34d399" filter="url(#glow2)" />
+    <text x="34" y="22" fill="#ecfdf5" font-family="system-ui, sans-serif" font-size="13" font-weight="bold" letter-spacing="1">LYMPHATIC SYSTEM / LIMFA VA IMMUNITET</text>
+  </g>
+
+  <!-- Body Silhouette -->
+  <g transform="translate(400, 80)">
+    <path d="M-35,40 C-35,-10 35,-10 35,40 C35,70 20,85 20,105 C20,115 15,120 15,125 L-15,125 C-15,120 -20,115 -20,105 C-20,85 -35,70 -35,40 Z" fill="url(#bodyGrad2)" stroke="#34d399" stroke-width="2" />
+    <path d="M-15,125 C-45,130 -85,150 -95,200 C-105,245 -95,300 -85,350 C-80,380 -70,410 -60,450 C-40,490 -20,500 0,500 C20,500 40,490 60,450 C70,410 80,380 85,350 C95,300 105,245 95,200 C85,150 45,130 15,125 Z" fill="url(#bodyGrad2)" stroke="#34d399" stroke-width="2" />
+
+    <!-- Lymphatic network vessels (green lines) -->
+    <path d="M-5,160 Q-2,230 -4,320 T-8,440" fill="none" stroke="#6ee7b7" stroke-width="2.5" />
+    <path d="M-4,200 Q-35,170 -60,190" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="3,3" />
+    <path d="M4,200 Q35,170 60,190" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="3,3" />
+    <path d="M-4,320 Q-30,350 -45,430" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="3,3" />
+    <path d="M-4,320 Q30,350 45,430" fill="none" stroke="#6ee7b7" stroke-width="1.5" stroke-dasharray="3,3" />
+
+    <!-- 1. Cervical lymph nodes (neck) -->
+    <circle cx="-16" cy="115" r="4.5" fill="#a7f3d0" filter="url(#glow2)" />
+    <circle cx="16" cy="115" r="4.5" fill="#a7f3d0" filter="url(#glow2)" />
+    <circle cx="-14" cy="125" r="4" fill="#a7f3d0" filter="url(#glow2)" />
+    <circle cx="14" cy="125" r="4" fill="#a7f3d0" filter="url(#glow2)" />
+
+    <!-- 2. Tonsils -->
+    <circle cx="-10" cy="75" r="5" fill="#f43f5e" filter="url(#glow2)" />
+    <circle cx="10" cy="75" r="5" fill="#f43f5e" filter="url(#glow2)" />
+
+    <!-- 3. Thymus gland -->
+    <ellipse cx="0" cy="170" rx="9" ry="14" fill="#38bdf8" filter="url(#glow2)" />
+
+    <!-- 4. Spleen (left side of body) -->
+    <ellipse cx="38" cy="275" rx="14" ry="18" fill="#e11d48" filter="url(#glow2)" />
+
+    <!-- 5. Axillary lymph nodes (armpits) -->
+    <circle cx="-55" cy="190" r="5" fill="#a7f3d0" />
+    <circle cx="-50" cy="198" r="4" fill="#a7f3d0" />
+    <circle cx="55" cy="190" r="5" fill="#a7f3d0" />
+    <circle cx="50" cy="198" r="4" fill="#a7f3d0" />
+
+    <!-- 6. Peyer's patches & Appendix (lower right abdomen) -->
+    <ellipse cx="-25" cy="370" rx="6" ry="12" fill="#fbbf24" filter="url(#glow2)" />
+
+    <!-- 7. Inguinal lymph nodes (groin) -->
+    <circle cx="-25" cy="430" r="5" fill="#a7f3d0" />
+    <circle cx="-32" cy="440" r="4" fill="#a7f3d0" />
+    <circle cx="25" cy="430" r="5" fill="#a7f3d0" />
+    <circle cx="32" cy="440" r="4" fill="#a7f3d0" />
+  </g>
+
+  <!-- CALLOUT LABELS -->
+
+  <!-- Tonsils -->
+  <g transform="translate(400, 155)">
+    <path d="M-10,0 L-130,-15 L-220,-15" fill="none" stroke="#f43f5e" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(-360, -35)">
+      <rect width="135" height="42" rx="8" fill="#064e3b" stroke="#f43f5e" stroke-width="1.5" />
+      <text x="12" y="18" fill="#fecdd3" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Tonsils (Murtaklar)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Og‘iz va tomoq himoyasi</text>
+    </g>
+  </g>
+
+  <!-- Cervical Lymph Nodes -->
+  <g transform="translate(400, 200)">
+    <path d="M16,0 L130,0 L220,0" fill="none" stroke="#34d399" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(225, -20)">
+      <rect width="145" height="42" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
+      <text x="12" y="18" fill="#6ee7b7" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Lymph Nodes (Tugunlar)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Virus/bakteriyani tozalash</text>
+    </g>
+  </g>
+
+  <!-- Thymus -->
+  <g transform="translate(400, 250)">
+    <path d="M0,0 L-120,5 L-220,5" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(-360, -15)">
+      <rect width="135" height="42" rx="8" fill="#064e3b" stroke="#38bdf8" stroke-width="1.5" />
+      <text x="12" y="18" fill="#bae6fd" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Thymus (Timus)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">T-hujayralar markazi</text>
+    </g>
+  </g>
+
+  <!-- Spleen -->
+  <g transform="translate(400, 355)">
+    <path d="M38,0 L130,5 L220,5" fill="none" stroke="#e11d48" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(225, -15)">
+      <rect width="145" height="42" rx="8" fill="#064e3b" stroke="#e11d48" stroke-width="1.5" />
+      <text x="12" y="18" fill="#fecdd3" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Spleen (Taloq)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Qonni filtrlovchi organ</text>
+    </g>
+  </g>
+
+  <!-- Appendix -->
+  <g transform="translate(400, 450)">
+    <path d="M-25,0 L-120,5 L-220,5" fill="none" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(-360, -15)">
+      <rect width="135" height="42" rx="8" fill="#064e3b" stroke="#fbbf24" stroke-width="1.5" />
+      <text x="12" y="18" fill="#fef08a" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Appendix (Ko‘richak)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Limfoid to‘qima & flora</text>
+    </g>
+  </g>
+
+  <!-- Inguinal Nodes -->
+  <g transform="translate(400, 510)">
+    <path d="M25,0 L120,5 L220,5" fill="none" stroke="#34d399" stroke-width="2" stroke-dasharray="4,3" />
+    <g transform="translate(225, -15)">
+      <rect width="145" height="42" rx="8" fill="#064e3b" stroke="#34d399" stroke-width="1.5" />
+      <text x="12" y="18" fill="#6ee7b7" font-family="system-ui, sans-serif" font-size="12" font-weight="900">Inguinal Nodes (Chov)</text>
+      <text x="12" y="32" fill="#a7f3d0" font-family="system-ui, sans-serif" font-size="10">Oyoq va tos limfasi</text>
+    </g>
+  </g>
+
+  <!-- Footer -->
+  <g transform="translate(40, 600)">
+    <text x="0" y="20" fill="#6ee7b7" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">
+      Farzandly Body Basics • Medically reviewed by KidsHealth Experts • Limfa tizimi va infeksiyadan himoya
+    </text>
+  </g>
+</svg>

@@ -7,9 +7,17 @@ import { AuthProvider } from "@/context/AuthContext";
 import { T } from "@/components/T";
 import MotionProvider from "@/components/MotionProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { DEFAULT_OG_IMAGE, SITE_DESCRIPTION, SITE_NAME, SITE_URL, absoluteUrl } from "@/lib/site";
+import {
+  DEFAULT_OG_IMAGE,
+  SITE_DESCRIPTION,
+  SITE_KEYWORDS,
+  SITE_NAME,
+  SITE_URL,
+  SOCIAL_LINKS,
+  absoluteUrl,
+} from "@/lib/site";
 
-const DEFAULT_TITLE = "Farzandly — O‘zbek ota-onalari uchun zamonaviy raqamli tarbiya platformasi";
+const DEFAULT_TITLE = "Farzandly — Farzand tarbiyalash va bolalar psixologiyasi platformasi";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -19,37 +27,32 @@ export const metadata: Metadata = {
   },
   description: SITE_DESCRIPTION,
   applicationName: SITE_NAME,
-  keywords: [
-    "Farzandly",
-    "farzand tarbiyasi",
-    "bolalar psixologiyasi",
-    "islomiy tarbiya",
-    "ota-onalar uchun",
-    "tantrum",
-    "injiqlik",
-    "ekran vaqti",
-    "uzbek parenting",
-    "bola tarbiyasi darslari",
-  ],
-  authors: [{ name: "Farzandly Team", url: SITE_URL }],
+  keywords: SITE_KEYWORDS,
+  authors: [{ name: "Farzandly Pedagogik Jamoasi", url: SITE_URL }],
   creator: SITE_NAME,
   publisher: SITE_NAME,
   category: "education",
-  alternates: { canonical: "/" },
+  classification: "Farzand tarbiyalash, Bolalar psixologiyasi, Ota-onalar ta'limi",
+  alternates: {
+    canonical: "/",
+    languages: {
+      "uz-UZ": "/",
+    },
+  },
   formatDetection: { telephone: false, email: false, address: false },
   openGraph: {
     title: DEFAULT_TITLE,
-    description: "Farzandingizni yaxshiroq tushunishni har kuni 5 daqiqada o‘rganing.",
+    description: "Farzand tarbiyalash bo‘yicha islomiy qadriyatlar va zamonaviy psixologiyaga asoslangan 5 daqiqalik darslar, ertaklar va amaliy tavsiyalar.",
     url: SITE_URL,
     siteName: SITE_NAME,
     locale: "uz_UZ",
     type: "website",
-    images: [{ url: DEFAULT_OG_IMAGE, width: 778, height: 192, alt: SITE_NAME }],
+    images: [{ url: DEFAULT_OG_IMAGE, width: 778, height: 192, alt: `${SITE_NAME} — Farzand tarbiyalash platformasi` }],
   },
   twitter: {
     card: "summary_large_image",
     title: DEFAULT_TITLE,
-    description: "Farzandingizni yaxshiroq tushunishni har kuni 5 daqiqada o‘rganing.",
+    description: "Farzand tarbiyalash bo‘yicha har kuni 5 daqiqalik audio va matnli darslar.",
     images: [DEFAULT_OG_IMAGE],
   },
   robots: {
@@ -84,25 +87,72 @@ const siteJsonLd = {
   "@context": "https://schema.org",
   "@graph": [
     {
-      "@type": "Organization",
+      "@type": ["Organization", "EducationalOrganization"],
       "@id": `${SITE_URL}/#organization`,
       name: SITE_NAME,
+      alternateName: ["Farzandly.uz", "Farzandly Tarbiya Platformasi"],
       url: SITE_URL,
-      logo: absoluteUrl("/logo.png"),
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/logo.png"),
+        width: 778,
+        height: 192,
+        caption: `${SITE_NAME} — Farzand tarbiyalash va bolalar psixologiyasi`,
+      },
+      image: absoluteUrl("/logo.png"),
       description: SITE_DESCRIPTION,
+      sameAs: [SOCIAL_LINKS.telegram, SOCIAL_LINKS.telegramBot, SOCIAL_LINKS.instagram].filter(Boolean),
+      knowsAbout: [
+        "Farzand tarbiyalash",
+        "Farzand tarbiyasi",
+        "Bola tarbiyasi",
+        "Bolalar psixologiyasi",
+        "Islomiy tarbiya",
+        "Ota-ona va bola munosabatlari",
+        "Bolalarda tantrum va injiqlik",
+        "Chaqaloq parvarishi",
+        "Maktabgacha ta'lim",
+      ],
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        url: `${SITE_URL}/#contact`,
+        availableLanguage: ["uz", "ru"],
+      },
     },
     {
       "@type": "WebSite",
       "@id": `${SITE_URL}/#website`,
       url: SITE_URL,
       name: SITE_NAME,
-      inLanguage: "uz",
+      alternateName: "Farzandly — Farzand tarbiyalash platformasi",
+      inLanguage: ["uz", "ru"],
       publisher: { "@id": `${SITE_URL}/#organization` },
       potentialAction: {
         "@type": "SearchAction",
-        target: `${SITE_URL}/qidiruv?q={search_term_string}`,
+        target: {
+          "@type": "EntryPoint",
+          urlTemplate: `${SITE_URL}/qidiruv?q={search_term_string}`,
+        },
         "query-input": "required name=search_term_string",
       },
+    },
+    {
+      "@type": "WebApplication",
+      "@id": `${SITE_URL}/#app`,
+      name: SITE_NAME,
+      url: SITE_URL,
+      applicationCategory: "EducationalApplication",
+      operatingSystem: "All",
+      browserRequirements: "Requires JavaScript. Requires HTML5.",
+      description: "Farzand tarbiyalash bo‘yicha o‘zbek tilidagi ilk raqamli mikro-ta'lim platformasi.",
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "UZS",
+        availability: "https://schema.org/InStock",
+      },
+      author: { "@id": `${SITE_URL}/#organization` },
     },
   ],
 };

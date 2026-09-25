@@ -25,6 +25,7 @@ export async function GET(
     const res = await fetch(`${API_BASE}/auth/telegram/session/${encodeURIComponent(id)}`, {
       headers: { 'Content-Type': 'application/json' },
       cache: 'no-store',
+      signal: AbortSignal.timeout(8000),
     });
 
     const data = await res.json();

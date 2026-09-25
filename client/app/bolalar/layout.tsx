@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/site';
+import { kidsTales } from '@/lib/kidsData';
 
 const TITLE = 'Bolalar olami — Ibratli ertaklar, she’rlar, topishmoqlar va maqollar';
 const DESCRIPTION =
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
   },
   description: DESCRIPTION,
   keywords: [
+    'farzand tarbiyalash',
     'bolalar olami',
     'bolalar uchun ertaklar',
     'o‘zbek xalq ertaklari',
@@ -52,10 +54,23 @@ const bolalarJsonLd = {
       inLanguage: 'uz',
       isPartOf: { '@id': `${SITE_URL}/#website` },
       about: [
+        { '@type': 'Thing', name: 'Farzand tarbiyalash' },
         { '@type': 'Thing', name: 'O‘zbek xalq ertaklari' },
         { '@type': 'Thing', name: 'Bolalar she’rlari' },
         { '@type': 'Thing', name: 'Topishmoqlar' },
         { '@type': 'Thing', name: 'Odob va tarbiya maqollari' },
+      ],
+      hasPart: [
+        {
+          '@type': 'ItemList',
+          name: 'Ibratli o‘zbek xalq ertaklari',
+          itemListElement: kidsTales.slice(0, 10).map((tale, index) => ({
+            '@type': 'ListItem',
+            position: index + 1,
+            name: tale.title,
+            description: tale.paragraphs[0],
+          })),
+        },
       ],
     },
     {

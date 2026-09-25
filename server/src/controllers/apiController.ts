@@ -317,4 +317,43 @@ export class ApiController {
       res.status(500).json({ success: false, message: 'Obunada xatolik yuz berdi' });
     }
   }
+
+  // ======================== HEALTH TOPICS ========================
+  // GET /api/health-topics
+  static async getHealthTopics(req: Request, res: Response) {
+    try {
+      const lang = getReqLang(req);
+      const topics = await DataService.getHealthTopics(lang);
+      res.json({ success: true, count: topics.length, data: topics });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Salomatlik mavzularini yuklashda xatolik' });
+    }
+  }
+
+  // GET /api/health-topics/:slug
+  static async getHealthTopicBySlug(req: Request, res: Response) {
+    try {
+      const lang = getReqLang(req);
+      const { slug } = req.params;
+      const topic = await DataService.getHealthTopicBySlug(slug, lang);
+      if (!topic) {
+        return res.status(404).json({ success: false, message: 'Mavzu topilmadi' });
+      }
+      res.json({ success: true, data: topic });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Salomatlik mavzusini yuklashda xatolik' });
+    }
+  }
+
+  // POST /api/health-topics/:slug/quiz
+  static async recordHealthQuiz(req: Request, res: Response) {
+    try {
+      const { slug } = req.params;
+      const { score = 100, xpEarned = 10, userId = 'demo-user' } = req.body;
+      const result = await DataService.recordHealthQuiz(slug, score, xpEarned, userId);
+      res.json({ success: true, data: result });
+    } catch (error) {
+      res.status(500).json({ success: false, message: 'Viktorina natijasini saqlashda xatolik' });
+    }
+  }
 }

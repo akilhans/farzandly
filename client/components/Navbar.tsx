@@ -23,12 +23,14 @@ import {
   Globe,
   Search,
   Baby,
+  Activity,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n, Language } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 import { calculateLevel } from '@/lib/gamification';
 import { T } from '@/components/T';
+import FlagIcon from '@/components/FlagIcon';
 
 export function Navbar() {
   const pathname = usePathname();
@@ -52,6 +54,7 @@ export function Navbar() {
     { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
     { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Baby },
+    { href: '/salomatlik', label: t('nav.health', 'Salomatlik'), icon: Activity },
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
 
@@ -60,8 +63,11 @@ export function Navbar() {
     { href: '/darslar', label: t('nav.courses'), icon: Layers },
     { href: '/maqolalar', label: t('nav.articles'), icon: BookOpen },
     { href: '/bolalar', label: t('nav.kids', 'Bolalar olami'), icon: Baby },
+    { href: '/salomatlik', label: t('nav.health', 'Salomatlik'), icon: Activity },
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
+
+  if (pathname?.startsWith('/instagram')) return null;
 
   return (
     <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b-2 border-slate-200/70 shadow-xs transition-colors">
@@ -132,8 +138,8 @@ export function Navbar() {
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-slate-50/90 hover:bg-slate-100 border-2 border-slate-200 text-xs font-bold text-slate-700 transition-all cursor-pointer"
                 title="Tilni tanlash / Select Language"
               >
-                <span>{currentLangObj.flag}</span>
-                <span className="uppercase tracking-wider">{currentLangObj.code}</span>
+                <FlagIcon country={currentLangObj.code} size="sm" />
+                <span className="uppercase tracking-wider font-extrabold">{currentLangObj.code}</span>
                 <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
 
@@ -156,11 +162,11 @@ export function Navbar() {
                         }}
                         className={`w-full flex items-center gap-2.5 px-3 py-2 text-xs font-bold rounded-xl transition-all text-left ${
                           language === l.code
-                            ? 'bg-emerald-50 text-emerald-700'
+                            ? 'bg-emerald-50 text-emerald-700 font-black'
                             : 'text-slate-700 hover:bg-slate-50'
                         }`}
                       >
-                        <span className="text-base leading-none">{l.flag}</span>
+                        <FlagIcon country={l.code} size="sm" />
                         <span>{l.label}</span>
                       </button>
                     ))}
@@ -346,7 +352,7 @@ export function Navbar() {
                         : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
                     }`}
                   >
-                    <span>{l.flag}</span>
+                    <FlagIcon country={l.code} size="sm" />
                     <span>{l.label}</span>
                   </button>
                 ))}

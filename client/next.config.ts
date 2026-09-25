@@ -23,6 +23,10 @@ const nextConfig: NextConfig = {
       { source: "/kurslar", destination: "/darslar", permanent: true },
       { source: "/kurslar/:slug", destination: "/darslar/:slug", permanent: true },
       { source: "/onboarding", destination: "/darslar", permanent: true },
+      { source: "/ertaklar", destination: "/bolalar?tab=ertaklar", permanent: true },
+      { source: "/sherlar", destination: "/bolalar?tab=sherlar", permanent: true },
+      { source: "/topishmoqlar", destination: "/bolalar?tab=topishmoqlar", permanent: true },
+      { source: "/maqollar", destination: "/bolalar?tab=maqollar", permanent: true },
     ];
   },
   async headers() {
