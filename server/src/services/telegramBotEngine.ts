@@ -1,4 +1,6 @@
 import { DataService } from './dataService.js';
+import { getWebhookSecret, signLoginTicket } from '../lib/security.js';
+import { isPremiumActive } from '../lib/premium.js';
 import { TelegramSessionService } from './telegramSessionService.js';
 
 export interface TelegramBotOptions {
@@ -143,6 +145,8 @@ export class TelegramBotEngine {
   static async setWebhook(url: string): Promise<any> {
     return this.callApi('setWebhook', {
       url,
+      // Telegram echoes this back in X-Telegram-Bot-Api-Secret-Token; the webhook route rejects anything else.
+      secret_token: getWebhookSecret(),
       drop_pending_updates: false,
       allowed_updates: ['message', 'callback_query'],
     });
@@ -166,7 +170,7 @@ export class TelegramBotEngine {
   // Helpers
   // ---------------------------------------------------------------------------
 
-  private static esc(value: unknown): string {
+  static esc(value: unknown): string {
     return String(value ?? '')
       .replace(/&/g, '&amp;')
       .replace(/</g, '&lt;')
@@ -179,9 +183,7 @@ export class TelegramBotEngine {
 
   /** Same gating rule as the platform: premium content requires an active premium account. */
   private static isPremiumUser(user: any): boolean {
-    if (!user?.isPremium) return false;
-    if (user.premiumExpiresAt && new Date(user.premiumExpiresAt).getTime() < Date.now()) return false;
-    return true;
+    return isPremiumActive(user);
   }
 
   private static async getUser(from: any) {
@@ -254,15 +256,9 @@ export class TelegramBotEngine {
    */
   static generateDirectLoginLink(user: { id: string | number; name?: string; username?: string }) {
     const clientUrl = this.getClientUrl();
-    const payload = {
-      telegramId: String(user.id),
-      name: user.name || 'Ota-ona',
-      telegramUsername: (user.username || '').replace(/^@/, ''),
-      authProvider: 'telegram',
-      timestamp: Date.now(),
-    };
-    const directToken = Buffer.from(JSON.stringify(payload)).toString('base64');
-    return `${clientUrl}/kirish/callback?direct_token=${encodeURIComponent(directToken)}`;
+    // Signed, 15-minute ticket. The web callback redeems it at POST /api/auth/telegram/ticket.
+    const ticket = signLoginTicket(String(user.id));
+    return `${clientUrl}/kirish/callback?ticket=${encodeURIComponent(ticket)}`;
   }
 
   // ---------------------------------------------------------------------------

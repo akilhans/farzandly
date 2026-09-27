@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import { HealthTopic } from '../models/index.js';
 
 export const seedHealthTopics = [
@@ -3468,14 +3469,14 @@ export const seedHealthTopics = [
 ];
 
 export async function seedHealthCollection() {
+  // Without a DB connection mongoose would buffer every query for 10s (≈3 min of blocked startup).
+  if (mongoose.connection.readyState !== 1) return;
   try {
-    for (const item of seedHealthTopics) {
-      await HealthTopic.findOneAndUpdate(
-        { slug: item.slug },
-        { $set: item },
-        { upsert: true, new: true }
-      );
-    }
+    await HealthTopic.bulkWrite(
+      seedHealthTopics.map((item: any) => ({
+        updateOne: { filter: { slug: item.slug }, update: { $set: item }, upsert: true },
+      }))
+    );
     console.log(`[Seed] ${seedHealthTopics.length} ta salomatlik mavzusi bazaga muvaffaqiyatli yuklandi.`);
   } catch (err) {
     console.warn(`[Seed] Salomatlik mavzularini yuklashda ogohlantirish: ${(err as Error).message}`);

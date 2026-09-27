@@ -18,7 +18,7 @@ export class TelegramBotService {
    * Get configured Telegram Bot Token
    */
   static getBotToken(): string {
-    return process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_CLIENT_SECRET || '';
+    return process.env.TELEGRAM_BOT_TOKEN || process.env.BOT_TOKEN || '';
   }
 
   /**

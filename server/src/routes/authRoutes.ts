@@ -1,35 +1,36 @@
 import { Router } from 'express';
 import { AuthController } from '../controllers/authController.js';
+import { rateLimit, requireAdmin } from '../middleware/auth.js';
 
 export const authRouter = Router();
 
-// Telegram Bot Deep-Link Auth Session (e.g. /start <sessionId>)
-authRouter.post('/telegram/session', AuthController.createBotSession);
-authRouter.get('/telegram/session/:sessionId', AuthController.checkBotSession);
-authRouter.get('/telegram/session', AuthController.checkBotSession);
+const loginLimiter = rateLimit({ windowMs: 15 * 60_000, max: 20 });
+const pollLimiter = rateLimit({ windowMs: 60_000, max: 90 });
 
-// Telegram OIDC Configuration & OAuth URL
+// Telegram bot deep-link login (/start <sessionId>)
+authRouter.post('/telegram/session', loginLimiter, AuthController.createBotSession);
+authRouter.get('/telegram/session/:sessionId', pollLimiter, AuthController.checkBotSession);
+authRouter.get('/telegram/session', pollLimiter, AuthController.checkBotSession);
+
+// Telegram OIDC
 authRouter.get('/telegram/config', AuthController.getConfig);
 authRouter.get('/telegram/login-url', AuthController.getLoginUrl);
+authRouter.post('/telegram/exchange', loginLimiter, AuthController.exchangeCode);
 
-// Telegram OIDC Code Exchange (Token endpoint proxy)
-authRouter.post('/telegram/exchange', AuthController.exchangeCode);
+// Telegram Login Widget, Mini App and bot one-click ticket (all signature-checked)
+authRouter.post('/telegram', loginLimiter, AuthController.telegramAuth);
+authRouter.post('/telegram/miniapp', loginLimiter, AuthController.miniAppAuth);
+authRouter.post('/telegram/ticket', loginLimiter, AuthController.redeemTicket);
 
-// Direct / Widget Telegram Authentication & Registration
-authRouter.post('/telegram', AuthController.telegramAuth);
+// Avatars (public, numeric ids only) and raw Telegram profile lookups (admin only)
+authRouter.get('/telegram/avatar/:id', rateLimit({ windowMs: 60_000, max: 120 }), AuthController.getUserAvatar);
+authRouter.get('/telegram/user/:id', requireAdmin, AuthController.getTelegramUserProfile);
 
-// Telegram User Profile & Avatar Proxy
-authRouter.get('/telegram/avatar/:id', AuthController.getUserAvatar);
-authRouter.get('/telegram/user/:id', AuthController.getTelegramUserProfile);
+// Email
+authRouter.post('/email/register', rateLimit({ windowMs: 60 * 60_000, max: 10 }), AuthController.emailRegister);
+authRouter.post('/email/login', loginLimiter, AuthController.emailLogin);
 
-// Email Authentication & Registration
-authRouter.post('/email/register', AuthController.emailRegister);
-authRouter.post('/email/login', AuthController.emailLogin);
-
-// Get current user session
 authRouter.get('/me', AuthController.getMe);
-
-// Logout
 authRouter.post('/logout', AuthController.logout);
 
 export default authRouter;

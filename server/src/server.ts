@@ -5,11 +5,15 @@ import { app } from './app.js';
 import { connectDB } from './config/db.js';
 import { TelegramBotEngine } from './services/telegramBotEngine.js';
 import { seedHealthCollection } from './scripts/seedHealthData.js';
+import { assertSecurityConfig } from './lib/security.js';
 
 const PORT = Number(process.env.PORT) || 5000;
 const HOST = '0.0.0.0';
 
 async function bootstrap() {
+  // Fail fast in production if AUTH_SECRET is missing.
+  assertSecurityConfig();
+
   // Connect to database
   await connectDB();
   await seedHealthCollection();

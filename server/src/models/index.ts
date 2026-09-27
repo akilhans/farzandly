@@ -77,6 +77,8 @@ export interface IUser extends Document {
   subscriptionStatus: 'free' | 'premium' | 'trial';
   isPremium?: boolean;
   premiumExpiresAt?: Date;
+  premiumType?: 'lifetime' | 'bonus';
+  hideFromLeaderboard?: boolean;
   role?: 'user' | 'admin';
   reminderEnabled?: boolean;
   reminderHour?: number;
@@ -101,9 +103,10 @@ const UserSchema = new Schema<IUser>({
   name: { type: String, default: 'Ota-ona' },
   firstName: { type: String },
   lastName: { type: String },
-  email: { type: String, sparse: true, index: true },
-  passwordHash: { type: String },
-  telegramId: { type: String, sparse: true, index: true },
+  email: { type: String, sparse: true, unique: true },
+  // Never returned by default queries; auth code selects it explicitly with .select('+passwordHash')
+  passwordHash: { type: String, select: false },
+  telegramId: { type: String, sparse: true, unique: true },
   telegramUsername: { type: String },
   photoUrl: { type: String },
   authProvider: { type: String, default: 'guest', enum: ['telegram', 'guest', 'email'] },
@@ -119,6 +122,9 @@ const UserSchema = new Schema<IUser>({
   subscriptionStatus: { type: String, default: 'free', enum: ['free', 'premium', 'trial'] },
   isPremium: { type: Boolean, default: false },
   premiumExpiresAt: { type: Date },
+  // 'lifetime' = paid (never expires); 'bonus' = referral days bounded by premiumExpiresAt
+  premiumType: { type: String, enum: ['lifetime', 'bonus'] },
+  hideFromLeaderboard: { type: Boolean, default: false },
   role: { type: String, default: 'user', enum: ['user', 'admin'] },
   // Telegram daily reminder (hour is Asia/Tashkent local time)
   reminderEnabled: { type: Boolean, default: false, index: true },
@@ -148,7 +154,18 @@ const UserSchema = new Schema<IUser>({
   referredBy: { type: String },
   referralCount: { type: Number, default: 0 },
   referralBonusDays: { type: Number, default: 0 },
-}, { timestamps: true });
+}, {
+  timestamps: true,
+  toJSON: {
+    transform: (_doc, ret: any) => {
+      delete ret.passwordHash;
+      delete ret.__v;
+      return ret;
+    },
+  },
+});
+
+UserSchema.index({ xp: -1 });
 
 export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
 
@@ -160,19 +177,24 @@ export interface IReferral extends Document {
   referredUserName?: string;
   bonusDaysGranted: number;
   xpGranted: number;
-  status: 'rewarded';
+  status: 'pending' | 'rewarded';
+  rewardedAt?: Date;
   createdAt: Date;
 }
 
 const ReferralSchema = new Schema<IReferral>({
   referrerId: { type: String, required: true, index: true },
   referrerCode: { type: String, required: true, index: true },
-  referredUserId: { type: String, required: true, index: true },
+  referredUserId: { type: String, required: true },
   referredUserName: { type: String, default: 'Ota-ona' },
   bonusDaysGranted: { type: Number, default: 7 },
   xpGranted: { type: Number, default: 100 },
-  status: { type: String, default: 'rewarded' },
+  // pending → the invited account hasn't finished its first lesson yet
+  status: { type: String, enum: ['pending', 'rewarded'], default: 'pending', index: true },
+  rewardedAt: { type: Date },
 }, { timestamps: true });
+
+ReferralSchema.index({ referredUserId: 1 }, { unique: true }); // one referral per invited account
 
 export const Referral = mongoose.models.Referral || mongoose.model<IReferral>('Referral', ReferralSchema);
 
@@ -271,6 +293,7 @@ export interface ILesson extends Document {
   ageGroup: string;
   xpReward: number;
   isFree: boolean;
+  isPremium?: boolean;
   videoId?: string;
   videoUrl?: string;
   screens: ILessonScreen[];
@@ -287,6 +310,8 @@ const LessonSchema = new Schema<ILesson>({
   ageGroup: { type: String, required: true, index: true },
   xpReward: { type: Number, default: 10 },
   isFree: { type: Boolean, default: true },
+  // Was missing from the schema, so strict mode dropped it on sync and every lesson was free in DB mode.
+  isPremium: { type: Boolean, default: false, index: true },
   videoId: { type: String },
   videoUrl: { type: String },
   screens: [
@@ -307,6 +332,8 @@ const LessonSchema = new Schema<ILesson>({
   ],
   translations: { type: Schema.Types.Mixed, default: {} },
 }, { timestamps: true });
+
+LessonSchema.index({ courseSlug: 1, order: 1 });
 
 export const Lesson = mongoose.models.Lesson || mongoose.model<ILesson>('Lesson', LessonSchema);
 
@@ -402,6 +429,7 @@ const UserProgressSchema = new Schema<IUserProgress>({
 
 // Compound index for user + lesson
 UserProgressSchema.index({ userId: 1, lessonSlug: 1 }, { unique: true });
+UserProgressSchema.index({ completedAt: -1, userId: 1 }); // weekly leaderboard aggregation
 
 export const UserProgress = mongoose.models.UserProgress || mongoose.model<IUserProgress>('UserProgress', UserProgressSchema);
 
@@ -636,3 +664,59 @@ const HealthTopicSchema = new Schema<IHealthTopic>({
 }, { timestamps: true });
 
 export const HealthTopic = mongoose.models.HealthTopic || mongoose.model<IHealthTopic>('HealthTopic', HealthTopicSchema);
+
+// ======================== PAYMENT (manual card transfer) ========================
+export interface IPayment extends Document {
+  userId: string;
+  userName?: string;
+  telegramUsername?: string;
+  plan: 'lifetime';
+  amount: number;
+  currency: 'UZS';
+  status: 'pending' | 'approved' | 'rejected';
+  note?: string;
+  reviewedBy?: string;
+  reviewedAt?: Date;
+  rejectReason?: string;
+  createdAt?: Date;
+}
+
+const PaymentSchema = new Schema<IPayment>({
+  userId: { type: String, required: true, index: true },
+  userName: { type: String },
+  telegramUsername: { type: String },
+  plan: { type: String, enum: ['lifetime'], default: 'lifetime' },
+  amount: { type: Number, required: true },
+  currency: { type: String, enum: ['UZS'], default: 'UZS' },
+  status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending', index: true },
+  note: { type: String, maxlength: 500 },
+  reviewedBy: { type: String },
+  reviewedAt: { type: Date },
+  rejectReason: { type: String, maxlength: 500 },
+}, { timestamps: true });
+
+PaymentSchema.index({ status: 1, createdAt: -1 });
+
+export const Payment = mongoose.models.Payment || mongoose.model<IPayment>('Payment', PaymentSchema);
+
+// ======================== AUDIT LOG (admin actions) ========================
+export interface IAuditLog extends Document {
+  actorId: string;
+  actorName?: string;
+  action: string;
+  targetUserId?: string;
+  details?: Record<string, any>;
+  createdAt?: Date;
+}
+
+const AuditLogSchema = new Schema<IAuditLog>({
+  actorId: { type: String, required: true, index: true },
+  actorName: { type: String },
+  action: { type: String, required: true, index: true },
+  targetUserId: { type: String, index: true },
+  details: { type: Schema.Types.Mixed },
+}, { timestamps: { createdAt: true, updatedAt: false } });
+
+AuditLogSchema.index({ createdAt: -1 });
+
+export const AuditLog = mongoose.models.AuditLog || mongoose.model<IAuditLog>('AuditLog', AuditLogSchema);

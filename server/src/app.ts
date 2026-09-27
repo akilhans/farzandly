@@ -4,59 +4,61 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { apiRouter } from './routes/apiRoutes.js';
 import { errorHandler, notFoundHandler } from './middleware/errorHandler.js';
+import { attachUser } from './middleware/auth.js';
 
 export const app = express();
 
-// Security & utility middleware
+// Behind Render/Railway/Nginx: needed for correct req.ip (rate limiting) and req.protocol.
+app.set('trust proxy', 1);
+
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
 
-// Resilient CORS configuration supporting Vercel, localhost, and custom domains
+/**
+ * CORS allowlist. CLIENT_URL may hold several comma-separated origins.
+ * Localhost is allowed outside production; *.vercel.app previews only when ALLOW_VERCEL_PREVIEWS=true.
+ */
+const allowedOrigins = new Set(
+  (process.env.CLIENT_URL || 'https://farzandly.uz')
+    .split(',')
+    .map((o) => o.trim().replace(/\/$/, ''))
+    .filter(Boolean)
+);
+const isProd = process.env.NODE_ENV === 'production';
+
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, curl, server-to-server)
+      // Server-to-server calls (Next.js SSR, Telegram webhook, curl) send no Origin.
       if (!origin) return callback(null, true);
-
-      const clientUrl = process.env.CLIENT_URL;
-      if (
-        !clientUrl ||
-        clientUrl === '*' ||
-        origin === clientUrl ||
-        origin.endsWith('.vercel.app') ||
-        origin.includes('localhost')
-      ) {
+      const clean = origin.replace(/\/$/, '');
+      if (allowedOrigins.has(clean)) return callback(null, true);
+      if (!isProd && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/.test(clean)) return callback(null, true);
+      if (process.env.ALLOW_VERCEL_PREVIEWS === 'true' && /^https:\/\/[a-z0-9-]+\.vercel\.app$/.test(clean)) {
         return callback(null, true);
       }
-
-      // Allow dynamically if matching
-      return callback(null, true);
+      return callback(null, false);
     },
-    credentials: true,
+    // Auth uses the Authorization header, not cookies.
+    credentials: false,
   })
 );
 
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(morgan(isProd ? 'combined' : 'dev'));
+app.use(express.json({ limit: '200kb' }));
+app.use(express.urlencoded({ extended: true, limit: '200kb' }));
 
-// API Root
+// Resolve the signed session token (if any) into req.user for every API request.
+app.use('/api', attachUser);
 app.use('/api', apiRouter);
 
-// Base root endpoint
 app.get('/', (req, res) => {
-  res.json({
-    brand: 'Farzandly',
-    slogan: 'Farzand tarbiyasi — har kuni o‘rganiladigan yo‘l',
-    apiDocs: '/api/health',
-    status: 'Running',
-  });
+  res.json({ brand: 'Farzandly', status: 'Running', apiDocs: '/api/health' });
 });
 
-// 404 & Error handlers
 app.use(notFoundHandler);
 app.use(errorHandler);
 

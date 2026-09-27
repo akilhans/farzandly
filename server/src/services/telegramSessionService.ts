@@ -1,6 +1,8 @@
 import crypto from 'crypto';
 import { DataService } from './dataService.js';
 import { TelegramBotService } from './telegramBotService.js';
+import { signSessionToken } from '../lib/security.js';
+import { toPublicUser } from '../lib/premium.js';
 
 export interface TelegramAuthSession {
   sessionId: string;
@@ -61,6 +63,11 @@ class TelegramSessionStore {
     return session;
   }
 
+  /** Remove a session after its token has been handed to the browser (single use). */
+  consume(sessionId: string): void {
+    this.sessions.delete(sessionId);
+  }
+
   /**
    * Authenticate session when user sends /start <sessionId> to the bot
    */
@@ -90,10 +97,10 @@ class TelegramSessionStore {
         photoUrl,
       });
 
-      const token = `farzandly_tg_${telegramId}_${Date.now()}`;
+      const token = signSessionToken(String(user._id));
 
       session.status = 'authenticated';
-      session.user = user;
+      session.user = toPublicUser(user);
       session.token = token;
 
       // Send login notification in the background

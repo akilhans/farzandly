@@ -77,7 +77,7 @@ let memoryProgress: Record<string, any[]> = {
 };
 let memoryNewsletter: string[] = [];
 
-function isDbConnected(): boolean {
+export function isDbConnected(): boolean {
   return mongoose.connection.readyState === 1;
 }
 
@@ -293,6 +293,24 @@ export class DataService {
     return createdUser;
   }
 
+  static async updateProfileBasics(
+    userId: string,
+    data: { childAgeGroup: string; selectedInterests: string[]; dailyGoalMinutes: number; name?: string }
+  ) {
+    const update: Record<string, any> = {
+      childAgeGroup: data.childAgeGroup,
+      selectedInterests: data.selectedInterests.slice(0, 20).map((x) => String(x).slice(0, 80)),
+      dailyGoalMinutes: data.dailyGoalMinutes,
+    };
+    if (data.name) update.name = data.name.trim();
+    if (isDbConnected()) {
+      return User.findByIdAndUpdate(userId, { $set: update }, { new: true });
+    }
+    const user = memoryUsers[userId];
+    if (user) Object.assign(user, update);
+    return user || null;
+  }
+
   // Telegram User Authentication
   static async upsertTelegramUser(data: {
     telegramId: string;
@@ -435,17 +453,33 @@ export class DataService {
     return newUser;
   }
 
-  static async verifyEmailUser(email: string, passwordHash: string) {
+  /**
+   * Looks up an email account and checks the password. Legacy sha256 hashes are upgraded
+   * to scrypt transparently on a successful login.
+   */
+  static async verifyEmailUser(
+    email: string,
+    password: string,
+    verify: (password: string, stored?: string) => { ok: boolean; needsUpgrade: boolean },
+    rehash: (password: string) => string
+  ) {
     if (isDbConnected()) {
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email }).select('+passwordHash');
       if (!user) return null;
-      if (user.passwordHash !== passwordHash) return null;
+      const result = verify(password, user.passwordHash);
+      if (!result.ok) return null;
+      if (result.needsUpgrade) {
+        user.passwordHash = rehash(password);
+        await user.save();
+      }
       return user;
     }
 
     const user = Object.values(memoryUsers).find((u: any) => u.email === email);
     if (!user) return null;
-    if (user.passwordHash !== passwordHash) return null;
+    const result = verify(password, user.passwordHash);
+    if (!result.ok) return null;
+    if (result.needsUpgrade) user.passwordHash = rehash(password);
     return user;
   }
 
@@ -460,7 +494,17 @@ export class DataService {
     const byKey = memoryUsers[idOrTg];
     if (byKey) return byKey;
     const byTg = Object.values(memoryUsers).find((u: any) => u.telegramId === idOrTg || u.email === idOrTg);
-    return byTg || memoryUsers['demo-user'] || null;
+    return byTg || null;
+  }
+
+  /** Strict lookup by primary id only — used by the auth middleware. */
+  static async getUserById(id: string) {
+    if (!id) return null;
+    if (isDbConnected()) {
+      if (!mongoose.Types.ObjectId.isValid(id)) return null;
+      return User.findById(id);
+    }
+    return memoryUsers[id] || null;
   }
 
   // ---------------------------------------------------------------------------
@@ -560,19 +604,44 @@ export class DataService {
       return { user, progress };
     }
 
-    const user = memoryUsers[userId] || memoryUsers['demo-user'];
-    const progress = memoryProgress[userId] || memoryProgress['demo-user'] || [];
+    const user = memoryUsers[userId] || null;
+    const progress = memoryProgress[userId] || [];
     return { user, progress };
   }
 
+  /**
+   * Works out how much XP a completion is worth. The client may *request* an amount (quiz bonus),
+   * but the server caps it: lessons → xpReward + 5, articles → 5, health quizzes → 15.
+   * Returns null for unknown content.
+   */
+  static async resolveProgressReward(lessonSlug: string, requestedXp?: number) {
+    const clamp = (v: number, max: number) => Math.max(0, Math.min(Math.round(v), max));
+    if (lessonSlug.startsWith('maqola-')) {
+      return { xp: 5, isPremium: false, xpReward: 5 };
+    }
+    if (lessonSlug.startsWith('health-')) {
+      const topic: any = await this.getHealthTopicBySlug(lessonSlug.slice('health-'.length));
+      if (!topic) return null;
+      return { xp: clamp(requestedXp ?? 10, 15), isPremium: Boolean(topic.isPremium), xpReward: 10 };
+    }
+    const lesson: any = await this.getLessonByIdOrSlug(lessonSlug);
+    if (!lesson) return null;
+    const reward = Number(lesson.xpReward) || 10;
+    return { xp: clamp(requestedXp ?? reward, reward + 5), isPremium: Boolean(lesson.isPremium), xpReward: reward };
+  }
+
+  /**
+   * Records a completion. XP is granted only the first time a user completes a given item.
+   * The caller must already have checked premium access (see ApiController.recordUserProgress).
+   */
   static async recordProgress(data: {
     userId: string;
     lessonSlug: string;
     score?: number;
-    xpEarned?: number;
+    xpEarned: number;
   }) {
-    const xp = data.xpEarned || 10;
-    const score = data.score || 100;
+    const xp = data.xpEarned;
+    const score = data.score ?? 100;
 
     const computeLevel = (currentXp: number): string => {
       if (currentXp >= 1000) return 'Donishmand ota-ona';
@@ -642,76 +711,80 @@ export class DataService {
     };
 
     if (isDbConnected()) {
-      await UserProgress.findOneAndUpdate(
-        { userId: data.userId, lessonSlug: data.lessonSlug },
-        {
+      // The unique {userId, lessonSlug} index makes "first completion" atomic.
+      let firstCompletion = true;
+      try {
+        await UserProgress.create({
+          userId: data.userId,
+          lessonSlug: data.lessonSlug,
           isCompleted: true,
           score,
           xpEarned: xp,
           completedAt: new Date(),
-        },
-        { upsert: true, new: true }
-      );
+        });
+      } catch (err: any) {
+        if (err?.code !== 11000) throw err;
+        firstCompletion = false;
+      }
 
       const existingUser = await User.findById(data.userId);
-      const newXp = (existingUser?.xp || 0) + xp;
-      const newStreak = computeStreak(existingUser?.lastActiveDate, existingUser?.streak || 1);
-      const lessons = Array.from(new Set([...(existingUser?.completedLessons || []), data.lessonSlug]));
-      const achResult = evaluateAchievements(newXp, newStreak, lessons, existingUser?.achievements || []);
-      const newLevel = computeLevel(newXp);
+      if (!existingUser) throw new Error('Foydalanuvchi topilmadi');
+
+      if (!firstCompletion) {
+        return { success: true, alreadyCompleted: true, xpEarned: 0, updatedUser: existingUser, newlyUnlockedAchievements: [] };
+      }
+
+      const newXp = (existingUser.xp || 0) + xp;
+      const newStreak = computeStreak(existingUser.lastActiveDate, existingUser.streak || 1);
+      const lessons = Array.from(new Set([...(existingUser.completedLessons || []), data.lessonSlug]));
+      const achResult = evaluateAchievements(newXp, newStreak, lessons, existingUser.achievements || []);
 
       const updatedUser = await User.findByIdAndUpdate(
         data.userId,
         {
-          xp: newXp,
-          streak: newStreak,
-          level: newLevel,
-          lastActiveDate: new Date(),
-          completedLessons: lessons,
-          achievements: achResult.all,
+          $inc: { xp },
+          $set: {
+            streak: newStreak,
+            level: computeLevel(newXp),
+            lastActiveDate: new Date(),
+            achievements: achResult.all,
+          },
+          $addToSet: { completedLessons: data.lessonSlug },
         },
         { new: true }
       );
 
-      return { success: true, updatedUser, newlyUnlockedAchievements: achResult.newlyUnlocked };
-    }
-
-    // In-memory update
-    const user = memoryUsers[data.userId] || memoryUsers['demo-user'];
-    let newlyUnlocked: string[] = [];
-    if (user) {
-      user.xp = (user.xp || 0) + xp;
-      if (!user.completedLessons.includes(data.lessonSlug)) {
-        user.completedLessons.push(data.lessonSlug);
+      // A pending referral is rewarded when the invited parent finishes their first real lesson.
+      if (!data.lessonSlug.startsWith('maqola-') && !data.lessonSlug.startsWith('health-')) {
+        await this.rewardPendingReferral(String(existingUser._id)).catch((e) =>
+          console.warn('[Referral] reward failed:', e?.message || e)
+        );
       }
-      user.streak = computeStreak(user.lastActiveDate, user.streak || 1);
-      user.lastActiveDate = new Date();
-      user.level = computeLevel(user.xp);
 
-      const achResult = evaluateAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
-      user.achievements = achResult.all;
-      newlyUnlocked = achResult.newlyUnlocked;
+      return { success: true, alreadyCompleted: false, xpEarned: xp, updatedUser, newlyUnlockedAchievements: achResult.newlyUnlocked };
     }
 
-    if (!memoryProgress[data.userId]) {
-      memoryProgress[data.userId] = [];
-    }
-    const existingProgIndex = memoryProgress[data.userId].findIndex((p) => p.lessonSlug === data.lessonSlug);
-    const progItem = {
-      userId: data.userId,
-      lessonSlug: data.lessonSlug,
-      isCompleted: true,
-      score,
-      xpEarned: xp,
-      completedAt: new Date(),
-    };
-    if (existingProgIndex >= 0) {
-      memoryProgress[data.userId][existingProgIndex] = progItem;
-    } else {
-      memoryProgress[data.userId].push(progItem);
+    // In-memory (demo) mode
+    const user = memoryUsers[data.userId];
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+    if (!memoryProgress[data.userId]) memoryProgress[data.userId] = [];
+    const already = memoryProgress[data.userId].some((p) => p.lessonSlug === data.lessonSlug);
+    if (already) {
+      return { success: true, alreadyCompleted: true, xpEarned: 0, user, newlyUnlockedAchievements: [] };
     }
 
-    return { success: true, user, progress: progItem, newlyUnlockedAchievements: newlyUnlocked };
+    user.xp = (user.xp || 0) + xp;
+    user.completedLessons = Array.from(new Set([...(user.completedLessons || []), data.lessonSlug]));
+    user.streak = computeStreak(user.lastActiveDate, user.streak || 1);
+    user.lastActiveDate = new Date();
+    user.level = computeLevel(user.xp);
+    const achResult = evaluateAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
+    user.achievements = achResult.all;
+
+    const progItem = { userId: data.userId, lessonSlug: data.lessonSlug, isCompleted: true, score, xpEarned: xp, completedAt: new Date() };
+    memoryProgress[data.userId].push(progItem);
+
+    return { success: true, alreadyCompleted: false, xpEarned: xp, user, progress: progItem, newlyUnlockedAchievements: achResult.newlyUnlocked };
   }
 
   // Newsletter
@@ -761,15 +834,6 @@ export class DataService {
     return item ? localizeEntity(item, lang) : null;
   }
 
-  static async recordHealthQuiz(slug: string, score: number = 100, xpEarned: number = 10, userId: string = 'demo-user') {
-    return this.recordProgress({
-      userId,
-      lessonSlug: `health-${slug}`,
-      score,
-      xpEarned,
-    });
-  }
-
   // ======================== FAMILY & CO-PARENTING ========================
   static async getOrCreatePartnerInviteCode(userId: string): Promise<string> {
     const user: any = await this.getUserByIdOrTelegram(userId);
@@ -805,6 +869,10 @@ export class DataService {
 
     if (String(partner._id) === String(user._id)) {
       throw new Error('O‘z profilingiz kodini ulashingiz mumkin emas');
+    }
+
+    if (partner.partnerId && String(partner.partnerId) !== String(user._id)) {
+      throw new Error('Bu taklif kodi egasi allaqachon boshqa oila a’zosiga ulangan');
     }
 
     // Connect both users
@@ -979,13 +1047,28 @@ export class DataService {
     return code;
   }
 
+  static readonly REFERRAL_BONUS_DAYS = 7;
+  static readonly REFERRAL_BONUS_XP = 100;
+  static readonly REFERRAL_WINDOW_DAYS = 7;
+
+  /**
+   * Links a NEW account to a referrer. Nothing is granted yet: both sides get
+   * REFERRAL_BONUS_DAYS once the invited parent completes their first lesson.
+   */
   static async applyReferralCode(newUserId: string, rawCode: string) {
     const cleanCode = rawCode.trim().toUpperCase();
-    const user: any = await this.getUserByIdOrTelegram(newUserId);
+    const user: any = await this.getUserById(newUserId);
     if (!user) throw new Error('Foydalanuvchi topilmadi');
 
     if (user.referredBy) {
       throw new Error('Siz allaqachon taklif kodidan foydalangansiz');
+    }
+
+    const createdAt = user.createdAt ? new Date(user.createdAt).getTime() : Date.now();
+    const isNewAccount = Date.now() - createdAt <= this.REFERRAL_WINDOW_DAYS * 24 * 60 * 60 * 1000;
+    const hasLessons = (user.completedLessons || []).some((s: string) => !s.startsWith('maqola-') && !s.startsWith('health-'));
+    if (!isNewAccount || hasLessons) {
+      throw new Error('Taklif kodi faqat yangi ro‘yxatdan o‘tgan hisoblar uchun amal qiladi');
     }
 
     let referrer: any = null;
@@ -994,90 +1077,87 @@ export class DataService {
     } else {
       referrer = Object.values(memoryUsers).find((u: any) => u.referralCode === cleanCode);
     }
-
-    if (!referrer) {
-      throw new Error('Taklif kodi topilmadi. Kodni qayta tekshiring');
-    }
-
+    if (!referrer) throw new Error('Taklif kodi topilmadi. Kodni qayta tekshiring');
     if (String(referrer._id) === String(user._id)) {
       throw new Error('O‘zingizning taklif kodingizni ishlata olmaysiz');
     }
 
-    const BONUS_DAYS = 7;
-    const BONUS_XP = 100;
-
-    // Helper to add days to subscription
-    const addDays = (currentExpires: any, days: number) => {
-      const base = currentExpires && new Date(currentExpires) > new Date() ? new Date(currentExpires) : new Date();
-      base.setDate(base.getDate() + days);
-      return base;
-    };
-
-    // Update Referrer
-    referrer.referralCount = (referrer.referralCount || 0) + 1;
-    referrer.referralBonusDays = (referrer.referralBonusDays || 0) + BONUS_DAYS;
-    referrer.xp = (referrer.xp || 0) + BONUS_XP;
-    referrer.isPremium = true;
-    referrer.subscriptionStatus = 'premium';
-    referrer.premiumExpiresAt = addDays(referrer.premiumExpiresAt, BONUS_DAYS);
-
-    // Update Referred User
-    user.referredBy = cleanCode;
-    user.referralBonusDays = (user.referralBonusDays || 0) + BONUS_DAYS;
-    user.xp = (user.xp || 0) + BONUS_XP;
-    user.isPremium = true;
-    user.subscriptionStatus = 'premium';
-    user.premiumExpiresAt = addDays(user.premiumExpiresAt, BONUS_DAYS);
-
     if (isDbConnected()) {
-      await User.findByIdAndUpdate(referrer._id, {
-        referralCount: referrer.referralCount,
-        referralBonusDays: referrer.referralBonusDays,
-        xp: referrer.xp,
-        isPremium: true,
-        subscriptionStatus: 'premium',
-        premiumExpiresAt: referrer.premiumExpiresAt,
-      });
-
-      await User.findByIdAndUpdate(user._id, {
-        referredBy: user.referredBy,
-        referralBonusDays: user.referralBonusDays,
-        xp: user.xp,
-        isPremium: true,
-        subscriptionStatus: 'premium',
-        premiumExpiresAt: user.premiumExpiresAt,
-      });
-
-      const refDoc = new Referral({
+      const updated = await User.findOneAndUpdate(
+        { _id: user._id, referredBy: { $exists: false } },
+        { $set: { referredBy: cleanCode } },
+        { new: true }
+      );
+      if (!updated) throw new Error('Siz allaqachon taklif kodidan foydalangansiz');
+      await Referral.create({
         referrerId: String(referrer._id),
         referrerCode: cleanCode,
         referredUserId: String(user._id),
         referredUserName: user.name || 'Yangi ota-ona',
-        bonusDaysGranted: BONUS_DAYS,
-        xpGranted: BONUS_XP,
-        status: 'rewarded',
+        bonusDaysGranted: this.REFERRAL_BONUS_DAYS,
+        xpGranted: this.REFERRAL_BONUS_XP,
+        status: 'pending',
       });
-      await refDoc.save();
     } else {
+      user.referredBy = cleanCode;
       memoryReferrals.push({
         referrerId: String(referrer._id),
         referrerCode: cleanCode,
         referredUserId: String(user._id),
         referredUserName: user.name || 'Yangi ota-ona',
-        bonusDaysGranted: BONUS_DAYS,
-        xpGranted: BONUS_XP,
-        status: 'rewarded',
+        bonusDaysGranted: this.REFERRAL_BONUS_DAYS,
+        xpGranted: this.REFERRAL_BONUS_XP,
+        status: 'pending',
         createdAt: new Date(),
       });
     }
 
     return {
       success: true,
-      message: `Tabriklaymiz! Siz va do‘stingizga +${BONUS_DAYS} kunlik Premium va +${BONUS_XP} XP berildi!`,
-      bonusDays: BONUS_DAYS,
-      xp: BONUS_XP,
+      pending: true,
+      message: `Kod qabul qilindi! Birinchi darsni tugatganingizda siz va do‘stingiz +${this.REFERRAL_BONUS_DAYS} kunlik Premium olasiz.`,
+      bonusDays: this.REFERRAL_BONUS_DAYS,
+      xp: this.REFERRAL_BONUS_XP,
       referrerName: referrer.name,
     };
+  }
+
+  /** Adds bonus Premium days. Lifetime owners keep lifetime; bonus days stack on an active period. */
+  static bonusPremiumUpdate(user: any, days: number) {
+    if (user?.premiumType === 'lifetime') return {};
+    const current = user?.premiumExpiresAt ? new Date(user.premiumExpiresAt) : null;
+    const base = current && current.getTime() > Date.now() ? current : new Date();
+    const expires = new Date(base.getTime() + days * 24 * 60 * 60 * 1000);
+    return { premiumType: 'bonus', isPremium: true, subscriptionStatus: 'premium', premiumExpiresAt: expires };
+  }
+
+  static async rewardPendingReferral(referredUserId: string) {
+    if (!isDbConnected()) return null;
+    // Atomically claim the pending referral so it is rewarded exactly once.
+    const ref: any = await Referral.findOneAndUpdate(
+      { referredUserId, status: 'pending' },
+      { $set: { status: 'rewarded', rewardedAt: new Date() } },
+      { new: true }
+    );
+    if (!ref) return null;
+
+    const [referrer, referred]: any[] = await Promise.all([User.findById(ref.referrerId), User.findById(referredUserId)]);
+    const days = ref.bonusDaysGranted || this.REFERRAL_BONUS_DAYS;
+    const xp = ref.xpGranted || this.REFERRAL_BONUS_XP;
+
+    if (referrer) {
+      await User.findByIdAndUpdate(referrer._id, {
+        $set: this.bonusPremiumUpdate(referrer, days),
+        $inc: { xp, referralCount: 1, referralBonusDays: days },
+      });
+    }
+    if (referred) {
+      await User.findByIdAndUpdate(referred._id, {
+        $set: this.bonusPremiumUpdate(referred, days),
+        $inc: { xp, referralBonusDays: days },
+      });
+    }
+    return { referrerId: ref.referrerId, referrerTelegramId: referrer?.telegramId, referredName: referred?.name, days };
   }
 
   static async getReferralStats(userId: string) {
@@ -1095,13 +1175,14 @@ export class DataService {
 
     return {
       referralCode,
-      referralCount: user.referralCount || referrals.length || 0,
+      referralCount: user.referralCount || 0,
       referralBonusDays: user.referralBonusDays || 0,
       referrals: referrals.map((r: any) => ({
         id: r._id || r.referredUserId,
         userName: r.referredUserName || 'Ota-ona',
         bonusDays: r.bonusDaysGranted || 7,
         xp: r.xpGranted || 100,
+        status: r.status || 'rewarded',
         date: r.createdAt || new Date(),
       })),
     };
