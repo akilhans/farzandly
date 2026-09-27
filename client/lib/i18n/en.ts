@@ -475,13 +475,13 @@ const en: Record<string, string> = {
     'prem.faq1.q': 'Which lessons and articles are free?',
     'prem.faq1.a': 'On our platform the lessons "1–10: Parenting basics and protection from early risks", the article "5 golden rules of Islamic parenting" and 3 more selected articles are free for every parent for life. All other 59 in-depth lessons, audio wisdom and analytical articles are Premium content.',
     'prem.faq2.q': 'How does payment work?',
-    'prem.faq2.a': 'You transfer the payment to card 5614 6819 0401 4390 (Uzcard/Humo) and send the receipt via Telegram to t.me/dadakhonov. Once the receipt is verified, your account is activated within 10–15 minutes.',
+    'prem.faq2.a': 'You make a one-time card transfer and tap “I have paid”. Once the payment is verified, lifetime Premium turns on automatically and you get a Telegram message.',
     'prem.faq3.q': 'What is the advantage of yearly payment?',
     'prem.faq3.a': 'On the yearly plan the price comes to just 179,000 UZS per month (instead of 219,000 UZS monthly). You save almost 500,000 UZS over the year and get all new content throughout the year.',
     'prem.faq4.q': 'What is in Premium content?',
     'prem.faq4.a': 'You get Abdulloh Domla\'s complete lesson series (55 lessons), Xadicha Kubro Tongar\'s Fitrat pedagogy, Aziz Rahimov\'s modern education and discipline method, a 30-volume encyclopedia of great scholars, practical sessions, daily quizzes and a full child psychology library.',
     'a11y.skip': 'Skip to main content',
-    'home.79': 'Payment: 5614 6819 0401 4390 • t.me/dadakhonov',
+    'home.79': 'Lifetime Premium — one-time payment',
 };
 
 export default en;

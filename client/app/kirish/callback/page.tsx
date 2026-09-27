@@ -7,11 +7,12 @@ import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 import { T } from '@/components/T';
+import { accountApi } from '@/lib/accountApi';
 
 function TelegramCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { loginWithTelegram, setAuthenticatedSession } = useAuth();
+  const { redeemLoginTicket, setAuthenticatedSession, user } = useAuth();
   const { t } = useI18n();
 
   const [status, setStatus] = useState<'loading' | 'success' | 'error'>('loading');
@@ -20,6 +21,7 @@ function TelegramCallbackContent() {
 
   useEffect(() => {
     const code = searchParams.get('code');
+    const ticket = searchParams.get('ticket');
     const errorParam = searchParams.get('error');
     const errorDesc = searchParams.get('error_description');
 
@@ -29,113 +31,40 @@ function TelegramCallbackContent() {
       return;
     }
 
-    const directToken = searchParams.get('direct_token');
-    if (directToken) {
-      try {
-        const decoded = JSON.parse(atob(decodeURIComponent(directToken)));
-        if (decoded.telegramId) {
-          const userObj = {
-            _id: `tg-${decoded.telegramId}`,
-            telegramId: String(decoded.telegramId),
-            name: decoded.name || 'Ota-ona',
-            telegramUsername: decoded.telegramUsername || '',
-            childAgeGroup: '3-5',
-            selectedInterests: ['Bola xulqi', 'Hissiyotlar'],
-            dailyGoalMinutes: 10,
-            xp: 100,
-            streak: 1,
-            level: 'Boshlovchi',
-            completedLessons: [],
-            achievements: ['ilk-qadam'],
-            subscriptionStatus: 'free',
-            authProvider: 'telegram',
-            photoUrl: decoded.telegramUsername
-              ? `https://t.me/i/userpic/320/${decoded.telegramUsername}.jpg`
-              : undefined,
-          };
-          const tokenStr = `farzandly_direct_${decoded.telegramId}_${Date.now()}`;
-          setUserData(userObj);
-          setAuthenticatedSession(userObj, tokenStr);
-          setStatus('success');
-          setTimeout(() => {
-            router.push('/dashboard');
-          }, 1200);
-          return;
-        }
-      } catch (err: any) {
-        console.warn('Direct token parse error:', err);
+    const finish = (result: { success: boolean; message?: string }) => {
+      if (!result.success) {
+        setStatus('error');
+        setErrorMessage(result.message || 'Telegram orqali tizimga kirishda xatolik');
+        return;
       }
+      setStatus('success');
+      setTimeout(() => router.push('/dashboard'), 1200);
+    };
+
+    // One-click link from the bot: a signed 15-minute ticket, redeemed on the server.
+    if (ticket) {
+      redeemLoginTicket(ticket).then(finish);
+      return;
     }
 
     if (!code) {
       setStatus('error');
-      setErrorMessage('Avtorizatsiya kodi topilmadi');
+      setErrorMessage(searchParams.get('direct_token') ? 'Bu havola eskirgan. Botdan yangi havola oling.' : 'Avtorizatsiya kodi topilmadi');
       return;
     }
 
-    const exchangeCode = async () => {
-      try {
-        const redirectUri = window.location.origin + '/kirish/callback';
-        const apiBase = process.env.NEXT_PUBLIC_API_URL || '';
-        const endpoint = apiBase ? `${apiBase}/auth/telegram/exchange` : '/api/auth/telegram/exchange';
-
-        // Try to get clientId from searchParams or localStorage or env
-        const storedClientId =
-          localStorage.getItem('farzandly_tg_client_id') ||
-          process.env.NEXT_PUBLIC_TELEGRAM_CLIENT_ID ||
-          '891291780';
-
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            code,
-            redirectUri,
-            clientId: storedClientId,
-          }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok || !data.success) {
-          throw new Error(data.message || 'Telegram tokenini olishda xatolik');
-        }
-
-        const user = data.data.user;
-        const authToken = data.data.token || `farzandly_tg_${user.telegramId || user._id}_${Date.now()}`;
-        const rawUsername = user.telegramUsername || '';
-        const cleanUsername = rawUsername.replace(/^@/, '').trim();
-        const displayName = cleanUsername ? `@${cleanUsername}` : (user.name || 'Ota-ona');
-        const photoUrl =
-          user.photoUrl ||
-          (cleanUsername ? `https://t.me/i/userpic/320/${cleanUsername}.jpg` : '') ||
-          `/api/telegram/avatar/${user.telegramId || user._id}?name=${encodeURIComponent(displayName)}`;
-
-        const completeUser = {
-          ...user,
-          name: displayName,
-          telegramUsername: cleanUsername,
-          photoUrl: photoUrl,
-        };
-
-        setUserData(completeUser);
-        setStatus('success');
-
-        // Persist session directly without redundant network call
-        setAuthenticatedSession(completeUser, authToken);
-
-        setTimeout(() => {
-          router.push('/dashboard');
-        }, 1200);
-      } catch (err: any) {
-        console.error('Callback error:', err);
-        setStatus('error');
-        setErrorMessage(err.message || 'Telegram orqali tizimga kirishda kutilmagan xatolik');
+    // Telegram OIDC: the server exchanges the code with its own client secret.
+    accountApi.exchangeOidcCode(code).then((res) => {
+      if (res.success && res.data?.token && res.data?.user) {
+        setUserData(res.data.user);
+        setAuthenticatedSession(res.data.user, res.data.token);
+        finish({ success: true });
+      } else {
+        finish({ success: false, message: res.message });
       }
-    };
-
-    exchangeCode();
-  }, [searchParams, router, loginWithTelegram]);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchParams]);
 
   return (
     <div className="w-full max-w-md bg-white/95 backdrop-blur-xl rounded-3xl border-2 border-slate-200 border-b-8 p-8 shadow-2xl text-center space-y-6">
@@ -159,9 +88,9 @@ function TelegramCallbackContent() {
         <div className="space-y-4 py-4 animate-in fade-in zoom-in duration-300">
           <div className="flex justify-center">
             <UserAvatar
-              name={userData?.name}
-              photoUrl={userData?.photoUrl}
-              telegramUsername={userData?.telegramUsername}
+              name={(userData || user)?.name}
+              photoUrl={(userData || user)?.photoUrl}
+              telegramUsername={(userData || user)?.telegramUsername}
               size="lg"
             />
           </div>

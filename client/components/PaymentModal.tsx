@@ -1,208 +1,199 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Crown, Copy, CheckCheck, Send, ShieldCheck, X, LogIn, Lock, ArrowRight } from 'lucide-react';
+import { Crown, Copy, CheckCheck, X, LogIn, Clock, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { T } from '@/components/T';
+import { accountApi, PaymentRequest } from '@/lib/accountApi';
+import { PAYMENT_CARD, PAYMENT_CARD_HOLDER, PREMIUM_PRICE_UZS, SUPPORT_TELEGRAM, formatCard, formatSom } from '@/lib/payments';
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  defaultPlan?: 'monthly' | 'yearly';
+  /** @deprecated Premium is a single lifetime plan now; kept so existing callers compile. */
+  defaultPlan?: string;
 }
 
-export default function PaymentModal({ isOpen, onClose, defaultPlan = 'monthly' }: PaymentModalProps) {
-  const { user, isAuthenticated } = useAuth();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'yearly'>(defaultPlan);
+/**
+ * Lifetime Premium via card transfer:
+ * transfer → "Men to'ladim" → admin confirms → Premium turns on and the bot notifies the parent.
+ */
+export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
+  const { user, isAuthenticated, refreshUser } = useAuth();
   const [copied, setCopied] = useState(false);
+  const [payments, setPayments] = useState<PaymentRequest[] | null>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState('');
+
+  const loadPayments = useCallback(async () => {
+    const res = await accountApi.myPayments();
+    setPayments(res.success ? res.data : []);
+  }, []);
 
   useEffect(() => {
-    if (isOpen) {
-      setSelectedPlan(defaultPlan);
+    if (!isOpen) return;
+    setError('');
+    if (isAuthenticated) {
+      loadPayments();
+      refreshUser();
     }
-  }, [isOpen, defaultPlan]);
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isOpen, isAuthenticated, loadPayments, refreshUser, onClose]);
 
   if (!isOpen) return null;
 
-  const cardNumber = '5614 6819 0401 4390';
-  const isActuallyLoggedIn = Boolean(user && user.authProvider !== 'guest' && user._id !== 'guest-user');
+  const latest = payments?.[0];
+  const pending = latest?.status === 'pending';
+  const lifetime = user?.premiumType === 'lifetime';
 
-  const handleCopyCard = () => {
-    navigator.clipboard.writeText(cardNumber.replace(/\s+/g, ''));
+  const copyCard = () => {
+    navigator.clipboard?.writeText(PAYMENT_CARD.replace(/\s+/g, ''));
     setCopied(true);
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const planLabel = selectedPlan === 'monthly' ? "Oylik obuna (219 000 so'm / oy)" : "Yillik obuna (oyiga 179 000 so'm)";
-
-  const telegramMsg = encodeURIComponent(
-    `Assalomu alaykum! Men Farzandly platformasida Premium kontent uchun to'lov qildim.\n\n` +
-    `📌 Tanlangan tarif: ${planLabel}\n` +
-    `👤 Foydalanuvchi: ${user?.name || 'Ota-ona'} (${user?.telegramUsername ? `@${user.telegramUsername}` : (user?.phone || 'Profil')})\n\n` +
-    `To'lov chekini ilova qilmoqdaman. Iltimos, Premium maqomimni faollashtirib bering.`
-  );
-
-  const telegramUrl = `https://t.me/dadakhonov?text=${telegramMsg}`;
+  const confirmPaid = async () => {
+    setSubmitting(true);
+    setError('');
+    const res = await accountApi.createPayment();
+    setSubmitting(false);
+    if (res.success) await loadPayments();
+    else setError(res.message || 'So‘rovni yuborib bo‘lmadi. Qaytadan urinib ko‘ring.');
+  };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs animate-in fade-in duration-200">
-      <div 
-        className="bg-white rounded-3xl max-w-lg w-full border-2 border-amber-400 border-b-8 shadow-2xl p-6 sm:p-8 relative space-y-6 max-h-[92vh] overflow-y-auto"
+    <div
+      className="fixed inset-0 z-[100] bg-slate-900/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="payment-title"
+    >
+      <div
+        className="w-full sm:max-w-md bg-white rounded-t-3xl sm:rounded-3xl border-2 border-slate-200 sm:border-b-8 shadow-2xl max-h-[92vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Close button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-2 rounded-xl hover:bg-slate-100 transition-all cursor-pointer"
-        >
-          <X className="w-5 h-5" />
-        </button>
-
-        {/* Modal Header */}
-        <div className="text-center space-y-2 pt-1">
-          <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 px-3.5 py-1 rounded-full text-xs font-black">
-            <Crown className="w-4 h-4 fill-amber-700" />
-            <span><T k="pay.1" /></span>
+        <div className="flex items-start justify-between gap-3 p-6 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-3">
+            <div className="w-11 h-11 rounded-2xl bg-amber-100 border-2 border-amber-300 flex items-center justify-center shrink-0">
+              <Crown className="w-6 h-6 text-amber-700 fill-amber-600" />
+            </div>
+            <div>
+              <h2 id="payment-title" className="text-lg font-black text-slate-900">Umrbod Premium</h2>
+              <p className="text-sm text-slate-500">Bir marta to‘lov — barcha darslar abadiy ochiq</p>
+            </div>
           </div>
-          <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            <T k="pay.2" /></h2>
-          <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-            <T k="pay.3" /></p>
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label="Yopish"
+            className="p-2 rounded-xl text-slate-400 hover:text-slate-700 hover:bg-slate-100 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-600"
+          >
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        {/* REQUIRE LOGIN FIRST */}
-        {!isActuallyLoggedIn ? (
-          <div className="bg-amber-50/90 border-2 border-amber-300 rounded-3xl p-6 text-center space-y-4">
-            <div className="w-14 h-14 rounded-2xl bg-amber-100 text-amber-800 border-2 border-amber-300 flex items-center justify-center mx-auto shadow-inner">
-              <Lock className="w-7 h-7" />
-            </div>
-            <div className="space-y-1.5">
-              <h3 className="text-lg font-black text-slate-900">
-                <T k="pay.4" /></h3>
-              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium">
-                <T k="pay.5" /></p>
-            </div>
-            <Link
-              href="/kirish"
-              className="w-full btn-primary text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 cursor-pointer shadow-md"
-            >
-              <LogIn className="w-4 h-4" />
-              <span><T k="pay.6" /></span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
+        <div className="p-6 space-y-5">
+          <div className="flex items-baseline justify-between">
+            <span className="text-3xl font-black text-slate-900">{formatSom(PREMIUM_PRICE_UZS)} so‘m</span>
+            <span className="text-sm font-bold text-emerald-700">bir martalik</span>
           </div>
-        ) : (
-          <>
-            {/* Logged in User Pill */}
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-3 flex items-center justify-between text-xs">
-              <span className="text-slate-600 font-medium"><T k="pay.7" /></span>
-              <span className="font-bold text-emerald-800 flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                {user?.name || `@${user?.telegramUsername}`}
-              </span>
+
+          {!isAuthenticated ? (
+            <div className="rounded-2xl bg-slate-50 border-2 border-slate-200 p-5 space-y-3 text-center">
+              <p className="text-sm text-slate-700">
+                To‘lov hisobingizga bog‘lanishi uchun avval tizimga kiring.
+              </p>
+              <Link href="/kirish" onClick={onClose} className="btn-primary inline-flex items-center gap-2 text-sm px-5 py-3">
+                <LogIn className="w-4 h-4" /> Tizimga kirish
+              </Link>
             </div>
-
-            {/* Plan Selector */}
-            <div className="grid grid-cols-2 gap-3">
-              {/* Monthly */}
-              <button
-                type="button"
-                onClick={() => setSelectedPlan('monthly')}
-                className={`p-4 rounded-2xl border-2 text-left transition-all relative cursor-pointer ${
-                  selectedPlan === 'monthly'
-                    ? 'border-emerald-600 bg-emerald-50/50 shadow-xs'
-                    : 'border-slate-200 hover:border-slate-300 bg-white'
-                }`}
-              >
-                <div className="text-xs font-bold text-slate-500"><T k="pay.8" /></div>
-                <div className="text-lg sm:text-xl font-black text-slate-900 mt-1">
-                  219 000 <span className="text-[11px] font-medium text-slate-500"><T k="pay.9" /></span>
-                </div>
-                <div className="text-[11px] text-slate-500 mt-0.5"><T k="pay.10" /></div>
-              </button>
-
-              {/* Yearly */}
-              <button
-                type="button"
-                onClick={() => setSelectedPlan('yearly')}
-                className={`p-4 rounded-2xl border-2 text-left transition-all relative cursor-pointer ${
-                  selectedPlan === 'yearly'
-                    ? 'border-amber-500 bg-amber-50/50 shadow-xs'
-                    : 'border-slate-200 hover:border-slate-300 bg-white'
-                }`}
-              >
-                <div className="absolute -top-2.5 right-2 bg-amber-500 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded-full shadow-xs">
-                  <T k="pay.11" /></div>
-                <div className="text-xs font-bold text-amber-800"><T k="pay.12" /></div>
-                <div className="text-lg sm:text-xl font-black text-slate-900 mt-1">
-                  179 000 <span className="text-[11px] font-medium text-slate-500"><T k="pay.13" /></span>
-                </div>
-                <div className="text-[11px] text-emerald-700 font-bold mt-0.5"><T k="pay.14" /></div>
-              </button>
+          ) : lifetime ? (
+            <div className="rounded-2xl bg-emerald-50 border-2 border-emerald-300 p-5 flex gap-3">
+              <CheckCircle2 className="w-6 h-6 text-emerald-600 shrink-0" />
+              <p className="text-sm text-emerald-900 font-semibold">
+                Sizda umrbod Premium faol. Barcha darslar va maqolalar siz uchun ochiq.
+              </p>
             </div>
+          ) : pending ? (
+            <div className="rounded-2xl bg-amber-50 border-2 border-amber-300 p-5 flex gap-3">
+              <Clock className="w-6 h-6 text-amber-600 shrink-0" />
+              <div className="space-y-1">
+                <p className="text-sm text-amber-900 font-bold">To‘lovingiz tekshirilmoqda</p>
+                <p className="text-sm text-amber-900/80">
+                  Tasdiqlangach Premium avtomatik yoqiladi
+                  {user?.telegramId ? ' va Telegram orqali xabar olasiz' : ''}. Odatda bir necha soat ichida.
+                </p>
+              </div>
+            </div>
+          ) : (
+            <>
+              {latest?.status === 'rejected' && (
+                <div className="rounded-2xl bg-rose-50 border-2 border-rose-200 p-4 flex gap-3">
+                  <AlertCircle className="w-5 h-5 text-rose-600 shrink-0 mt-0.5" />
+                  <p className="text-sm text-rose-900">
+                    Oldingi so‘rov tasdiqlanmadi{latest.rejectReason ? `: ${latest.rejectReason}` : '.'} Qayta yuborishingiz mumkin.
+                  </p>
+                </div>
+              )}
 
-            {/* Payment Instructions Card */}
-            <div className="bg-slate-50 border-2 border-slate-200 rounded-2xl p-4 sm:p-5 space-y-4">
-              <div className="text-xs font-black uppercase tracking-wider text-slate-500">
-                <T k="pay.15" /></div>
-
-              {/* Card Box */}
-              <div className="bg-white border-2 border-slate-200 rounded-xl p-3 sm:p-4 flex items-center justify-between gap-3">
-                <div>
-                  <div className="text-[11px] text-slate-400 font-bold"><T k="pay.16" /></div>
-                  <div className="font-mono text-base sm:text-lg font-black text-slate-900 tracking-wider">
-                    {cardNumber}
+              <ol className="space-y-4">
+                <li className="flex gap-3">
+                  <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-sm font-black flex items-center justify-center shrink-0">1</span>
+                  <div className="flex-1 space-y-2">
+                    <p className="text-sm font-bold text-slate-800">
+                      {formatSom(PREMIUM_PRICE_UZS)} so‘mni kartaga o‘tkazing
+                    </p>
+                    {PAYMENT_CARD ? (
+                      <button
+                        type="button"
+                        onClick={copyCard}
+                        className="w-full flex items-center justify-between gap-3 rounded-2xl bg-slate-900 text-white px-4 py-3.5 font-mono text-base tracking-wider hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-emerald-500"
+                        aria-label="Karta raqamini nusxalash"
+                      >
+                        <span>{formatCard(PAYMENT_CARD)}</span>
+                        {copied ? <CheckCheck className="w-5 h-5 text-emerald-400" /> : <Copy className="w-5 h-5 text-slate-400" />}
+                      </button>
+                    ) : (
+                      <p className="text-sm text-rose-700">Karta raqami sozlanmagan. Qo‘llab-quvvatlash xizmatiga yozing.</p>
+                    )}
+                    {PAYMENT_CARD_HOLDER && <p className="text-xs text-slate-500">Qabul qiluvchi: {PAYMENT_CARD_HOLDER}</p>}
+                    {copied && <p className="text-xs font-bold text-emerald-700" role="status">Nusxalandi</p>}
                   </div>
-                </div>
-                <button
-                  type="button"
-                  onClick={handleCopyCard}
-                  className="btn-outline text-xs px-3 py-2 flex items-center gap-1.5 shrink-0 cursor-pointer"
-                  title="Karta raqamini nusxalash"
-                >
-                  {copied ? (
-                    <>
-                      <CheckCheck className="w-4 h-4 text-emerald-600" />
-                      <span className="text-emerald-700 font-bold"><T k="pay.17" /></span>
-                    </>
-                  ) : (
-                    <>
-                      <Copy className="w-4 h-4 text-slate-600" />
-                      <span><T k="pay.18" /></span>
-                    </>
-                  )}
-                </button>
-              </div>
+                </li>
+                <li className="flex gap-3">
+                  <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-sm font-black flex items-center justify-center shrink-0">2</span>
+                  <div className="flex-1 space-y-3">
+                    <p className="text-sm font-bold text-slate-800">O‘tkazgach, quyidagi tugmani bosing</p>
+                    <button
+                      type="button"
+                      onClick={confirmPaid}
+                      disabled={submitting}
+                      className="w-full btn-gold text-slate-950 font-black py-3.5 flex items-center justify-center gap-2 disabled:opacity-60"
+                    >
+                      {submitting ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
+                      Men to‘ladim
+                    </button>
+                    {error && <p className="text-sm text-rose-700" role="alert">{error}</p>}
+                  </div>
+                </li>
+              </ol>
+            </>
+          )}
 
-              {/* Tariff details */}
-              <div className="flex items-center justify-between text-xs sm:text-sm font-semibold text-slate-700 border-t border-slate-200 pt-3">
-                <span><T k="pay.19" /></span>
-                <span className="text-sm sm:text-base font-black text-emerald-700">
-                  {selectedPlan === 'monthly' ? '219 000 so‘m / oy' : 'Oyiga 179 000 so‘m (Yillik)'}
-                </span>
-              </div>
-            </div>
-
-            {/* Action Button: Send Check via Telegram */}
-            <div className="space-y-3">
-              <a
-                href={telegramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full btn-gold text-sm sm:text-base py-3.5 px-4 flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20 text-slate-950 font-black cursor-pointer"
-              >
-                <Send className="w-4 h-4" />
-                <span><T k="pay.20" /></span>
-              </a>
-
-              <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 text-center font-medium">
-                <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
-                <span><T k="pay.21" /></span>
-              </div>
-            </div>
-          </>
-        )}
+          {SUPPORT_TELEGRAM && (
+            <a
+              href={`https://t.me/${SUPPORT_TELEGRAM}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 text-sm font-bold text-[#229ED9] hover:underline"
+            >
+              <Send className="w-4 h-4" /> Savol bormi? Telegramda yozing
+            </a>
+          )}
+        </div>
       </div>
     </div>
   );

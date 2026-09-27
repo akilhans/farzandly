@@ -1,5 +1,6 @@
 'use client';
 
+import LeaderboardVisibilityToggle from '@/components/LeaderboardVisibilityToggle';
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
@@ -1187,6 +1188,8 @@ export default function ProfilePage() {
               <Sliders className="w-5 h-5 text-emerald-600" />
               <h2><T k="prof.40" /></h2>
             </div>
+
+            <LeaderboardVisibilityToggle />
 
             {/* Tilni tanlash */}
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-slate-50 border border-slate-200">

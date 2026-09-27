@@ -13,7 +13,7 @@ export interface TelegramUserProfile {
 
 export class TelegramBotClient {
   static getBotToken(): string {
-    return process.env.TELEGRAM_BOT_TOKEN || process.env.TELEGRAM_CLIENT_SECRET || '';
+    return process.env.TELEGRAM_BOT_TOKEN || '';
   }
 
   static isConfigured(): boolean {

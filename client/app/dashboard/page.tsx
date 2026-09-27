@@ -1,5 +1,6 @@
 'use client';
 
+import Leaderboard from '@/components/Leaderboard';
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { m, AnimatePresence } from 'framer-motion';
@@ -29,7 +30,7 @@ import { useI18n } from '@/context/LanguageContext';
 import UserAvatar from '@/components/UserAvatar';
 import ChildSwitcher from '@/components/ChildSwitcher';
 import { getActiveChild, normalizeAgeGroup } from '@/lib/children';
-import { calculateLevel, getWeeklyLeaderboard } from '@/lib/gamification';
+import { calculateLevel } from '@/lib/gamification';
 import { T } from '@/components/T';
 
 export default function DashboardPage() {
@@ -57,7 +58,6 @@ export default function DashboardPage() {
   const xp = authUser?.xp || 0;
   const levelInfo = calculateLevel(xp, language);
   const level = levelInfo.level; // localized from XP
-  const leaderboard = getWeeklyLeaderboard(xp, authUser?.name);
   const dailyGoal = authUser?.dailyGoalMinutes || 10;
   const todayProgressMinutes = Math.min(dailyGoal, Math.max(5, (completedList.length % 3 + 1) * 5));
   const isGoalReached = todayProgressMinutes >= dailyGoal;
@@ -373,79 +373,8 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {/* 4. HAFTALIK OTA-ONALAR LIGASI (LEADERBOARD) */}
-      <div className="bg-white/90 backdrop-blur-md rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-8 space-y-5 shadow-sm">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-          <div className="space-y-0.5">
-            <span className="text-xs font-black uppercase tracking-wider text-emerald-700 flex items-center gap-1.5">
-              <Trophy className="w-4 h-4 text-amber-500 fill-amber-400" />
-              <span><T k="dash.11" /></span>
-            </span>
-            <h3 className="text-lg sm:text-xl font-black text-slate-800">
-              <T k="dash.12" /></h3>
-          </div>
-          <span className="text-xs font-bold text-slate-400 bg-slate-100 px-3 py-1 rounded-xl self-start sm:self-auto">
-            <T k="dash.13" /></span>
-        </div>
-
-        <div className="space-y-2.5">
-          {leaderboard.map((item) => (
-            <div
-              key={item.rank}
-              className={`p-3 sm:p-3.5 rounded-2xl border-2 flex items-center justify-between transition-all ${
-                item.isCurrentUser
-                  ? 'bg-emerald-50/90 border-emerald-400 shadow-sm ring-2 ring-emerald-100'
-                  : 'bg-slate-50/70 border-slate-200'
-              }`}
-            >
-              <div className="flex items-center gap-3 sm:gap-4">
-                <span
-                  className={`w-6 sm:w-7 text-center font-black text-sm sm:text-base ${
-                    item.rank === 1
-                      ? 'text-amber-500'
-                      : item.rank === 2
-                      ? 'text-slate-400'
-                      : item.rank === 3
-                      ? 'text-amber-700'
-                      : 'text-slate-500'
-                  }`}
-                >
-                  #{item.rank}
-                </span>
-
-                <div className="flex items-center gap-2.5 sm:gap-3">
-                  <UserAvatar
-                    name={item.name}
-                    photoUrl={item.avatar}
-                    telegramUsername={item.username}
-                    size="sm"
-                  />
-                  <div>
-                    <p className="text-xs sm:text-sm font-black text-slate-800 flex items-center gap-1.5">
-                      <span>{item.name}</span>
-                      {item.isCurrentUser && (
-                        <span className="bg-emerald-600 text-white text-[10px] font-black px-2 py-0.2 rounded-md">
-                          <T k="dash.14" /></span>
-                      )}
-                    </p>
-                    <p className="text-[10px] text-slate-400 font-bold">{calculateLevel(item.xp, language).level}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <div className="hidden sm:flex items-center gap-1 text-xs font-bold text-orange-600 bg-orange-50 px-2 py-0.5 rounded-lg border border-orange-200">
-                  <Flame className="w-3.5 h-3.5 fill-orange-500 text-orange-500" />
-                  <span>{item.streak} <T k="dash.15" /></span>
-                </div>
-                <span className="text-xs sm:text-sm font-black text-emerald-700 bg-emerald-50 px-3 py-1 rounded-xl border border-emerald-200 flex items-center gap-1">
-                  <Star className="w-3.5 h-3.5 fill-emerald-500 text-emerald-500" />
-                  {item.xp} <T k="dash.16" /></span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* 4. Real parent leaderboard */}
+      <Leaderboard />
 
       {/* 5. LESSON MODAL POPUP (WHEN CLICKING A NODE) */}
       <AnimatePresence>

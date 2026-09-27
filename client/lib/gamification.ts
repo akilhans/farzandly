@@ -263,16 +263,3 @@ export function playChimeSound(type: 'correct' | 'wrong' | 'victory' | 'bonus' =
 /**
  * Community Leaderboard demo participants (Haftalik ota-onalar ligasi)
  */
-export function getWeeklyLeaderboard(currentUserXp: number, currentUserName?: string) {
-  const baseList = [
-    { rank: 1, name: 'Aziza Rahimova', username: 'aziza_mama', xp: Math.max(currentUserXp + 65, 240), streak: 8, badge: 'Mehrli murabbiy', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80' },
-    { rank: 2, name: 'Jasur Karimov', username: 'jasur_dada', xp: Math.max(currentUserXp + 25, 185), streak: 5, badge: 'Ongli ota-ona', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' },
-    { rank: 3, name: currentUserName || 'Siz (Ota-ona)', username: 'siz', xp: currentUserXp, streak: 4, badge: 'Faol ota-ona', isCurrentUser: true },
-    { rank: 4, name: 'Dilnoza Sobirova', username: 'dilnoza_pedagog', xp: Math.max(15, currentUserXp - 30), streak: 3, badge: 'O‘rganuvchi', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' },
-    { rank: 5, name: 'Nodira Karimova', username: 'nodira_k', xp: Math.max(10, currentUserXp - 50), streak: 2, badge: 'Boshlovchi' },
-  ];
-
-  // Re-sort and re-rank dynamically
-  const sorted = [...baseList].sort((a, b) => b.xp - a.xp);
-  return sorted.map((item, idx) => ({ ...item, rank: idx + 1 }));
-}

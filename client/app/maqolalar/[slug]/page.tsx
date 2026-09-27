@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import ArticleContentReader from '@/components/ArticleContentReader';
+import { articleTeaser } from '@/lib/premiumPreview';
 import { SITE_NAME, SITE_URL, START_LESSON_HREF, absoluteUrl } from '@/lib/site';
 import { seedArticles } from '@/lib/seedData';
 import { T, Tr } from '@/components/T';
@@ -193,7 +194,7 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
       </header>
 
       {/* Article Body Content Reader with Paywall Guard */}
-      <ArticleContentReader article={article} />
+      <ArticleContentReader article={articleTeaser(article)} />
 
       {/* Tags */}
       {article.tags && article.tags.length > 0 && (

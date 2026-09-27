@@ -19,16 +19,16 @@ import {
 } from 'lucide-react';
 import PaymentModal from '@/components/PaymentModal';
 import { START_LESSON_HREF } from '@/lib/site';
+import { PAYMENT_CARD, PREMIUM_PRICE_UZS, formatCard, formatSom } from '@/lib/payments';
 import { T } from '@/components/T';
 import { useI18n } from '@/context/LanguageContext';
 
 export default function PremiumPage() {
   const { t } = useI18n();
-  const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const cardNumber = '5614 6819 0401 4390';
+  const cardNumber = formatCard(PAYMENT_CARD);
 
   const handleCopyCard = () => {
     navigator.clipboard.writeText(cardNumber.replace(/\s+/g, ''));
@@ -51,38 +51,6 @@ export default function PremiumPage() {
         <p className="text-sm sm:text-base text-slate-600 font-medium">
           <T k="prem.3" /></p>
 
-        {/* Toggle */}
-        <div className="pt-4 flex items-center justify-center">
-          <div className="bg-slate-100 p-1.5 rounded-2xl border border-slate-200 inline-flex items-center gap-1 text-xs font-black">
-            <button
-              type="button"
-              onClick={() => setBillingCycle('monthly')}
-              className={`px-4 py-2 rounded-xl transition-all cursor-pointer font-bold ${
-                billingCycle === 'monthly'
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <T k="prem.4" /></button>
-            <button
-              type="button"
-              onClick={() => setBillingCycle('yearly')}
-              className={`px-4 py-2 rounded-xl transition-all flex items-center gap-1.5 cursor-pointer font-bold ${
-                billingCycle === 'yearly'
-                  ? 'bg-emerald-600 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <span><T k="prem.5" /></span>
-              <span className={`text-[10px] px-2 py-0.5 rounded-md font-black ${
-                billingCycle === 'yearly'
-                  ? 'bg-amber-400 text-slate-950'
-                  : 'bg-emerald-100 text-emerald-800'
-              }`}>
-                <T k="prem.6" /></span>
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Pricing Cards */}
@@ -141,16 +109,10 @@ export default function PremiumPage() {
             <p className="text-xs text-slate-500"><T k="prem.19" /></p>
 
             <div className="text-3xl font-black text-slate-900">
-              {billingCycle === 'yearly' ? '179 000' : '219 000'}{' '}
-              <span className="text-sm font-bold text-slate-400"><T k="prem.20" /></span>
+              {formatSom(PREMIUM_PRICE_UZS)}{' '}
+              <span className="text-sm font-bold text-slate-400"><T k="prem.9" /></span>
             </div>
-            {billingCycle === 'yearly' ? (
-              <p className="text-xs font-bold text-emerald-600">
-                <T k="prem.21" /></p>
-            ) : (
-              <p className="text-xs font-bold text-slate-500">
-                <T k="prem.22" /></p>
-            )}
+            <p className="text-xs font-bold text-emerald-600">Bir marta to‘lov — obuna emas, qayta yechilmaydi</p>
 
             <ul className="space-y-3 text-xs sm:text-sm text-slate-700 pt-4 border-t border-slate-100">
               <li className="flex items-center gap-2.5">
@@ -275,7 +237,6 @@ export default function PremiumPage() {
       <PaymentModal
         isOpen={isPaymentModalOpen}
         onClose={() => setIsPaymentModalOpen(false)}
-        defaultPlan={billingCycle}
       />
     </div>
   );

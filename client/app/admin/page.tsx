@@ -1,461 +1,493 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { Suspense, useCallback, useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ShieldCheck,
   Crown,
-  UserCheck,
-  Calendar,
-  Clock,
   Search,
   CheckCircle2,
+  XCircle,
   AlertCircle,
   Lock,
-  ArrowRight,
-  User,
-  Sparkles,
   RefreshCw,
+  Download,
+  Loader2,
+  Sparkles,
+  ArrowRight,
 } from 'lucide-react';
-import { useAuth, TelegramUser } from '@/context/AuthContext';
+import { useAuth } from '@/context/AuthContext';
+import { accountApi, PaymentRequest } from '@/lib/accountApi';
+import { formatSom } from '@/lib/payments';
+import UserAvatar from '@/components/UserAvatar';
 
-export default function AdminPage() {
-  const { user, setPremiumStatus } = useAuth();
+type Tab = 'payments' | 'users' | 'audit';
 
-  // Admin auth gate
-  const [adminPin, setAdminPin] = useState('');
-  const [isPinAuthenticated, setIsPinAuthenticated] = useState(false);
-  const [pinError, setPinError] = useState('');
+interface Stats {
+  totalUsers: number;
+  signups7d: number;
+  activeToday: number;
+  active7d: number;
+  lifetimePremium: number;
+  bonusPremiumActive: number;
+  pendingPayments: number;
+  approvedPayments: number;
+  revenueUzs: number;
+  referralsRewarded: number;
+  referralsPending: number;
+}
 
-  // Target user form
-  const [targetUsername, setTargetUsername] = useState('');
-  const [selectedDuration, setSelectedDuration] = useState<number>(12); // 1 or 12
-  const [actionSuccess, setActionSuccess] = useState<string | null>(null);
-  const [isProcessing, setIsProcessing] = useState(false);
+const fmtDate = (d?: string) =>
+  d ? new Date(d).toLocaleString('uz-UZ', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }) : '—';
 
-  // Users list
-  const [usersList, setUsersList] = useState<TelegramUser[]>([]);
+function toCsv(rows: Record<string, unknown>[]): string {
+  if (!rows.length) return '';
+  const headers = Object.keys(rows[0]);
+  const esc = (v: unknown) => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  return [headers.join(','), ...rows.map((r) => headers.map((h) => esc(r[h])).join(','))].join('\n');
+}
 
-  const isAdminByTelegram = user?.telegramUsername?.toLowerCase() === 'dadakhonov' || user?.role === 'admin';
-  const hasAccess = isAdminByTelegram || isPinAuthenticated;
+function downloadCsv(name: string, rows: Record<string, unknown>[]) {
+  const blob = new Blob(['\uFEFF' + toCsv(rows)], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  a.click();
+  URL.revokeObjectURL(url);
+}
 
-  // Load registered users from registry & demo profiles
-  const loadUsers = () => {
-    if (typeof window === 'undefined') return;
-    try {
-      const raw = localStorage.getItem('farzandly_users_registry') || '[]';
-      let parsed: TelegramUser[] = JSON.parse(raw);
+function AdminContent() {
+  const { isAuthenticated, isLoading } = useAuth();
+  const router = useRouter();
+  const params = useSearchParams();
+  const tab = (['payments', 'users', 'audit'].includes(params.get('tab') || '') ? params.get('tab') : 'payments') as Tab;
 
-      // Default demo users if empty
-      const defaultUsers: TelegramUser[] = [
-        {
-          _id: 'usr_aziza',
-          name: 'Aziza Rahimova',
-          telegramUsername: 'aziza_mama',
-          childAgeGroup: '3-5',
-          selectedInterests: ['Bola xulqi'],
-          dailyGoalMinutes: 10,
-          xp: 85,
-          streak: 4,
-          level: 'Izlanuvchi murabbiy',
-          completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism', 'dars-2-tarbiyaning-ahamiyati-2-qism'],
-          achievements: ['ilk-qadam', 'uch-kunlik-streak'],
-          subscriptionStatus: 'free',
-          isPremium: false,
-        },
-        {
-          _id: 'usr_jasur',
-          name: 'Jasur Karimov',
-          telegramUsername: 'jasur_dada',
-          childAgeGroup: '6-9',
-          selectedInterests: ['Aqliy tarbiya'],
-          dailyGoalMinutes: 15,
-          xp: 140,
-          streak: 7,
-          level: 'E’tiborli tarbiyachi',
-          completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'],
-          achievements: ['ilk-qadam', 'haftalik-qahramon'],
-          subscriptionStatus: 'free',
-          isPremium: false,
-        },
-        {
-          _id: 'usr_dilnoza',
-          name: 'Dilnoza Sobirova',
-          telegramUsername: 'dilnoza_pedagog',
-          childAgeGroup: '0-2',
-          selectedInterests: ['Fitrat pedagogikasi'],
-          dailyGoalMinutes: 10,
-          xp: 220,
-          streak: 9,
-          level: 'Donishmand yo‘lboshchi',
-          completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'],
-          achievements: ['ilk-qadam', 'fitrat-kashfiyotchisi'],
-          subscriptionStatus: 'free',
-          isPremium: false,
-        },
-      ];
+  const [access, setAccess] = useState<'checking' | 'ok' | 'denied' | 'unavailable'>('checking');
+  const [stats, setStats] = useState<Stats | null>(null);
+  const [notice, setNotice] = useState<{ kind: 'ok' | 'err'; text: string } | null>(null);
 
-      // Merge defaults if not present
-      for (const du of defaultUsers) {
-        if (!parsed.some((p) => p.telegramUsername?.toLowerCase() === du.telegramUsername?.toLowerCase())) {
-          parsed.push(du);
-        }
-      }
-
-      // If active user exists, make sure they are in list
-      if (user && !parsed.some((p) => p._id === user._id)) {
-        parsed.unshift(user);
-      }
-
-      setUsersList(parsed);
-      localStorage.setItem('farzandly_users_registry', JSON.stringify(parsed));
-    } catch {
-      // ignore
+  const loadStats = useCallback(async () => {
+    const res = await accountApi.adminStats();
+    if (res.success) {
+      setStats(res.data);
+      setAccess('ok');
+    } else if (res.code === 'FORBIDDEN' || res.code === 'AUTH_REQUIRED') {
+      setAccess('denied');
+    } else {
+      setAccess('unavailable');
     }
-  };
+  }, []);
 
   useEffect(() => {
-    loadUsers();
-  }, [user]);
+    if (!isLoading && isAuthenticated) loadStats();
+    if (!isLoading && !isAuthenticated) setAccess('denied');
+  }, [isLoading, isAuthenticated, loadStats]);
 
-  const handlePinSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (adminPin.trim() === 'dadakhonov777' || adminPin.trim() === 'farzandly2026') {
-      setIsPinAuthenticated(true);
-      setPinError('');
-    } else {
-      setPinError('Maxfiy parol noto‘g‘ri. Qaytadan urinib ko‘ring.');
-    }
+  const say = (kind: 'ok' | 'err', text: string) => {
+    setNotice({ kind, text });
+    setTimeout(() => setNotice(null), 5000);
   };
 
-  const handleApplyPremium = async (usernameOverride?: string, durationOverride?: number) => {
-    const target = (usernameOverride || targetUsername).trim().replace(/^@/, '');
-    if (!target) {
-      alert('Iltimos, foydalanuvchining Telegram username yoki ID sini kiriting.');
-      return;
-    }
-
-    const duration = durationOverride !== undefined ? durationOverride : selectedDuration;
-    setIsProcessing(true);
-    setActionSuccess(null);
-
-    try {
-      await setPremiumStatus(target, duration);
-      loadUsers();
-
-      const expDate = new Date();
-      if (duration === 12) expDate.setDate(expDate.getDate() + 365);
-      else if (duration === 1) expDate.setDate(expDate.getDate() + 30);
-
-      const formattedExp = expDate.toLocaleDateString('uz-UZ', { year: 'numeric', month: 'long', day: 'numeric' });
-
-      if (duration === 0) {
-        setActionSuccess(`@${target} foydalanuvchisining Premiumi bekor qilindi (Bepul holatga qaytarildi).`);
-      } else {
-        setActionSuccess(
-          `Tabriklaymiz! @${target} hisobiga ${duration === 12 ? '1 YILLIK' : '1 OYLIK'} Premium muvaffaqiyatli faollashtirildi! Amal qilish muddati: ${formattedExp} gacha.`
-        );
-      }
-      if (!usernameOverride) setTargetUsername('');
-    } catch {
-      alert('Xatolik yuz berdi. Qaytadan urinib ko‘ring.');
-    } finally {
-      setIsProcessing(false);
-    }
-  };
-
-  // If not authenticated as Admin
-  if (!hasAccess) {
+  if (isLoading || access === 'checking') {
     return (
-      <div className="max-w-md mx-auto px-4 py-16 sm:py-24 space-y-6">
-        <div className="bg-white rounded-3xl border-2 border-slate-200 border-b-8 shadow-xl p-6 sm:p-8 space-y-6 text-center">
-          <div className="w-16 h-16 rounded-2xl bg-amber-100 text-amber-900 border-2 border-amber-300 mx-auto flex items-center justify-center shadow-inner">
-            <Lock className="w-8 h-8" />
+      <div className="flex justify-center py-24" role="status" aria-label="Yuklanmoqda">
+        <Loader2 className="w-7 h-7 text-emerald-600 animate-spin" />
+      </div>
+    );
+  }
+
+  if (access !== 'ok') {
+    return (
+      <div className="max-w-md mx-auto px-4 py-20">
+        <div className="card-farzandly p-8 text-center space-y-4">
+          <div className="w-14 h-14 mx-auto rounded-2xl bg-slate-100 flex items-center justify-center">
+            <Lock className="w-7 h-7 text-slate-500" />
           </div>
-
-          <div className="space-y-1.5">
-            <div className="text-xs font-black uppercase tracking-wider text-amber-800 bg-amber-100 border border-amber-300 px-3 py-1 rounded-full inline-flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>ADMINISTRATOR HUQUQI</span>
-            </div>
-            <h1 className="text-2xl font-black text-slate-900">
-              Admin boshqaruv paneli
-            </h1>
-            <p className="text-xs sm:text-sm text-slate-500 font-medium">
-              Ushbu sahifa faqat platforma ma’muri (@dadakhonov) uchun mo‘ljallangan.
-            </p>
-          </div>
-
-          <form onSubmit={handlePinSubmit} className="space-y-4 text-left pt-2">
-            <div>
-              <label className="text-xs font-bold text-slate-700 block mb-1">
-                Admin maxfiy paroli:
-              </label>
-              <input
-                type="password"
-                placeholder="Parolni kiriting..."
-                value={adminPin}
-                onChange={(e) => setAdminPin(e.target.value)}
-                className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl px-4 py-3 text-sm font-mono focus:outline-hidden focus:border-emerald-500 transition-all"
-              />
-              {pinError && (
-                <p className="text-xs text-rose-600 font-bold mt-1.5 flex items-center gap-1">
-                  <AlertCircle className="w-3.5 h-3.5" /> {pinError}
-                </p>
-              )}
-            </div>
-
-            <button
-              type="submit"
-              className="w-full btn-primary text-sm py-3.5 flex items-center justify-center gap-2 cursor-pointer"
-            >
-              <span>Panelga kirish</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
-          </form>
-
-          <div className="pt-2 border-t border-slate-100 text-center">
-            <Link href="/" className="text-xs text-slate-400 hover:text-slate-600 font-bold">
-              ← Bosh sahifaga qaytish
+          <h1 className="text-xl font-black text-slate-900">
+            {access === 'unavailable' ? 'Admin panel vaqtincha ishlamayapti' : 'Bu sahifa administratorlar uchun'}
+          </h1>
+          <p className="text-sm text-slate-600">
+            {!isAuthenticated
+              ? 'Admin sifatida belgilangan Telegram hisobingiz bilan kiring.'
+              : access === 'unavailable'
+              ? 'Server yoki ma’lumotlar bazasi javob bermadi. Birozdan so‘ng qayta urinib ko‘ring.'
+              : 'Hisobingizda admin huquqi yo‘q. Telegram ID’ingizni serverdagi ADMIN_TELEGRAM_IDS ga qo‘shing.'}
+          </p>
+          {!isAuthenticated && (
+            <Link href="/kirish" className="btn-primary inline-flex text-sm px-5 py-3">
+              Tizimga kirish
             </Link>
-          </div>
+          )}
         </div>
       </div>
     );
   }
 
-  // Admin Dashboard UI
+  const setTab = (t: Tab) => router.replace(`/admin?tab=${t}`);
+
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-10">
-      {/* Admin Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-6">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 space-y-8">
+      <header className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-900 border border-amber-300 px-3 py-1 rounded-full text-xs font-black">
-            <Crown className="w-4 h-4 fill-amber-700" />
-            <span>ADMIN PANELI • @dadakhonov</span>
-          </div>
-          <h1 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Premium Foydalanuvchilarni Boshqarish
-          </h1>
-          <p className="text-xs sm:text-sm text-slate-500 font-medium">
-            To‘lov chekini yuborgan foydalanuvchini 1 oylik yoki 1 yillik muddat bilan Premium qilish.
+          <p className="inline-flex items-center gap-1.5 text-sm font-bold text-amber-800">
+            <ShieldCheck className="w-4 h-4" /> Admin panel
           </p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Farzandly boshqaruvi</h1>
         </div>
-
-        <button
-          onClick={loadUsers}
-          className="btn-outline text-xs px-4 py-2.5 flex items-center gap-2 self-start sm:self-auto cursor-pointer"
-        >
-          <RefreshCw className="w-3.5 h-3.5" />
-          <span>Ro‘yxatni yangilash</span>
-        </button>
-      </div>
-
-      {/* Instagram Post Studio Banner */}
-      <div className="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 rounded-3xl p-6 text-white shadow-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 border border-emerald-600/30">
-        <div className="space-y-1.5">
-          <div className="inline-flex items-center gap-1.5 bg-emerald-500/20 text-emerald-300 border border-emerald-400/30 px-3 py-0.5 rounded-full text-xs font-bold">
-            <Sparkles className="w-3.5 h-3.5" />
-            <span>Marketing & SMM Studiyasi</span>
-          </div>
-          <h3 className="text-xl font-black text-white">Instagram Post Card Studio</h3>
-          <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
-            1080×1350 formatdagi estetik post kartochkalari, 4 ta shablon va 1 klikda tayyor PNG eksport.
-          </p>
+        <div className="flex gap-2">
+          <Link href="/instagram" className="btn-outline text-sm px-4 py-2.5 inline-flex items-center gap-2">
+            <Sparkles className="w-4 h-4" /> Instagram studio
+          </Link>
+          <button type="button" onClick={loadStats} className="btn-outline text-sm px-4 py-2.5 inline-flex items-center gap-2">
+            <RefreshCw className="w-4 h-4" /> Yangilash
+          </button>
         </div>
-        <Link
-          href="/instagram"
-          className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm px-5 py-3 rounded-xl shrink-0 inline-flex items-center gap-2 transition-all shadow-md active:scale-95"
-        >
-          <span>Studio-ni ochish</span>
-          <ArrowRight className="w-4 h-4" />
-        </Link>
-      </div>
+      </header>
 
-      {/* Action Notification */}
-      {actionSuccess && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-emerald-50 border-2 border-emerald-400 text-emerald-900 flex items-start gap-3 shadow-xs animate-in fade-in duration-300">
-          <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
-          <div className="space-y-1">
-            <h4 className="font-black text-sm">Amaliyot bajarildi!</h4>
-            <p className="text-xs leading-relaxed font-medium">{actionSuccess}</p>
-          </div>
+      {stats && (
+        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            ['Foydalanuvchilar', stats.totalUsers, `+${stats.signups7d} shu hafta`],
+            ['Faol (7 kun)', stats.active7d, `${stats.activeToday} bugun`],
+            ['Umrbod Premium', stats.lifetimePremium, `${stats.bonusPremiumActive} bonusda`],
+            ['Tushum', `${formatSom(stats.revenueUzs)} so‘m`, `${stats.approvedPayments} to‘lov`],
+          ].map(([label, value, sub]) => (
+            <div key={String(label)} className="rounded-2xl bg-white border-2 border-slate-200 p-4">
+              <dt className="text-xs font-bold text-slate-500">{label}</dt>
+              <dd className="text-xl font-black text-slate-900 mt-1">{value}</dd>
+              <dd className="text-xs text-slate-500 mt-0.5">{sub}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+
+      {notice && (
+        <div
+          role="status"
+          className={`rounded-2xl border-2 p-4 flex gap-3 text-sm font-semibold ${
+            notice.kind === 'ok' ? 'bg-emerald-50 border-emerald-300 text-emerald-900' : 'bg-rose-50 border-rose-300 text-rose-900'
+          }`}
+        >
+          {notice.kind === 'ok' ? <CheckCircle2 className="w-5 h-5 shrink-0" /> : <AlertCircle className="w-5 h-5 shrink-0" />}
+          {notice.text}
         </div>
       )}
 
-      {/* Main Activation Card */}
-      <div className="card-farzandly p-6 sm:p-8 space-y-6">
-        <div className="flex items-center gap-2 text-slate-800 font-black text-lg">
-          <UserCheck className="w-5 h-5 text-emerald-600" />
-          <h2>Foydalanuvchini Premium qilish</h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
-          {/* Target username input */}
-          <div className="md:col-span-6 space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 block">
-              Foydalanuvchi Telegram Username yoki ID:
-            </label>
-            <div className="relative">
-              <span className="absolute left-3.5 top-1/2 -translate-y-1/2 font-bold text-slate-400 text-sm">
-                @
-              </span>
-              <input
-                type="text"
-                placeholder="masalan: aziza_mama yoki 998901234567"
-                value={targetUsername}
-                onChange={(e) => setTargetUsername(e.target.value)}
-                className="w-full bg-slate-50 border-2 border-slate-200 rounded-xl pl-8 pr-4 py-3 text-sm font-medium focus:outline-hidden focus:border-emerald-500 transition-all"
-              />
-            </div>
-            <p className="text-[11px] text-slate-400">
-              Chek yuborgan mijozning telegram username yoki ismini kiriting.
-            </p>
-          </div>
-
-          {/* Duration selector */}
-          <div className="md:col-span-6 space-y-1.5">
-            <label className="text-xs font-bold text-slate-700 block">
-              Premium Muddati:
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              <button
-                type="button"
-                onClick={() => setSelectedDuration(1)}
-                className={`py-3 px-4 rounded-xl border-2 text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  selectedDuration === 1
-                    ? 'border-emerald-600 bg-emerald-50 text-emerald-900 shadow-xs'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <Clock className="w-4 h-4" />
-                <span>1 Oylik (30 kun)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setSelectedDuration(12)}
-                className={`py-3 px-4 rounded-xl border-2 text-xs font-black flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  selectedDuration === 12
-                    ? 'border-amber-500 bg-amber-50 text-amber-950 shadow-xs'
-                    : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'
-                }`}
-              >
-                <Crown className="w-4 h-4 fill-amber-600 text-amber-600" />
-                <span>1 Yillik (365 kun)</span>
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div className="pt-2 flex justify-end">
+      <nav className="flex gap-1 border-b-2 border-slate-200" aria-label="Admin bo‘limlari">
+        {([
+          ['payments', `To‘lovlar${stats?.pendingPayments ? ` (${stats.pendingPayments})` : ''}`],
+          ['users', 'Foydalanuvchilar'],
+          ['audit', 'Jurnal'],
+        ] as [Tab, string][]).map(([key, label]) => (
           <button
+            key={key}
             type="button"
-            disabled={isProcessing || !targetUsername.trim()}
-            onClick={() => handleApplyPremium()}
-            className="w-full sm:w-auto btn-gold text-sm sm:text-base px-8 py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed shadow-md"
+            onClick={() => setTab(key)}
+            aria-current={tab === key ? 'page' : undefined}
+            className={`px-4 py-2.5 text-sm font-bold -mb-0.5 border-b-2 ${
+              tab === key ? 'border-emerald-600 text-emerald-800' : 'border-transparent text-slate-500 hover:text-slate-800'
+            }`}
           >
-            <Crown className="w-4 h-4 fill-slate-950" />
-            <span>{isProcessing ? 'Bajarilmoqda...' : 'Premium maqomini yoqish'}</span>
+            {label}
           </button>
+        ))}
+      </nav>
+
+      {tab === 'payments' && <PaymentsTab onChange={loadStats} say={say} />}
+      {tab === 'users' && <UsersTab say={say} />}
+      {tab === 'audit' && <AuditTab />}
+    </div>
+  );
+}
+
+function PaymentsTab({ onChange, say }: { onChange: () => void; say: (k: 'ok' | 'err', t: string) => void }) {
+  const [status, setStatus] = useState<'pending' | 'approved' | 'rejected' | ''>('pending');
+  const [items, setItems] = useState<PaymentRequest[] | null>(null);
+  const [busy, setBusy] = useState<string | null>(null);
+  const [rejecting, setRejecting] = useState<{ id: string; reason: string } | null>(null);
+
+  const load = useCallback(async () => {
+    setItems(null);
+    const res = await accountApi.adminPayments(status);
+    setItems(res.success ? res.data.items : []);
+  }, [status]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  const review = async (id: string, decision: 'approve' | 'reject', reason?: string) => {
+    setBusy(id);
+    const res = await accountApi.adminReviewPayment(id, decision, reason);
+    setBusy(null);
+    setRejecting(null);
+    if (res.success) {
+      say('ok', decision === 'approve' ? 'To‘lov tasdiqlandi — umrbod Premium yoqildi.' : 'To‘lov rad etildi.');
+      load();
+      onChange();
+    } else {
+      say('err', res.message || 'Xatolik');
+    }
+  };
+
+  return (
+    <section className="space-y-4">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div className="flex gap-2" role="group" aria-label="Holat bo‘yicha filtr">
+          {([
+            ['pending', 'Kutilmoqda'],
+            ['approved', 'Tasdiqlangan'],
+            ['rejected', 'Rad etilgan'],
+            ['', 'Hammasi'],
+          ] as const).map(([key, label]) => (
+            <button
+              key={key || 'all'}
+              type="button"
+              onClick={() => setStatus(key)}
+              aria-pressed={status === key}
+              className={`px-3 py-1.5 rounded-xl text-sm font-bold border-2 ${
+                status === key ? 'bg-slate-900 text-white border-slate-900' : 'bg-white text-slate-600 border-slate-200'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
         </div>
+        <button
+          type="button"
+          disabled={!items?.length}
+          onClick={() =>
+            downloadCsv(
+              `farzandly-tolovlar-${new Date().toISOString().slice(0, 10)}.csv`,
+              (items || []).map((p) => ({
+                sana: fmtDate(p.createdAt),
+                foydalanuvchi: p.telegramUsername ? `@${p.telegramUsername}` : p.userName,
+                summa: p.amount,
+                holat: p.status,
+                korib_chiqilgan: fmtDate(p.reviewedAt),
+                sabab: p.rejectReason || '',
+              }))
+            )
+          }
+          className="btn-outline text-sm px-4 py-2 inline-flex items-center gap-2 disabled:opacity-50"
+        >
+          <Download className="w-4 h-4" /> CSV
+        </button>
       </div>
 
-      {/* Users Registry Table */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-xl font-black text-slate-900">
-            Foydalanuvchilar ro‘yxati ({usersList.length})
-          </h3>
-          <span className="text-xs text-slate-500 font-medium">
-            Bir marta bosish bilan muddat qo‘shishingiz mumkin
-          </span>
-        </div>
-
-        <div className="bg-white rounded-3xl border-2 border-slate-200 overflow-hidden shadow-sm">
-          <div className="divide-y divide-slate-100">
-            {usersList.map((u) => {
-              const isPrem = Boolean(u.isPremium || u.subscriptionStatus === 'premium');
-              const expFormatted = u.premiumExpiresAt
-                ? new Date(u.premiumExpiresAt).toLocaleDateString('uz-UZ', { year: 'numeric', month: 'short', day: 'numeric' })
-                : isPrem
-                ? 'Muddatsiz'
-                : '—';
-
-              return (
-                <div
-                  key={u._id || u.telegramUsername}
-                  className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50/80 transition-all"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-600 font-bold shrink-0">
-                      {u.telegramUsername ? `@` : <User className="w-4 h-4" />}
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-bold text-slate-900 text-sm">
-                          {u.name || `@${u.telegramUsername}`}
-                        </span>
-                        {u.telegramUsername && (
-                          <span className="text-xs font-mono text-slate-400">
-                            @{u.telegramUsername}
-                          </span>
-                        )}
-                        {isPrem ? (
-                          <span className="text-[10px] font-black text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full flex items-center gap-1">
-                            <Crown className="w-2.5 h-2.5 fill-amber-700" /> PREMIUM
-                          </span>
-                        ) : (
-                          <span className="text-[10px] font-black text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full">
-                            BEPUL
-                          </span>
-                        )}
-                      </div>
-                      <div className="text-xs text-slate-500 mt-0.5 flex items-center gap-2">
-                        <span>XP: {u.xp || 0}</span>
-                        <span>•</span>
-                        <span>Streak: {u.streak || 0} kun</span>
-                        <span>•</span>
-                        <span className="text-emerald-700 font-semibold">Tugash vaqti: {expFormatted}</span>
-                      </div>
-                    </div>
+      {items === null ? (
+        <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>
+      ) : items.length === 0 ? (
+        <p className="text-sm text-slate-500 py-10 text-center">
+          {status === 'pending' ? 'Kutilayotgan to‘lovlar yo‘q. Yangi so‘rov kelganda Telegramga xabar keladi.' : 'Bu holatda to‘lovlar yo‘q.'}
+        </p>
+      ) : (
+        <ul className="space-y-3">
+          {items.map((p) => (
+            <li key={p._id} className="rounded-2xl bg-white border-2 border-slate-200 p-4 space-y-3">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="font-black text-slate-900">{p.telegramUsername ? `@${p.telegramUsername}` : p.userName || 'Ota-ona'}</p>
+                  <p className="text-sm text-slate-500">
+                    {formatSom(p.amount)} so‘m · {fmtDate(p.createdAt)}
+                  </p>
+                  {p.note && <p className="text-sm text-slate-600 mt-1">“{p.note}”</p>}
+                </div>
+                {p.status === 'pending' ? (
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      disabled={busy === p._id}
+                      onClick={() => review(p._id, 'approve')}
+                      className="btn-primary text-sm px-4 py-2 inline-flex items-center gap-1.5 disabled:opacity-60"
+                    >
+                      <CheckCircle2 className="w-4 h-4" /> Tasdiqlash
+                    </button>
+                    <button
+                      type="button"
+                      disabled={busy === p._id}
+                      onClick={() => setRejecting({ id: p._id, reason: '' })}
+                      className="btn-outline text-sm px-4 py-2 inline-flex items-center gap-1.5"
+                    >
+                      <XCircle className="w-4 h-4" /> Rad etish
+                    </button>
                   </div>
+                ) : (
+                  <span
+                    className={`text-sm font-bold px-3 py-1 rounded-xl ${
+                      p.status === 'approved' ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800'
+                    }`}
+                  >
+                    {p.status === 'approved' ? 'Tasdiqlangan' : 'Rad etilgan'}
+                  </span>
+                )}
+              </div>
+              {rejecting?.id === p._id && (
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <label className="sr-only" htmlFor={`reason-${p._id}`}>Rad etish sababi</label>
+                  <input
+                    id={`reason-${p._id}`}
+                    autoFocus
+                    value={rejecting.reason}
+                    onChange={(e) => setRejecting({ id: p._id, reason: e.target.value })}
+                    placeholder="Sabab (foydalanuvchiga yuboriladi), masalan: kartaga tushum topilmadi"
+                    className="flex-1 rounded-xl border-2 border-slate-200 px-3 py-2 text-sm focus:border-emerald-500 outline-none"
+                  />
+                  <button type="button" onClick={() => review(p._id, 'reject', rejecting.reason)} className="btn-outline text-sm px-4 py-2">
+                    Rad etishni yuborish
+                  </button>
+                </div>
+              )}
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
 
-                  {/* Fast Action Buttons */}
-                  <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPremium(u.telegramUsername || u._id, 1)}
-                      className="btn-outline text-xs px-3 py-1.5 cursor-pointer hover:border-emerald-500 hover:text-emerald-700"
-                      title="1 oylik Premium berish"
-                    >
-                      +1 Oy
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleApplyPremium(u.telegramUsername || u._id, 12)}
-                      className="bg-amber-100 hover:bg-amber-200 text-amber-900 border border-amber-300 text-xs font-black px-3 py-1.5 rounded-xl cursor-pointer transition-all"
-                      title="1 yillik Premium berish"
-                    >
-                      +1 Yil
-                    </button>
-                    {isPrem && (
-                      <button
-                        type="button"
-                        onClick={() => handleApplyPremium(u.telegramUsername || u._id, 0)}
-                        className="text-xs text-rose-500 hover:text-rose-700 font-bold px-2 py-1 cursor-pointer"
-                        title="Premiumni bekor qilish"
-                      >
-                        Bekor qilish
-                      </button>
-                    )}
+function UsersTab({ say }: { say: (k: 'ok' | 'err', t: string) => void }) {
+  const [q, setQ] = useState('');
+  const [items, setItems] = useState<any[] | null>(null);
+  const [total, setTotal] = useState(0);
+  const [busy, setBusy] = useState<string | null>(null);
+
+  const search = useCallback(async (term: string) => {
+    setItems(null);
+    const res = await accountApi.adminUsers(term);
+    setItems(res.success ? res.data.items : []);
+    setTotal(res.success ? res.data.total : 0);
+  }, []);
+
+  useEffect(() => {
+    search('');
+  }, [search]);
+
+  const act = async (u: any, action: 'lifetime' | 'revoke' | 'bonus', days?: number) => {
+    const who = u.telegramUsername ? `@${u.telegramUsername}` : u.name;
+    const question =
+      action === 'lifetime' ? `${who} uchun umrbod Premium yoqilsinmi?` : action === 'revoke' ? `${who} Premiumi bekor qilinsinmi?` : `${who} ga ${days} kun bonus qo‘shilsinmi?`;
+    if (!window.confirm(question)) return;
+    setBusy(u._id);
+    const res = await accountApi.adminSetPremium(u._id, action, days);
+    setBusy(null);
+    if (res.success) {
+      setItems((list) => (list || []).map((x) => (x._id === u._id ? { ...x, ...res.data } : x)));
+      say('ok', 'Saqlandi.');
+    } else say('err', res.message || 'Xatolik');
+  };
+
+  return (
+    <section className="space-y-4">
+      <form
+        className="flex gap-2"
+        onSubmit={(e) => {
+          e.preventDefault();
+          search(q);
+        }}
+        role="search"
+      >
+        <label htmlFor="user-search" className="sr-only">Foydalanuvchi qidirish</label>
+        <div className="relative flex-1">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            id="user-search"
+            value={q}
+            onChange={(e) => setQ(e.target.value)}
+            placeholder="@username, ism, email yoki Telegram ID"
+            className="w-full rounded-xl border-2 border-slate-200 pl-9 pr-3 py-2.5 text-sm focus:border-emerald-500 outline-none"
+          />
+        </div>
+        <button type="submit" className="btn-primary text-sm px-5">Qidirish</button>
+      </form>
+
+      {items === null ? (
+        <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>
+      ) : items.length === 0 ? (
+        <p className="text-sm text-slate-500 py-10 text-center">Hech kim topilmadi.</p>
+      ) : (
+        <>
+          <p className="text-sm text-slate-500">{total} ta natija{total > items.length ? ` (birinchi ${items.length} tasi)` : ''}</p>
+          <ul className="space-y-2">
+            {items.map((u) => (
+              <li key={u._id} className="rounded-2xl bg-white border-2 border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-3 min-w-0">
+                  <UserAvatar name={u.name} photoUrl={u.photoUrl} telegramUsername={u.telegramUsername} size="sm" />
+                  <div className="min-w-0">
+                    <p className="font-black text-slate-900 truncate flex items-center gap-1.5">
+                      {u.telegramUsername ? `@${u.telegramUsername}` : u.name}
+                      {u.isPremium && <Crown className="w-4 h-4 text-amber-500 fill-amber-400" aria-label="Premium" />}
+                    </p>
+                    <p className="text-xs text-slate-500 truncate">
+                      {u.email || (u.telegramId ? `TG ${u.telegramId}` : '')} · {u.xp} XP · {u.completedLessonsCount} dars
+                      {u.premiumType === 'lifetime'
+                        ? ' · umrbod'
+                        : u.isPremium && u.premiumExpiresAt
+                        ? ` · ${new Date(u.premiumExpiresAt).toLocaleDateString('uz-UZ')} gacha`
+                        : ''}
+                    </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-    </div>
+                <div className="flex flex-wrap gap-2">
+                  {u.premiumType !== 'lifetime' && (
+                    <button type="button" disabled={busy === u._id} onClick={() => act(u, 'lifetime')} className="btn-gold text-xs px-3 py-2 text-slate-950 font-black">
+                      Umrbod
+                    </button>
+                  )}
+                  <button type="button" disabled={busy === u._id} onClick={() => act(u, 'bonus', 7)} className="btn-outline text-xs px-3 py-2">
+                    +7 kun
+                  </button>
+                  {u.isPremium && (
+                    <button type="button" disabled={busy === u._id} onClick={() => act(u, 'revoke')} className="btn-outline text-xs px-3 py-2 text-rose-700">
+                      Bekor qilish
+                    </button>
+                  )}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+    </section>
+  );
+}
+
+const ACTION_LABELS: Record<string, string> = {
+  'payment.approve': 'To‘lovni tasdiqladi',
+  'payment.reject': 'To‘lovni rad etdi',
+  'premium.lifetime': 'Umrbod Premium berdi',
+  'premium.bonus': 'Bonus kun qo‘shdi',
+  'premium.revoke': 'Premiumni bekor qildi',
+};
+
+function AuditTab() {
+  const [items, setItems] = useState<any[] | null>(null);
+  useEffect(() => {
+    accountApi.adminAudit(100).then((res) => setItems(res.success ? res.data : []));
+  }, []);
+  if (items === null) return <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>;
+  if (!items.length) return <p className="text-sm text-slate-500 py-10 text-center">Hali admin amallari yo‘q.</p>;
+  return (
+    <ul className="divide-y divide-slate-200 rounded-2xl bg-white border-2 border-slate-200">
+      {items.map((a) => (
+        <li key={a._id} className="p-4 flex flex-wrap justify-between gap-2 text-sm">
+          <span>
+            <b>{a.actorName}</b> — {ACTION_LABELS[a.action] || a.action}
+            {a.details?.reason ? ` (“${a.details.reason}”)` : ''}
+          </span>
+          <span className="text-slate-500">{fmtDate(a.createdAt)}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+export default function AdminPage() {
+  return (
+    <Suspense fallback={null}>
+      <AdminContent />
+    </Suspense>
   );
 }

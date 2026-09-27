@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 const fireConfetti = (opts: import('canvas-confetti').Options) => import('canvas-confetti').then((mod) => mod.default(opts));
 import { Star, CheckCircle, Sparkles } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { api } from '@/lib/api';
 import { playChimeSound } from '@/lib/gamification';
 import { T } from '@/components/T';
 
@@ -13,7 +14,7 @@ interface Props {
 }
 
 export default function ArticleCompleteButton({ articleSlug }: Props) {
-  const { updateUserProgress } = useAuth();
+  const { updateUserProgress, applyServerUser, isAuthenticated } = useAuth();
   const [completed, setCompleted] = useState(false);
 
   const handleComplete = () => {
@@ -31,6 +32,13 @@ export default function ArticleCompleteButton({ articleSlug }: Props) {
     } catch {}
 
     updateUserProgress(5, `maqola-${articleSlug}`);
+    // Previously this only changed local state; now the server records it (once, 5 XP).
+    if (isAuthenticated) {
+      api
+        .recordLessonProgress({ lessonSlug: `maqola-${articleSlug}`, xpEarned: 5 })
+        .then((res: any) => res?.updatedUser && applyServerUser(res.updatedUser))
+        .catch(() => {});
+    }
   };
 
   return (

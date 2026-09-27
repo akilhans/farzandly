@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import {
   CheckCircle2,
@@ -32,12 +32,25 @@ interface HealthArticleReaderProps {
   topic: HealthTopic;
 }
 
-export default function HealthArticleReader({ topic }: HealthArticleReaderProps) {
-  const { user } = useAuth();
+export default function HealthArticleReader({ topic: initialTopic }: HealthArticleReaderProps) {
+  const { user, applyServerUser } = useAuth();
+  const [topic, setTopic] = useState<HealthTopic & { locked?: boolean }>(initialTopic);
+
+  // Premium topics arrive with their later sections blanked; Premium parents fetch the full text.
+  useEffect(() => {
+    if (!(initialTopic as any).locked || !user?.isPremium) return;
+    let cancelled = false;
+    api.getHealthTopicBySlug(initialTopic.slug, 'uz').then((res: any) => {
+      if (!cancelled && res?.data && !res.data.locked) setTopic(res.data);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [initialTopic, user?.isPremium]);
   const { language } = useI18n();
   const lang = (language === 'ru' || language === 'en' ? language : 'uz') as 'uz' | 'en' | 'ru';
   const isUserPremium = Boolean(user?.isPremium || user?.subscriptionStatus === 'premium');
-  const isPaywalled = Boolean(topic.isPremium && !isUserPremium);
+  const isPaywalled = Boolean(topic.isPremium && (!isUserPremium || topic.locked));
 
   const [quizAnswers, setQuizAnswers] = useState<Record<number, number>>({});
   const [earnedXP, setEarnedXP] = useState(0);
@@ -76,7 +89,8 @@ export default function HealthArticleReader({ topic }: HealthArticleReaderProps)
       setTimeout(() => setXpToast({ show: false, amount: 0 }), 2500);
 
       try {
-        await api.recordHealthQuiz(topic.slug, 100, reward);
+        const res: any = await api.recordHealthQuiz(topic.slug, 100, reward);
+        if (res?.updatedUser) applyServerUser(res.updatedUser);
       } catch (err) {
         console.error('Quiz progress save error:', err);
       }

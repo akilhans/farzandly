@@ -30,12 +30,13 @@ import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import { playChimeSound } from '@/lib/gamification';
 import PaymentModal from '@/components/PaymentModal';
+import { PAYMENT_CARD, formatCard } from '@/lib/payments';
 import { T } from '@/components/T';
 
 export default function LessonRunnerPage() {
   const params = useParams();
   const router = useRouter();
-  const { user, updateUserProgress } = useAuth();
+  const { user, updateUserProgress, applyServerUser } = useAuth();
   const { language, t } = useI18n();
   const lessonId = params?.id as string;
 
@@ -124,13 +125,14 @@ export default function LessonRunnerPage() {
         // Confetti fallback
       }
 
-      // Record progress to AuthContext and Backend API
+      // Optimistic local update, then the server's numbers (XP is decided and capped there)
       updateUserProgress(finalXp, lesson?.slug || lessonId);
-      const res = await api.recordLessonProgress({
+      const res: any = await api.recordLessonProgress({
         lessonSlug: lesson?.slug || lessonId,
         score: isPerfect ? 100 : 80,
         xpEarned: finalXp,
       });
+      if (res?.updatedUser) applyServerUser(res.updatedUser);
 
       if (res && res.newlyUnlockedAchievements && res.newlyUnlockedAchievements.length > 0) {
         setUnlockedBadges(res.newlyUnlockedAchievements);
@@ -262,7 +264,7 @@ export default function LessonRunnerPage() {
               <span className="text-emerald-700 font-black"><T k="lsn.7" /></span>
             </div>
             <div className="text-[11px] text-slate-500 pt-1 border-t border-amber-200/60">
-              <T k="lsn.8" />{" "}<span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> <T k="lsn.9" />{" "}<span className="font-bold text-slate-700"><T k="lsn.10" /></span>
+              <T k="lsn.8" />{" "}<span className="font-mono font-bold text-slate-700">{formatCard(PAYMENT_CARD)}</span> <T k="lsn.9" />{" "}<span className="font-bold text-slate-700"><T k="lsn.10" /></span>
             </div>
           </div>
 

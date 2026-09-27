@@ -1,6 +1,7 @@
 // API client for Farzandly
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
+import type { HealthTopic as HealthTopicT } from './healthData';
 export type {
   HealthTopic,
   HealthSection,
@@ -161,14 +162,52 @@ export class ApiError extends Error {
   }
 }
 
+export const AUTH_TOKEN_KEY = 'farzandly_auth_token';
+export const AUTH_EXPIRED_EVENT = 'farzandly:auth-expired';
+
 function getAuthHeader(): Record<string, string> {
   if (typeof window !== 'undefined') {
-    const token = localStorage.getItem('farzandly_auth_token');
-    if (token) {
-      return { Authorization: `Bearer ${token}` };
+    try {
+      const token = localStorage.getItem(AUTH_TOKEN_KEY);
+      // Only signed v1 tokens are sent — legacy unsigned tokens are meaningless to the server.
+      if (token && token.startsWith('v1.')) {
+        return { Authorization: `Bearer ${token}` };
+      }
+    } catch {
+      // storage unavailable
     }
   }
   return {};
+}
+
+/**
+ * fetch() with the session token attached. A 401 AUTH_REQUIRED on a request that carried a
+ * token means the session is gone → tell AuthContext so it can show the "sign in again" banner.
+ */
+export async function authFetch(input: string, init: RequestInit = {}): Promise<Response> {
+  const auth = getAuthHeader();
+  const res = await fetch(input, {
+    ...init,
+    headers: { ...auth, ...((init.headers as Record<string, string>) || {}) },
+  });
+  if (res.status === 401 && auth.Authorization && typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(AUTH_EXPIRED_EVENT));
+  }
+  return res;
+}
+
+/** Browsers always ask fresh (premium depends on the token); the server render caches for 5 min. */
+function cacheOpts(): RequestInit {
+  return typeof window === 'undefined' ? ({ next: { revalidate: 300 } } as RequestInit) : { cache: 'no-store' };
+}
+
+async function readJson(res: Response | null): Promise<any> {
+  if (!res) return { success: false, message: 'Server bilan aloqa yo‘q' };
+  try {
+    return await res.json();
+  } catch {
+    return { success: false, message: `Xatolik (${res.status})` };
+  }
 }
 
 export interface RequestConfig extends RequestInit {
@@ -236,7 +275,19 @@ export async function apiClient<T>(endpoint: string, config: RequestConfig = {})
 const fetchFromApi = apiClient;
 
 // Fallback demo data — loaded lazily so the ~1MB seed file stays out of the main client bundle
-const loadSeed = () => import('./seedData');
+// Server-only: `typeof window` is replaced at build time, so this import (and the ~1MB of lesson
+// text, premium included) is dropped from client bundles. Browsers fall back to empty lists.
+const EMPTY_SEED = {
+  seedCategories: [],
+  seedAgeGroups: [],
+  seedAchievements: [],
+  seedCourses: [],
+  seedLearningPaths: [],
+  seedLessons: [],
+  seedArticles: [],
+} as unknown as typeof import('./seedData');
+const loadSeed = (): Promise<typeof import('./seedData')> =>
+  typeof window === 'undefined' ? import('./seedData') : Promise.resolve(EMPTY_SEED);
 import { calculateLevel, calculateStreak, checkAchievements } from './gamification';
 
 function localizeEntity<T extends Record<string, any>>(item: T, lang: string = 'uz'): T {
@@ -440,7 +491,7 @@ export const api = {
     dailyGoalMinutes: number;
     name?: string;
   }) {
-    const res = await fetch(`${API_BASE}/users/onboarding`, {
+    const res = await authFetch(`${API_BASE}/users/onboarding`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -513,14 +564,16 @@ export const api = {
     score?: number;
     xpEarned?: number;
   }) {
-    const res = await fetch(`${API_BASE}/users/progress`, {
+    const res = await authFetch(`${API_BASE}/users/progress`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     }).catch(() => null);
 
-    if (res && res.ok) {
-      return await res.json();
+    // The server is the source of truth whenever it answers (including 401/403).
+    if (res) {
+      const json = await readJson(res);
+      return json?.data ? { ...json, ...json.data } : json;
     }
 
     // Local storage fallback
@@ -563,7 +616,7 @@ export const api = {
 
   // Newsletter
   async subscribeNewsletter(email: string) {
-    const res = await fetch(`${API_BASE}/newsletter/subscribe`, {
+    const res = await authFetch(`${API_BASE}/newsletter/subscribe`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email }),
@@ -578,7 +631,7 @@ export const api = {
   // Health: Body Basics
   async getHealthTopics(lang: string = 'uz', category?: string) {
     const query = `lang=${lang}${category ? `&category=${category}` : ''}`;
-    const res = await fetch(`${API_BASE}/health-topics?${query}`, { cache: 'no-store' }).catch(() => null);
+    const res = await authFetch(`${API_BASE}/health-topics?${query}`, cacheOpts()).catch(() => null);
     if (res && res.ok) {
       return await res.json();
     }
@@ -588,14 +641,14 @@ export const api = {
         return await localRes.json();
       }
     }
-    const { healthTopics } = await import('./healthData');
+    const { healthTopics } = typeof window === 'undefined' ? await import('./healthData') : { healthTopics: [] as HealthTopicT[] };
     let data = healthTopics;
     if (category) data = data.filter((t) => t.category === category);
     return { status: 'ok', count: data.length, data };
   },
 
   async getHealthTopicBySlug(slug: string, lang: string = 'uz') {
-    const res = await fetch(`${API_BASE}/health-topics/${slug}?lang=${lang}`, { cache: 'no-store' }).catch(() => null);
+    const res = await authFetch(`${API_BASE}/health-topics/${slug}?lang=${lang}`, cacheOpts()).catch(() => null);
     if (res && res.ok) {
       return await res.json();
     }
@@ -605,74 +658,31 @@ export const api = {
         return await localRes.json();
       }
     }
-    const { healthTopics } = await import('./healthData');
+    const { healthTopics } = typeof window === 'undefined' ? await import('./healthData') : { healthTopics: [] as HealthTopicT[] };
     const topic = healthTopics.find((t) => t.slug === slug || t.id === slug) || null;
     return { status: 'ok', data: topic };
   },
 
   async recordHealthQuiz(slug: string, score: number, xpEarned: number = 10, userId?: string) {
-    const res = await fetch(`${API_BASE}/health-topics/${slug}/quiz`, {
+    const res = await authFetch(`${API_BASE}/health-topics/${slug}/quiz`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ score, xpEarned, userId }),
     }).catch(() => null);
 
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('farzandly_user');
-      let user = stored
-        ? JSON.parse(stored)
-        : {
-            _id: 'demo-user',
-            name: 'Ota-ona',
-            childAgeGroup: '3-5',
-            selectedInterests: ['Bola xulqi'],
-            dailyGoalMinutes: 10,
-            xp: 0,
-            streak: 1,
-            level: 'Boshlovchi',
-            completedLessons: [],
-            achievements: ['ilk-qadam'],
-            subscriptionStatus: 'free',
-          };
-      user.xp = (user.xp || 0) + xpEarned;
-      if (!user.completedHealthQuizzes) {
-        user.completedHealthQuizzes = [];
-      }
-      if (!user.completedHealthQuizzes.includes(slug)) {
-        user.completedHealthQuizzes.push(slug);
-      }
-      user.streak = calculateStreak(user.lastActiveDate, user.streak || 1);
-      user.lastActiveDate = new Date().toISOString();
-      const levelInfo = calculateLevel(user.xp);
-      user.level = levelInfo.level;
-      const achResult = checkAchievements(user.xp, user.streak, user.completedLessons, user.achievements || []);
-      user.achievements = achResult.unlocked;
-
-      localStorage.setItem('farzandly_user', JSON.stringify(user));
-
-      // Dispatch custom storage event so header or profile updates XP in real-time
-      try {
-        window.dispatchEvent(new Event('farzandly_user_updated'));
-      } catch (e) {}
-
-      return {
-        success: true,
-        xpEarned,
-        user,
-        newlyUnlockedAchievements: achResult.newlyUnlocked,
-      };
+    if (res) {
+      const json = await readJson(res);
+      return json?.data ? { ...json, ...json.data } : json;
     }
 
-    if (res && res.ok) {
-      return await res.json();
-    }
-    return { success: true, xpEarned };
+    // No local "offline XP": XP only exists once the server has recorded it.
+    return { success: false, message: 'Server bilan aloqa yo‘q' };
   },
 
   // ======================== FAMILY & CO-PARENTING ========================
   async getFamily(userId: string = 'demo-user'): Promise<FamilyData> {
     try {
-      const res = await fetch(`${API_BASE}/family?userId=${encodeURIComponent(userId)}`);
+      const res = await authFetch(`${API_BASE}/family?userId=${encodeURIComponent(userId)}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success) return json.data;
@@ -713,7 +723,7 @@ export const api = {
 
   async createFamilyInvite(userId: string = 'demo-user'): Promise<{ code: string; inviteUrl: string; telegramShareUrl: string }> {
     try {
-      const res = await fetch(`${API_BASE}/family/invite`, {
+      const res = await authFetch(`${API_BASE}/family/invite`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
@@ -738,7 +748,7 @@ export const api = {
 
   async connectPartner(userId: string, inviteCode: string): Promise<{ success: boolean; message: string; data?: any }> {
     try {
-      const res = await fetch(`${API_BASE}/family/connect`, {
+      const res = await authFetch(`${API_BASE}/family/connect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, inviteCode }),
@@ -764,7 +774,7 @@ export const api = {
 
   async disconnectPartner(userId: string): Promise<{ success: boolean }> {
     try {
-      const res = await fetch(`${API_BASE}/family/disconnect`, {
+      const res = await authFetch(`${API_BASE}/family/disconnect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId }),
@@ -777,7 +787,7 @@ export const api = {
 
   async updateFamilyRules(userId: string, rules: string[]): Promise<{ success: boolean; familyRules: string[] }> {
     try {
-      const res = await fetch(`${API_BASE}/family/rules`, {
+      const res = await authFetch(`${API_BASE}/family/rules`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, rules }),
@@ -789,7 +799,7 @@ export const api = {
 
   async syncChildren(userId: string, children: any[], activeChildId?: string): Promise<{ success: boolean; children: any[] }> {
     try {
-      const res = await fetch(`${API_BASE}/family/children`, {
+      const res = await authFetch(`${API_BASE}/family/children`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, children, activeChildId }),
@@ -802,7 +812,7 @@ export const api = {
   // ======================== GROWTH & REFERRALS ========================
   async getReferralCode(userId: string = 'demo-user'): Promise<{ referralCode: string; referralUrl: string; telegramShareUrl: string }> {
     try {
-      const res = await fetch(`${API_BASE}/referrals/my-code?userId=${encodeURIComponent(userId)}`);
+      const res = await authFetch(`${API_BASE}/referrals/my-code?userId=${encodeURIComponent(userId)}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success) return json.data;
@@ -823,7 +833,7 @@ export const api = {
 
   async applyReferralCode(userId: string, code: string): Promise<{ success: boolean; message: string; bonusDays?: number; xp?: number; referrerName?: string }> {
     try {
-      const res = await fetch(`${API_BASE}/referrals/apply`, {
+      const res = await authFetch(`${API_BASE}/referrals/apply`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, code }),
@@ -858,7 +868,7 @@ export const api = {
 
   async getReferralStats(userId: string = 'demo-user'): Promise<ReferralStats> {
     try {
-      const res = await fetch(`${API_BASE}/referrals/stats?userId=${encodeURIComponent(userId)}`);
+      const res = await authFetch(`${API_BASE}/referrals/stats?userId=${encodeURIComponent(userId)}`);
       if (res.ok) {
         const json = await res.json();
         if (json.success) return json.data;

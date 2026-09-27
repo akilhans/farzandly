@@ -1,23 +1,37 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Crown, Lock, Sparkles, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { Article } from '@/lib/api';
+import { Article, api } from '@/lib/api';
 import ArticleCompleteButton from '@/components/ArticleCompleteButton';
 import PaymentModal from '@/components/PaymentModal';
+import { PAYMENT_CARD, formatCard } from '@/lib/payments';
 import { T } from '@/components/T';
 
 interface ArticleContentReaderProps {
   article: Article;
 }
 
-export default function ArticleContentReader({ article }: ArticleContentReaderProps) {
+export default function ArticleContentReader({ article: initialArticle }: ArticleContentReaderProps) {
   const { user } = useAuth();
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [article, setArticle] = useState<Article & { locked?: boolean }>(initialArticle);
 
-  const isLocked = Boolean(article.isPremium && !user?.isPremium);
+  // The server render only carries a teaser for premium articles; Premium parents load the rest.
+  useEffect(() => {
+    if (!(initialArticle as any).locked || !user?.isPremium) return;
+    let cancelled = false;
+    api.getArticleBySlug(initialArticle.slug).then((full: any) => {
+      if (!cancelled && full && !full.locked) setArticle(full);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [initialArticle, user?.isPremium]);
+
+  const isLocked = Boolean(article.isPremium && (!user?.isPremium || article.locked));
 
   // If locked, get teaser preview (first 2 paragraphs)
   const paragraphs = article.content.split('\n\n');
@@ -79,7 +93,7 @@ export default function ArticleContentReader({ article }: ArticleContentReaderPr
               <span className="text-emerald-700 font-black"><T k="reader.8" /></span>
             </div>
             <div className="text-[11px] text-slate-500 pt-1 border-t border-amber-200/60">
-              <T k="reader.9" />{" "}<span className="font-mono font-bold text-slate-700">5614 6819 0401 4390</span> <T k="reader.10" />{" "}<span className="font-bold text-slate-700"><T k="reader.11" /></span>
+              <T k="reader.9" />{" "}<span className="font-mono font-bold text-slate-700">{formatCard(PAYMENT_CARD)}</span> <T k="reader.10" />{" "}<span className="font-bold text-slate-700"><T k="reader.11" /></span>
             </div>
           </div>
 

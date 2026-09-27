@@ -5,6 +5,7 @@ import { healthTopics, HealthTopic } from '@/lib/healthData';
 import { api } from '@/lib/api';
 import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/site';
 import HealthArticleReader from '@/components/HealthArticleReader';
+import { lockHealthTopic } from '@/lib/premiumPreview';
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -164,7 +165,7 @@ export default async function HealthTopicPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <HealthArticleReader topic={topic} />
+      <HealthArticleReader topic={lockHealthTopic(topic)} />
     </>
   );
 }

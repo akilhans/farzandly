@@ -2,6 +2,7 @@ import { cache } from 'react';
 import type { Metadata } from 'next';
 import { api } from '@/lib/api';
 import { seedCourses } from '@/lib/seedData';
+import { PREMIUM_PRICE_UZS } from '@/lib/payments';
 import { SITE_NAME, SITE_URL, absoluteUrl } from '@/lib/site';
 import CourseDetailClient from '@/components/CourseDetailClient';
 
@@ -91,7 +92,7 @@ export default async function CourseDetailPage({ params }: Props) {
           {
             '@type': 'Offer',
             category: course.isPremium ? 'Paid' : 'Free',
-            price: course.isPremium ? '49000' : '0',
+            price: course.isPremium ? String(PREMIUM_PRICE_UZS) : '0',
             priceCurrency: 'UZS',
             availability: 'https://schema.org/InStock',
             url: courseUrl,

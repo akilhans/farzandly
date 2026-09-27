@@ -4,6 +4,7 @@ import "./globals.css";
 import { Navbar } from "@/components/Navbar";
 import { Footer } from "@/components/Footer";
 import { AuthProvider } from "@/context/AuthContext";
+import SessionExpiredBanner from "@/components/SessionExpiredBanner";
 import { T } from "@/components/T";
 import MotionProvider from "@/components/MotionProvider";
 import { LanguageProvider } from "@/context/LanguageContext";
@@ -195,6 +196,7 @@ export default function RootLayout({
           <AuthProvider>
             <MotionProvider>
               <Navbar />
+              <SessionExpiredBanner />
               <main id="main-content" className="flex-1">{children}</main>
               <Footer />
             </MotionProvider>

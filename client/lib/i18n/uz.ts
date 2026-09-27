@@ -488,13 +488,13 @@ const uz: Record<string, string> = {
     'prem.faq1.q': 'Qaysi darslar va maqolalar bepul taqdim etiladi?',
     'prem.faq1.a': 'Platformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya» darslari hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi va yana 4 ta tanlangan maqola har bir ota-ona uchun umrbod bepul. Boshqa barcha chuqurlashtirilgan 59 ta dars, audio-hikmatlar va ilmiy tahliliy maqolalar Premium kontent hisoblanadi.',
     'prem.faq2.q': 'To‘lov qanday amalga oshiriladi?',
-    'prem.faq2.a': 'To‘lovni 5614 6819 0401 4390 kartasiga (Uzcard/Humo) o‘tkazasiz va to‘lov chekini Telegram orqali t.me/dadakhonov profiliga yuborasiz. Chek tekshirilgach, hisobingiz 10-15 daqiqa ichida faollashtiriladi.',
+    'prem.faq2.a': 'Karta orqali bir marta to‘lov qilasiz va «Men to‘ladim» tugmasini bosasiz. To‘lov tekshirilgach, umrbod Premium avtomatik yoqiladi va Telegram orqali xabar olasiz.',
     'prem.faq3.q': 'Yillik to‘lovning afzalligi nimada?',
     'prem.faq3.a': 'Yillik obunada narx oyiga atigi 179 000 so‘mga tushadi (oylik 219 000 so‘m o‘rniga). Bu orqali siz yil davomida deyarli 500 000 so‘m tejab qolasiz va butun yil davomida barcha yangi kontentlardan foydalanasiz.',
     'prem.faq4.q': 'Premium kontentda nimalar bor?',
     'prem.faq4.a': 'Abdulloh Domla darslari to‘liq silsilasi (55 dars), Xadicha Kubro Tongarning Fitrat pedagogikasi, Aziz Rahimovning zamonaviy ta’lim va intizom metodikasi, 30 jildlik buyuk allomalar ensiklopediyasi, amaliy mashg‘ulotlar, har kungi testlar va bolalar psixologiyasi bo‘yicha to‘liq bazaga ega bo‘lasiz.',
     'a11y.skip': 'Asosiy tarkibga o‘tish',
-    'home.79': 'To‘lov: 5614 6819 0401 4390 • t.me/dadakhonov',
+    'home.79': 'Umrbod Premium — bir martalik to‘lov',
 };
 
 export default uz;
