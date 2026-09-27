@@ -45,6 +45,16 @@ const AgeGroupSchema = new Schema<IAgeGroup>({
 export const AgeGroup = mongoose.models.AgeGroup || mongoose.model<IAgeGroup>('AgeGroup', AgeGroupSchema);
 
 // ======================== USER ========================
+export interface IChild {
+  id: string;
+  name: string;
+  ageGroup: string;
+  birthDate?: string;
+  gender?: 'boy' | 'girl';
+  completedLessons?: string[];
+  notes?: string;
+}
+
 export interface IUser extends Document {
   name: string;
   firstName?: string;
@@ -71,6 +81,20 @@ export interface IUser extends Document {
   reminderEnabled?: boolean;
   reminderHour?: number;
   lastReminderDate?: string;
+  // Multi-child profiles
+  children?: IChild[];
+  activeChildId?: string;
+  // Co-parenting & Family Sync
+  partnerId?: string;
+  partnerName?: string;
+  partnerPhotoUrl?: string;
+  partnerInviteCode?: string;
+  familyRules?: string[];
+  // Growth & Referral System
+  referralCode?: string;
+  referredBy?: string;
+  referralCount?: number;
+  referralBonusDays?: number;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -100,9 +124,57 @@ const UserSchema = new Schema<IUser>({
   reminderEnabled: { type: Boolean, default: false, index: true },
   reminderHour: { type: Number, default: 20, min: 0, max: 23 },
   lastReminderDate: { type: String },
+  // Multi-child profiles
+  children: [
+    {
+      id: { type: String, required: true },
+      name: { type: String, required: true },
+      ageGroup: { type: String, required: true },
+      birthDate: { type: String },
+      gender: { type: String, enum: ['boy', 'girl'] },
+      completedLessons: [{ type: String }],
+      notes: { type: String },
+    },
+  ],
+  activeChildId: { type: String },
+  // Co-parenting & Family Sync
+  partnerId: { type: String, sparse: true, index: true },
+  partnerName: { type: String },
+  partnerPhotoUrl: { type: String },
+  partnerInviteCode: { type: String, sparse: true, index: true },
+  familyRules: [{ type: String }],
+  // Growth & Referral System
+  referralCode: { type: String, sparse: true, index: true },
+  referredBy: { type: String },
+  referralCount: { type: Number, default: 0 },
+  referralBonusDays: { type: Number, default: 0 },
 }, { timestamps: true });
 
 export const User = mongoose.models.User || mongoose.model<IUser>('User', UserSchema);
+
+// ======================== REFERRAL ========================
+export interface IReferral extends Document {
+  referrerId: string;
+  referrerCode: string;
+  referredUserId: string;
+  referredUserName?: string;
+  bonusDaysGranted: number;
+  xpGranted: number;
+  status: 'rewarded';
+  createdAt: Date;
+}
+
+const ReferralSchema = new Schema<IReferral>({
+  referrerId: { type: String, required: true, index: true },
+  referrerCode: { type: String, required: true, index: true },
+  referredUserId: { type: String, required: true, index: true },
+  referredUserName: { type: String, default: 'Ota-ona' },
+  bonusDaysGranted: { type: Number, default: 7 },
+  xpGranted: { type: Number, default: 100 },
+  status: { type: String, default: 'rewarded' },
+}, { timestamps: true });
+
+export const Referral = mongoose.models.Referral || mongoose.model<IReferral>('Referral', ReferralSchema);
 
 // ======================== ARTICLE ========================
 export interface IArticle extends Document {

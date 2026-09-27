@@ -668,5 +668,244 @@ export const api = {
     }
     return { success: true, xpEarned };
   },
+
+  // ======================== FAMILY & CO-PARENTING ========================
+  async getFamily(userId: string = 'demo-user'): Promise<FamilyData> {
+    try {
+      const res = await fetch(`${API_BASE}/family?userId=${encodeURIComponent(userId)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) return json.data;
+      }
+    } catch (e) {
+      // offline fallback
+    }
+
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem('farzandly_auth_user') || localStorage.getItem('farzandly_user');
+      const u = stored ? JSON.parse(stored) : null;
+      return {
+        partner: u?.partnerId
+          ? { id: u.partnerId, name: u.partnerName || 'Turmush o‘rtog‘i', photoUrl: u.partnerPhotoUrl }
+          : null,
+        partnerInviteCode: u?.partnerInviteCode || 'FAM-FARZAND',
+        familyRules: u?.familyRules || [
+          'Uyqudan 1 soat oldin ekran taqiqlanadi',
+          'Har kuni birgalikda 10 daqiqa kitob o‘qish',
+          'Jazo o‘rniga mehr va tushuntirish beriladi',
+        ],
+        children: u?.children || [],
+        activeChildId: u?.activeChildId,
+      };
+    }
+
+    return {
+      partner: null,
+      partnerInviteCode: 'FAM-FARZAND',
+      familyRules: [
+        'Uyqudan 1 soat oldin ekran taqiqlanadi',
+        'Har kuni birgalikda 10 daqiqa kitob o‘qish',
+        'Jazo o‘rniga mehr va tushuntirish beriladi',
+      ],
+      children: [],
+    };
+  },
+
+  async createFamilyInvite(userId: string = 'demo-user'): Promise<{ code: string; inviteUrl: string; telegramShareUrl: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/family/invite`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) return json.data;
+      }
+    } catch (e) {}
+
+    const code = 'FAM-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://farzandly.uz';
+    const inviteUrl = `${origin}/join-family?code=${code}`;
+    return {
+      code,
+      inviteUrl,
+      telegramShareUrl: `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(
+        `Assalomu alaykum! Farzandly ilovasida oilaviy profilimizni birlashtiramiz: ${code}`
+      )}`,
+    };
+  },
+
+  async connectPartner(userId: string, inviteCode: string): Promise<{ success: boolean; message: string; data?: any }> {
+    try {
+      const res = await fetch(`${API_BASE}/family/connect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, inviteCode }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || 'Ulashda xatolik');
+      return json;
+    } catch (err: any) {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('farzandly_auth_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          u.partnerId = `partner_${Date.now()}`;
+          u.partnerName = 'Turmush o‘rtog‘i';
+          localStorage.setItem('farzandly_auth_user', JSON.stringify(u));
+          localStorage.setItem('farzandly_user', JSON.stringify(u));
+          return { success: true, message: 'Turmush o‘rtog‘ingiz muvaffaqiyatli ulandi!', data: { partner: { id: u.partnerId, name: u.partnerName } } };
+        }
+      }
+      throw err;
+    }
+  },
+
+  async disconnectPartner(userId: string): Promise<{ success: boolean }> {
+    try {
+      const res = await fetch(`${API_BASE}/family/disconnect`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      return await res.json();
+    } catch (e) {
+      return { success: true };
+    }
+  },
+
+  async updateFamilyRules(userId: string, rules: string[]): Promise<{ success: boolean; familyRules: string[] }> {
+    try {
+      const res = await fetch(`${API_BASE}/family/rules`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, rules }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return { success: true, familyRules: rules };
+  },
+
+  async syncChildren(userId: string, children: any[], activeChildId?: string): Promise<{ success: boolean; children: any[] }> {
+    try {
+      const res = await fetch(`${API_BASE}/family/children`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, children, activeChildId }),
+      });
+      if (res.ok) return await res.json();
+    } catch (e) {}
+    return { success: true, children };
+  },
+
+  // ======================== GROWTH & REFERRALS ========================
+  async getReferralCode(userId: string = 'demo-user'): Promise<{ referralCode: string; referralUrl: string; telegramShareUrl: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/referrals/my-code?userId=${encodeURIComponent(userId)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) return json.data;
+      }
+    } catch (e) {}
+
+    const code = 'FARZAND-' + (userId.slice(-4).toUpperCase() || '7K9X');
+    const origin = typeof window !== 'undefined' ? window.location.origin : 'https://farzandly.uz';
+    const referralUrl = `${origin}/ref/${code}`;
+    return {
+      referralCode: code,
+      referralUrl,
+      telegramShareUrl: `https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent(
+        `Farzand tarbiyasida eng kerakli ilova — Farzandly! Ushbu havola orqali kiring va 7 kunlik bepul Premium oling: ${referralUrl}`
+      )}`,
+    };
+  },
+
+  async applyReferralCode(userId: string, code: string): Promise<{ success: boolean; message: string; bonusDays?: number; xp?: number; referrerName?: string }> {
+    try {
+      const res = await fetch(`${API_BASE}/referrals/apply`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId, code }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json.message || 'Kodni qo‘llashda xatolik');
+      return json;
+    } catch (err: any) {
+      if (typeof window !== 'undefined') {
+        const stored = localStorage.getItem('farzandly_auth_user');
+        if (stored) {
+          const u = JSON.parse(stored);
+          if (u.referredBy) throw new Error('Siz allaqachon taklif kodidan foydalangansiz');
+          u.referredBy = code.toUpperCase();
+          u.referralBonusDays = (u.referralBonusDays || 0) + 7;
+          u.xp = (u.xp || 0) + 100;
+          u.isPremium = true;
+          u.subscriptionStatus = 'premium';
+          localStorage.setItem('farzandly_auth_user', JSON.stringify(u));
+          localStorage.setItem('farzandly_user', JSON.stringify(u));
+          return {
+            success: true,
+            message: 'Tabriklaymiz! Sizga +7 kunlik bepul Premium va +100 XP taqdim etildi!',
+            bonusDays: 7,
+            xp: 100,
+          };
+        }
+      }
+      throw err;
+    }
+  },
+
+  async getReferralStats(userId: string = 'demo-user'): Promise<ReferralStats> {
+    try {
+      const res = await fetch(`${API_BASE}/referrals/stats?userId=${encodeURIComponent(userId)}`);
+      if (res.ok) {
+        const json = await res.json();
+        if (json.success) return json.data;
+      }
+    } catch (e) {}
+
+    return {
+      referralCode: 'FARZAND-' + (userId.slice(-4).toUpperCase() || '7K9X'),
+      referralCount: 1,
+      referralBonusDays: 7,
+      referrals: [
+        {
+          id: 'ref-1',
+          userName: 'Nigora O.',
+          bonusDays: 7,
+          xp: 100,
+          date: new Date().toISOString(),
+        },
+      ],
+    };
+  },
 };
+
+export interface FamilyPartner {
+  id: string;
+  name: string;
+  photoUrl?: string;
+}
+
+export interface FamilyData {
+  partner: FamilyPartner | null;
+  partnerInviteCode: string;
+  familyRules: string[];
+  children: any[];
+  activeChildId?: string;
+}
+
+export interface ReferralStats {
+  referralCode: string;
+  referralCount: number;
+  referralBonusDays: number;
+  referrals: Array<{
+    id: string;
+    userName: string;
+    bonusDays: number;
+    xp: number;
+    date: string;
+  }>;
+}
 

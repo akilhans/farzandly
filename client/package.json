@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "canvas-confetti": "^1.9.4",
+    "farzandly": "file:..",
     "framer-motion": "^13.4.0",
     "html-to-image": "^1.11.13",
     "lucide-react": "^1.47.0",

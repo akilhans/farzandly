@@ -47,6 +47,19 @@ apiRouter.get('/health-topics', ApiController.getHealthTopics);
 apiRouter.get('/health-topics/:slug', ApiController.getHealthTopicBySlug);
 apiRouter.post('/health-topics/:slug/quiz', ApiController.recordHealthQuiz);
 
+// Family & Co-Parenting
+apiRouter.get('/family', ApiController.getFamily);
+apiRouter.post('/family/invite', ApiController.createFamilyInvite);
+apiRouter.post('/family/connect', ApiController.connectPartner);
+apiRouter.post('/family/disconnect', ApiController.disconnectPartner);
+apiRouter.post('/family/rules', ApiController.updateFamilyRules);
+apiRouter.post('/family/children', ApiController.updateChildren);
+
+// Growth & Referrals
+apiRouter.get('/referrals/my-code', ApiController.getReferralCode);
+apiRouter.post('/referrals/apply', ApiController.applyReferralCode);
+apiRouter.get('/referrals/stats', ApiController.getReferralStats);
+
 // Newsletter
 apiRouter.post('/newsletter/subscribe', ApiController.subscribeNewsletter);
 

@@ -34,6 +34,15 @@ export interface TelegramUser {
   lastActiveDate?: string;
   children?: ChildProfile[];
   activeChildId?: string;
+  partnerId?: string;
+  partnerName?: string;
+  partnerPhotoUrl?: string;
+  partnerInviteCode?: string;
+  familyRules?: string[];
+  referralCode?: string;
+  referredBy?: string;
+  referralCount?: number;
+  referralBonusDays?: number;
 }
 
 interface AuthContextType {
@@ -58,6 +67,11 @@ interface AuthContextType {
   updateUserProfile: (updates: Partial<TelegramUser>) => void;
   setAuthenticatedSession: (user: TelegramUser, token: string) => void;
   setPremiumStatus: (userIdOrUsername: string, durationMonths: number) => Promise<boolean>;
+  connectPartner: (inviteCode: string) => Promise<{ success: boolean; message?: string }>;
+  disconnectPartner: () => Promise<boolean>;
+  updateFamilyRules: (rules: string[]) => Promise<boolean>;
+  syncChildren: (children: ChildProfile[], activeChildId?: string) => Promise<boolean>;
+  applyReferralCode: (code: string) => Promise<{ success: boolean; message?: string; bonusDays?: number; xp?: number }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -628,6 +642,86 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return true;
   };
 
+  const connectPartner = async (inviteCode: string) => {
+    if (!user) return { success: false, message: 'Iltimos, avval tizimga kiring' };
+    try {
+      const res = await api.connectPartner(user._id, inviteCode);
+      if (res.success && res.data) {
+        updateUserProfile({
+          partnerId: res.data.partner.id,
+          partnerName: res.data.partner.name,
+          partnerPhotoUrl: res.data.partner.photoUrl,
+          familyRules: res.data.familyRules || user.familyRules,
+          children: res.data.children || user.children,
+        });
+        return { success: true, message: res.message };
+      }
+      return { success: false, message: res.message || 'Ulanish amalga oshmadi' };
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Ulanishda xatolik' };
+    }
+  };
+
+  const disconnectPartner = async () => {
+    if (!user) return false;
+    try {
+      await api.disconnectPartner(user._id);
+    } catch (e) {}
+    updateUserProfile({
+      partnerId: undefined,
+      partnerName: undefined,
+      partnerPhotoUrl: undefined,
+    });
+    return true;
+  };
+
+  const updateFamilyRules = async (rules: string[]) => {
+    if (!user) return false;
+    try {
+      await api.updateFamilyRules(user._id, rules);
+    } catch (e) {}
+    updateUserProfile({ familyRules: rules });
+    return true;
+  };
+
+  const syncChildren = async (newChildren: ChildProfile[], newActiveChildId?: string) => {
+    if (!user) return false;
+    const actId = newActiveChildId || user.activeChildId || newChildren[0]?.id;
+    try {
+      await api.syncChildren(user._id, newChildren, actId);
+    } catch (e) {}
+    updateUserProfile({ children: newChildren, activeChildId: actId });
+    return true;
+  };
+
+  const applyReferralCode = async (code: string) => {
+    if (!user) return { success: false, message: 'Iltimos, avval tizimga kiring' };
+    try {
+      const res = await api.applyReferralCode(user._id, code);
+      if (res.success) {
+        const bonusDays = res.bonusDays || 7;
+        const bonusXp = res.xp || 100;
+        const now = new Date();
+        const curExp = user.premiumExpiresAt ? new Date(user.premiumExpiresAt) : now;
+        const base = curExp > now ? curExp : now;
+        base.setDate(base.getDate() + bonusDays);
+
+        updateUserProfile({
+          referredBy: code.toUpperCase(),
+          referralBonusDays: (user.referralBonusDays || 0) + bonusDays,
+          xp: (user.xp || 0) + bonusXp,
+          isPremium: true,
+          subscriptionStatus: 'premium',
+          premiumExpiresAt: base.toISOString(),
+        });
+        return { success: true, message: res.message, bonusDays, xp: bonusXp };
+      }
+      return { success: false, message: res.message };
+    } catch (err: any) {
+      return { success: false, message: err.message || 'Kodni qo‘llashda xatolik' };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -644,6 +738,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         updateUserProfile,
         setAuthenticatedSession,
         setPremiumStatus,
+        connectPartner,
+        disconnectPartner,
+        updateFamilyRules,
+        syncChildren,
+        applyReferralCode,
       }}
     >
       {children}

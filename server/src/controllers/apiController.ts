@@ -356,4 +356,141 @@ export class ApiController {
       res.status(500).json({ success: false, message: 'Viktorina natijasini saqlashda xatolik' });
     }
   }
+
+  // ======================== FAMILY & CO-PARENTING ========================
+  // GET /api/family?userId=...
+  static async getFamily(req: Request, res: Response) {
+    try {
+      const userId = (req.query.userId as string) || (req.headers.authorization?.replace('Bearer ', '')) || 'demo-user';
+      const familyData = await DataService.getFamilyData(userId);
+      res.json({ success: true, data: familyData });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Oila ma‘lumotlarini olishda xatolik' });
+    }
+  }
+
+  // POST /api/family/invite
+  static async createFamilyInvite(req: Request, res: Response) {
+    try {
+      const userId = req.body.userId || 'demo-user';
+      const code = await DataService.getOrCreatePartnerInviteCode(userId);
+      const inviteUrl = `${process.env.APP_URL || 'https://farzandly.uz'}/join-family?code=${code}`;
+      const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(inviteUrl)}&text=${encodeURIComponent(
+        `Assalomu alaykum! Farzandly ilovasida oilaviy hisobimizni birlashtirish uchun taklifnoma: ${code}`
+      )}`;
+
+      res.json({
+        success: true,
+        data: {
+          code,
+          inviteUrl,
+          telegramShareUrl,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Taklifnoma yaratishda xatolik' });
+    }
+  }
+
+  // POST /api/family/connect
+  static async connectPartner(req: Request, res: Response) {
+    try {
+      const { userId = 'demo-user', inviteCode } = req.body;
+      if (!inviteCode) {
+        return res.status(400).json({ success: false, message: 'Taklif kodi kiritilishi shart' });
+      }
+      const result = await DataService.connectPartner(userId, inviteCode);
+      res.json({ success: true, message: 'Turmush o‘rtog‘ingiz muvaffaqiyatli ulandi!', data: result });
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message || 'Ulashda xatolik yuz berdi' });
+    }
+  }
+
+  // POST /api/family/disconnect
+  static async disconnectPartner(req: Request, res: Response) {
+    try {
+      const { userId = 'demo-user' } = req.body;
+      const result = await DataService.disconnectPartner(userId);
+      res.json({ success: true, message: 'Aloqa uzildi', data: result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Xatolik' });
+    }
+  }
+
+  // POST /api/family/rules
+  static async updateFamilyRules(req: Request, res: Response) {
+    try {
+      const { userId = 'demo-user', rules } = req.body;
+      if (!Array.isArray(rules)) {
+        return res.status(400).json({ success: false, message: 'Qoidalar massiv shaklida bo‘lishi kerak' });
+      }
+      const result = await DataService.updateFamilyRules(userId, rules);
+      res.json({ success: true, message: 'Qoidalar saqlandi', data: result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Qoidalarni saqlashda xatolik' });
+    }
+  }
+
+  // POST /api/family/children
+  static async updateChildren(req: Request, res: Response) {
+    try {
+      const { userId = 'demo-user', children, activeChildId } = req.body;
+      if (!Array.isArray(children)) {
+        return res.status(400).json({ success: false, message: 'Bolalar ro‘yxati massiv bo‘lishi kerak' });
+      }
+      const result = await DataService.updateUserChildren(userId, children, activeChildId);
+      res.json({ success: true, message: 'Farzandlar ma‘lumoti saqlandi', data: result });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Farzandlar ma‘lumotini saqlashda xatolik' });
+    }
+  }
+
+  // ======================== GROWTH & REFERRALS ========================
+  // GET /api/referrals/my-code?userId=...
+  static async getReferralCode(req: Request, res: Response) {
+    try {
+      const userId = (req.query.userId as string) || (req.headers.authorization?.replace('Bearer ', '')) || 'demo-user';
+      const code = await DataService.getOrCreateReferralCode(userId);
+      const referralUrl = `${process.env.APP_URL || 'https://farzandly.uz'}/ref/${code}`;
+      const telegramShareUrl = `https://t.me/share/url?url=${encodeURIComponent(referralUrl)}&text=${encodeURIComponent(
+        `Farzand tarbiyasida eng kerakli ilova — Farzandly! Ushbu havola orqali ro‘yxatdan o‘tib, 7 kunlik Premium obunani bepul oling: ${referralUrl}`
+      )}`;
+
+      res.json({
+        success: true,
+        data: {
+          referralCode: code,
+          referralUrl,
+          telegramShareUrl,
+        },
+      });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Referral kodini olishda xatolik' });
+    }
+  }
+
+  // POST /api/referrals/apply
+  static async applyReferralCode(req: Request, res: Response) {
+    try {
+      const { userId = 'demo-user', code } = req.body;
+      if (!code) {
+        return res.status(400).json({ success: false, message: 'Referral kodi ko‘rsatilmadi' });
+      }
+      const result = await DataService.applyReferralCode(userId, code);
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ success: false, message: error.message || 'Referral kodini qo‘llashda xatolik' });
+    }
+  }
+
+  // GET /api/referrals/stats?userId=...
+  static async getReferralStats(req: Request, res: Response) {
+    try {
+      const userId = (req.query.userId as string) || (req.headers.authorization?.replace('Bearer ', '')) || 'demo-user';
+      const stats = await DataService.getReferralStats(userId);
+      res.json({ success: true, data: stats });
+    } catch (error: any) {
+      res.status(500).json({ success: false, message: error.message || 'Statistikani olishda xatolik' });
+    }
+  }
 }

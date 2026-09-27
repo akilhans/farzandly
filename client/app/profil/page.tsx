@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { m, AnimatePresence } from 'framer-motion';
 import {
   User as UserIcon,
@@ -35,8 +36,18 @@ import {
   ChevronRight,
   Plus,
   X,
+  Users,
+  Gift,
+  Copy,
+  Share2,
+  HeartHandshake,
+  CheckCircle2,
+  Link2,
+  Unlink,
+  RefreshCw,
+  Sparkles,
 } from 'lucide-react';
-import { api, Achievement } from '@/lib/api';
+import { api, Achievement, FamilyData, ReferralStats } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import FlagIcon from '@/components/FlagIcon';
@@ -48,16 +59,92 @@ import { T } from '@/components/T';
 const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
 export default function ProfilePage() {
-  const { user, isAuthenticated, logout, updateUserProfile } = useAuth();
+  const searchParams = useSearchParams();
+  const initialTab = (searchParams.get('tab') as 'overview' | 'family' | 'referrals' | 'settings') || 'overview';
+
+  const {
+    user,
+    isAuthenticated,
+    logout,
+    updateUserProfile,
+    connectPartner,
+    disconnectPartner,
+    updateFamilyRules,
+    syncChildren,
+    applyReferralCode,
+  } = useAuth();
   const { language, setLanguage, t } = useI18n();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Active Tab
-  const [activeTab, setActiveTab] = useState<'overview' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'family' | 'referrals' | 'settings'>(initialTab);
 
   // Achievements
   const [achievements, setAchievements] = useState<Achievement[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Family Sync state
+  const [familyData, setFamilyData] = useState<FamilyData | null>(null);
+  const [partnerInviteCode, setPartnerInviteCode] = useState(user?.partnerInviteCode || '');
+  const [partnerInviteUrl, setPartnerInviteUrl] = useState('');
+  const [telegramInviteUrl, setTelegramInviteUrl] = useState('');
+  const [partnerInputCode, setPartnerInputCode] = useState('');
+  const [partnerConnecting, setPartnerConnecting] = useState(false);
+  const [partnerStatusMsg, setPartnerStatusMsg] = useState<{ success: boolean; message: string } | null>(null);
+  const [familyRulesList, setFamilyRulesList] = useState<string[]>(
+    user?.familyRules || [
+      'Uyqudan 1 soat oldin ekran taqiqlanadi',
+      'Har kuni birgalikda 10 daqiqa kitob o‘qish',
+      'Jazo o‘rniga mehr va tushuntirish beriladi',
+    ]
+  );
+  const [newRuleInput, setNewRuleInput] = useState('');
+  const [copiedInvite, setCopiedInvite] = useState(false);
+
+  // Referral state
+  const [referralStats, setReferralStats] = useState<ReferralStats | null>(null);
+  const [myReferralCode, setMyReferralCode] = useState(user?.referralCode || '');
+  const [referralShareUrl, setReferralShareUrl] = useState('');
+  const [telegramReferralShareUrl, setTelegramReferralShareUrl] = useState('');
+  const [referralInputCode, setReferralInputCode] = useState('');
+  const [applyingReferral, setApplyingReferral] = useState(false);
+  const [referralStatusMsg, setReferralStatusMsg] = useState<{ success: boolean; message: string } | null>(null);
+  const [copiedReferral, setCopiedReferral] = useState(false);
+
+  useEffect(() => {
+    async function loadFamilyAndReferral() {
+      const uId = user?._id || 'demo-user';
+      try {
+        const [fam, famInvite, refCode, refStats] = await Promise.all([
+          api.getFamily(uId),
+          api.createFamilyInvite(uId),
+          api.getReferralCode(uId),
+          api.getReferralStats(uId),
+        ]);
+        if (fam) {
+          setFamilyData(fam);
+          if (fam.familyRules && fam.familyRules.length > 0) {
+            setFamilyRulesList(fam.familyRules);
+          }
+        }
+        if (famInvite) {
+          setPartnerInviteCode(famInvite.code);
+          setPartnerInviteUrl(famInvite.inviteUrl);
+          setTelegramInviteUrl(famInvite.telegramShareUrl);
+        }
+        if (refCode) {
+          setMyReferralCode(refCode.referralCode);
+          setReferralShareUrl(refCode.referralUrl);
+          setTelegramReferralShareUrl(refCode.telegramShareUrl);
+        }
+        if (refStats) {
+          setReferralStats(refStats);
+        }
+      } catch (err) {}
+    }
+
+    loadFamilyAndReferral();
+  }, [user?._id]);
 
   // Settings form state
   const [formName, setFormName] = useState(user?.name || '');
@@ -362,12 +449,12 @@ export default function ProfilePage() {
         </div>
       </m.div>
 
-      {/* Navigation Tabs: Overview vs Settings */}
-      <div className="flex items-center gap-2 border-b-2 border-slate-200 pb-1">
+      {/* Navigation Tabs */}
+      <div className="flex items-center gap-2 border-b-2 border-slate-200 pb-1 overflow-x-auto no-scrollbar">
         <button
           type="button"
           onClick={() => setActiveTab('overview')}
-          className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
             activeTab === 'overview'
               ? 'bg-emerald-600 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-100'
@@ -379,8 +466,34 @@ export default function ProfilePage() {
 
         <button
           type="button"
+          onClick={() => setActiveTab('family')}
+          className={`px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+            activeTab === 'family'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Heart className="w-4 h-4" />
+          <span>Oilaviy Hamkorlik</span>
+        </button>
+
+        <button
+          type="button"
+          onClick={() => setActiveTab('referrals')}
+          className={`px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+            activeTab === 'referrals'
+              ? 'bg-emerald-600 text-white shadow-sm'
+              : 'text-slate-600 hover:bg-slate-100'
+          }`}
+        >
+          <Gift className="w-4 h-4" />
+          <span>Taklif va Sovg‘a</span>
+        </button>
+
+        <button
+          type="button"
           onClick={() => setActiveTab('settings')}
-          className={`px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 cursor-pointer ${
+          className={`px-4 sm:px-5 py-2.5 rounded-2xl text-xs sm:text-sm font-black transition-all flex items-center gap-2 whitespace-nowrap cursor-pointer ${
             activeTab === 'settings'
               ? 'bg-emerald-600 text-white shadow-sm'
               : 'text-slate-600 hover:bg-slate-100'
@@ -495,6 +608,367 @@ export default function ProfilePage() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: OILAVIY HAMKORLIK (CO-PARENTING & FAMILY SYNC) */}
+      {activeTab === 'family' && (
+        <div className="space-y-8 animate-in fade-in duration-200">
+          {/* Card 1: Spouse Connection */}
+          <div className="card-farzandly p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg">
+                <HeartHandshake className="w-5 h-5 text-rose-500" />
+                <h2>Turmush O‘rtog‘i Bilan Sinxronizatsiya</h2>
+              </div>
+              {user?.partnerId && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800">
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                  Ulangan
+                </span>
+              )}
+            </div>
+
+            {user?.partnerId ? (
+              <div className="bg-rose-50/50 border border-rose-100 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-rose-200 text-rose-700 flex items-center justify-center font-bold text-xl overflow-hidden shrink-0">
+                    {user.partnerPhotoUrl ? (
+                      <img src={user.partnerPhotoUrl} alt={user.partnerName} className="w-full h-full object-cover" />
+                    ) : (
+                      user.partnerName?.charAt(0) || '♥'
+                    )}
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-slate-900 text-base">{user.partnerName || 'Turmush o‘rtog‘i'}</h3>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Oilaviy profil faol. Farzandlar va qoidalar ikkala qurilmada avtomatik sinxronlanadi.
+                    </p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    if (confirm('Rostdan ham turmush o‘rtog‘ingiz bilan aloqani uzmoqchimisiz?')) {
+                      await disconnectPartner();
+                    }
+                  }}
+                  className="px-4 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-100 transition-colors flex items-center gap-1.5 shrink-0 cursor-pointer"
+                >
+                  <Unlink className="w-4 h-4" />
+                  Aloqani uzish
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-100 rounded-2xl p-5">
+                  <h3 className="font-extrabold text-slate-900 text-sm mb-1">
+                    Nega turmush o‘rtog‘ingizni ulash kerak?
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Tarbiya yagona yondashuvni talab qiladi. Bitta hisobga ulanganda farzandingizning darslari, yutuqlari va eng muhimi — <strong>Oilaviy Tarbiya Qoidalari</strong> ikkalangizda ham birdek ko‘rinadi.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Share My Code */}
+                  <div className="p-5 rounded-2xl border-2 border-dashed border-slate-200 space-y-4">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                      1-variant: O‘z kodingizni yuboring
+                    </span>
+                    <div className="flex items-center justify-between bg-slate-50 p-3 rounded-xl border border-slate-200">
+                      <span className="font-mono font-black text-lg text-slate-800 tracking-wider">
+                        {partnerInviteCode || 'FAM-FARZAND'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(partnerInviteUrl || partnerInviteCode);
+                          setCopiedInvite(true);
+                          setTimeout(() => setCopiedInvite(false), 2000);
+                        }}
+                        className="p-2 rounded-lg bg-white shadow-xs text-slate-700 hover:text-emerald-600 transition-colors cursor-pointer"
+                        title="Nusxa olish"
+                      >
+                        {copiedInvite ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+
+                    <a
+                      href={telegramInviteUrl || `https://t.me/share/url?url=${encodeURIComponent(partnerInviteUrl)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full py-2.5 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-xs"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      Telegram orqali turmush o‘rtog‘imga yuborish
+                    </a>
+                  </div>
+
+                  {/* Connect with spouse code */}
+                  <div className="p-5 rounded-2xl border-2 border-slate-200 space-y-4">
+                    <span className="text-xs font-bold text-slate-500 uppercase tracking-wider block">
+                      2-variant: Turmush o‘rtog‘ingiz bergan kodni kiriting
+                    </span>
+                    <div className="space-y-3">
+                      <input
+                        type="text"
+                        value={partnerInputCode}
+                        onChange={(e) => setPartnerInputCode(e.target.value.toUpperCase())}
+                        placeholder="FAM-XXXXXX"
+                        className="w-full px-4 py-2.5 font-mono font-bold text-sm uppercase rounded-xl border border-slate-300 focus:border-blue-500 focus:outline-none"
+                      />
+                      {partnerStatusMsg && (
+                        <div
+                          className={`p-2.5 rounded-xl text-xs font-medium ${
+                            partnerStatusMsg.success
+                              ? 'bg-emerald-100 text-emerald-900'
+                              : 'bg-rose-50 text-rose-800'
+                          }`}
+                        >
+                          {partnerStatusMsg.message}
+                        </div>
+                      )}
+                      <button
+                        type="button"
+                        disabled={partnerConnecting || !partnerInputCode.trim()}
+                        onClick={async () => {
+                          setPartnerConnecting(true);
+                          setPartnerStatusMsg(null);
+                          const res = await connectPartner(partnerInputCode);
+                          setPartnerStatusMsg({ success: res.success, message: res.message || '' });
+                          setPartnerConnecting(false);
+                          if (res.success) setPartnerInputCode('');
+                        }}
+                        className="w-full py-2.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs flex items-center justify-center gap-2 transition-all disabled:opacity-50 cursor-pointer"
+                      >
+                        {partnerConnecting ? 'Ulanmoqda...' : 'Hisobni birlashtirish'}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Card 2: Shared Family Rules */}
+          <div className="card-farzandly p-6 sm:p-8 space-y-6">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2.5 text-slate-800 font-black text-lg">
+                <ShieldCheck className="w-5 h-5 text-emerald-600" />
+                <h2>Yagona Oilaviy Tarbiya Qoidalari</h2>
+              </div>
+              <span className="text-xs font-bold text-slate-400">
+                {familyRulesList.length} ta qoida
+              </span>
+            </div>
+
+            <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Er va xotin o‘rtasida kelishilgan umumiy qoidalar bolada intizom va xotirjamlik paydo qiladi. Bu qoidalarni ikkala ota-ona ham tahrirlashi mumkin.
+            </p>
+
+            <div className="space-y-2.5">
+              {familyRulesList.map((rule, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 hover:border-emerald-200 transition-all group"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0">
+                      {idx + 1}
+                    </div>
+                    <span className="text-sm font-medium text-slate-800">{rule}</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      const updated = familyRulesList.filter((_, i) => i !== idx);
+                      setFamilyRulesList(updated);
+                      await updateFamilyRules(updated);
+                    }}
+                    className="opacity-0 group-hover:opacity-100 p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-all cursor-pointer"
+                    title="O‘chirish"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
+                </div>
+              ))}
+            </div>
+
+            {/* Add new rule form */}
+            <div className="flex gap-2 pt-2">
+              <input
+                type="text"
+                value={newRuleInput}
+                onChange={(e) => setNewRuleInput(e.target.value)}
+                onKeyDown={async (e) => {
+                  if (e.key === 'Enter' && newRuleInput.trim()) {
+                    e.preventDefault();
+                    const updated = [...familyRulesList, newRuleInput.trim()];
+                    setFamilyRulesList(updated);
+                    setNewRuleInput('');
+                    await updateFamilyRules(updated);
+                  }
+                }}
+                placeholder="Yangi oilaviy qoida qo‘shish (masalan: Har kuni 15 daqiqa birga kitob o‘qish)..."
+                className="flex-1 px-4 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-300 focus:border-emerald-500 focus:outline-none"
+              />
+              <button
+                type="button"
+                disabled={!newRuleInput.trim()}
+                onClick={async () => {
+                  if (!newRuleInput.trim()) return;
+                  const updated = [...familyRulesList, newRuleInput.trim()];
+                  setFamilyRulesList(updated);
+                  setNewRuleInput('');
+                  await updateFamilyRules(updated);
+                }}
+                className="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-colors disabled:opacity-50 flex items-center gap-1.5 cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+                <span>Qo‘shish</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: DO'STLARNI TAKLIF QILISH (GROWTH & REFERRALS) */}
+      {activeTab === 'referrals' && (
+        <div className="space-y-8 animate-in fade-in duration-200">
+          {/* Banner Card */}
+          <div className="card-farzandly p-6 sm:p-8 bg-gradient-to-br from-emerald-600 via-emerald-700 to-teal-800 text-white space-y-6 relative overflow-hidden">
+            <div className="relative z-10 max-w-xl space-y-3">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-bold text-white">
+                <Gift className="w-3.5 h-3.5 text-amber-300" />
+                <span>Do‘stlar Taklifi va Sovg‘alar</span>
+              </div>
+              <h2 className="text-2xl sm:text-3xl font-black tracking-tight">
+                Har bir do‘stingiz uchun +7 kunlik bepul Premium oling!
+              </h2>
+              <p className="text-emerald-100 text-xs sm:text-sm leading-relaxed">
+                Do‘stingiz sizning havolangiz orqali ro‘yxatdan o‘tganda, <strong>har ikkalangizga</strong> ham 7 kunlik to‘liq Premium obuna va 100 XP sovg‘a qilinadi.
+              </p>
+            </div>
+
+            {/* Referral code share container */}
+            <div className="relative z-10 bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div className="w-full sm:w-auto text-center sm:text-left">
+                <span className="text-[11px] font-bold text-emerald-200 uppercase tracking-wider block">
+                  Sizning shaxsiy kodingiz:
+                </span>
+                <span className="font-mono font-black text-2xl tracking-wider text-white">
+                  {myReferralCode || 'FARZAND-7K9X'}
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    navigator.clipboard.writeText(referralShareUrl || `https://farzandly.uz/ref/${myReferralCode}`);
+                    setCopiedReferral(true);
+                    setTimeout(() => setCopiedReferral(false), 2000);
+                  }}
+                  className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-white text-emerald-900 font-bold text-xs flex items-center justify-center gap-2 hover:bg-emerald-50 transition-all cursor-pointer shadow-sm"
+                >
+                  {copiedReferral ? <Check className="w-4 h-4 text-emerald-600" /> : <Copy className="w-4 h-4" />}
+                  <span>{copiedReferral ? 'Nusxalandi!' : 'Havolani nusxalash'}</span>
+                </button>
+
+                <a
+                  href={telegramReferralShareUrl || `https://t.me/share/url?url=${encodeURIComponent(referralShareUrl)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-white font-bold text-xs flex items-center justify-center gap-2 transition-all cursor-pointer shadow-sm"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>Telegram</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Referral Stats Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="card-farzandly p-5 text-center space-y-1">
+              <div className="w-10 h-10 mx-auto rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mb-1">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-black text-slate-800">
+                {referralStats?.referralCount || user?.referralCount || 0}
+              </div>
+              <div className="text-xs font-bold text-slate-500">Taklif qilingan ota-onalar</div>
+            </div>
+
+            <div className="card-farzandly p-5 text-center space-y-1">
+              <div className="w-10 h-10 mx-auto rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center mb-1">
+                <Crown className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-black text-amber-700">
+                +{referralStats?.referralBonusDays || user?.referralBonusDays || 0} kun
+              </div>
+              <div className="text-xs font-bold text-slate-500">To‘plangan bepul Premium</div>
+            </div>
+
+            <div className="card-farzandly p-5 text-center space-y-1">
+              <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div className="text-2xl font-black text-emerald-700">
+                +{(referralStats?.referralCount || user?.referralCount || 0) * 100} XP
+              </div>
+              <div className="text-xs font-bold text-slate-500">Bonus tajriba ochkolari</div>
+            </div>
+          </div>
+
+          {/* Redeem a friend's code */}
+          <div className="card-farzandly p-6 sm:p-8 space-y-4">
+            <h3 className="font-extrabold text-slate-900 text-base">
+              Do‘stingiz sizga kod berganmi?
+            </h3>
+            <p className="text-xs text-slate-500">
+              Agar siz hali biror taklif kodidan foydalanmagan bo‘lsangiz, uni shu yerga kiritib, 7 kunlik Premium obunani faollashtiring.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-3 max-w-md">
+              <input
+                type="text"
+                value={referralInputCode}
+                onChange={(e) => setReferralInputCode(e.target.value.toUpperCase())}
+                placeholder="FARZAND-XXXX"
+                disabled={Boolean(user?.referredBy)}
+                className="flex-1 px-4 py-2.5 font-mono font-bold text-sm uppercase rounded-xl border border-slate-300 focus:border-emerald-500 focus:outline-none disabled:bg-slate-100"
+              />
+              <button
+                type="button"
+                disabled={applyingReferral || !referralInputCode.trim() || Boolean(user?.referredBy)}
+                onClick={async () => {
+                  setApplyingReferral(true);
+                  setReferralStatusMsg(null);
+                  const res = await applyReferralCode(referralInputCode);
+                  setReferralStatusMsg({ success: res.success, message: res.message || '' });
+                  setApplyingReferral(false);
+                  if (res.success) setReferralInputCode('');
+                }}
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {applyingReferral ? 'Tekshirilmoqda...' : user?.referredBy ? 'Allaqachon kiritilgan' : 'Qo‘llash'}
+              </button>
+            </div>
+
+            {referralStatusMsg && (
+              <div
+                className={`p-3 rounded-xl text-xs font-medium max-w-md ${
+                  referralStatusMsg.success
+                    ? 'bg-emerald-100 text-emerald-900'
+                    : 'bg-rose-50 text-rose-800'
+                }`}
+              >
+                {referralStatusMsg.message}
+              </div>
+            )}
           </div>
         </div>
       )}

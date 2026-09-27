@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import crypto from 'crypto';
 import {
   Category,
   AgeGroup,
@@ -11,6 +12,8 @@ import {
   UserProgress,
   NewsletterSubscriber,
   HealthTopic,
+  Referral,
+  IChild,
 } from '../models/index.js';
 import {
   seedCategories,
@@ -32,6 +35,7 @@ let memoryLearningPaths = [...seedLearningPaths];
 let memoryLessons = [...seedLessons];
 let memoryArticles = [...seedArticles];
 let memoryHealthTopics = [...seedHealthTopics];
+let memoryReferrals: any[] = [];
 let memoryUsers: Record<string, any> = {
   'demo-user': {
     _id: 'demo-user',
@@ -45,6 +49,18 @@ let memoryUsers: Record<string, any> = {
     completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'],
     achievements: ['ilk-qadam'],
     subscriptionStatus: 'free',
+    children: [
+      { id: 'child-1', name: 'Salohiddin', ageGroup: '3-5', gender: 'boy', completedLessons: ['dars-1-tarbiyaning-ahamiyati-1-qism'] },
+    ],
+    activeChildId: 'child-1',
+    familyRules: [
+      'Uyqudan 1 soat oldin ekran taqiqlanadi',
+      'Har kuni birgalikda 10 daqiqa kitob o‘qish',
+      'Jazo o‘rniga mehr va tushuntirish beriladi',
+    ],
+    referralCode: 'FARZAND-DEMO1',
+    referralCount: 2,
+    referralBonusDays: 14,
   },
 };
 let memoryProgress: Record<string, any[]> = {
@@ -752,5 +768,342 @@ export class DataService {
       score,
       xpEarned,
     });
+  }
+
+  // ======================== FAMILY & CO-PARENTING ========================
+  static async getOrCreatePartnerInviteCode(userId: string): Promise<string> {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    if (user.partnerInviteCode) {
+      return user.partnerInviteCode;
+    }
+
+    const code = `FAM-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(user._id, { partnerInviteCode: code });
+    }
+    user.partnerInviteCode = code;
+    return code;
+  }
+
+  static async connectPartner(userId: string, inviteCode: string) {
+    const cleanCode = inviteCode.trim().toUpperCase();
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    let partner: any = null;
+    if (isDbConnected()) {
+      partner = await User.findOne({ partnerInviteCode: cleanCode });
+    } else {
+      partner = Object.values(memoryUsers).find((u: any) => u.partnerInviteCode === cleanCode);
+    }
+
+    if (!partner) {
+      throw new Error('Taklif kodi topilmadi yoki eskirgan');
+    }
+
+    if (String(partner._id) === String(user._id)) {
+      throw new Error('O‘z profilingiz kodini ulashingiz mumkin emas');
+    }
+
+    // Connect both users
+    const partnerIdStr = String(partner._id);
+    const userIdStr = String(user._id);
+
+    user.partnerId = partnerIdStr;
+    user.partnerName = partner.name || 'Turmush o‘rtog‘i';
+    user.partnerPhotoUrl = partner.photoUrl || '';
+
+    partner.partnerId = userIdStr;
+    partner.partnerName = user.name || 'Turmush o‘rtog‘i';
+    partner.partnerPhotoUrl = user.photoUrl || '';
+
+    // Merge family rules
+    const combinedRules = Array.from(new Set([...(user.familyRules || []), ...(partner.familyRules || [])]));
+    user.familyRules = combinedRules;
+    partner.familyRules = combinedRules;
+
+    // Sync children if one has them and the other doesn't
+    if ((!user.children || user.children.length === 0) && partner.children && partner.children.length > 0) {
+      user.children = partner.children;
+      user.activeChildId = partner.activeChildId;
+    } else if ((!partner.children || partner.children.length === 0) && user.children && user.children.length > 0) {
+      partner.children = user.children;
+      partner.activeChildId = user.activeChildId;
+    }
+
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(user._id, {
+        partnerId: user.partnerId,
+        partnerName: user.partnerName,
+        partnerPhotoUrl: user.partnerPhotoUrl,
+        familyRules: combinedRules,
+        children: user.children,
+        activeChildId: user.activeChildId,
+      });
+      await User.findByIdAndUpdate(partner._id, {
+        partnerId: partner.partnerId,
+        partnerName: partner.partnerName,
+        partnerPhotoUrl: partner.partnerPhotoUrl,
+        familyRules: combinedRules,
+        children: partner.children,
+        activeChildId: partner.activeChildId,
+      });
+    }
+
+    return {
+      success: true,
+      partner: {
+        id: partnerIdStr,
+        name: partner.name,
+        photoUrl: partner.photoUrl,
+      },
+      familyRules: combinedRules,
+      children: user.children,
+    };
+  }
+
+  static async disconnectPartner(userId: string) {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    const formerPartnerId = user.partnerId;
+    user.partnerId = undefined;
+    user.partnerName = undefined;
+    user.partnerPhotoUrl = undefined;
+
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(user._id, {
+        $unset: { partnerId: 1, partnerName: 1, partnerPhotoUrl: 1 },
+      });
+      if (formerPartnerId) {
+        await User.findByIdAndUpdate(formerPartnerId, {
+          $unset: { partnerId: 1, partnerName: 1, partnerPhotoUrl: 1 },
+        });
+      }
+    } else if (formerPartnerId) {
+      const formerPartner = Object.values(memoryUsers).find((u: any) => String(u._id) === String(formerPartnerId));
+      if (formerPartner) {
+        formerPartner.partnerId = undefined;
+        formerPartner.partnerName = undefined;
+        formerPartner.partnerPhotoUrl = undefined;
+      }
+    }
+
+    return { success: true };
+  }
+
+  static async updateFamilyRules(userId: string, rules: string[]) {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    user.familyRules = rules;
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(user._id, { familyRules: rules });
+      if (user.partnerId) {
+        await User.findByIdAndUpdate(user.partnerId, { familyRules: rules });
+      }
+    } else if (user.partnerId) {
+      const partner = Object.values(memoryUsers).find((u: any) => String(u._id) === String(user.partnerId));
+      if (partner) partner.familyRules = rules;
+    }
+
+    return { success: true, familyRules: rules };
+  }
+
+  static async updateUserChildren(userId: string, children: any[], activeChildId?: string) {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    user.children = children;
+    if (activeChildId) user.activeChildId = activeChildId;
+
+    if (isDbConnected()) {
+      const updateData: any = { children };
+      if (activeChildId) updateData.activeChildId = activeChildId;
+      await User.findByIdAndUpdate(user._id, updateData);
+
+      // Sync to partner if connected
+      if (user.partnerId) {
+        await User.findByIdAndUpdate(user.partnerId, updateData);
+      }
+    } else if (user.partnerId) {
+      const partner = Object.values(memoryUsers).find((u: any) => String(u._id) === String(user.partnerId));
+      if (partner) {
+        partner.children = children;
+        if (activeChildId) partner.activeChildId = activeChildId;
+      }
+    }
+
+    return { success: true, children, activeChildId: user.activeChildId };
+  }
+
+  static async getFamilyData(userId: string) {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    return {
+      partner: user.partnerId
+        ? {
+            id: user.partnerId,
+            name: user.partnerName || 'Turmush o‘rtog‘i',
+            photoUrl: user.partnerPhotoUrl || '',
+          }
+        : null,
+      partnerInviteCode: user.partnerInviteCode || (await this.getOrCreatePartnerInviteCode(userId)),
+      familyRules: user.familyRules || [
+        'Uyqudan 1 soat oldin ekran taqiqlanadi',
+        'Har kuni birgalikda 10 daqiqa kitob o‘qish',
+        'Jazo o‘rniga mehr va tushuntirish beriladi',
+      ],
+      children: user.children || [],
+      activeChildId: user.activeChildId || user.children?.[0]?.id || '',
+    };
+  }
+
+  // ======================== GROWTH & REFERRALS ========================
+  static async getOrCreateReferralCode(userId: string): Promise<string> {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    if (user.referralCode) {
+      return user.referralCode;
+    }
+
+    const code = `FARZAND-${crypto.randomBytes(3).toString('hex').toUpperCase()}`;
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(user._id, { referralCode: code });
+    }
+    user.referralCode = code;
+    return code;
+  }
+
+  static async applyReferralCode(newUserId: string, rawCode: string) {
+    const cleanCode = rawCode.trim().toUpperCase();
+    const user: any = await this.getUserByIdOrTelegram(newUserId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    if (user.referredBy) {
+      throw new Error('Siz allaqachon taklif kodidan foydalangansiz');
+    }
+
+    let referrer: any = null;
+    if (isDbConnected()) {
+      referrer = await User.findOne({ referralCode: cleanCode });
+    } else {
+      referrer = Object.values(memoryUsers).find((u: any) => u.referralCode === cleanCode);
+    }
+
+    if (!referrer) {
+      throw new Error('Taklif kodi topilmadi. Kodni qayta tekshiring');
+    }
+
+    if (String(referrer._id) === String(user._id)) {
+      throw new Error('O‘zingizning taklif kodingizni ishlata olmaysiz');
+    }
+
+    const BONUS_DAYS = 7;
+    const BONUS_XP = 100;
+
+    // Helper to add days to subscription
+    const addDays = (currentExpires: any, days: number) => {
+      const base = currentExpires && new Date(currentExpires) > new Date() ? new Date(currentExpires) : new Date();
+      base.setDate(base.getDate() + days);
+      return base;
+    };
+
+    // Update Referrer
+    referrer.referralCount = (referrer.referralCount || 0) + 1;
+    referrer.referralBonusDays = (referrer.referralBonusDays || 0) + BONUS_DAYS;
+    referrer.xp = (referrer.xp || 0) + BONUS_XP;
+    referrer.isPremium = true;
+    referrer.subscriptionStatus = 'premium';
+    referrer.premiumExpiresAt = addDays(referrer.premiumExpiresAt, BONUS_DAYS);
+
+    // Update Referred User
+    user.referredBy = cleanCode;
+    user.referralBonusDays = (user.referralBonusDays || 0) + BONUS_DAYS;
+    user.xp = (user.xp || 0) + BONUS_XP;
+    user.isPremium = true;
+    user.subscriptionStatus = 'premium';
+    user.premiumExpiresAt = addDays(user.premiumExpiresAt, BONUS_DAYS);
+
+    if (isDbConnected()) {
+      await User.findByIdAndUpdate(referrer._id, {
+        referralCount: referrer.referralCount,
+        referralBonusDays: referrer.referralBonusDays,
+        xp: referrer.xp,
+        isPremium: true,
+        subscriptionStatus: 'premium',
+        premiumExpiresAt: referrer.premiumExpiresAt,
+      });
+
+      await User.findByIdAndUpdate(user._id, {
+        referredBy: user.referredBy,
+        referralBonusDays: user.referralBonusDays,
+        xp: user.xp,
+        isPremium: true,
+        subscriptionStatus: 'premium',
+        premiumExpiresAt: user.premiumExpiresAt,
+      });
+
+      const refDoc = new Referral({
+        referrerId: String(referrer._id),
+        referrerCode: cleanCode,
+        referredUserId: String(user._id),
+        referredUserName: user.name || 'Yangi ota-ona',
+        bonusDaysGranted: BONUS_DAYS,
+        xpGranted: BONUS_XP,
+        status: 'rewarded',
+      });
+      await refDoc.save();
+    } else {
+      memoryReferrals.push({
+        referrerId: String(referrer._id),
+        referrerCode: cleanCode,
+        referredUserId: String(user._id),
+        referredUserName: user.name || 'Yangi ota-ona',
+        bonusDaysGranted: BONUS_DAYS,
+        xpGranted: BONUS_XP,
+        status: 'rewarded',
+        createdAt: new Date(),
+      });
+    }
+
+    return {
+      success: true,
+      message: `Tabriklaymiz! Siz va do‘stingizga +${BONUS_DAYS} kunlik Premium va +${BONUS_XP} XP berildi!`,
+      bonusDays: BONUS_DAYS,
+      xp: BONUS_XP,
+      referrerName: referrer.name,
+    };
+  }
+
+  static async getReferralStats(userId: string) {
+    const user: any = await this.getUserByIdOrTelegram(userId);
+    if (!user) throw new Error('Foydalanuvchi topilmadi');
+
+    const referralCode = await this.getOrCreateReferralCode(userId);
+
+    let referrals: any[] = [];
+    if (isDbConnected()) {
+      referrals = await Referral.find({ referrerId: String(user._id) }).sort({ createdAt: -1 }).limit(50);
+    } else {
+      referrals = memoryReferrals.filter((r) => r.referrerId === String(user._id));
+    }
+
+    return {
+      referralCode,
+      referralCount: user.referralCount || referrals.length || 0,
+      referralBonusDays: user.referralBonusDays || 0,
+      referrals: referrals.map((r: any) => ({
+        id: r._id || r.referredUserId,
+        userName: r.referredUserName || 'Ota-ona',
+        bonusDays: r.bonusDaysGranted || 7,
+        xp: r.xpGranted || 100,
+        date: r.createdAt || new Date(),
+      })),
+    };
   }
 }
