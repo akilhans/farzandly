@@ -61,6 +61,7 @@ interface AuthContextType {
   redeemLoginTicket: (ticket: string) => Promise<AuthResult>;
   loginWithEmail: (email: string, password: string) => Promise<AuthResult>;
   registerWithEmail: (name: string, email: string, password: string) => Promise<AuthResult>;
+  loginAsAdmin: (username: string, password: string) => Promise<AuthResult>;
   logout: () => void;
   refreshUser: () => Promise<void>;
   /** Optimistic local update; the server response should follow via applyServerUser. */
@@ -262,6 +263,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return result;
   };
 
+  const loginAsAdmin = async (username: string, password: string) => {
+    setIsLoading(true);
+    const result = acceptAuthResponse(await accountApi.loginAdmin(username.trim(), password));
+    setIsLoading(false);
+    return result;
+  };
+
   const logout = () => dropSession(false);
 
   const updateUserProfile = (updates: Partial<TelegramUser>) => {
@@ -379,6 +387,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         redeemLoginTicket,
         loginWithEmail,
         registerWithEmail,
+        loginAsAdmin,
         logout,
         refreshUser,
         updateUserProgress,

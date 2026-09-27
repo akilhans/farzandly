@@ -61,6 +61,7 @@ export const accountApi = {
   exchangeOidcCode: (code: string) => post('/auth/telegram/exchange', { code }),
   loginEmail: (email: string, password: string) => post('/auth/email/login', { email, password }),
   registerEmail: (name: string, email: string, password: string) => post('/auth/email/register', { name, email, password }),
+  loginAdmin: (username: string, password: string) => post('/auth/admin-login', { username, password }),
   me: () => call('/auth/me'),
 
   // --- account ---

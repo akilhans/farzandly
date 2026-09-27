@@ -18,21 +18,53 @@ function readBearer(req: Request): string | null {
   return header.slice(7).trim() || null;
 }
 
+export const ENV_ADMIN_ID = 'env-admin';
+
+/** The env-credential admin isn't a DB user — this stub fills the shape the rest of the app expects. */
+export function buildEnvAdminUser() {
+  return {
+    _id: ENV_ADMIN_ID,
+    name: 'Admin',
+    role: 'admin' as const,
+    authProvider: 'admin',
+    childAgeGroup: '3-5',
+    selectedInterests: [] as string[],
+    dailyGoalMinutes: 10,
+    xp: 0,
+    streak: 0,
+    level: 'Admin',
+    completedLessons: [] as string[],
+    achievements: [] as string[],
+    subscriptionStatus: 'free',
+    isPremium: false,
+  };
+}
+
 /**
  * Resolves the signed session token (if any) into req.user. Never rejects — routes that
  * need a user use requireAuth. Legacy unsigned tokens simply resolve to no user.
  */
 export async function attachUser(req: Request, res: Response, next: NextFunction) {
-  const payload = verifyToken(readBearer(req), 'session');
-  if (!payload?.uid) return next();
-  try {
-    const user = await DataService.getUserById(payload.uid);
-    if (user) {
-      req.user = user;
-      req.userId = String(user._id);
+  const bearer = readBearer(req);
+
+  const sessionPayload = verifyToken(bearer, 'session');
+  if (sessionPayload?.uid) {
+    try {
+      const user = await DataService.getUserById(sessionPayload.uid);
+      if (user) {
+        req.user = user;
+        req.userId = String(user._id);
+      }
+    } catch {
+      // treat as anonymous
     }
-  } catch {
-    // treat as anonymous
+    return next();
+  }
+
+  const adminPayload = verifyToken(bearer, 'admin');
+  if (adminPayload) {
+    req.user = buildEnvAdminUser();
+    req.userId = ENV_ADMIN_ID;
   }
   next();
 }

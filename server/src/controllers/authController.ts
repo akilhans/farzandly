@@ -8,11 +8,14 @@ import {
   hashPassword,
   verifyPassword,
   signSessionToken,
+  signAdminToken,
   verifyToken,
   verifyTelegramWidget,
   verifyTelegramInitData,
+  verifyAdminCredentials,
 } from '../lib/security.js';
 import { toPublicUser } from '../lib/premium.js';
+import { buildEnvAdminUser } from '../middleware/auth.js';
 import { z } from 'zod';
 
 function session(user: any) {
@@ -324,5 +327,26 @@ export class AuthController {
   /** Tokens are stateless; the client drops its copy. */
   static async logout(req: Request, res: Response) {
     res.json({ success: true, message: 'Muvaffaqiyatli chiqildi' });
+  }
+
+  /**
+   * POST /api/auth/admin-login — standalone username/password gate for the admin panel,
+   * checked against ADMIN_USERNAME / ADMIN_PASSWORD (not a DB account).
+   */
+  static async adminLogin(req: Request, res: Response) {
+    const parsed = z
+      .object({ username: z.string().trim().min(1).max(100), password: z.string().min(1).max(200) })
+      .safeParse(req.body);
+    if (!parsed.success) return res.status(400).json({ success: false, message: 'Login va parolni kiriting' });
+
+    if (!verifyAdminCredentials(parsed.data.username, parsed.data.password)) {
+      return res.status(401).json({ success: false, message: 'Login yoki parol noto‘g‘ri' });
+    }
+
+    res.json({
+      success: true,
+      message: 'Xush kelibsiz, admin!',
+      data: { token: signAdminToken(), user: toPublicUser(buildEnvAdminUser()) },
+    });
   }
 }

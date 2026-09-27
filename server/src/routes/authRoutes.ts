@@ -6,6 +6,7 @@ export const authRouter = Router();
 
 const loginLimiter = rateLimit({ windowMs: 15 * 60_000, max: 20 });
 const pollLimiter = rateLimit({ windowMs: 60_000, max: 90 });
+const adminLoginLimiter = rateLimit({ windowMs: 15 * 60_000, max: 8 });
 
 // Telegram bot deep-link login (/start <sessionId>)
 authRouter.post('/telegram/session', loginLimiter, AuthController.createBotSession);
@@ -32,5 +33,8 @@ authRouter.post('/email/login', loginLimiter, AuthController.emailLogin);
 
 authRouter.get('/me', AuthController.getMe);
 authRouter.post('/logout', AuthController.logout);
+
+// Standalone admin panel login (username/password, not a DB user)
+authRouter.post('/admin-login', adminLoginLimiter, AuthController.adminLogin);
 
 export default authRouter;

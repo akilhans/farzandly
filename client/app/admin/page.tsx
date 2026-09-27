@@ -18,6 +18,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import AdminLoginForm from '@/components/AdminLoginForm';
 import { accountApi, PaymentRequest } from '@/lib/accountApi';
 import { formatSom } from '@/lib/payments';
 import UserAvatar from '@/components/UserAvatar';
@@ -110,14 +111,16 @@ function AdminContent() {
           </h1>
           <p className="text-sm text-slate-600">
             {!isAuthenticated
-              ? 'Admin sifatida belgilangan Telegram hisobingiz bilan kiring.'
+              ? 'Admin login va parolingiz bilan kiring.'
               : access === 'unavailable'
               ? 'Server yoki ma’lumotlar bazasi javob bermadi. Birozdan so‘ng qayta urinib ko‘ring.'
-              : 'Hisobingizda admin huquqi yo‘q. Telegram ID’ingizni serverdagi ADMIN_TELEGRAM_IDS ga qo‘shing.'}
+              : 'Hisobingizda admin huquqi yo‘q.'}
           </p>
-          {!isAuthenticated && (
-            <Link href="/kirish" className="btn-primary inline-flex text-sm px-5 py-3">
-              Tizimga kirish
+          {!isAuthenticated ? (
+            <AdminLoginForm onSuccess={() => setAccess('checking')} />
+          ) : (
+            <Link href="/kirish" className="btn-outline inline-flex text-sm px-5 py-3">
+              Boshqa hisob bilan kirish
             </Link>
           )}
         </div>

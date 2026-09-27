@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { InstagramPlayground } from '@/components/instagram/InstagramPlayground';
+import AdminGate from '@/components/AdminGate';
 
 export const metadata: Metadata = {
   title: 'Instagram Post Card Studio & Generator | Farzandly',
@@ -12,5 +13,9 @@ export const metadata: Metadata = {
 };
 
 export default function InstagramPage() {
-  return <InstagramPlayground />;
+  return (
+    <AdminGate>
+      <InstagramPlayground />
+    </AdminGate>
+  );
 }

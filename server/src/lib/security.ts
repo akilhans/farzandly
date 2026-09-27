@@ -46,7 +46,7 @@ function safeEqual(a: string, b: string): boolean {
   return ab.length === bb.length && crypto.timingSafeEqual(ab, bb);
 }
 
-export type TokenPurpose = 'session' | 'ticket';
+export type TokenPurpose = 'session' | 'ticket' | 'admin';
 
 export interface TokenPayload {
   uid?: string; // Mongo user _id (session tokens)
@@ -69,6 +69,27 @@ export function signSessionToken(userId: string): string {
 export function signLoginTicket(telegramId: string): string {
   const now = Math.floor(Date.now() / 1000);
   return signPayload({ tg: String(telegramId), pur: 'ticket', iat: now, exp: now + TICKET_TTL_SECONDS });
+}
+
+/** Session token for the standalone admin username/password login (not tied to a DB user). */
+export function signAdminToken(): string {
+  const now = Math.floor(Date.now() / 1000);
+  return signPayload({ pur: 'admin', iat: now, exp: now + SESSION_TTL_SECONDS });
+}
+
+/**
+ * Checks a username/password pair against ADMIN_USERNAME / ADMIN_PASSWORD env vars.
+ * Both sides are hashed to a fixed-length digest before comparing, so the check is
+ * constant-time regardless of input length and never short-circuits on a length mismatch.
+ */
+export function verifyAdminCredentials(username: string, password: string): boolean {
+  const envUser = process.env.ADMIN_USERNAME || '';
+  const envPass = process.env.ADMIN_PASSWORD || '';
+  if (!envUser || !envPass) return false;
+  const digest = (s: string) => crypto.createHmac('sha256', getAuthSecret()).update(s).digest();
+  const userOk = safeEqual(digest(username).toString('hex'), digest(envUser).toString('hex'));
+  const passOk = safeEqual(digest(password).toString('hex'), digest(envPass).toString('hex'));
+  return userOk && passOk;
 }
 
 export function verifyToken(token: string | undefined | null, purpose: TokenPurpose): TokenPayload | null {

@@ -101,6 +101,7 @@ export class DataService {
     let items;
     if (isDbConnected()) {
       items = await Category.find().sort({ displayOrder: 1 });
+      if (!items || items.length === 0) items = memoryCategories;
     } else {
       items = memoryCategories;
     }
@@ -112,6 +113,7 @@ export class DataService {
     let items;
     if (isDbConnected()) {
       items = await AgeGroup.find().sort({ displayOrder: 1 });
+      if (!items || items.length === 0) items = memoryAgeGroups;
     } else {
       items = memoryAgeGroups;
     }
@@ -122,7 +124,7 @@ export class DataService {
   static async getArticles(filters?: { categorySlug?: string; ageGroup?: string; search?: string; lang?: string }) {
     const lang = filters?.lang || 'uz';
     let results;
-    if (isDbConnected()) {
+    if (isDbConnected() && !(await this.isCollectionEmpty(Article))) {
       const query: Record<string, any> = { isPublished: true };
       if (filters?.categorySlug) query.categorySlug = filters.categorySlug;
       if (filters?.ageGroup) query.ageGroup = filters.ageGroup;
@@ -151,10 +153,11 @@ export class DataService {
   }
 
   static async getArticleBySlug(slug: string, lang: string = 'uz') {
-    let article;
+    let article = null;
     if (isDbConnected()) {
       article = await Article.findOne({ slug });
-    } else {
+    }
+    if (!article) {
       article = memoryArticles.find((a) => a.slug === slug) || null;
     }
     return article ? localizeEntity(article, lang) : null;
@@ -164,7 +167,7 @@ export class DataService {
   static async getCourses(filters?: { ageGroup?: string; categorySlug?: string; lang?: string }) {
     const lang = filters?.lang || 'uz';
     let results;
-    if (isDbConnected()) {
+    if (isDbConnected() && !(await this.isCollectionEmpty(Course))) {
       const query: Record<string, any> = {};
       if (filters?.ageGroup) query.ageGroup = filters.ageGroup;
       if (filters?.categorySlug) query.categorySlug = filters.categorySlug;
@@ -182,10 +185,11 @@ export class DataService {
   }
 
   static async getCourseBySlug(slug: string, lang: string = 'uz') {
-    let course;
+    let course = null;
     if (isDbConnected()) {
       course = await Course.findOne({ slug });
-    } else {
+    }
+    if (!course) {
       course = memoryCourses.find((c) => c.slug === slug) || null;
     }
     return course ? localizeEntity(course, lang) : null;
@@ -194,7 +198,7 @@ export class DataService {
   // Learning Paths
   static async getLearningPaths(ageGroup?: string, lang: string = 'uz') {
     let paths;
-    if (isDbConnected()) {
+    if (isDbConnected() && !(await this.isCollectionEmpty(LearningPath))) {
       const query = ageGroup ? { ageGroup } : {};
       paths = await LearningPath.find(query);
     } else {
@@ -204,10 +208,11 @@ export class DataService {
   }
 
   static async getLearningPathBySlug(slug: string, lang: string = 'uz') {
-    let path;
+    let path = null;
     if (isDbConnected()) {
       path = await LearningPath.findOne({ slug });
-    } else {
+    }
+    if (!path) {
       path = memoryLearningPaths.find((lp) => lp.slug === slug) || null;
     }
     return path ? localizeEntity(path, lang) : null;
@@ -217,7 +222,7 @@ export class DataService {
   static async getLessons(filters?: { courseSlug?: string; ageGroup?: string; lang?: string }) {
     const lang = filters?.lang || 'uz';
     let results;
-    if (isDbConnected()) {
+    if (isDbConnected() && !(await this.isCollectionEmpty(Lesson))) {
       const query: Record<string, any> = {};
       if (filters?.courseSlug) query.courseSlug = filters.courseSlug;
       if (filters?.ageGroup) query.ageGroup = filters.ageGroup;
@@ -244,7 +249,8 @@ export class DataService {
       if (!lesson) {
         lesson = await Lesson.findOne({ slug: idOrSlug });
       }
-    } else {
+    }
+    if (!lesson) {
       lesson = memoryLessons.find((l) => l.slug === idOrSlug) || null;
     }
     return lesson ? localizeEntity(lesson, lang) : null;
@@ -255,10 +261,20 @@ export class DataService {
     let items;
     if (isDbConnected()) {
       items = await Achievement.find().sort({ xpRequired: 1 });
+      if (!items || items.length === 0) items = memoryAchievements;
     } else {
       items = memoryAchievements;
     }
     return items.map((a: any) => localizeEntity(a, lang));
+  }
+
+  /** True when a Mongo collection backing a content model has zero documents (i.e. never seeded). */
+  private static async isCollectionEmpty(model: mongoose.Model<any>): Promise<boolean> {
+    try {
+      return (await model.estimatedDocumentCount()) === 0;
+    } catch {
+      return true;
+    }
   }
 
   // User Onboarding
@@ -518,7 +534,7 @@ export class DataService {
 
     let lessons: any[];
     let articles: any[];
-    if (isDbConnected()) {
+    if (isDbConnected() && !(await this.isCollectionEmpty(Lesson))) {
       lessons = await Lesson.find({ $or: [{ title: rx }, { summary: rx }] }).sort({ order: 1 }).limit(limit);
       articles = await Article.find({
         isPublished: true,
