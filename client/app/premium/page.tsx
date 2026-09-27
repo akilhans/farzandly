@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import PaymentModal from '@/components/PaymentModal';
 import { START_LESSON_HREF } from '@/lib/site';
-import { PAYMENT_CARD, PREMIUM_PRICE_UZS, formatCard, formatSom } from '@/lib/payments';
+import { DEFAULT_PAYMENT_CARD, PAYMENT_CARD, PREMIUM_PRICE_UZS, formatCard, formatSom } from '@/lib/payments';
 import { T } from '@/components/T';
 import { useI18n } from '@/context/LanguageContext';
 
@@ -28,7 +28,7 @@ export default function PremiumPage() {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const cardNumber = formatCard(PAYMENT_CARD);
+  const cardNumber = formatCard(PAYMENT_CARD || DEFAULT_PAYMENT_CARD);
 
   const handleCopyCard = () => {
     navigator.clipboard.writeText(cardNumber.replace(/\s+/g, ''));
