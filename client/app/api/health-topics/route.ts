@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { healthTopics } from '@/lib/healthData';
+import { lockHealthTopic } from '@/lib/premiumPreview';
 
 const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -29,6 +30,6 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({
     status: 'ok',
     count: filtered.length,
-    data: filtered,
+    data: filtered.map(lockHealthTopic),
   });
 }

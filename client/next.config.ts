@@ -2,7 +2,12 @@ import type { NextConfig } from "next";
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
-  { key: "X-Frame-Options", value: "SAMEORIGIN" },
+  // Telegram Web (web.telegram.org) opens the Mini App in an iframe; X-Frame-Options can't allow
+  // specific origins, so framing is controlled with CSP frame-ancestors instead.
+  {
+    key: "Content-Security-Policy",
+    value: "frame-ancestors 'self' https://web.telegram.org https://*.telegram.org",
+  },
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=()" },
 ];

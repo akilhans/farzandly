@@ -13,7 +13,11 @@ export async function POST(req: NextRequest) {
     // Respond 200 to Telegram regardless, otherwise it keeps retrying the same update
     const res = await fetch(`${API_BASE}/telegram/webhook`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        // Pass Telegram's secret through so the API can verify the update came from Telegram.
+        'X-Telegram-Bot-Api-Secret-Token': req.headers.get('x-telegram-bot-api-secret-token') || '',
+      },
       body: JSON.stringify(update),
       signal: AbortSignal.timeout(8000),
     });
@@ -25,5 +29,5 @@ export async function POST(req: NextRequest) {
 }
 
 export async function GET() {
-  return NextResponse.json({ brand: 'Farzandly', service: 'Telegram webhook proxy', target: `${API_BASE}/telegram/webhook` });
+  return NextResponse.json({ service: 'Telegram webhook proxy' });
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { healthTopics } from '@/lib/healthData';
+import { lockHealthTopic } from '@/lib/premiumPreview';
 
 const BACKEND_API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
 
@@ -14,7 +15,7 @@ export async function GET(
   try {
     const backendRes = await fetch(`${BACKEND_API}/health-topics/${slug}?lang=${lang}`, {
       cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', Authorization: req.headers.get('authorization') || '' },
     });
     if (backendRes.ok) {
       const data = await backendRes.json();
@@ -31,6 +32,6 @@ export async function GET(
 
   return NextResponse.json({
     status: 'ok',
-    data: topic,
+    data: lockHealthTopic(topic),
   });
 }
