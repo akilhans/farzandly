@@ -18,14 +18,31 @@ app.use(
 );
 
 /**
- * CORS allowlist. CLIENT_URL may hold several comma-separated origins.
- * Localhost is allowed outside production; *.vercel.app previews only when ALLOW_VERCEL_PREVIEWS=true.
+ * CORS allowlist. CLIENT_URL may hold several comma-separated origins, in addition to
+ * (never instead of) the production domain below — so a misconfigured/missing CLIENT_URL
+ * on the host can never silently lock the live site out of its own API.
  */
 const allowedOrigins = new Set(
-  (process.env.CLIENT_URL || 'https://farzandly.uz')
+  ['https://farzandly.uz', process.env.CLIENT_URL || '']
+    .join(',')
     .split(',')
-    .map((o) => o.trim().replace(/\/$/, ''))
+    .map((origin) => origin.trim())
     .filter(Boolean)
+    .flatMap((origin) => {
+      try {
+        const url = new URL(origin);
+        const canonicalOrigin = url.origin;
+        if (url.hostname === 'farzandly.uz') {
+          return [canonicalOrigin, `${url.protocol}//www.farzandly.uz`];
+        }
+        if (url.hostname === 'www.farzandly.uz') {
+          return [canonicalOrigin, `${url.protocol}//farzandly.uz`];
+        }
+        return [canonicalOrigin];
+      } catch {
+        return [origin.replace(/\/$/, '')];
+      }
+    })
 );
 const isProd = process.env.NODE_ENV === 'production';
 

@@ -403,8 +403,12 @@ export const api = {
     if (params?.category) query.set('category', params.category);
     if (params?.lang) query.set('lang', params.lang);
 
-    const data = await fetchFromApi<Course[]>(`/courses?${query.toString()}`);
-    if (data) return data.map((c) => localizeEntity(c, lang));
+    const endpoint = `/courses?${query.toString()}`;
+    const url = typeof window === 'undefined'
+      ? endpoint
+      : `${window.location.origin}/api${endpoint}`;
+    const data = await fetchFromApi<Course[]>(url);
+    if (data?.length) return data.map((c) => localizeEntity(c, lang));
 
     const { seedCourses } = await loadSeed();
     let res = seedCourses as unknown as Course[];
