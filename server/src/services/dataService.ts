@@ -887,6 +887,10 @@ export class DataService {
       throw new Error('O‘z profilingiz kodini ulashingiz mumkin emas');
     }
 
+    if (user.partnerId && String(user.partnerId) !== String(partner._id)) {
+      throw new Error('Sizda allaqachon ulangan turmush o‘rtog‘ingiz bor. Avval aloqani uzing');
+    }
+
     if (partner.partnerId && String(partner.partnerId) !== String(user._id)) {
       throw new Error('Bu taklif kodi egasi allaqachon boshqa oila a’zosiga ulangan');
     }
