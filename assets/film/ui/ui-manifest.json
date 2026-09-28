@@ -1,0 +1,230 @@
+[
+  {
+    "name": "header",
+    "route": "/",
+    "w": 1242,
+    "h": 198,
+    "css": {
+      "x": 0,
+      "y": 0,
+      "width": 414,
+      "height": 66
+    }
+  },
+  {
+    "name": "hero",
+    "route": "/",
+    "w": 1146,
+    "h": 1713,
+    "css": {
+      "x": 16,
+      "y": 98,
+      "width": 382,
+      "height": 571
+    }
+  },
+  {
+    "name": "cta-primary",
+    "route": "/",
+    "w": 1146,
+    "h": 168,
+    "css": {
+      "x": 16,
+      "y": 381,
+      "width": 382,
+      "height": 56
+    }
+  },
+  {
+    "name": "cta-secondary",
+    "route": "/",
+    "w": 1146,
+    "h": 174,
+    "css": {
+      "x": 16,
+      "y": 451,
+      "width": 382,
+      "height": 58
+    }
+  },
+  {
+    "name": "search",
+    "route": "/",
+    "w": 1146,
+    "h": 156,
+    "css": {
+      "x": 16,
+      "y": 533,
+      "width": 382,
+      "height": 52
+    }
+  },
+  {
+    "name": "today-card",
+    "route": "/",
+    "w": 1146,
+    "h": 1185,
+    "css": {
+      "x": 16,
+      "y": 501,
+      "width": 382,
+      "height": 395
+    }
+  },
+  {
+    "name": "today-btn",
+    "route": "/",
+    "w": 990,
+    "h": 156,
+    "css": {
+      "x": 42,
+      "y": 812,
+      "width": 330,
+      "height": 52
+    }
+  },
+  {
+    "name": "age-section",
+    "route": "/",
+    "w": 1242,
+    "h": 3698,
+    "css": {
+      "x": 0,
+      "y": -168,
+      "width": 414,
+      "height": 1232.5
+    }
+  },
+  {
+    "name": "age-0-2",
+    "route": "/",
+    "w": 1242,
+    "h": 21740,
+    "css": {
+      "x": 0,
+      "y": 0,
+      "width": 414,
+      "height": 7246.5
+    }
+  },
+  {
+    "name": "age-3-5",
+    "route": "/",
+    "w": 1242,
+    "h": 21740,
+    "css": {
+      "x": 0,
+      "y": 0,
+      "width": 414,
+      "height": 7246.5
+    }
+  },
+  {
+    "name": "age-6-9",
+    "route": "/",
+    "w": 1242,
+    "h": 21740,
+    "css": {
+      "x": 0,
+      "y": 0,
+      "width": 414,
+      "height": 7246.5
+    }
+  },
+  {
+    "name": "problem-1",
+    "route": "/",
+    "w": 1242,
+    "h": 4002,
+    "css": {
+      "x": 0,
+      "y": -219.5,
+      "width": 414,
+      "height": 1334
+    }
+  },
+  {
+    "name": "problem-2",
+    "route": "/",
+    "w": 1242,
+    "h": 4002,
+    "css": {
+      "x": 0,
+      "y": -219.5,
+      "width": 414,
+      "height": 1334
+    }
+  },
+  {
+    "name": "problem-3",
+    "route": "/",
+    "w": 1242,
+    "h": 4002,
+    "css": {
+      "x": 0,
+      "y": -219.5,
+      "width": 414,
+      "height": 1334
+    }
+  },
+  {
+    "name": "chips",
+    "route": "/ertaklar",
+    "w": 1242,
+    "h": 1102,
+    "css": {
+      "x": 0,
+      "y": 66,
+      "width": 414,
+      "height": 367.25
+    }
+  },
+  {
+    "name": "ertak-2",
+    "route": "/ertaklar",
+    "w": 1146,
+    "h": 7016,
+    "css": {
+      "x": 16,
+      "y": 0.25,
+      "width": 382,
+      "height": 2338.5
+    }
+  },
+  {
+    "name": "dars-card",
+    "route": "/darslar",
+    "w": 1146,
+    "h": 915,
+    "css": {
+      "x": 16,
+      "y": 591,
+      "width": 382,
+      "height": 305
+    }
+  },
+  {
+    "name": "dars-free",
+    "route": "/darslar",
+    "w": 1146,
+    "h": 915,
+    "css": {
+      "x": 16,
+      "y": 262,
+      "width": 382,
+      "height": 305
+    }
+  },
+  {
+    "name": "age-chips",
+    "route": "/darslar",
+    "w": 1146,
+    "h": 240,
+    "css": {
+      "x": 16,
+      "y": 126,
+      "width": 382,
+      "height": 80
+    }
+  }
+]

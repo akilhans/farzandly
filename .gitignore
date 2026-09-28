@@ -45,3 +45,20 @@ Thumbs.db
 # Python
 __pycache__/
 *.py[cod]
+
+# motion film: rendered frames and media are reproducible from film/render.mjs
+film/frames/
+film/node_modules/
+assets/film/*.mp4
+assets/film/*.wav
+
+# Agent tooling and workspace state
+.agents/
+.aider*
+.augment/
+.autohand/
+.mux/
+data/skills/
+skills-lock.json
+CLAUDE.md
+

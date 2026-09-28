@@ -1,0 +1,519 @@
+<!doctype html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<title>Farzandly film</title>
+<style>
+  @font-face{font-family:'Chubbo';src:url("../assets/film/fonts/chubbo-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+  @font-face{font-family:'Supreme';src:url("../assets/film/fonts/supreme-400.woff2") format("woff2");font-weight:400;font-style:normal;font-display:block}
+  @font-face{font-family:'Supreme';src:url("../assets/film/fonts/supreme-500.woff2") format("woff2");font-weight:500;font-style:normal;font-display:block}
+  @font-face{font-family:'Supreme';src:url("../assets/film/fonts/supreme-700.woff2") format("woff2");font-weight:700;font-style:normal;font-display:block}
+  html,body{margin:0;padding:0;background:#000;overflow:hidden}
+  canvas{display:block}
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script>
+/* =========================================================================
+   FARZANDLY — 20s showreel.  seek(t) paints frame t. Pure.
+   No transitions, no timers, no rAF, no state between frames.
+   Motion LANDS ON the beat (120 BPM, B=0.5s) and settles after it.
+   ========================================================================= */
+
+const P  = new URLSearchParams(location.search);
+const W  = +(P.get('w') || 1080);
+const H  = +(P.get('h') || 1920);
+const cv = document.getElementById('c');
+cv.width = W; cv.height = H; cv.style.width = W+'px'; cv.style.height = H+'px';
+const x = cv.getContext('2d', { alpha:false });
+x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+
+const FPS=30, DUR=20, BPM=120, B=60/BPM;
+
+const CREAM='#faf7f2', CHAR='#1e293b', EM='#059669', EMD='#047857',
+      WHITE='#ffffff', MUT='#64748b', INK='#0f1b2a', MINT='#d1fae5';
+
+const AR=W/H, MODE = AR<0.8 ? 'tall' : (AR<1.3 ? 'square' : 'wide');
+const TALL = MODE==='tall';
+const U = Math.min(W,H)/1080;
+
+const cl=(v,a=0,b=1)=>v<a?a:(v>b?b:v);
+const lerp=(a,b,p)=>a+(b-a)*p;
+const seg=(t,a,b)=>cl((t-a)/(b-a));
+const eo3=p=>1-Math.pow(1-p,3);
+const eo5=p=>1-Math.pow(1-p,5);
+const eio=p=>p<.5?4*p*p*p:1-Math.pow(-2*p+2,3)/2;
+const eob=(p,s=1.9)=>{const c=s+1;return 1+c*Math.pow(p-1,3)+s*Math.pow(p-1,2);};
+const mulberry32=a=>()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};
+
+/* arrive(): motion that COMPLETES exactly at `at`  */
+const arrive=(t,at,d=0.22)=>eo5(seg(t,at-d,at));
+/* settle(): 0 at the landing beat, 1 shortly after (for overshoot decay) */
+const settle=(t,at,d=0.20)=>eo3(seg(t,at,at+d));
+
+const NAMES=['header','hero','cta-primary','cta-secondary','search','today-card','today-btn',
+  'age-0-2','age-3-5','age-6-9','age-10-13','chips','ertak-1','ertak-2','ertak-3',
+  'dars-card','dars-free','logo'];
+const IMG={};
+async function boot(){
+  await Promise.all(NAMES.map(n=>new Promise(r=>{const i=new Image();i.onload=()=>{IMG[n]=i;r()};i.onerror=()=>r();i.src='../assets/film/ui/'+n+'.png';})));
+  await new Promise(r=>{const i=new Image();i.onload=()=>{IMG.homefull=i;r()};i.onerror=()=>r();i.src='../assets/film/phone-home-full.png';});
+  await document.fonts.load('700 100px Chubbo');
+  for(const w of [400,500,700]) await document.fonts.load(w+' 40px Supreme');
+  await document.fonts.ready;
+  window.__filmReady = true; seek(0);
+}
+
+const rr=(a,b,c,d,r)=>{x.beginPath();x.roundRect(a,b,c,d,r);};
+const fitH=(im,w)=>im?w*im.height/im.width:0;
+function fitFont(txt,maxW,weight,fam,start){let s=start;for(let i=0;i<70;i++){x.font=`${weight} ${s}px ${fam}`;if(x.measureText(txt).width<=maxW)break;s*=0.96;}return s;}
+
+function squiggle(px,py,pw,prog,amp,lw,col){
+  if(prog<=0)return;
+  x.save();x.strokeStyle=col||EM;x.lineWidth=lw;x.lineCap='round';x.lineJoin='round';x.beginPath();
+  const n=80,end=Math.max(2,Math.floor(n*prog));
+  for(let i=0;i<=end;i++){const p=i/n,xx=px+pw*p,yy=py+Math.sin(p*Math.PI*5.2)*amp;i?x.lineTo(xx,yy):x.moveTo(xx,yy);}
+  x.stroke();x.restore();
+}
+function cursor(cx,cy,s,press){
+  const pts=[[0,0],[0,17.2],[4.3,13.3],[7.1,19.7],[10.1,18.4],[7.4,12.1],[12.8,11.7]];
+  x.save();x.translate(cx,cy);const k=s*(press?0.88:1);x.scale(k,k);
+  x.beginPath();pts.forEach((p,i)=>i?x.lineTo(p[0],p[1]):x.moveTo(p[0],p[1]));x.closePath();
+  x.fillStyle=INK;x.strokeStyle=WHITE;x.lineWidth=2.6;x.lineJoin='round';x.stroke();x.fill();x.restore();
+}
+function clickRing(cx,cy,p){
+  if(p<=0||p>=1)return;
+  x.save();x.globalAlpha=(1-p)*0.85;x.strokeStyle=EM;x.lineWidth=7*U*(1-p*0.55);
+  x.beginPath();x.arc(cx,cy,16*U+62*U*eo3(p),0,Math.PI*2);x.stroke();x.restore();
+}
+/* press depth: the brand's 4px bottom border compressing */
+const pressAt=(t,at)=>cl((t-at)/0.08)*(1-cl((t-at-0.08)/0.20));
+
+/* ---- layout ---- */
+function stage(){
+  if(TALL) return {sx:W*0.07,sy:H*0.255,sw:W*0.86,sh:H*0.625,
+                   capX:W*0.07,capY:H*0.150,capW:W*0.86};
+  if(MODE==='square') return {sx:W*0.455,sy:H*0.055,sw:W*0.49,sh:H*0.89,
+                              capX:W*0.055,capY:H*0.36,capW:W*0.37};
+  return {sx:W*0.515,sy:H*0.06,sw:W*0.34,sh:H*0.88,
+          capX:W*0.07,capY:H*0.40,capW:W*0.36};
+}
+function phoneBox(){
+  if(TALL){const pw=W*0.64,ph=pw/0.5135;return{px:(W-pw)/2,py:H*0.245,pw,ph};}
+  const ph=H*0.86,pw=ph*0.5135;return{px:(MODE==='square'?W*0.70:W*0.68)-pw/2,py:H*0.07,pw,ph};
+}
+function phone(px,py,pw,ph,inner){
+  const rad=46*U;
+  x.save();
+  x.fillStyle='#dde5ed'; rr(px,py+11*U,pw,ph,rad); x.fill();
+  x.fillStyle=WHITE;     rr(px,py,pw,ph,rad); x.fill();
+  x.save(); rr(px+7*U,py+7*U,pw-14*U,ph-14*U,rad-7*U); x.clip();
+  x.fillStyle=CREAM; x.fillRect(px,py,pw,ph);
+  inner(px+7*U,py+7*U,pw-14*U,ph-14*U);
+  x.restore(); x.restore();
+}
+
+/* caption lands ON its beat, then settles */
+function caption(head,sub,at,t,squig){
+  const L=stage(), s=fitFont(head,L.capW,700,'Chubbo',92*U);
+  const st=settle(t,at,0.22);
+  x.save();
+  x.font=`700 ${s}px Chubbo`; x.fillStyle=CHAR;
+  x.translate(L.capX, L.capY + lerp(-13*U,0,st));
+  const sc=lerp(1.05,1,st); x.scale(sc,sc);
+  x.fillText(head,0,0);
+  const hw=x.measureText(head).width;
+  x.restore();
+  if(squig) squiggle(L.capX, L.capY+s*0.30, hw*0.60, seg(t,at+0.10,at+0.40), 7*U, 9*U);
+  const ss=fitFont(sub,L.capW,500,'Supreme',36*U);
+  const p2=arrive(t,at+0.16,0.22);
+  x.save();
+  x.beginPath();x.rect(L.capX-8*U,L.capY+s*0.28,L.capW*p2+10*U,ss*3);x.clip();
+  x.font=`500 ${ss}px Supreme`;x.fillStyle=MUT;
+  x.fillText(sub,L.capX,L.capY+s*0.78);
+  x.restore();
+}
+
+/* ========================= 1 — HOOK  (0.00-3.50) ========================= */
+/* real site copy: "Bola gapga quloq solmasa" + NEGA?  — 5 words            */
+const HOOK=[
+  {w:'BOLA',   at:0.00, ax:0.07, ay:0.335, dir:1},
+  {w:'GAPGA',  at:0.50, ax:0.93, ay:0.565, dir:-1},
+  {w:'QULOQ',  at:1.00, ax:0.07, ay:0.405, dir:1},
+  {w:'SOLMASA',at:1.50, ax:0.06, ay:0.620, dir:1},
+];
+function sc1(t){
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  if(t<2.00){
+    const it=[...HOOK].reverse().find(h=>t>=h.at)||HOOK[0];
+    const st=settle(t,it.at,0.17);
+    const s=fitFont(it.w,W*0.88,700,'Chubbo',300*U);
+    x.font=`700 ${s}px Chubbo`;
+    const tw=x.measureText(it.w).width;
+    const bx=TALL ? (it.dir>0 ? W*it.ax : W*it.ax-tw) : W*0.5-tw/2;
+    const by=H*it.ay;
+    x.save();
+    x.translate(bx+tw/2,by);
+    const sc=lerp(1.09,1,st); x.scale(sc,sc);
+    x.translate(lerp(it.dir*26*U,0,st),0);
+    x.fillStyle=CHAR; x.textAlign='center'; x.fillText(it.w,0,0); x.textAlign='left';
+    x.restore();
+    if(it.w==='SOLMASA') squiggle(bx,by+s*0.26,tw,seg(t,it.at+0.10,it.at+0.42),11*U,13*U);
+  } else {
+    // the question lands WITH the stack on 2.0 - no empty beat
+    const stk=settle(t,2.00,0.26);
+    const push=1+seg(t,3.05,3.50)*0.18;
+    x.save();
+    x.translate(W/2,H*0.5); x.scale(push,push); x.translate(-W/2,-H*0.5);
+    const ss=(TALL?86:62)*U; x.font=`700 ${ss}px Chubbo`; x.fillStyle=CHAR;
+    if(!TALL) x.textAlign='center';
+    ['BOLA','GAPGA','QULOQ','SOLMASA'].forEach((w,i)=>{
+      const yy=H*(TALL?0.175:0.150)+i*ss*1.08;
+      x.save(); x.translate(TALL?W*0.07:W*0.5, yy+lerp(22*U*(i+1),0,stk)); x.fillText(w,0,0); x.restore();
+    });
+    x.textAlign='left';
+    const st=settle(t,2.00,0.24);
+    const qs=fitFont('NEGA?',W*0.86,700,'Chubbo',300*U);
+    x.font=`700 ${qs}px Chubbo`;
+    const qw=x.measureText('NEGA?').width;
+    const qcx = TALL ? W*0.07+qw/2 : W*0.5;
+    const qcy = H*(TALL?0.715:0.760);
+    x.save();
+    x.translate(qcx, qcy);
+    const sc=lerp(1.16,1,st); x.scale(sc,sc);
+    x.fillStyle=EM; x.textAlign='center'; x.fillText('NEGA?',0,0); x.textAlign='left';
+    x.restore();
+    squiggle(qcx-qw/2, qcy+qs*0.24, qw, seg(t,2.50,2.86), 12*U, 14*U);
+    x.restore();
+  }
+}
+
+/* ====================== 2 — PRODUCT ASSEMBLES (3.50-7.00) ================ */
+const PIECES=[
+  ['header',       3.50,'top'],
+  ['hero',         3.50,'clip'],   // product APPEARS fully formed on the beat
+  ['cta-primary',  3.75,'up'],
+  ['cta-secondary',4.00,'up'],
+  ['search',       4.25,'left'],
+  ['today-card',   4.50,'right'],
+];
+function sc2(t){
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  const Ph=phoneBox();
+  // real logo above the device
+  const lp=settle(t,3.50,0.26);
+  if(IMG.logo){
+    const lw=TALL?W*0.36:W*0.24, lh=fitH(IMG.logo,lw);
+    const sc=lerp(1.08,1,lp);
+    x.save(); x.translate(TALL?W/2:stage().capX+lw/2, H*(TALL?0.155:0.22));
+    x.scale(sc,sc); x.drawImage(IMG.logo,-lw/2,-lh/2,lw,lh); x.restore();
+  }
+  // slow push-in after assembly
+  const push = 1 + seg(t,5.00,7.00)*0.085;
+  x.save();
+  x.translate(Ph.px+Ph.pw/2, Ph.py+Ph.ph*0.42); x.scale(push,push);
+  x.translate(-(Ph.px+Ph.pw/2), -(Ph.py+Ph.ph*0.42));
+  phone(Ph.px,Ph.py,Ph.pw,Ph.ph,(ix,iy,iw,ih)=>{
+    if(t>=5.00 && IMG.homefull){
+      const sp=seg(t,5.00,7.00);
+      const dh=fitH(IMG.homefull,iw);
+      x.drawImage(IMG.homefull, ix, iy-eio(sp)*(dh-ih)*0.46, iw, dh);
+      return;
+    }
+    let cy=iy;
+    for(const [name,at,how] of PIECES){
+      const im=IMG[name]; if(!im) continue;
+      const w0=name==='header'?iw:iw*0.94, h0=fitH(im,w0), dx0=ix+(iw-w0)/2;
+      if(t<at-0.22){ break; }
+      const p=arrive(t,at,0.22);
+      x.save();
+      if(how==='top')      x.drawImage(im,dx0,cy-lerp(h0,0,p),w0,h0);
+      else if(how==='clip'){x.beginPath();x.rect(dx0,cy,w0,h0*p);x.clip();x.drawImage(im,dx0,cy,w0,h0);}
+      else if(how==='up'){ x.beginPath();x.rect(ix,cy-5*U,iw,h0+10*U);x.clip();x.drawImage(im,dx0,cy+lerp(h0*0.85,0,p),w0,h0);}
+      else if(how==='left') x.drawImage(im,dx0-lerp(iw*1.1,0,p),cy,w0,h0);
+      else                  x.drawImage(im,dx0+lerp(iw*1.1,0,p),cy,w0,h0);
+      x.restore();
+      cy+=h0+(name==='header'?12*U:16*U);
+      if(cy>iy+ih) break;
+    }
+  });
+  x.restore();
+}
+
+/* ======================= 3a — CHOOSE THE AGE (7.00-9.50) ================= */
+function sc3a(t){
+  const T0=7.00, CLICK=8.00;
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  caption("Yoshni tanlang","Har bir yosh uchun alohida yo'l",T0,t,true);
+  const L=stage();
+  let hit=null;
+  x.save(); x.beginPath(); x.rect(L.sx-20*U,L.sy-20*U,L.sw+40*U,L.sh+40*U); x.clip();
+  const cards=['age-0-2','age-3-5','age-6-9'];
+  let cy=L.sy;
+  cards.forEach((n,i)=>{
+    const im=IMG[n]; if(!im) return;
+    const ch=fitH(im,L.sw);
+    const at=T0+i*0.14;
+    const p=i===0?1:arrive(t,at,0.24);
+    const st=settle(t,at,0.20);
+    const sel=(n==='age-3-5');
+    const pr=sel?pressAt(t,CLICK):0;
+    const out=sel?0:seg(t,CLICK+0.22,CLICK+0.58);
+    const rise=sel?seg(t,CLICK+0.22,CLICK+0.66):0;
+    const yy=cy - rise*(cy-L.sy) + pr*9*U + lerp(50*U,0,p);
+    const xx=L.sx + out*W*1.15*(i===0?-1:1);
+    x.save();
+    const sc=sel?lerp(1.0,1.0,st):1;
+    x.drawImage(im,xx,yy,L.sw,ch);
+    if(sel){
+      if(t>=CLICK){ x.strokeStyle=EM; x.lineWidth=7*U; rr(xx+4*U,yy+4*U,L.sw-8*U,ch-8*U,24*U); x.stroke(); }
+      hit={cx:xx+L.sw*0.5, cy:yy+ch*0.5};
+    }
+    x.restore();
+    cy+=ch+18*U;
+  });
+  // the real free-lessons card arrives under the choice
+  const lp=arrive(t,CLICK+0.75,0.26);
+  if(lp>0 && IMG['dars-free']){
+    const im=IMG['dars-free'], dh=fitH(im,L.sw);
+    const selH=fitH(IMG['age-3-5'],L.sw);
+    x.drawImage(im, L.sx, L.sy+selH+22*U+lerp(L.sh*0.5,0,lp), L.sw, dh);
+  }
+  x.restore();
+  const tx=hit?hit.cx:L.sx+L.sw/2, ty=hit?hit.cy:L.sy+L.sh/2;
+  const mp=eio(seg(t,T0+0.30,CLICK));
+  const cxp=lerp(L.sx+L.sw*1.22,tx,mp), cyp=lerp(L.sy+L.sh*1.05,ty,mp);
+  if(t<CLICK+0.80){ clickRing(cxp,cyp,seg(t,CLICK,CLICK+0.42)); cursor(cxp,cyp,4.0*U,t>=CLICK&&t<CLICK+0.11); }
+}
+
+/* ==================== 3b — THE 5 MINUTE LESSON (9.50-12.00) ============== */
+function sc3b(t){
+  const T0=9.50, CLICK=10.50;
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  caption("Bugun atigi 5 daqiqa","Bir dars — bir kunlik odat",T0,t,false);
+  const L=stage();
+  let btn=null;
+  x.save(); x.beginPath(); x.rect(L.sx-20*U,L.sy-24*U,L.sw+40*U,L.sh+48*U); x.clip();
+  // the finished lesson slides out as one block, then the next one arrives
+  const EXIT=eo5(seg(t,11.05,11.45))*W*1.30;
+  const im=IMG['today-card'];
+  let footY=L.sy;
+  if(im){
+    const ch=fitH(im,L.sw);
+    const st=settle(t,T0,0.24);
+    const lift=seg(t,CLICK+0.20,CLICK+0.70);
+    const yy=L.sy+lerp(22*U,0,st)-lift*L.sh*0.06;
+    x.save(); const sc=lerp(1.04,1,st);
+    x.translate(L.sx+L.sw/2,yy+ch/2); x.scale(sc,sc); x.translate(-(L.sx+L.sw/2),-(yy+ch/2));
+    x.drawImage(im,L.sx-EXIT,yy,L.sw,ch); x.restore();
+    footY=yy+ch;
+  }
+  const bIm=IMG['today-btn'];
+  if(bIm){
+    const bw=L.sw*0.90, bh=fitH(bIm,bw), bx=L.sx+(L.sw-bw)/2-EXIT;
+    const p=arrive(t,T0+0.50,0.24);
+    const pr=pressAt(t,CLICK);
+    const by=footY+20*U+pr*8*U+lerp(40*U,0,p);
+    if(p>0){
+      x.save(); x.beginPath(); x.rect(bx-8*U,by-8*U,bw+16*U,bh+26*U); x.clip();
+      x.fillStyle=EMD; rr(bx,by+9*U-pr*8*U,bw,bh,20*U); x.fill();
+      x.drawImage(bIm,bx,by,bw,bh); x.restore();
+    }
+    btn={cx:bx+bw*0.5,cy:by+bh*0.5};
+    const xp=seg(t,CLICK+0.05,CLICK+0.95);
+    if(xp>0&&xp<1){
+      const s2=40*U;
+      x.save();
+      x.globalAlpha=1-eo3(cl((xp-0.6)/0.4));
+      x.translate(bx+bw*0.5, by-eo3(xp)*L.sh*0.34);
+      x.font=`700 ${s2}px Supreme`; x.textAlign='center';
+      const lab='+10 XP', tw=x.measureText(lab).width;
+      x.fillStyle=EM; rr(-tw/2-22*U,-s2*0.95,tw+44*U,s2*1.6,s2); x.fill();
+      x.fillStyle=WHITE; x.fillText(lab,0,s2*0.24); x.textAlign='left'; x.restore();
+    }
+  }
+  // the next lesson takes its place — keeps the hold alive
+  const np=arrive(t,11.50,0.30);
+  if(np>0&&IMG['dars-card']){
+    const dIm=IMG['dars-card'], dh=fitH(dIm,L.sw);
+    x.drawImage(dIm, L.sx+lerp(W*1.25,0,np), L.sy+L.sh*0.16, L.sw, dh);
+  }
+  x.restore();
+  const tx=btn?btn.cx:L.sx+L.sw/2, ty=btn?btn.cy:L.sy+L.sh/2;
+  const mp=eio(seg(t,T0+0.36,CLICK));
+  const cxp=lerp(L.sx-L.sw*0.28,tx,mp), cyp=lerp(L.sy+L.sh*1.08,ty,mp);
+  if(t<CLICK+0.85){ clickRing(cxp,cyp,seg(t,CLICK,CLICK+0.42)); cursor(cxp,cyp,4.0*U,t>=CLICK&&t<CLICK+0.11); }
+}
+
+/* ===================== 3c — BOLALAR OLAMI (12.00-14.50) ================== */
+function sc3c(t){
+  const T0=12.00, CLICK=12.50;
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  caption("Bolalar olami","Ertaklar · She'rlar · Topishmoqlar",T0,t,false);
+  const L=stage();
+  let chip=null;
+  x.save(); x.beginPath(); x.rect(L.sx-20*U,L.sy-20*U,L.sw+40*U,L.sh+40*U); x.clip();
+  const im=IMG.chips;
+  if(im){
+    const ch=fitH(im,L.sw);
+    const st=settle(t,T0,0.24);
+    const away=seg(t,CLICK+0.14,CLICK+0.62);
+    const yy=L.sy+lerp(20*U,0,st)-away*(ch+40*U);
+    x.save(); const sc=lerp(1.04,1,st);
+    x.translate(L.sx+L.sw/2,yy+ch/2);x.scale(sc,sc);x.translate(-(L.sx+L.sw/2),-(yy+ch/2));
+    x.drawImage(im,L.sx,yy,L.sw,ch); x.restore();
+    chip={cx:L.sx+L.sw*0.295, cy:yy+ch*0.795};
+  }
+  // real tales cascade in after the tap
+  ['ertak-1','ertak-2','ertak-3'].forEach((n,i)=>{
+    const tim=IMG[n]; if(!tim) return;
+    const th=fitH(tim,L.sw);
+    const at=CLICK+0.32+i*0.25;
+    const p=arrive(t,at,0.26);
+    if(p<=0) return;
+    const drift=seg(t,13.60,14.50)*(th*0.34);
+    x.drawImage(tim,L.sx,L.sy+i*(th+18*U)-drift+lerp(L.sh*0.62,0,p),L.sw,th);
+  });
+  x.restore();
+  const tx=chip?chip.cx:L.sx+L.sw/2, ty=chip?chip.cy:L.sy+L.sh/2;
+  const mp=eio(seg(t,T0+0.10,CLICK));
+  const cxp=lerp(L.sx+L.sw*1.24,tx,mp), cyp=lerp(L.sy+L.sh*0.98,ty,mp);
+  if(t<CLICK+0.75){ clickRing(cxp,cyp,seg(t,CLICK,CLICK+0.40)); cursor(cxp,cyp,4.0*U,t>=CLICK&&t<CLICK+0.11); }
+}
+
+/* ======================= 4 — THE NUMBER (14.50-17.25) =================== */
+function sc4(t){
+  const T0=14.50;
+  x.fillStyle=EM; x.fillRect(0,0,W,H);
+  const cyy = TALL?H*0.385:H*0.40;
+  const drift = 1 + seg(t,16.20,17.50)*0.055;
+  x.save(); x.translate(W/2,cyy); x.scale(drift,drift); x.translate(-W/2,-cyy);
+  // "69" slams at full value on the beat — digits land a 16th apart
+  const s=fitFont('69',W*0.60,700,'Chubbo',560*U);
+  x.font=`700 ${s}px Chubbo`;
+  const digits=['6','9'];
+  const wTot=x.measureText('69').width;
+  let dx0=W/2-wTot/2;
+  digits.forEach((d,i)=>{
+    const at=T0;                      // both digits present ON the beat
+    const st=settle(t,at,0.24+i*0.08); // staggered settle, not staggered entry
+    if(t<at) return;
+    const dw=x.measureText(d).width;
+    x.save();
+    x.translate(dx0+dw/2, cyy+lerp(26*U,0,st));
+    const sc=lerp(1.18,1,st); x.scale(sc,sc);
+    x.fillStyle=CREAM; x.textAlign='center'; x.fillText(d,0,0); x.textAlign='left';
+    x.restore();
+    dx0+=dw;
+  });
+  const lp=arrive(t,T0+0.50,0.22);
+  if(lp>0){
+    const ls=58*U; x.font=`700 ${ls}px Chubbo`;
+    x.save(); x.beginPath(); x.rect(0,cyy+14*U,W*lp,ls*2.2); x.clip();
+    x.fillStyle=CREAM; x.textAlign='center'; x.fillText('ta dars',W/2,cyy+ls*1.45); x.textAlign='left';
+    x.restore();
+  }
+  // real free-tier claim
+  const sp=arrive(t,T0+1.00,0.26);
+  if(sp>0){
+    const bh=126*U, by=cyy+200*U, bw=W*0.84*sp;
+    x.save();
+    x.fillStyle=WHITE; rr(W/2-bw/2,by,bw,bh,24*U); x.fill();
+    x.beginPath(); x.rect(W/2-bw/2,by,bw,bh); x.clip();
+    const fs=fitFont('1–10-darslar · 100% BEPUL',W*0.74,700,'Supreme',46*U);
+    x.font=`700 ${fs}px Supreme`; x.fillStyle=CHAR; x.textAlign='center';
+    x.fillText('1–10-darslar · 100% BEPUL',W/2,by+bh*0.63); x.textAlign='left';
+    x.restore();
+  }
+  const kp=arrive(t,T0+1.50,0.24);
+  if(kp>0){
+    const ks=42*U; x.font=`500 ${ks}px Supreme`;
+    x.save(); x.beginPath(); x.rect(0,cyy+360*U,W*kp,ks*2); x.clip();
+    x.fillStyle=MINT; x.textAlign='center'; x.fillText('kuniga atigi 5 daqiqa',W/2,cyy+360*U+ks); x.textAlign='left';
+    x.restore();
+  }
+  // one more real number set, so the last beats of the hold still move
+  const rp=arrive(t,T0+2.00,0.26);
+  if(rp>0){
+    const rs=38*U; x.font=`500 ${rs}px Supreme`;
+    const line="15 ta ertak · 46 ta she'r · 89 ta maqol";
+    x.save(); x.beginPath(); x.rect(0,cyy+424*U,W*rp,rs*2.2); x.clip();
+    x.fillStyle=MINT; x.textAlign='center'; x.fillText(line,W/2,cyy+424*U+rs); x.textAlign='left';
+    x.restore();
+  }
+  x.restore();
+}
+
+/* ======================= 5 — LOCKUP + CTA (17.25-20.00) ================== */
+function sc5(t){
+  const T0=17.50, PRESS=18.50;
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  const cyy=TALL?H*0.405:H*0.40;
+  if(IMG.logo){
+    const st=settle(t,T0,0.26);
+    const lw=TALL?W*0.60:(MODE==='square'?W*0.44:W*0.34), lh=fitH(IMG.logo,lw);
+    const sc=lerp(1.10,1,st);
+    x.save(); x.translate(W/2,cyy+lerp(-14*U,0,st)); x.scale(sc,sc);
+    x.drawImage(IMG.logo,-lw/2,-lh/2,lw,lh); x.restore();
+  }
+  const sqw=TALL?W*0.38:(MODE==='square'?W*0.28:W*0.22);
+  squiggle(W/2-sqw/2, cyy+92*U, sqw, seg(t,T0+0.22,T0+0.55), 8*U, 10*U);
+  let btn=null;
+  if(IMG['cta-primary']){
+    const bw=TALL?W*0.78:(MODE==='square'?W*0.52:W*0.40), bh=fitH(IMG['cta-primary'],bw);
+    const by=cyy+186*U;
+    const p=arrive(t,T0+0.25,0.26);
+    const pr=pressAt(t,PRESS);
+    if(p>0){
+      x.save();
+      x.translate(W/2,by+bh/2+pr*8*U);
+      const sc=lerp(1.06,1,p); x.scale(sc,sc);
+      x.fillStyle=EMD; rr(-bw/2,-bh/2+9*U-pr*8*U,bw,bh,20*U); x.fill();
+      x.drawImage(IMG['cta-primary'],-bw/2,-bh/2,bw,bh);
+      x.restore();
+    }
+    btn={cx:W/2+bw*0.30, cy:by+bh*0.52};
+  }
+  if(btn && t>=PRESS-0.55 && t<PRESS+0.55){
+    const mp=eio(seg(t,PRESS-0.55,PRESS));
+    clickRing(btn.cx,btn.cy,seg(t,PRESS,PRESS+0.42));
+    cursor(lerp(W*0.95,btn.cx,mp), lerp(H*1.02,btn.cy,mp), 4.0*U, t>=PRESS&&t<PRESS+0.11);
+  }
+  // end plate: an emerald band carries the domain up on the last bar
+  const fp=arrive(t,19.00,0.34);
+  if(fp>0){
+    const bandH=H*0.155, by=H-bandH*eo5(fp);
+    x.fillStyle=EM; x.fillRect(0,by,W,H-by);
+    const ds=54*U; x.font=`700 ${ds}px Supreme`;
+    x.fillStyle=CREAM; x.textAlign='center';
+    x.fillText('farzandly.uz', W/2, by+bandH*0.46+ds*0.34);
+    x.textAlign='left';
+    squiggle(W/2-W*0.13, by+bandH*0.74, W*0.26, seg(t,19.25,19.65), 6*U, 8*U, CREAM);
+  }
+}
+
+const SCENES=[
+  [0.00, 3.50, sc1, 'Hook — BOLA GAPGA QULOQ SOLMASA'],
+  [3.50, 7.00, sc2, 'Product assembles'],
+  [7.00, 9.50, sc3a,'F1 — yoshni tanlang'],
+  [9.50,12.00, sc3b,'F2 — 5 daqiqalik dars'],
+  [12.00,14.50,sc3c,'F3 — Bolalar olami'],
+  [14.50,17.50,sc4, 'Proof — 69 ta dars'],
+  [17.50,20.00,sc5, 'Lockup + CTA'],
+];
+window.SCENES=SCENES.map(s=>({from:s[0],to:s[1],label:s[3]}));
+window.FILM={DUR,FPS,BPM,B,W,H,MODE};
+
+function seek(t){
+  t=cl(t,0,DUR);
+  x.setTransform(1,0,0,1,0,0); x.globalAlpha=1;
+  x.fillStyle=CREAM; x.fillRect(0,0,W,H);
+  for(const [a,b,fn] of SCENES){ if(t>=a&&t<b){ fn(t); return; } }
+  SCENES[SCENES.length-1][2](t);
+}
+window.seek=seek;
+boot();
+</script>
+</body>
+</html>

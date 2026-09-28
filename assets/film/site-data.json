@@ -1,0 +1,1926 @@
+{
+  "site": "https://farzandly.uz",
+  "capturedAt": "2026-09-28T04:15:02.317Z",
+  "pages": {
+    "home": {
+      "url": "https://www.farzandly.uz/",
+      "title": "Farzand tarbiyalash va bolalar psixologiyasi platformasi",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Farzand tarbiyasi — har kuni o‘rganiladigan yo‘l.",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [
+        "Farzandingiz nechchi yoshda?",
+        "Ota-onalar nimani ko‘proq o‘rganmoqda?",
+        "3 qadamda o‘rganing",
+        "Bolalar olami: Ertaklar, She’rlar va Topishmoqlar",
+        "Bugungi darsingiz va Roadmap",
+        "Bugun atigi 5 daqiqa ajrating",
+        "Farzandingiz kelajagiga eng afzal sarmoya"
+      ],
+      "buttons": [
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "1-darsni bepul boshlash · 5 daqiqa",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Barcha darslar",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(51, 65, 85)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(203, 213, 225)"
+        },
+        {
+          "text": "Qidirish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Hozir boshlash — bepul (+10 XP)",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "0–2 yosh\n\nChaqaloqlik, mehrli bog'lanish va ilk ",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "3–5 yosh\n\nNutq, his-tuyg'ular, o'yin va dastlabk",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "6–9 yosh\n\nMaktabga qadam, ibodat odatlari, intiz",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "10–13 yosh\n\nO'tish davri, shaxsiyat shakllanishi",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "14+ yosh\n\nO'smirlik, balog'at odobi, hayotiy maq",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "MULOQOT\nBola gapga quloq solmasa\n\nOshxonadan baq",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "HISSIYOTLAR\nInjiqlik va tantrumlar\n\nYerga yotib ",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "TEXNOLOGIYA\nTelefon va ekran vaqti\n\nJanjalsiz va",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "INTIZOM\nUrmasdan va baqirmasdan tartib\n\nJazolars",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "ISLOMIY TARBIYA\nNamozga muhabbat uyg‘otish\n\nMajb",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "3 YOSH INQIROZI\n«Men o‘zim!» qaysarligi\n\nMustaqi",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "20px",
+          "borderBottom": "4px rgb(226, 232, 240)"
+        },
+        {
+          "text": "Barchasini ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "10 ta Ibratli ertak\n\n«Ochko‘z bo‘ri», «Boylik to",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "16px",
+          "borderBottom": "1px oklab(0.928998 -0.00326243 -0.0125641 / 0.9)"
+        },
+        {
+          "text": "46 ta Bolalar she’ri\n\nTo‘rt fasl (bahor, yoz, ku",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "16px",
+          "borderBottom": "1px oklab(0.928998 -0.00326243 -0.0125641 / 0.9)"
+        },
+        {
+          "text": "Hayvonlar haqida topishmoqlar\n\nInteraktiv ochila",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(30, 41, 59)",
+          "radius": "16px",
+          "borderBottom": "1px oklab(0.928998 -0.00326243 -0.0125641 / 0.9)"
+        },
+        {
+          "text": "Roadmap‘ga o‘tish",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(51, 65, 85)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(203, 213, 225)"
+        },
+        {
+          "text": "Boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ochish",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(51, 65, 85)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(203, 213, 225)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 0,
+          "h": 0
+        }
+      ],
+      "numbers": [
+        "1–10-darslar va asosiy qo‘llanmalar 100% bepu",
+        "ning. Katta kitoblar o‘rniga har kuni atigi 5 daqiqa.",
+        "1-darsni bepul boshlash · 5 daqiqa",
+        "BUGUNGI 5 DAQIQA",
+        "1-Dars: Tarbiyaning ahamiyati",
+        "Hozir boshlash — bepul (+10 XP)",
+        "0–2 yosh",
+        "3–5 yosh",
+        "6–9 yosh",
+        "10–13 yosh",
+        "14+ yosh",
+        "3 YOSH INQIROZI",
+        "3 qadamda o‘rganing",
+        "1\nFarzandingizni tushuning",
+        "2\nYangi usulni o‘rganing",
+        "sdan va urmasdan qat’iy chegara qo‘yishning 3 qadamli formulasini ko‘rib chiqing.",
+        "3\nBugun amalda sinang",
+        "10 ta Ibratli ertak",
+        "46 ta Bolalar she’ri",
+        "fiy topishmoq» o‘yini va zehnni charxlovchi 15 ta qiziqarli topishmoq.",
+        "1-BOSQICH: TARBIYA ASOSLARI",
+        "1-DARS • BEPUL",
+        "Tarbiyaning ahamiyati (1-qism)",
+        "2\n2-DARS • BEPUL",
+        "Tarbiyaning ahamiyati (2-qism)",
+        "11-DARSDAN • PREMIUM",
+        "Bugun atigi 5 daqiqa ajrating",
+        "Barcha 69 ta dars, Fitrat pedagogikasi, Rahimov School t",
+        "ajribasi va 30 buyuk mutafakkir ensiklopediyasi. Bir martal",
+        "ik to‘lov — atigi 79 000 so‘m — va umrbod barcha darslarga kirish huq",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\n1–10-darslar va asosiy qo‘llanmalar 100% bepul\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l.\n\nIslomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy mashqlar orqali farzandingizni yaxshiroq tushunishni o‘rganing. Katta kitoblar o‘rniga har kuni atigi 5 daqiqa.\n\n1-darsni bepul boshlash · 5 daqiqa\nBarcha darslar\nDarslar va maqolalardan qidirish\nQidirish\nJazolarsiz tarbiya\nSahih Islomiy manbalar\nMutlaqo bepul darslar\nBEPUL · RO‘YXATSIZ\nBUGUNGI 5 DAQIQA\n1-Dars: Tarbiyaning ahamiyati\n\n💡 Dars maqsadi:\n\nFarzand — Alloh taolo omonati va eng katta sarmoyadir. Tarbiya har kuni uzluksiz beriladi.\n\n📖 Hadisi sharif:\n\n«Farzandingizga go‘zal odobdan ko‘ra afzalroq narsa berolmaysiz» (Termiziy).\n\nHozir boshlash — bepul (+10 XP)\n\nSHAXSIYLASHTIRILGAN YONDASHUV\n\nFarzandingiz nechchi yoshda?\n\nHar bir yoshning o‘z psixologik inqirozi va tarbiya talabi bor. O‘z yosh guruhingizni tanlang:\n\n0–2 yosh\n\nChaqaloqlik, mehrli bog'lanish va ilk qadamlar davri\n\nDarslarni ko‘rish\n3–5 yosh\n\nNutq, his-tuyg'ular, o'yin va dastlabki chegaralar\n\nDarslarni ko‘rish\n6–9 yosh\n\nMaktabga qadam, ibodat odatlari, intizom va mas'uliyat\n\nDarslarni ko‘rish\n10–13 yosh\n\nO'tish davri, shaxsiyat shakllanishi va do'stlik munosabatlari\n\nDarslarni ko‘rish\n14+ yosh\n\nO'smirlik, balog'at odobi, hayotiy maqsadlar va mustaqillik\n\nDarslarni ko‘rish\n\nKUNDALIK HAYOTIY VAZIYATLAR\n\nOta-onalar nimani ko‘proq o‘rganmoqda?\n\nHaqiqiy muammolar, amaliy yechimlar va xotirjamlik:\n\nMULOQOT\nBola gapga quloq solmasa\n\nOshxonadan baqirish o‘rniga bolaning diqqatini jalb qilish va eshittirish sirlari.\n\nHISSIYOTLAR\nInjiqlik va tantrumlar\n\nYerga yotib olib dodlayotgan bolaning asab tizimini xotirjam qilish yo‘llari.\n\nTEXNOLOGIYA\nTelefon va ekran vaqti\n\nJanjalsiz va yig‘ilarsiz smartfonni cheklash va muqobil foydali mashg‘ulot berish.\n\nINTIZOM\nUrmasdan va baqirmasdan tartib\n\nJazolarsiz, tabiiy oqibatlar va mehr bilan chegaralarni belgilash qoidalari.\n\nISLOMIY TARBIYA\nNamozga muhabbat uyg‘otish\n\nMajburlamasdan, shirin xotiralar va go‘zal ibrat orqali ibodatga muhabbat solish.\n\n3 YOSH INQIROZI\n«Men o‘zim!» qaysarligi\n\nMustaqillikka intilayotgan bolaning xohishlarini to‘g‘ri yo‘naltirish usullari.\n\nMETODIKA\n3 qadamda o‘rganing\n\nFarzandly murakkab nazariyalarni kundalik amaliy harakatga aylantiradi.\n\n1\nFarzandingizni tushuning\n\nBolaning miyasi nima uchun shunday javob qaytarganini ilmiy va Islomiy tomondan anglab oling.\n\n2\nYangi usulni o‘rganing\n\nBaqirmasdan va urmasdan qat’iy chegara qo‘yishning 3 qadamli formulasini ko‘rib chiqing.\n\n3\nBugun amalda sinang\n\nO‘rganganingizni shu kunning o‘zida bolangiz bilan sinab ko‘ring, XP yig‘ing va odatga aylantiring.\n\nYANGI BO‘LIM\nBolalar olami: Ertaklar, She’rlar va Topishmoqlar\n\nFarzandingiz bilan unumli vaqt o‘tkazish, birgalikda mutolaa qilish hamda zehnini o‘stirish uchun eng sara xazina.\n\nBarchasini ko‘rish\n10 ta Ibratli ertak\n\n«Ochko‘z bo‘ri», «Boylik topgan bola», «Toshbaqaning hikoyasi» kabi bolaga axloq va hikmat ulashuvchi milliy ertaklar.\n\nErtaklarni mutolaa qilish\n46 ta Bolalar she’ri\n\nTo‘rt fasl (bahor, yoz, kuz, qish), maktab, odob-axloq va matematika haqida ifodali yod olinadigan she’rlar.\n\nShe’rlarni o‘qish\nHayvonlar haqida topishmoqlar\n\nInteraktiv ochiladigan javoblar, «Tasodifiy topishmoq» o‘yini va zehnni charxlovchi 15 ta qiziqarli topishmoq.\n\nTopishmoqlarni topish\nDUOLINGO TAMOYILI\nBugungi darsingiz va Roadmap\n\nHar bir bosqichni muvaffaqiyatli yakunlab, tajribali ota-ona maqomiga erishing.\n\n1-BOSQICH: TARBIYA ASOSLARI\nIslomda farzand tarbiyasining poydevori\nRoadmap‘ga o‘tish\n▶\n1-DARS • BEPUL\nTarbiyaning ahamiyati (1-qism)\nBoshlash\n2\n2-DARS • BEPUL\nTarbiyaning ahamiyati (2-qism)\nOchish\n🔒\n11-DARSDAN • PREMIUM\nChuqurlashtirilgan darslar va amaliy topshiriqlar\nBatafsil\nBugun atigi 5 daqiqa ajrating\n\nRo‘yxatdan o‘tmasdan birinchi darsni boshlang. Natijalaringiz saqlanishi uchun keyinroq kirish mumkin.\n\nBirinchi darsni boshlash\nPREMIUM KONTENT\nFarzandingiz kelajagiga eng afzal sarmoya\n\nBarcha 69 ta dars, Fitrat",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Farzand tarbiyasi — har kuni o‘rganiladigan yo‘l.",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "60px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "darslar": {
+      "url": "https://www.farzandly.uz/darslar",
+      "title": "Farzand tarbiyalash darslari — Mikro-ta’lim va amaliy qo‘llanmalar | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Islomda farzand tarbiyasi darslari",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [],
+      "buttons": [
+        {
+          "text": "Darslar",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Qidirish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Barcha yoshlar",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "0–2 yosh",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "3–5 yosh",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "6–9 yosh",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "10–13 yosh",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "14+ yosh",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Darslarni ko‘rish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "1",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "2px lab(44.4871 -41.0396 11.0361)"
+        },
+        {
+          "text": "2",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "1-55 darslar bo‘yicha tartiblangan, bolaning",
+        "0–2 yosh",
+        "3–5 yosh",
+        "6–9 yosh",
+        "10–13 yosh",
+        "14+ yosh",
+        "3-5 yosh",
+        "1–10-darslar: Tarbiya asoslari va ilk xatarla",
+        "10 ta dars",
+        "50 daqiqa",
+        "6-9 yosh",
+        "11–20-darslar: Shaxsiy ibrat, salomatlik va aq",
+        "21–30-darslar: Ruhiy qat'iyat, taqvo va go'zal",
+        "10-13 yosh",
+        "31–40-darslar: Oila, ota-ona va jamiyat haqlar",
+        "41–55-darslar: Islomiy odoblar va balog'at dav",
+        "15 ta dars",
+        "75 daqiqa",
+        "0-2 yosh",
+        "Ahsani taqvim siri, Qur'oniy tarbiyaning 3 bosqichi, oqila onalik, qalb kasalliklaridan",
+        "7 ta dars",
+        "30 daqiqa",
+        "1\n2\n\nIslomiy manbalar",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nSTRUKTURALI DASTURLAR\nIslomda farzand tarbiyasi darslari\n\n1-55 darslar bo‘yicha tartiblangan, bolaning yoshiga moslashtirilgan interaktiv darslar majmuasi.\n\nDarslar va maqolalardan qidirish\nQidirish\nBarcha yoshlar\n0–2 yosh\n3–5 yosh\n6–9 yosh\n10–13 yosh\n14+ yosh\n3-5 yosh\nBEPUL ASOSIY DARSLAR\n1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya\n\nFarzand tarbiyasining dindagi o'rni, rostgo'ylik, o'g'irlik va so'kinishdan asrash hamda ekran chegaralari.\n\n10 ta dars\n50 daqiqa\nDarslarni ko‘rish\n6-9 yosh\nPREMIUM KONTENT\n11–20-darslar: Shaxsiy ibrat, salomatlik va aqliy tarbiya\n\nOta-onaning shaxsiy namunasi, halol taom, to'g'ri uyqu va sport, aqliy salohiyatni o'stirish hamda jasorat.\n\n10 ta dars\n50 daqiqa\nDarslarni ko‘rish\n6-9 yosh\nPREMIUM KONTENT\n21–30-darslar: Ruhiy qat'iyat, taqvo va go'zal xulq\n\nQo'rquv va noqislik tuyg'usini yengish, hasad va g'azabni davolash, taqvo, saxovat va kechirimlilik san'ati.\n\n10 ta dars\n50 daqiqa\nDarslarni ko‘rish\n10-13 yosh\nPREMIUM KONTENT\n31–40-darslar: Oila, ota-ona va jamiyat haqlari\n\nOta-ona haqqi, qarindoshlar bilan aloqa, qo'shnichilik odobi, ustozlarga ehtirom, do'st tanlash va kattalarni hurmat qilish.\n\n10 ta dars\n50 daqiqa\nDarslarni ko‘rish\n14+ yosh\nPREMIUM KONTENT\n41–55-darslar: Islomiy odoblar va balog'at davri\n\nSalomlashish, ovqatlanish, izn so'rash, suhbat va hazil odobi, ta'ziya, amri ma'ruf hamda balog'at va jinsiy tarbiya.\n\n15 ta dars\n75 daqiqa\nDarslarni ko‘rish\n0-2 yosh\nPREMIUM KONTENT\nXadicha Kubro Tongar: Fitrat pedagogikasi va onalik nuri\n\nAhsani taqvim siri, Qur'oniy tarbiyaning 3 bosqichi, oqila onalik, qalb kasalliklaridan poklanish va nafs tarbiyasi.\n\n7 ta dars\n30 daqiqa\nDarslarni ko‘rish\n1\n2\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Islomda farzand tarbiyasi darslari",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "ertaklar": {
+      "url": "https://www.farzandly.uz/bolalar?tab=ertaklar",
+      "title": "Bolalar olami — Ibratli ertaklar, she’rlar, topishmoqlar va maqollar | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Bolalar olami",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [],
+      "buttons": [
+        {
+          "text": "Bolalar olami",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Ertaklar\n15",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "She’rlar\n46",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Topishmoqlar\n15",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Maqollar\n89",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Ertakni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "1",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "2px lab(44.4871 -41.0396 11.0361)"
+        },
+        {
+          "text": "2",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "3",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "15\nShe’rlar",
+        "46\nTopishmoqlar",
+        "15\nMaqollar",
+        "89\nJami: 15 ta ertak",
+        "1-ertak",
+        "2 daqiqa",
+        "2-ertak",
+        "3 daqiqa",
+        "3-ertak",
+        "4-ertak",
+        "5-ertak",
+        "6-ertak",
+        "1\n2\n3\n\nIslomiy manbalar",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nBOLALAR VA OTA-ONALAR UCHUN\nBolalar olami\n\nFarzandingiz bilan birgalikda o‘qish, yod olish va zehnini charxlash uchun ibratli ertaklar, go‘zal she’rlar hamda topishmoqlar to‘plami.\n\nErtaklar\n15\nShe’rlar\n46\nTopishmoqlar\n15\nMaqollar\n89\nJami: 15 ta ertak\n1-ertak\n2 daqiqa\nOchko‘z bo‘ri\nMuallif: O‘zbek xalq ertagi\n\nBir bor ekan, bir yo‘q ekan, ulkan o‘rmonda bir ayyor tulki bo‘lgan ekan. Bir kuni u yo‘lda, bo‘rini uchratibdi. Bo‘ri semizgina quyonni tishlab ketayotgan ekan. Tulki bo‘riga:\n\nQissadan hissa: Ochko‘zlik yomon odat, keltirar faqat kulfat.\nErtakni o‘qish\n2-ertak\n3 daqiqa\nBoylik topgan bola\nMuallif: O‘zbek xalq ertagi\n\nBor ekan-u, yo‘q ekan, qadim o‘tgan zamonda bir cholning ikki o‘g‘li bo‘lib, ulardan biri sabrli va mehnatkash, ikkinchisi esa yalqov va ishyoqmas ekan. Katta o‘g‘il tinmay mehnat qilgani uchun ham sog‘lom va baquvvat bo‘lsa, dangasa o‘g‘il xo‘ppa semiz va dardmand ekan.\n\nQissadan hissa: Haqiqiy boylik — bu salomatlik va halol mehnatdir.\nErtakni o‘qish\n3-ertak\n2 daqiqa\nXo‘roz bilan bo‘ri\nMuallif: O‘zbek xalq ertagi\n\nBir bo‘ri daraxt ustida o‘tirgan Xo‘rozni ko‘ribdi va uni tutib yemoqchi bo‘lib, daraxt ostiga keldi. Hiyla bilan bechora Xo‘rozni daraxtdan tushirmoqchi bo‘libdi: «Ey, Xo‘roz o‘rtoq! Men senga bir yaxshi xabar keltirdim. Hayvonlar bilan qushlar o‘rtasida sulh bo‘ldi. Bir-biriga zulm qilmaslikka, biri ikkinchisini tutib yemaslikka qaror qilindi. Kel, birodar, pastga tush! Bir-birimizga do‘st bo‘lib, birga o‘ynaylik», — dedi. Xo‘roz Bo‘rining so‘ziga aldanadigan darajada nodon va ahmoq bo‘lmaganidan Bo‘riga qarab shunday dedi:\n\nQissadan hissa: Aql va hushyorlik har qanday hiyla va xatardan asraydi.\nErtakni o‘qish\n4-ertak\n2 daqiqa\nQalam va sichqon\nMuallif: O‘zbek xalq ertagi\n\nBir bor ekan, bir yo‘q ekan. Oddiygina bir qalam bo‘lgan ekan. Bir kuni uning egasi Valijon qalamini stol ustida unitib qoldiribdi. Paytdan foydalangan sichqoncha inidan chiqib qalamni tishlab olib qochmoqchi bo‘libdi.\n\nQissadan hissa: Topqirlik va aql har qanday qiyin vaziyatda najot beradi.\nErtakni o‘qish\n5-ertak\n3 daqiqa\nToshbaqaning hikoyasi\nMuallif: Anvar Obidjon\n\nDushanba og‘ir kun deganlari to‘g‘ri ekan. Bugun havo shunaqayam isib berdiki, nafas olsang, xuddi cho‘g‘ yutayotgandek boֲ‘lasan. Hali hech qancha yo‘l yurganim yo‘g‘-u, sillam qurib, tomog‘im qaqrab ketdi. Odamlarning bolalariga maza-da. Ular bunaqa paytda salqin joyni topvolishib, muzdek sharbat ichib o‘tirishadi, yo bo‘lmasa, burunlarini tortib-tortib, muzqaymoq yalashadi. Umuman, toshbaqa bo‘lib ming yil sudralgandan ko‘ra, odam bo‘lib yuz yilgina yashagan ma‘qul ekan. Sezib turibman, shunchalik holing bor ekan, safarga chiqishni senga kim qo‘yibdi, deb o‘ylayapsiz. Ho‘ bo‘yterakni ko‘ryapsizmi? O‘sha tomonda bitta xolam bor. Xolamning kenja chevarasi qadrdon oshnam. Kelasi dushanbada o‘sha kichkintoy o֥‘rtog‘im bir yuz o‘n yoshga to‘ladi. Uni tabriklagani ketyapman. Nega menga bunaqa qaraysiz? Bir hafta oldin yo‘lga chiqqanimdan hayron bo‘lyapsiz shekilli? Nima, men ayg‘irmidimki, oyog‘imga taqa qoqvolib, tosh yo‘ldan shaqira-shuqur chopib ketsam? Orqamdan it quvlasayam bo‘lgan-bitganim shu. Ana xolos, gap bilan bo‘lib qumloqqa chiqib qolibman-ku. Hammadan ham anavi do‘nglikka to‘g‘ri kelib qolganimni ko‘rmaysizmi? Ishlar chatoq endi. Bunaqa do‘nglardan ko‘p pand yeganman. O‘lib-tirilib tepaga chiqdim deganingda bir sirg‘anasan-u o‘zingni yana pastda ko‘rasan. …Umringda birovga yaxshilik qilganmisan, do‘stim? Malol kelmasa, meni do‘ppingga solib ana shu do‘ngdan o‘tkazib qo‘ygin. Nima bo‘lgandayam, yaxshi niyat bilan yo‘lga chiqqanman, ziyofatdan quruq qolmayin tag‘in.\n\nQissadan hissa: Yaxshi niyat va o‘zaro ko‘mak har qanday qiyin dovonni yengishga yordam beradi.\nErtakni o‘qish\n6-ertak\n3 daqiqa\nSovg'a\nMuallif: Shahnoza Bahromjonova\n\nPuchuqvoy hech qachon birovdan xat olmagan va birovga ham yozmagan. Xat tashuvchi qarg‘avoy unga konvertni tutqazganida hayron bo‘ldi. Maktubni shosha pisha ochib qarasa, bolalikdagi do‘sti Ba",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Bolalar olami",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "maqolalar": {
+      "url": "https://www.farzandly.uz/maqolalar",
+      "title": "Farzand tarbiyalash maqolalari | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Foydali tarbiya maqolalari",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [
+        "Islomda farzand tarbiyasining 5 oltin qoidasi",
+        "Fitrat pedagogikasi: Bola tabiati, ruhiy ehtiyojlar va ota-onalik chegaralari",
+        "Fitrat pedagogikasi: Bola ruhiyati, ota-onalik mas’uliyati va ma’naviy tarbiya",
+        "Fitrat pedagogikasi: Zamonaviy ota-onalik, ijtimoiy muhit va yakuniy xulosa",
+        "Jazosiz tarbiya: Nega jazo samarasiz va bolaga nima uchun baqirmaslik kerak?",
+        "Jazosiz intizom va xavfsiz bog‘lanish sirlari: Chegara qo‘yish, mukofot xatosi va tabiiy oqibatlar",
+        "Bolaning darajasiga tushilmaydi, aksincha chiqiladi: Ahsani taqvim siri",
+        "Fitrat pedagogikasi: Qur’oniy tarbiya asoslari va 3 bosqichli model",
+        "G‘azab otiga minganda: Ota-onalar uchun jahlni bosishning 4 qadami"
+      ],
+      "buttons": [
+        {
+          "text": "Maqolalar",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Qidirish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Barchasi",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Tarbiya asoslari va iymon",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Salomatlik va aqliy tarbiya",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Ruhiy qat'iyat va xulq",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Oila va jamiyat haqlari",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Islomiy odoblar va balog'at",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "1",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "2px lab(44.4871 -41.0396 11.0361)"
+        },
+        {
+          "text": "2",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "5 m",
+        "Islomda farzand tarbiyasining 5 oltin qoidasi",
+        "Abdulloh Domlaning 55 darslik silsilasi asosida ota-onalar uchun e",
+        "3-5 yosh",
+        "8 m",
+        "irasi, qardoshlararo hasad, yorliq xavfi va 4 yoshdan mahramiyat chegaralari.",
+        "0-2 yosh",
+        "7 m",
+        "10 m",
+        "12 m",
+        "pedagogikasi: Qur’oniy tarbiya asoslari va 3 bosqichli model",
+        "bo'lish tartibiga asoslangan tarbiya: Alaq (0-2 yosh kashf etish), Muzammil (2-7 yosh ibr",
+        "at va hol ilmi), Muddassir (7-14 yosh nasihat).",
+        "6 m",
+        "inganda: Ota-onalar uchun jahlni bosishning 4 qadami",
+        "Hazrati Ali ibrati, Luqmon surasi 19-oyatidagi ovoz me'yori, oshiqlar masali ham",
+        "da jahlni jilovlashning amaliy 4 qadami.",
+        "1\n2\n\nIslomiy manbalar",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nOTA-ONALAR KUTUBXONASI\nFoydali tarbiya maqolalari\n\nIslomiy qadriyatlar, zamonaviy bolalar psixologiyasi va amaliy tavsiyalarga asoslangan ilmiy-ommabop maqolalar.\n\nDarslar va maqolalardan qidirish\nQidirish\nBarchasi\nTarbiya asoslari va iymon\nSalomatlik va aqliy tarbiya\nRuhiy qat'iyat va xulq\nOila va jamiyat haqlari\nIslomiy odoblar va balog'at\nTarbiya asoslari va iymon\nBEPUL\n5 m\nIslomda farzand tarbiyasining 5 oltin qoidasi\n\nAbdulloh Domlaning 55 darslik silsilasi asosida ota-onalar uchun eng muhim va dolzarb tavsiyalar.\n\n3-5 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nBEPUL\n8 m\nFitrat pedagogikasi: Bola tabiati, ruhiy ehtiyojlar va ota-onalik chegaralari\n\nXadicha Kubro Tongar: Bolalar dunyosining kaliti — o'yin, yig'i shifosi, ifor xotirasi, qardoshlararo hasad, yorliq xavfi va 4 yoshdan mahramiyat chegaralari.\n\n0-2 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nBEPUL\n7 m\nFitrat pedagogikasi: Bola ruhiyati, ota-onalik mas’uliyati va ma’naviy tarbiya\n\nXadicha Kubro Tongar: Xatolarni berkitish (Sattorlik), bolalikni o'g'irlamaslik va «Oltin to'p» masali, shukr amali, duo maqomi va yolg'ondan saqlanish.\n\n0-2 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nBEPUL\n7 m\nFitrat pedagogikasi: Zamonaviy ota-onalik, ijtimoiy muhit va yakuniy xulosa\n\nXadicha Kubro Tongar: «Otalar dini» aqidasidan qutulish, onalikdagi rollar muvozanati, katta oila va Silai rahm zakovati hamda Nasr surasi shukri.\n\n0-2 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nBEPUL\n10 m\nJazosiz tarbiya: Nega jazo samarasiz va bolaga nima uchun baqirmaslik kerak?\n\nAdem Güneş: Jazo ota-onaning ojizligi ifodasi, soxta itoat illuziyasi, bolalik jarohatlari, baqirishning asoratlari va «Soxta Men» xavfi.\n\n3-5 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nBEPUL\n12 m\nJazosiz intizom va xavfsiz bog‘lanish sirlari: Chegara qo‘yish, mukofot xatosi va tabiiy oqibatlar\n\nAdem Güneş: Mukofot va poraning ichki motivatsiyani o'ldirishi, xavfsiz hissiy bog'lanish (Bağlanma), tabiiy oqibatlar va ota-onaning o'zini davolashi.\n\n3-5 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nPREMIUM KONTENT\n5 m\nBolaning darajasiga tushilmaydi, aksincha chiqiladi: Ahsani taqvim siri\n\nNima uchun bolalarga pastga qarash emas, ularning ma'naviy sofligi va beg'uborligi darajasiga ko'tarilish kerak? Xadicha Kubro Tongar asaridan xulosalar.\n\n0-2 yosh\nTo‘liq o‘qish\nTarbiya asoslari va iymon\nPREMIUM KONTENT\n7 m\nFitrat pedagogikasi: Qur’oniy tarbiya asoslari va 3 bosqichli model\n\nVahiy nozil bo'lish tartibiga asoslangan tarbiya: Alaq (0-2 yosh kashf etish), Muzammil (2-7 yosh ibrat va hol ilmi), Muddassir (7-14 yosh nasihat).\n\n0-2 yosh\nTo‘liq o‘qish\nRuhiy qat'iyat va xulq\nPREMIUM KONTENT\n6 m\nG‘azab otiga minganda: Ota-onalar uchun jahlni bosishning 4 qadami\n\nHazrati Ali ibrati, Luqmon surasi 19-oyatidagi ovoz me'yori, oshiqlar masali hamda jahlni jilovlashning amaliy 4 qadami.\n\n3-5 yosh\nTo‘liq o‘qish\n1\n2\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Foydali tarbiya maqolalari",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "jazosiz": {
+      "url": "https://www.farzandly.uz/jazosiz-tarbiya",
+      "title": "Jazosiz tarbiya — Dr. Odam Gunesh (Adem Güneş) kitobi | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Jazosiz tarbiya (Cezasız Eğitim)",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [
+        "Kitobning barcha qismlari"
+      ],
+      "buttons": [
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "1-qismdan mutolaani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Qismni o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "⏱ To‘liq hajmi: 6 soat 23 daqiqa (5,698 satr)",
+        "1-qismdan mutolaani boshlash",
+        "6 ta to‘liq qism, barcha boblar va hayotiy amali",
+        "1-qism",
+        "0:00 - 1:03:49 (64 daqiqa)",
+        "1-qism: Jazosiz tarbiya nima va nega jazo tar",
+        "136 ta paragraf",
+        "2-qism",
+        "1:03:53 - 2:09:00 (65 daqiqa)",
+        "2-qism: Jazoning ruhiy asoratlari — Ichki zo'",
+        "3-qism",
+        "2:09:03 - 3:10:37 (61 daqiqa)",
+        "3-qism: Mukofot va shartli mehr tuzog'i — Tas",
+        "135 ta paragraf",
+        "4-qism",
+        "3:10:40 - 4:14:08 (63 daqiqa)",
+        "4-qism: Xavfsiz bog'lanish va hissiy yaqinlik",
+        "5-qism",
+        "4:14:15 - 5:18:09 (64 daqiqa)",
+        "5-qism: Haqiqiy intizom va chegaralar — Bolan",
+        "rgatishdir. Uyda chegaralarni o'rnatishning 5 ta oltin qoidasi.",
+        "6-qism",
+        "5:18:13 - 6:23:39 (65 daqiqa)",
+        "6-qism: Ota-onaning hissiy yetukligi — O'z hi",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nDunyoga mashhur pedagogik durdona\nJazosiz tarbiya (Cezasız Eğitim)\nMuallif: Dr. Odam Gunesh (Adem Güneş)\nTarjimon: Javohir Usmon\n⏱ To‘liq hajmi: 6 soat 23 daqiqa (5,698 satr)\n\nFarzand tarbiyasida jazo, tanbeh va qo‘rqitish usullari nega samarasiz ekanligi hamda haqiqiy mehr, xavfsiz bog‘lanish va to‘g‘ri intizom o‘rnatish bo‘yicha dunyoga mashhur fundamental qo‘llanma.\n\n1-qismdan mutolaani boshlash\nJazo nega samarasiz?\n\nJazo bolani to‘g‘ri yo‘lga solmaydi, faqatgina qo‘rquv va aybdorlik hissi orqali uning irodasini sindiradi hamda yolg‘on gapirishga o‘rgatadi.\n\nShartsiz muhabbat\n\n«Yaxshi bola bo‘lsang, yaxshi ko‘raman» degan shartli mehr bolada xavotir uyg‘otadi. Haqiqiy mehr hech qanday mukofot yoki shartsiz beriladi.\n\nHaqiqiy intizom\n\nIntizom — bu jazo berish emas, balki bolaga xavfsiz chegaralarni tushuntirish va ota-onaning shaxsiy xotirjam ibratidir.\n\nKitobning barcha qismlari\n\n6 ta to‘liq qism, barcha boblar va hayotiy amaliy vaziyatlar\n\nTo‘liq matn ochiq\n1-qism\n0:00 - 1:03:49 (64 daqiqa)\n1-qism: Jazosiz tarbiya nima va nega jazo tarbiya vositasi emas?\n\nJazo inson shaxsiyatini sindiradi. Nega jazo berish orqali haqiqiy tarbiyaga erishib bo'lmaydi?\n\nASOSIY XULOSALAR:\n\nJazo bolaning xatosini to'g'irlamaydi, balki unda qo'rquv, aybdorlik va yolg'on gapirish odatini shakllantiradi.\nBolaning miyasi tahdid va jazo ostida o'rganishni to'xtatadi va faqat himoyalanish (qochish yoki agressiya) rejimiga o'tadi.\nTarbiya — jazo bilan bo'ysundirish emas, balki shaxsiy ibrat va tushuntirish orqali o'zaro ishonch ko'prigi qurishdir.\n136 ta paragraf\nQismni o‘qish\n2-qism\n1:03:53 - 2:09:00 (65 daqiqa)\n2-qism: Jazoning ruhiy asoratlari — Ichki zo'riqish, asabiylik va qadrsizlik\n\nJazolangan bolada nimalar sodir bo'ladi? Yolg'on gapirish, tajovuzkorlik va qadrsizlik hissi ildizlari.\n\nASOSIY XULOSALAR:\n\nKo'p jazolangan bolalar ulg'aygach yo tajovuzkor bo'lib qoladi, yoki o'ziga ishonchsiz, qadrsiz shaxsga aylanadi.\nBaqirish, haqoratlash va tanbeh berish bolaning ichki xotirjamligini o'g'irlaydi va surunkali ruhiy zo'riqish keltiradi.\nXatolar — jazolash uchun emas, aksincha hayotiy saboq olish uchun berilgan tabiiy rivojlanish imkoniyatidir.\n136 ta paragraf\nQismni o‘qish\n3-qism\n2:09:03 - 3:10:37 (61 daqiqa)\n3-qism: Mukofot va shartli mehr tuzog'i — Tashqi boshqaruvdan ichki irodaga\n\n«Agar besh olsang, velosiped olib beraman» — mukofot nega bolaning ichki qiziqishini so'ndiradi?\n\nASOSIY XULOSALAR:\n\nModdiy mukofot bolaning ichki motivatsiyasini so'ndiradi: bola o'rganish uchun emas, sovg'a olish uchun harakat qiladi.\nShartli muhabbat («Yaxshi bola bo'lsang, yaxshi ko'raman») bolada doimiy xavotir va «Men sevilishga loyiq emasman» degan his uyg'otadi.\nFarzandni hech qanday shartsiz, shunchaki borligi uchun yaxshi ko'rish unga eng buyuk ruhiy quvvatni beradi.\n135 ta paragraf\nQismni o‘qish\n4-qism\n3:10:40 - 4:14:08 (63 daqiqa)\n4-qism: Xavfsiz bog'lanish va hissiy yaqinlik — Ko'rinmas ruhiy ko'prik\n\nBolaning qalbiga qanday yo'l topiladi? Hissiy yaqinlik, tinglash va so'zsiz muloqot sirlari.\n\nASOSIY XULOSALAR:\n\nXavfsiz bog'lanish (Secure Attachment) — bolaning butun umri davomidagi ruhiy sog'lomligi va baxtining poydevoridir.\nBolani shunchaki eshitish emas, uning hislarini his qilish (empatiya) kerak: «Seni tushunaman, bu holatda ranjishing tabiiy».\nKo'z bilan muloqot, bag'riga bosish va iliq tabassum har qanday uzun pand-nasihatdan ko'ra ming chandon ta'sirliroqdir.\n135 ta paragraf\nQismni o‘qish\n5-qism\n4:14:15 - 5:18:09 (64 daqiqa)\n5-qism: Haqiqiy intizom va chegaralar — Bolaning erkinligini bo'g'masdan yo'naltirish\n\nIntizom jazolash emas, o'rgatishdir. Uyda chegaralarni o'rnatishning 5 ta oltin qoidasi.\n\nASOSIY XULOSALAR:\n\nIntizom (Discipline) so'zi lotincha «o'rgatish, yo'l ko'rsatish» ma'nosini bildiradi, jazo yoki azoblashni emas.\nChegaralar aniq, xotirjam va barqaror bo'lishi kerak. Qoidalar har kuni ota-onaning kayfiyatiga qarab o'zgarmasligi lozim.\nTaqiqlashdan oldin bolaga xavfsiz va qiziqarli muqobil variant (",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Jazosiz tarbiya (Cezasız Eğitim)",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "60px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "premium": {
+      "url": "https://www.farzandly.uz/premium",
+      "title": "Premium obuna — Farzand tarbiyalash darslari to‘liq to‘plami | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Farzand tarbiyasiga eng yaxshi sarmoya",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [
+        "2 daqiqada to‘lov qiling va o‘qishni boshlang"
+      ],
+      "buttons": [
+        {
+          "text": "Premium",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Bepul darslarni boshlash",
+          "bg": "rgb(255, 255, 255)",
+          "color": "rgb(51, 65, 85)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(203, 213, 225)"
+        },
+        {
+          "text": "Premium kontentni faollashtirish",
+          "bg": "rgb(245, 158, 11)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(217, 119, 6)"
+        },
+        {
+          "text": "Karta raqamini nusxalash",
+          "bg": "lab(26.9569 -1.47016 -15.6993)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Chekni yuborish (t.me/dadakhonov)",
+          "bg": "rgb(245, 158, 11)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(217, 119, 6)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "0 so‘m / umrbod",
+        "1–10-darslar (Tarbiya asoslari)",
+        "«Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi",
+        "11–69-darslar (Chuqurlashtirilgan bosqichlar)",
+        "Barcha 69 ta dars va ilmiy-amaliy materiallar to‘plami",
+        "79 000 so‘m / umrbod",
+        "Barcha 69 ta dars to‘liq va cheklovsiz ochiq",
+        "30 buyuk alloma tarbiya usullari va kitobxonlik",
+        "2 daqiqada to‘lov qiling va o‘qishni boshlang",
+        "5614 6819 0401 4390\nUzcard / Humo",
+        "Platformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarla",
+        "rslari hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi va yana 4 ta tanlang",
+        "bod bepul. Boshqa barcha chuqurlashtirilgan 59 ta dars, audio-hikmatlar va ilmiy tahliliy maq",
+        "Faqat bir marta 79 000 so‘m to‘laysiz va Premium umrbod faol qoladi",
+        "Abdulloh Domla darslari to‘liq silsilasi (55 dars), Xadicha Kubro Tongarning Fitrat pedag",
+        "ing zamonaviy ta’lim va intizom metodikasi, 30 jildlik buyuk allomalar ensiklopediyasi, ama",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nFARZANDLY PREMIUM KONTENT\nFarzand tarbiyasiga eng yaxshi sarmoya\n\nFarzandingizning hissiy xotirjamligi va yuksak odob-axloqi uchun to‘liq Premium kontent bazasini oching.\n\nBepul asosiy ta’lim\n\nPlatforma bilan tanishuvchi har bir ota-ona uchun\n\n0 so‘m / umrbod\n1–10-darslar (Tarbiya asoslari)\n«Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi\nKunlik streak va bilim tekshirish testlari\n11–69-darslar (Chuqurlashtirilgan bosqichlar)\nBarcha tahliliy va psixologik maqolalar\nFitrat pedagogikasi va zamonaviy ta’lim sirlari\nBepul darslarni boshlash\nTO‘LIQ TO‘PLAM\nPremium kontent\n\nBarcha 69 ta dars va ilmiy-amaliy materiallar to‘plami\n\n79 000 so‘m / umrbod\n\nBir marta to‘lov — obuna emas, qayta yechilmaydi\n\nBarcha 69 ta dars to‘liq va cheklovsiz ochiq\nFitrat pedagogikasi: Qalb va nafs tarbiyasi silsilasi\nRahimov School metodikasi: Brain Rot va gadjetlardan himoya\n30 buyuk alloma tarbiya usullari va kitobxonlik\nBarcha tahliliy eksklyuziv maqolalar to‘plami\nHar dars uchun amaliy topshiriq va sertifikat imkoniyati\nPremium kontentni faollashtirish\nTEZKOR TO‘LOV QO‘LLANMASI\n2 daqiqada to‘lov qiling va o‘qishni boshlang\n\nKarta raqamiga pul o‘tkazib, chekni Telegramda administratorga yuboring.\n\nTO‘LOV KARTASI:\n5614 6819 0401 4390\nUzcard / Humo\nKarta raqamini nusxalash\nCHEKNI YUBORISH:\nt.me/dadakhonov\nAdministrator profili\nChekni yuborish (t.me/dadakhonov)\nKo‘p beriladigan savollar\n\nQaysi darslar va maqolalar bepul taqdim etiladi?\n\nPlatformamizda «1–10-darslar: Tarbiya asoslari va ilk xatarlardan himoya» darslari hamda «Islomda farzand tarbiyasining 5 oltin qoidasi» maqolasi va yana 4 ta tanlangan maqola har bir ota-ona uchun umrbod bepul. Boshqa barcha chuqurlashtirilgan 59 ta dars, audio-hikmatlar va ilmiy tahliliy maqolalar Premium kontent hisoblanadi.\n\nTo‘lov qanday amalga oshiriladi?\n\nKarta orqali bir marta to‘lov qilasiz va «Men to‘ladim» tugmasini bosasiz. To‘lov tekshirilgach, umrbod Premium avtomatik yoqiladi va Telegram orqali xabar olasiz.\n\nBir martalik to‘lovning afzalligi nimada?\n\nFaqat bir marta 79 000 so‘m to‘laysiz va Premium umrbod faol qoladi — oylik yoki yillik obuna yo‘q, qayta to‘lov talab qilinmaydi va kelajakda qo‘shiladigan barcha yangi kontentdan ham bepul foydalanasiz.\n\nPremium kontentda nimalar bor?\n\nAbdulloh Domla darslari to‘liq silsilasi (55 dars), Xadicha Kubro Tongarning Fitrat pedagogikasi, Aziz Rahimovning zamonaviy ta’lim va intizom metodikasi, 30 jildlik buyuk allomalar ensiklopediyasi, amaliy mashg‘ulotlar, har kungi testlar va bolalar psixologiyasi bo‘yicha to‘liq bazaga ega bo‘lasiz.\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Farzand tarbiyasiga eng yaxshi sarmoya",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "kirish": {
+      "url": "https://www.farzandly.uz/kirish",
+      "title": "Kirish | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Tizimga kirish",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "24px",
+          "weight": "700",
+          "color": "lab(7.78673 1.82345 -15.0537)"
+        }
+      ],
+      "h2": [],
+      "buttons": [
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Kirish",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(7.78673 1.82345 -15.0537)",
+          "radius": "12px",
+          "borderBottom": "0px lab(7.78673 1.82345 -15.0537)"
+        },
+        {
+          "text": "Tizimga kirish",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Telegram orqali tezkor kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "Kamida 6 ta belgi",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nF\nTizimga kirish\n\nFarzand tarbiyasi bo‘yicha ta’lim safaringizni davom ettiring\n\nKirish\nRo‘yxatdan o‘tish\nEmail manzilingiz\nParol\nKamida 6 ta belgi\nTizimga kirish\nYOKI\nTelegram orqali tezkor kirish\n\nMa’lumotlaringiz xavfsiz himoyalangan. Parollar maxfiy shifrlangan holda saqlanadi.\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Tizimga kirish",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "30px",
+            "weight": "700",
+            "color": "lab(7.78673 1.82345 -15.0537)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "sherlar": {
+      "url": "https://www.farzandly.uz/bolalar?tab=sherlar",
+      "title": "Bolalar olami — Ibratli ertaklar, she’rlar, topishmoqlar va maqollar | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Bolalar olami",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [],
+      "buttons": [
+        {
+          "text": "Bolalar olami",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Ertaklar\n15",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "She’rlar\n46",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Topishmoqlar\n15",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Maqollar\n89",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Barchasi\n46",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Bahor\n11",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Yoz\n7",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Kuz\n3",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Qish\n6",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Maktab & Fanlar\n13",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Odob & Mehr\n6",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "1",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "2px lab(44.4871 -41.0396 11.0361)"
+        },
+        {
+          "text": "2",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "3",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "4",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "5",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "6",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Tarbiyani boshlash",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "15\nShe’rlar",
+        "46\nTopishmoqlar",
+        "15\nMaqollar",
+        "89\nBarchasi",
+        "46\nBahor",
+        "11\nYoz",
+        "7\nKuz",
+        "3\nQish",
+        "6\nMaktab & Fanlar",
+        "13\nOdob & Mehr",
+        "6\nKo‘rsatilmoqda: 46 ta she’r",
+        "1\n2\n3\n4\n5\n6\n\nIslomiy manbalar",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nBOLALAR VA OTA-ONALAR UCHUN\nBolalar olami\n\nFarzandingiz bilan birgalikda o‘qish, yod olish va zehnini charxlash uchun ibratli ertaklar, go‘zal she’rlar hamda topishmoqlar to‘plami.\n\nErtaklar\n15\nShe’rlar\n46\nTopishmoqlar\n15\nMaqollar\n89\nBarchasi\n46\nBahor\n11\nYoz\n7\nKuz\n3\nQish\n6\nMaktab & Fanlar\n13\nOdob & Mehr\n6\nKo‘rsatilmoqda: 46 ta she’r\nTarbiya\nOnajon\n\nAgar sorasalar jannatni mendan,\n\nOnajonim oyogi ostida ana,\n\nBizni ulgaytirib barkamol qilgan,\n\nAziz suyanchigim, mexribon ona!\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nO'qituvchi\n\nBilim olib chinakam,\n\nO'rganamiz harf, raqam.\n\nHammaga berar ta'lim,\n\nO'qituvchi - muallim.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nMaktabim\n\nJonajonim maktabim,\n\nQadrdonim maktabim,\n\nXuddi uyimdek aziz,\n\nOshiyonim maktabim.\n\nHar kun tongda shoshaman,\n\nSinfdan sinfga oshaman\n\nBilimga qo'shib bilim,\n\nDaryolardek toshaman.\n\nMuallimlar mehribon,\n\nO'rgatar olam jahon.\n\nDoim faxr etaman,\n\nMaktabim, sen onajon!\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nG'ayrat qilib o'qing, o'g'lon!\n\nMaktab duru gavhar sochar,\n\nMaktab sizga jannat ochar,\n\nMaktab jaholatdan qochar,\n\nG'ayrat qilib o'qing, o'g'lon!\n\nMaktab sizni inson qilur,\n\nMaktab hayo ehson qilur,\n\nMaktab g'ami vayron qilur,\n\nG'ayrat qilib o'qing, o'glon!.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nOna tili\n\nHar bir harf, bo'g'indan\n\nTuzamiz turli so'zlar.\n\nOzoda va chiroyli\n\nYozsak quvonar ko'zlar.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nO'qish\n\nShe'r, hikoya, ertakni\n\nHech qiynalmay o'qiymiz.\n\nO'qib bo'lgach albatta ,\n\nO'qiganni uqiymiz.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nMaktab\nMatematika\n\nKarra jadvalni bilsang,\n\nKo'paytirish oson ish,\n\nYodda tutgin, hayotda\n\nHisob kerak yoz-u qish.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nTarbiya\nBaliq\n\nHamisha yuraman jim,\n\nYo'qda boshqa ilojim.\n\nSo'zlay desam bir zumga,\n\nSuv tiqilar og'zimga.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\nTarbiya\nDehqon\n\nDalasiga olib yo'l,\n\nDehqon ko'zlar hosil mo'l.\n\nO'z ishiga u usta\n\nXirmon uyadi kuzda.\n\nMuallif: Xalq / Bolalar shoirlari\nUlashish\n1\n2\n3\n4\n5\n6\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Bolalar olami",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "maqollar": {
+      "url": "https://www.farzandly.uz/bolalar?tab=maqollar",
+      "title": "Bolalar olami — Ibratli ertaklar, she’rlar, topishmoqlar va maqollar | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Bolalar olami",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [],
+      "buttons": [
+        {
+          "text": "Bolalar olami",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Ertaklar\n15",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "She’rlar\n46",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Topishmoqlar\n15",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Maqollar\n89",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Barchasi\n89",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Odob va axloq\n26",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Ota-ona & Kattalar\n22",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Farzand tarbiyasi\n26",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Salom & Muomala\n15",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        },
+        {
+          "text": "Nusxa olish",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(35.5623 -1.74978 -15.4316)",
+          "radius": "12px",
+          "borderBottom": "0px lab(35.5623 -1.74978 -15.4316)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "15\nShe’rlar",
+        "46\nTopishmoqlar",
+        "15\nMaqollar",
+        "89\nBarchasi",
+        "89\nOdob va axloq",
+        "26\nOta-ona & Kattalar",
+        "22\nFarzand tarbiyasi",
+        "26\nSalom & Muomala",
+        "15",
+        "#1 maqol",
+        "#2 maqol",
+        "#3 maqol",
+        "#4 maqol",
+        "#5 maqol",
+        "#6 maqol",
+        "#7 maqol",
+        "#8 maqol",
+        "#9 maqol",
+        "#10 maqol",
+        "#11 maqol",
+        "#12 maqol",
+        "1\n2",
+        "8\n\nIslomiy manbalar",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nBOLALAR VA OTA-ONALAR UCHUN\nBolalar olami\n\nFarzandingiz bilan birgalikda o‘qish, yod olish va zehnini charxlash uchun ibratli ertaklar, go‘zal she’rlar hamda topishmoqlar to‘plami.\n\nErtaklar\n15\nShe’rlar\n46\nTopishmoqlar\n15\nMaqollar\n89\nBarchasi\n89\nOdob va axloq\n26\nOta-ona & Kattalar\n22\nFarzand tarbiyasi\n26\nSalom & Muomala\n15\n#1 maqol\nSalom & Muomala\n\nAvval salom, bad'az kalom.\n\nO‘zbek xalq maqoli\nNusxa olish\n#2 maqol\nOta-ona & Kattalar\n\nAmri padar — arshdan a'lo.\n\nO‘zbek xalq maqoli\nNusxa olish\n#3 maqol\nOta-ona & Kattalar\n\nBir kattani bil, bir kichikni bil.\n\nO‘zbek xalq maqoli\nNusxa olish\n#4 maqol\nFarzand tarbiyasi\n\nBola — aziz, odobi undan aziz.\n\nO‘zbek xalq maqoli\nNusxa olish\n#5 maqol\nFarzand tarbiyasi\n\nBolaning erkasi — bitning sirkasi.\n\nO‘zbek xalq maqoli\nNusxa olish\n#6 maqol\nSalom & Muomala\n\nBosh bo'lmagan uyda, otasi turib o'g'li so'zlar.\n\nO‘zbek xalq maqoli\nNusxa olish\n#7 maqol\nFarzand tarbiyasi\n\nYolg'iz bolaga indamasang, ko'payar.\n\nO‘zbek xalq maqoli\nNusxa olish\n#8 maqol\nOdob va axloq\n\nInson — odobi bilan, osmon — oftobi bilan.\n\nO‘zbek xalq maqoli\nNusxa olish\n#9 maqol\nOta-ona & Kattalar\n\nKattaga katta bo'l, kichikka — kichik.\n\nO‘zbek xalq maqoli\nNusxa olish\n#10 maqol\nSalom & Muomala\n\nKattaga salom ber, kichikka — kalom.\n\nO‘zbek xalq maqoli\nNusxa olish\n#11 maqol\nOta-ona & Kattalar\n\nKattada izzat yo'q, kichikda xizmat yo'q.\n\nO‘zbek xalq maqoli\nNusxa olish\n#12 maqol\nOta-ona & Kattalar\n\nKatta izzatda — kichik xizmatda.\n\nO‘zbek xalq maqoli\nNusxa olish\n1\n2\n…\n8\n\nIslomiy manbalar\n\nSunnat va hikmatlar\n\nIlmiy asoslangan\n\nPsixologlar tavsiyasi\n\nAmaliy yondashuv\n\nKunlik 5 daqiqalik odat\n\nO‘zbek oilalari uchun\n\nMilliy va madaniy muhit\n\nFarzand tarbiyasi — har kuni o‘rganiladigan yo‘l. Islomiy qadriyatlar va zamonaviy bolalar psixologiyasini birlashtirgan o‘zbekcha ta’lim maydoni.\n\nTarbiyani boshlash\n\nO‘rganish\n\nRoadmap\nBarcha darslar\nFoydali maqolalar\nBolalar olami (Ertak & She’rlar)\nSalomatlik (Body Basics)\nJazosiz tarbiya (Adem Güneş)\nFarzandly Premium\nInstagram Post Studio\n\nBolalar uchun\n\n\"Burp!\" — Nega kekiramiz?\n15 ta sara ibratli ertak\nFasllar va maktab she’rlari\nHayvonlar haqida topishmoqlar\nOdob va tarbiya maqollari\nUrmasdan tarbiyalash\n\n© 2026 Farzandly. Barcha huquqlar himoyalangan.\n\nO‘zbekistondagi yosh oilalar uchun mehr bilan yaratildi",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Bolalar olami",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "48px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    },
+    "salomatlik": {
+      "url": "https://www.farzandly.uz/salomatlik",
+      "title": "Salomatlik & Tana sirlari (Body Basics) — Bolalar va ota-onalar uchun | Farzandly",
+      "bodyFont": "Supreme, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, \"Helvetica Neue\", Arial, sans-serif",
+      "bodyBg": "rgb(250, 247, 242)",
+      "h1": [
+        {
+          "text": "Farzandingiz tanasi qanday ishlaydi? Sodda va qiziqarli!",
+          "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+          "size": "30px",
+          "weight": "900",
+          "color": "lab(16.132 -0.318035 -14.6672)"
+        }
+      ],
+      "h2": [
+        "\"Burp!\" — Nima uchun inson kekiradi?",
+        "Hazm qilish a’zolari qanday ishlaydi?",
+        "Barcha mavzular",
+        "Tanamiz haqida buni bilarmidingiz?"
+      ],
+      "buttons": [
+        {
+          "text": "Salomatlik",
+          "bg": "lab(97.8462 -6.94966 1.85487)",
+          "color": "lab(44.4871 -41.0396 11.0361)",
+          "radius": "12px",
+          "borderBottom": "2px lab(90.2247 -31.039 9.47084)"
+        },
+        {
+          "text": "UZ",
+          "bg": "oklab(0.983998 -0.00114051 -0.00275558 / 0.9)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "16px",
+          "borderBottom": "2px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "kirish",
+          "bg": "rgb(34, 158, 217)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(24, 114, 158)"
+        },
+        {
+          "text": "Mavzuni to‘liq o‘qish",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "Og‘iz va tishlar",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "0px lab(26.9569 -1.47016 -15.6993)"
+        },
+        {
+          "text": "Qizilo‘ngach (Esophagus)",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Oshqozon (Stomach)",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "0px lab(26.9569 -1.47016 -15.6993)"
+        },
+        {
+          "text": "Jigar va o‘t pufagi",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "0px lab(26.9569 -1.47016 -15.6993)"
+        },
+        {
+          "text": "Ingichka ichak (Small Intestine)",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "0px lab(26.9569 -1.47016 -15.6993)"
+        },
+        {
+          "text": "Yo‘g‘on ichak (Large Intestine)",
+          "bg": "lab(96.286 -0.852436 -2.46847)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "0px lab(26.9569 -1.47016 -15.6993)"
+        },
+        {
+          "text": "Barcha mavzular",
+          "bg": "lab(55.0481 -49.9246 15.93)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "👑 Premium",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Bosh miya va asab",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Suyaklar va harakat",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Hazm qilish",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Yurak va qon",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Nafas tizimi",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Ko‘rish va eshitish",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Himoya va immunitet",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "Metabolizm va bezlar",
+          "bg": "rgb(255, 255, 255)",
+          "color": "lab(26.9569 -1.47016 -15.6993)",
+          "radius": "12px",
+          "borderBottom": "1px lab(91.7353 -0.998765 -4.76968)"
+        },
+        {
+          "text": "O‘qish (Ko‘rish)",
+          "bg": "lab(72.7183 31.8672 97.9407)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "Batafsil",
+          "bg": "rgb(5, 150, 105)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "16px",
+          "borderBottom": "4px rgb(4, 120, 87)"
+        },
+        {
+          "text": "O‘qish (Ko‘rish)",
+          "bg": "lab(72.7183 31.8672 97.9407)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        },
+        {
+          "text": "O‘qish (Ko‘rish)",
+          "bg": "lab(72.7183 31.8672 97.9407)",
+          "color": "rgb(255, 255, 255)",
+          "radius": "12px",
+          "borderBottom": "0px rgb(255, 255, 255)"
+        }
+      ],
+      "imgs": [
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 192,
+          "h": 47
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Fbody%20basics%2FDigestiveSystem-enSS-1.jpg&w=1200&q=75",
+          "alt": "Anatomik tuzilishi",
+          "w": 201,
+          "h": 151
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Fbody%20basics%2Fdigestivesystem-enss-1.jpg&w=1200&q=75",
+          "alt": "Human Digestive System Diagram",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/throat.gif",
+          "alt": "Hiqichoq: Diafragma mushagi va uni to‘xtatish sirlari",
+          "w": 415,
+          "h": 233
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/DigestiveSystem-enSS-1.jpg",
+          "alt": "\"Burp!\" — Nima uchun inson kekiradi?",
+          "w": 620,
+          "h": 465
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/throat.gif",
+          "alt": "Tonzillit (Angina): Tomoq og‘rig‘i, bezlar yallig‘lanishi va davolash",
+          "w": 415,
+          "h": 233
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/appendicitis-400x400-rd1-enIL.gif",
+          "alt": "Appenditsit: Bolalar va o‘smirlarda belgilari, tashxisi va davolash",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/how-does-the-nose-help-with-breathing.gif",
+          "alt": "Burun: Hid bilish sirlari va nafas olishning bosh darvozasi",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "src": "https://www.farzandly.uz/body%20basics/default-anatomy.svg",
+          "alt": "Quloqlar: Tovushlarni eshitish va muvozanatni saqlash a’zosi",
+          "w": 0,
+          "h": 0
+        },
+        {
+          "src": "https://www.farzandly.uz/_next/image?url=%2Flogo-white.png&w=384&q=75",
+          "alt": "Farzandly",
+          "w": 389,
+          "h": 96
+        }
+      ],
+      "numbers": [
+        "Har bir test uchun +10 XP tajriba ballari",
+        "Tomoqni oshqozon bilan bog‘lovchi 25 sm uzunlikdagi muskulli naycha. U to‘lqinsim",
+        "Ko‘rsatilmoqda: 1–6 / Jami: 19 ta mavzu",
+        "Sahifa 1 / 4",
+        "3 daqiqa",
+        "💡 Qiziqarli fakt: Biz yutadigan oddiy havo 78% azot va 21% kisloroddan iborat — kekirikda",
+        "4 daqiqa",
+        "5 daqiqa",
+        "n qanday qilib havoni isitadi va tozalaydi, 10 000 xil hidni qanday ajratadi va taom lazzatini",
+        "1\n2\n3\n4\nQIZIQARLI TIBBIY FAKTLAR",
+        "Miyamizda 86 milliarddan ortiq neyronlar mavjud bo‘lib, u",
+        "lar orqali signallar soatiga 400 kilometrdan tezroq harakatlanadi!",
+        "Inson yuragi bir kunda o‘rtacha 100 000 marta uradi va qariyb 7 500 litr qonni butun",
+        "Kunlik 5 daqiqalik odat",
+        "15 ta sara ibratli ertak",
+        "© 2026 Farzandly. Barcha huquqlar himoyalangan."
+      ],
+      "text": "Asosiy tarkibga o‘tish\nUZ\nkirish\nTana sirlari va bolalar salomatligi ensiklopediyasi\nFarzandingiz tanasi qanday ishlaydi? Sodda va qiziqarli!\n\nNega inson kekiradi? Bosh miya fikrlarni qanday boshqaradi? Yurak kuniga necha marta uradi? Bolalar va ota-onalar uchun tana a’zolari, fiziologiya va sog‘lom odatlar bo‘yicha ilmiy-ommabop qo‘llanmalar.\n\nTibbiyot mutaxassislari tomonidan tasdiqlangan\nHar bir test uchun +10 XP tajriba ballari\nBolalar va ota-onalar tushunadigan tilda\nMAVZU: OVQAT HAZM QILISH TIZIMI\n\"Burp!\" — Nima uchun inson kekiradi?\n\nOvqat hazm qilish tizimi: Oshqozondagi ortiqcha gaz qayerdan paydo bo‘lishi va kekirish nega tabiiy holat ekanligini bilib oling.\n\n💨 Tana jarayonlari:\nAzot, kislorod va gazli ichimliklardagi karbonat angidrid.\n🫁 Harakat yo‘li:\nOshqozon ➔ Qizilo‘ngach ➔ Og‘iz orqali tabiiy chiqish.\nMavzuni to‘liq o‘qish\nANATOMIK TUZILISHI\nQizilo‘ngach va oshqozon: Kekirik qanday yo‘l bosib o‘tadi?\n\nKekirish — bu oshqozondagi ortiqcha gazning qizilo‘ngach orqali chiqishi bo‘lib, butunlay tabiiy jarayondir.\n\nINTERAKTIV XARITA\nHazm qilish a’zolari qanday ishlaydi?\n\nA’zolarni bosib, taom va gazlar tana bo‘ylab qanday harakatlanishini o‘rganing.\n\nHazm qilish a’zolari xaritasi\n\nHar bir a’zoga bosing va uning qanday ishlashini bilib oling\n\nBolalar anatomiyasi: Tana a’zolari\nHazm yo‘li:\nOg‘iz ➔ Qizilo‘ngach ➔ Oshqozon\n\nA’ZONI TANLANG:\n\nOg‘iz va tishlar\nQizilo‘ngach (Esophagus)\nOshqozon (Stomach)\nJigar va o‘t pufagi\nIngichka ichak (Small Intestine)\nYo‘g‘on ichak (Large Intestine)\nQizilo‘ngach (Esophagus)\n⭐ Kekirishga bevosita bog‘liq\n\nTomoqni oshqozon bilan bog‘lovchi 25 sm uzunlikdagi muskulli naycha. U to‘lqinsimon qisqarib ozuqani oshqozonga tushiradi.\n\n💨 Kekirishda qanday ishtirok etadi?\nOrtiqcha gaz oshqozondan aynan qizilo‘ngach orqali yuqoriga chiqadi va kekirish hosil bo‘ladi!\nBarcha mavzular\n\nTana a’zolari, fiziologiya va gigiyena bo‘yicha to‘liq qo‘llanmalar\n\nBarcha mavzular\n👑 Premium\nBosh miya va asab\nSuyaklar va harakat\nHazm qilish\nYurak va qon\nNafas tizimi\nKo‘rish va eshitish\nHimoya va immunitet\nMetabolizm va bezlar\nKo‘rsatilmoqda: 1–6 / Jami: 19 ta mavzu\nSahifa 1 / 4\nNAFAS VA HAZM A’ZOLARI\nPREMIUM\nNafas va hazm a’zolari\nPremium\n3 daqiqa\nHiqichoq: Diafragma mushagi va uni to‘xtatish sirlari\n\nTana sirlari: Diafragma mushagi va hiqichoqni xavfsiz to‘xtatish usullari haqida.\n\nBepul qisman o‘qish\nO‘qish (Ko‘rish)\nOVQAT HAZM QILISH TIZIMI\nOvqat hazm qilish tizimi\n3 daqiqa\n\"Burp!\" — Nima uchun inson kekiradi?\n\nOvqat hazm qilish tizimi: Oshqozondagi ortiqcha gaz qayerdan paydo bo‘lishi va kekirish nega tabiiy holat ekanligini bilib oling.\n\n💡 Qiziqarli fakt: Biz yutadigan oddiy havo 78% azot va 21% kisloroddan iborat — kekirikda aynan shu gazlar chiqadi!\nTibbiyot mutaxassislari tasdiqlagan\nBatafsil\nLIMFA VA TOMOQ A’ZOLARI\nPREMIUM\nLimfa va tomoq a’zolari\nPremium\n4 daqiqa\nTonzillit (Angina): Tomoq og‘rig‘i, bezlar yallig‘lanishi va davolash\n\nMurtak bezlari nega shishadi, tomoq og‘rig‘i belgilari, tezkor testlar va uyda parvarish qilish usullari.\n\nBepul qisman o‘qish\nO‘qish (Ko‘rish)\nHAZM VA LIMFA A’ZOLARI\nPREMIUM\nHazm va limfa a’zolari\nPremium\n5 daqiqa\nAppenditsit: Bolalar va o‘smirlarda belgilari, tashxisi va davolash\n\nKindik atrofidan o‘ng tomonga ko‘chuvchi qorin og‘rig‘i, appenditsitning xavfli belgilari va shoshilinch yordam.\n\nBepul qisman o‘qish\nO‘qish (Ko‘rish)\nNAFAS VA HID BILISH TIZIMI\nPREMIUM\nNafas va hid bilish tizimi\nPremium\n5 daqiqa\nBurun: Hid bilish sirlari va nafas olishning bosh darvozasi\n\nBurun qanday qilib havoni isitadi va tozalaydi, 10 000 xil hidni qanday ajratadi va taom lazzatini his qilishga qanday yordam beradi?\n\nBepul qisman o‘qish\nO‘qish (Ko‘rish)\nESHITISH VA SEZGI TIZIMI\nPREMIUM\nEshitish va sezgi tizimi\nPremium\n5 daqiqa\nQuloqlar: Tovushlarni eshitish va muvozanatni saqlash a’zosi\n\nTashqi, o‘rta va ichki quloq havoning ko‘rinmas to‘lqinlarini qanday qilib yoqimli tovushlarga aylantiradi va muvozanatimizni qanday saqlaydi?\n\nBepul qisman o‘qish\nO‘qish (Ko‘rish)\n1\n2\n3\n4\nQIZIQARLI TIBBI",
+      "status": 200,
+      "desktop": {
+        "h1": [
+          {
+            "text": "Farzandingiz tanasi qanday ishlaydi? Sodda va qiziqarli!",
+            "font": "Chubbo, system-ui, -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, sans-serif",
+            "size": "60px",
+            "weight": "900",
+            "color": "lab(16.132 -0.318035 -14.6672)"
+          }
+        ],
+        "status": 200
+      }
+    }
+  }
+}

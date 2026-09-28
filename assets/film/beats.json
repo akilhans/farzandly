@@ -1,0 +1,305 @@
+{
+  "bpm": 120,
+  "beat": 0.5,
+  "bars": 10,
+  "duration": 20,
+  "grid": [
+    0,
+    0.5,
+    1,
+    1.5,
+    2,
+    2.5,
+    3,
+    3.5,
+    4,
+    4.5,
+    5,
+    5.5,
+    6,
+    6.5,
+    7,
+    7.5,
+    8,
+    8.5,
+    9,
+    9.5,
+    10,
+    10.5,
+    11,
+    11.5,
+    12,
+    12.5,
+    13,
+    13.5,
+    14,
+    14.5,
+    15,
+    15.5,
+    16,
+    16.5,
+    17,
+    17.5,
+    18,
+    18.5,
+    19,
+    19.5
+  ],
+  "events": [
+    {
+      "t": 0,
+      "beat": 0,
+      "what": "bass"
+    },
+    {
+      "t": 0,
+      "beat": 0,
+      "what": "hook-word"
+    },
+    {
+      "t": 0.5,
+      "beat": 1,
+      "what": "hook-word"
+    },
+    {
+      "t": 1,
+      "beat": 2,
+      "what": "bass"
+    },
+    {
+      "t": 1,
+      "beat": 2,
+      "what": "hook-word"
+    },
+    {
+      "t": 1.5,
+      "beat": 3,
+      "what": "hook-word"
+    },
+    {
+      "t": 2,
+      "beat": 4,
+      "what": "bass"
+    },
+    {
+      "t": 2,
+      "beat": 4,
+      "what": "hook-stack"
+    },
+    {
+      "t": 2.4,
+      "beat": 4.8,
+      "what": "riser"
+    },
+    {
+      "t": 2.5,
+      "beat": 5,
+      "what": "hook-NEGA"
+    },
+    {
+      "t": 3,
+      "beat": 6,
+      "what": "bass"
+    },
+    {
+      "t": 3.5,
+      "beat": 7,
+      "what": "whoosh->product"
+    },
+    {
+      "t": 3.5,
+      "beat": 7,
+      "what": "ui-piece"
+    },
+    {
+      "t": 3.75,
+      "beat": 7.5,
+      "what": "ui-piece"
+    },
+    {
+      "t": 4,
+      "beat": 8,
+      "what": "bass"
+    },
+    {
+      "t": 4,
+      "beat": 8,
+      "what": "ui-piece"
+    },
+    {
+      "t": 4.25,
+      "beat": 8.5,
+      "what": "ui-piece"
+    },
+    {
+      "t": 4.5,
+      "beat": 9,
+      "what": "ui-piece"
+    },
+    {
+      "t": 4.75,
+      "beat": 9.5,
+      "what": "ui-piece"
+    },
+    {
+      "t": 5,
+      "beat": 10,
+      "what": "bass"
+    },
+    {
+      "t": 6,
+      "beat": 12,
+      "what": "bass"
+    },
+    {
+      "t": 7,
+      "beat": 14,
+      "what": "bass"
+    },
+    {
+      "t": 7,
+      "beat": 14,
+      "what": "whoosh->feature"
+    },
+    {
+      "t": 8,
+      "beat": 16,
+      "what": "bass"
+    },
+    {
+      "t": 8,
+      "beat": 16,
+      "what": "click-age"
+    },
+    {
+      "t": 9,
+      "beat": 18,
+      "what": "bass"
+    },
+    {
+      "t": 9.5,
+      "beat": 19,
+      "what": "whoosh->feature"
+    },
+    {
+      "t": 10,
+      "beat": 20,
+      "what": "bass"
+    },
+    {
+      "t": 10.5,
+      "beat": 21,
+      "what": "click-lesson"
+    },
+    {
+      "t": 11,
+      "beat": 22,
+      "what": "bass"
+    },
+    {
+      "t": 12,
+      "beat": 24,
+      "what": "bass"
+    },
+    {
+      "t": 12,
+      "beat": 24,
+      "what": "whoosh->feature"
+    },
+    {
+      "t": 12.5,
+      "beat": 25,
+      "what": "click-tab"
+    },
+    {
+      "t": 13,
+      "beat": 26,
+      "what": "bass"
+    },
+    {
+      "t": 14,
+      "beat": 28,
+      "what": "bass"
+    },
+    {
+      "t": 14.5,
+      "beat": 29,
+      "what": "bass"
+    },
+    {
+      "t": 14.5,
+      "beat": 29,
+      "what": "impact-69"
+    },
+    {
+      "t": 15,
+      "beat": 30,
+      "what": "ta-dars"
+    },
+    {
+      "t": 15.5,
+      "beat": 31,
+      "what": "bass"
+    },
+    {
+      "t": 15.5,
+      "beat": 31,
+      "what": "free-strip"
+    },
+    {
+      "t": 16,
+      "beat": 32,
+      "what": "kicker"
+    },
+    {
+      "t": 16.5,
+      "beat": 33,
+      "what": "bass"
+    },
+    {
+      "t": 16.5,
+      "beat": 33,
+      "what": "counts"
+    },
+    {
+      "t": 17,
+      "beat": 34,
+      "what": "proof-hold"
+    },
+    {
+      "t": 17.5,
+      "beat": 35,
+      "what": "bass"
+    },
+    {
+      "t": 17.5,
+      "beat": 35,
+      "what": "lockup"
+    },
+    {
+      "t": 17.75,
+      "beat": 35.5,
+      "what": "cta-in"
+    },
+    {
+      "t": 18.5,
+      "beat": 37,
+      "what": "bass"
+    },
+    {
+      "t": 18.5,
+      "beat": 37,
+      "what": "click-cta"
+    },
+    {
+      "t": 19,
+      "beat": 38,
+      "what": "end-plate"
+    },
+    {
+      "t": 19.5,
+      "beat": 39,
+      "what": "bass"
+    }
+  ]
+}

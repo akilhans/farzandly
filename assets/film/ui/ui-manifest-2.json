@@ -1,0 +1,93 @@
+[
+  {
+    "name": "age-0-2",
+    "route": "/",
+    "w": 382,
+    "h": 207,
+    "tag": "A"
+  },
+  {
+    "name": "age-3-5",
+    "route": "/",
+    "w": 382,
+    "h": 207,
+    "tag": "A"
+  },
+  {
+    "name": "age-6-9",
+    "route": "/",
+    "w": 382,
+    "h": 207,
+    "tag": "A"
+  },
+  {
+    "name": "age-10-13",
+    "route": "/",
+    "w": 382,
+    "h": 207,
+    "tag": "A"
+  },
+  {
+    "name": "problem-1",
+    "route": "/",
+    "w": 382,
+    "h": 181,
+    "tag": "A"
+  },
+  {
+    "name": "problem-2",
+    "route": "/",
+    "w": 382,
+    "h": 181,
+    "tag": "A"
+  },
+  {
+    "name": "problem-3",
+    "route": "/",
+    "w": 382,
+    "h": 181,
+    "tag": "A"
+  },
+  {
+    "name": "steps",
+    "route": "/",
+    "w": 314,
+    "h": 32,
+    "tag": "H2"
+  },
+  {
+    "name": "ertak-1",
+    "route": "/ertaklar",
+    "w": 382,
+    "h": 370,
+    "tag": "DIV"
+  },
+  {
+    "name": "ertak-2",
+    "route": "/ertaklar",
+    "w": 382,
+    "h": 370,
+    "tag": "DIV"
+  },
+  {
+    "name": "ertak-3",
+    "route": "/ertaklar",
+    "w": 382,
+    "h": 370,
+    "tag": "DIV"
+  },
+  {
+    "name": "premium-free",
+    "route": "/premium",
+    "w": 382,
+    "h": 465,
+    "tag": "DIV"
+  },
+  {
+    "name": "premium-price",
+    "route": "/premium",
+    "w": 330,
+    "h": 138,
+    "tag": "DIV"
+  }
+]
