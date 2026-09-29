@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo, useEffect, Suspense } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   BookOpen,
@@ -27,12 +28,19 @@ import {
   GraduationCap,
   Volume2,
   Quote,
+  Gamepad2,
 } from 'lucide-react';
 import { kidsTales, kidsPoems, kidsRiddles, kidsProverbs, Tale, Poem, Riddle, Proverb } from '@/lib/kidsData';
 import { useI18n } from '@/context/LanguageContext';
 import Pagination from '@/components/Pagination';
 
-type TabType = 'ertaklar' | 'sherlar' | 'topishmoqlar' | 'maqollar';
+// Games are only downloaded when the "O‘yinlar" tab is opened.
+const KidsGames = dynamic(() => import('@/components/kids/KidsGames'), {
+  ssr: false,
+  loading: () => <div className="p-12 text-center text-slate-400">Yuklanmoqda...</div>,
+});
+
+type TabType = 'ertaklar' | 'sherlar' | 'topishmoqlar' | 'maqollar' | 'oyinlar';
 
 const TALES_PAGE_SIZE = 6;
 const POEMS_PAGE_SIZE = 9;
@@ -50,7 +58,7 @@ function BolalarContent() {
   const page = Number.isFinite(rawPage) && rawPage > 0 ? rawPage : 1;
 
   const [activeTab, setActiveTab] = useState<TabType>(
-    ['ertaklar', 'sherlar', 'topishmoqlar', 'maqollar'].includes(tabParam) ? tabParam : 'ertaklar'
+    ['ertaklar', 'sherlar', 'topishmoqlar', 'maqollar', 'oyinlar'].includes(tabParam) ? tabParam : 'ertaklar'
   );
 
   // Sync tab with URL
@@ -258,7 +266,7 @@ function BolalarContent() {
           </h1>
           <p className="mt-3 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
             Farzandingiz bilan birgalikda o‘qish, yod olish va zehnini charxlash uchun ibratli ertaklar,
-            go‘zal she’rlar hamda topishmoqlar to‘plami.
+            go‘zal she’rlar, topishmoqlar hamda qiziqarli o‘yinlar to‘plami.
           </p>
 
           {/* Navigation Tabs */}
@@ -338,11 +346,33 @@ function BolalarContent() {
                 {kidsProverbs.length}
               </span>
             </button>
+
+            <button
+              onClick={() => setTab('oyinlar')}
+              className={`px-5 py-2.5 rounded-2xl text-sm font-bold flex items-center gap-2 transition-all ${
+                activeTab === 'oyinlar'
+                  ? 'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 ring-2 ring-emerald-600 ring-offset-2'
+                  : 'bg-white border-2 border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300'
+              }`}
+            >
+              <Gamepad2 className="w-4 h-4" />
+              <span>O‘yinlar</span>
+              <span
+                className={`text-xs px-2 py-0.5 rounded-full font-black ${
+                  activeTab === 'oyinlar' ? 'bg-emerald-700 text-emerald-100' : 'bg-amber-100 text-amber-700'
+                }`}
+              >
+                4
+              </span>
+            </button>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+        {/* ================= TAB 5: O‘YINLAR ================= */}
+        {activeTab === 'oyinlar' && <KidsGames />}
+
         {/* ================= TAB 1: ERTAKLAR ================= */}
         {activeTab === 'ertaklar' && (
           <div className="space-y-6">
@@ -369,7 +399,8 @@ function BolalarContent() {
               {paginatedTales.map((tale) => (
                 <div
                   key={tale.id}
-                  className="bg-white rounded-2xl border border-slate-200/90 p-6 flex flex-col justify-between hover:border-emerald-500 hover:shadow-md hover:-translate-y-1 transition-all duration-200 group"
+                  data-spotlight=""
+                  className="bg-white rounded-2xl border border-slate-200/90 p-6 flex flex-col justify-between hover:border-emerald-500 lift-card group"
                 >
                   <div className="space-y-3">
                     {/* Header tags */}
