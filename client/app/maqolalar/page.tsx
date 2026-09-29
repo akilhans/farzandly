@@ -120,7 +120,8 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
           return (
             <article
               key={article.slug}
-              className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-lg hover:border-emerald-400 hover:-translate-y-1 transition-all duration-200 p-6 flex flex-col justify-between group"
+              data-spotlight=""
+              className="bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:border-emerald-400 lift-card p-6 flex flex-col justify-between group"
             >
               <div className="space-y-3">
                 {/* Badges Bar with proper wrapping and alignment */}

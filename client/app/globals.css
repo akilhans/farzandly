@@ -148,3 +148,130 @@ h1, h2, h3, h4, h5, h6, .font-heading, .font-chubbo {
 .animate-subtle-bounce {
   animation: bounceSubtle 2s infinite ease-in-out;
 }
+
+/* ------------------------------------------------------------------ */
+/* Motion language — hover layer                                       */
+/* Timing mirrors lib/motion.ts: EASE_OUT for settle, EASE_UI for UI.  */
+/* ------------------------------------------------------------------ */
+:root {
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-ui: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+/* Lift card: rises, its hard bottom edge "thickens" like the tactile buttons. */
+.lift-card {
+  transition:
+    transform 0.45s var(--ease-out),
+    border-color 0.25s ease,
+    box-shadow 0.45s var(--ease-out);
+}
+@media (hover: hover) {
+  .lift-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 30px -18px rgb(4 120 87 / 0.35);
+  }
+}
+.lift-card:active {
+  transform: translateY(0);
+  transition-duration: 0.1s;
+}
+
+/* Icon tile inside a card nudges up and turns a few degrees on card hover. */
+.lift-card .lift-icon {
+  transition: transform 0.5s var(--ease-out), background-color 0.25s ease, color 0.25s ease;
+}
+@media (hover: hover) {
+  .lift-card:hover .lift-icon {
+    transform: translateY(-2px) rotate(-6deg);
+  }
+}
+
+/* Cursor spotlight: a soft emerald wash that follows the pointer inside the card.
+   Position comes from MotionProvider's single delegated listener. */
+[data-spotlight] {
+  position: relative;
+  isolation: isolate;
+}
+[data-spotlight]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background: radial-gradient(
+    280px circle at var(--mx, 50%) var(--my, 0%),
+    rgb(16 185 129 / 0.1),
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  pointer-events: none;
+}
+@media (hover: hover) {
+  [data-spotlight]:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Desktop nav: underline grows from the left instead of a background flash. */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  left: 0.75rem;
+  right: 0.75rem;
+  bottom: 0.2rem;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s var(--ease-out);
+  opacity: 0.5;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+/* Header gains depth once the page has scrolled under it. */
+.site-header {
+  transition: box-shadow 0.35s ease, background-color 0.35s ease;
+}
+.site-header[data-scrolled='true'] {
+  background-color: rgb(255 255 255 / 0.92);
+  box-shadow: 0 10px 30px -22px rgb(15 23 42 / 0.45);
+}
+
+/* Hero backdrop: faint dot field, faded toward the edges. */
+.dot-field {
+  background-image: radial-gradient(rgb(5 150 105 / 0.18) 1.2px, transparent 1.2px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse at center, black 20%, transparent 70%);
+}
+
+/* ------------------------------------------------------------------ */
+/* Reduced motion: everything lands in its resting state, no loops.    */
+/* ------------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  [data-motion] {
+    opacity: 1 !important;
+    transform: none !important;
+    clip-path: none !important;
+  }
+  [data-marker] {
+    background-size: 100% 0.32em !important;
+  }
+  [data-motion-bar] {
+    display: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

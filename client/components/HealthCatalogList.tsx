@@ -173,7 +173,8 @@ export default function HealthCatalogList({
             return (
               <div
                 key={topic.id}
-                className="bg-white rounded-2xl border-2 border-slate-200/90 overflow-hidden flex flex-col justify-between hover:border-emerald-500 hover:shadow-lg hover:-translate-y-1 transition-all group"
+                data-spotlight=""
+                className="bg-white rounded-2xl border-2 border-slate-200/90 overflow-hidden flex flex-col justify-between hover:border-emerald-500 lift-card group"
               >
                 {/* Visual Thumbnail */}
                 <div className="relative w-full h-44 bg-slate-950 flex items-center justify-center p-3 border-b border-slate-100 overflow-hidden">

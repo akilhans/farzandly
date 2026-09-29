@@ -112,7 +112,8 @@ function DarslarContent() {
         {paginatedCourses.map((course) => (
           <div
             key={course.slug}
-            className="card-farzandly p-6 flex flex-col justify-between hover:border-emerald-500 hover:-translate-y-1 transition-all group"
+            data-spotlight=""
+            className="card-farzandly p-6 flex flex-col justify-between hover:border-emerald-500 lift-card group"
           >
             <div className="space-y-4">
               <div className="flex items-center justify-between">

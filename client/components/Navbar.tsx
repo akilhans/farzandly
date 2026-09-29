@@ -1,10 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { m, AnimatePresence } from 'framer-motion';
+import { EASE_UI } from '@/lib/motion';
 import {
   Heart,
   Flame,
@@ -39,6 +40,14 @@ export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileDropdownOpen, setProfileDropdownOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 8);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   const languages: Array<{ code: Language; label: string; flag: string }> = [
     { code: 'uz', label: 'O‘zbekcha', flag: '🇺🇿' },
@@ -70,7 +79,10 @@ export function Navbar() {
   if (pathname?.startsWith('/instagram')) return null;
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b-2 border-slate-200/70 shadow-xs transition-colors">
+    <header
+      data-scrolled={scrolled}
+      className="site-header sticky top-0 z-40 bg-white/80 backdrop-blur-md border-b-2 border-slate-200/70 shadow-xs"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-20 gap-4 lg:gap-6">
           {/* Logo */}
@@ -100,12 +112,12 @@ export function Navbar() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 xl:px-3.5 py-1.5 xl:py-2 rounded-xl text-xs xl:text-sm font-bold flex items-center gap-1.5 transition-all whitespace-nowrap ${
+                  className={`${isActive ? '' : 'nav-link'} px-3 xl:px-3.5 py-1.5 xl:py-2 rounded-xl text-xs xl:text-sm font-bold flex items-center gap-1.5 transition-colors whitespace-nowrap ${
                     isActive
                       ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200 shadow-xs'
                       : item.highlight
-                      ? 'text-amber-700 hover:bg-amber-50'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                      ? 'text-amber-700'
+                      : 'text-slate-600 hover:text-slate-900'
                   }`}
                 >
                   <Icon className={`w-3.5 h-3.5 xl:w-4 xl:h-4 ${item.highlight ? 'text-amber-500' : ''}`} />
@@ -120,7 +132,7 @@ export function Navbar() {
             {/* Gamification Stats (Streak & XP) */}
             <div className="hidden xl:flex items-center gap-1.5 sm:gap-2 bg-slate-50/80 backdrop-blur-xs border-2 border-slate-200/80 rounded-2xl px-2.5 py-1.5 shrink-0">
               <div className="flex items-center gap-1 text-xs font-bold text-amber-600" title={t('stats.streak')}>
-                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500 animate-pulse" />
+                <Flame className="w-3.5 h-3.5 text-orange-500 fill-orange-500" />
                 <span>{user?.streak ?? 1}</span>
               </div>
               <div className="w-[1px] h-3.5 bg-slate-300" />
@@ -293,9 +305,13 @@ export function Navbar() {
       <AnimatePresence>
         {mobileMenuOpen && (
           <m.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
+            variants={{
+              hidden: { opacity: 0, height: 0, transition: { duration: 0.25, ease: EASE_UI } },
+              show: { opacity: 1, height: 'auto', transition: { duration: 0.35, ease: EASE_UI, staggerChildren: 0.035, delayChildren: 0.08 } },
+            }}
+            initial="hidden"
+            animate="show"
+            exit="hidden"
             className="lg:hidden bg-white/95 backdrop-blur-md border-b-2 border-slate-200 px-4 pt-2 pb-6 space-y-2 overflow-hidden"
           >
             <Link
@@ -310,19 +326,24 @@ export function Navbar() {
               const Icon = item.icon;
               const isActive = pathname === item.href;
               return (
-                <Link
+                <m.div
                   key={item.href}
-                  href={item.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-base font-bold ${
-                    isActive
-                      ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200'
-                      : 'text-slate-700 hover:bg-slate-50'
-                  }`}
+                  data-motion=""
+                  variants={{ hidden: { opacity: 0, x: -12 }, show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: EASE_UI } } }}
                 >
-                  <Icon className="w-5 h-5 text-emerald-600" />
-                  <span>{item.label}</span>
-                </Link>
+                  <Link
+                    href={item.href}
+                    onClick={() => setMobileMenuOpen(false)}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-2xl text-base font-bold ${
+                      isActive
+                        ? 'bg-emerald-50 text-emerald-700 border-2 border-emerald-200'
+                        : 'text-slate-700 hover:bg-slate-50'
+                    }`}
+                  >
+                    <Icon className="w-5 h-5 text-emerald-600" />
+                    <span>{item.label}</span>
+                  </Link>
+                </m.div>
               );
             })}
 
