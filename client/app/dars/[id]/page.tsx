@@ -32,6 +32,7 @@ import { playChimeSound } from '@/lib/gamification';
 import PaymentModal from '@/components/PaymentModal';
 import { PAYMENT_CARD, formatCard } from '@/lib/payments';
 import { T } from '@/components/T';
+import { PriceT } from '@/components/offer/Offer';
 
 export default function LessonRunnerPage() {
   const params = useParams();
@@ -257,7 +258,7 @@ export default function LessonRunnerPage() {
             <div className="text-xs text-amber-900 font-bold uppercase tracking-wider"><T k="lsn.3" /></div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
               <span><T k="lsn.4" /></span>
-              <span className="text-emerald-700 font-black"><T k="lsn.5" /></span>
+              <span className="text-emerald-700 font-black"><PriceT k="lsn.5" /></span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
               <span><T k="lsn.6" /></span>

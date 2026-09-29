@@ -22,6 +22,7 @@ import { api } from '@/lib/api';
 import { SITE_NAME, SITE_URL, SITE_KEYWORDS, START_LESSON_HREF, DEFAULT_OG_IMAGE, absoluteUrl } from '@/lib/site';
 import SearchForm from '@/components/SearchForm';
 import { T, Tr } from '@/components/T';
+import { PriceT } from '@/components/offer/Offer';
 
 const BOT_USERNAME = (process.env.NEXT_PUBLIC_TELEGRAM_BOT_USERNAME || '').replace(/^@/, '');
 
@@ -606,7 +607,7 @@ export default async function HomePage() {
               </Item>
               <Item>
                 <p className="text-sm sm:text-base text-emerald-100/90 leading-relaxed font-medium">
-                  <T k="home.75" />{' '}<span className="font-bold text-amber-300"><T k="home.76" /></span> <T k="home.77" /></p>
+                  <T k="home.75" />{' '}<span className="font-bold text-amber-300"><PriceT k="home.76" /></span> <T k="home.77" /></p>
               </Item>
               <Item>
                 <div className="pt-2 flex flex-col sm:flex-row items-center gap-3">

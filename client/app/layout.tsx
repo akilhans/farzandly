@@ -7,6 +7,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import SessionExpiredBanner from "@/components/SessionExpiredBanner";
 import { T } from "@/components/T";
 import MotionProvider from "@/components/MotionProvider";
+import { OfferBanner } from "@/components/offer/Offer";
 import { LanguageProvider } from "@/context/LanguageContext";
 import {
   DEFAULT_OG_IMAGE,
@@ -199,6 +200,7 @@ export default function RootLayout({
               <SessionExpiredBanner />
               <main id="main-content" className="flex-1">{children}</main>
               <Footer />
+              <OfferBanner />
             </MotionProvider>
           </AuthProvider>
         </LanguageProvider>

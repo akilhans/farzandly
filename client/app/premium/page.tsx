@@ -22,6 +22,8 @@ import { START_LESSON_HREF } from '@/lib/site';
 import { DEFAULT_PAYMENT_CARD, PAYMENT_CARD, PREMIUM_PRICE_UZS, formatCard, formatSom } from '@/lib/payments';
 import { T } from '@/components/T';
 import { useI18n } from '@/context/LanguageContext';
+import { usePremiumOffer } from '@/lib/offer';
+import { OfferPrice, MobileOfferBar } from '@/components/offer/Offer';
 
 export default function PremiumPage() {
   const { t } = useI18n();
@@ -36,10 +38,11 @@ export default function PremiumPage() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`prem.faq${n}.q`), a: t(`prem.faq${n}.a`) }));
+  const offer = usePremiumOffer();
+  const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`prem.faq${n}.q`), a: t(`prem.faq${n}.a`, undefined, { price: formatSom(offer.price) }) }));
 
   return (
-    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 space-y-12">
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-32 sm:pt-16 md:pb-16 space-y-12">
       {/* Header */}
       <div className="text-center space-y-3 max-w-2xl mx-auto">
         <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-900 border border-amber-300 px-4 py-1 rounded-full text-xs font-black">
@@ -97,7 +100,7 @@ export default function PremiumPage() {
         </div>
 
         {/* PREMIUM TIER */}
-        <div className="rounded-3xl bg-white border-2 border-amber-400 border-b-8 p-8 shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
+        <div id="premium-plan" className="order-first md:order-none rounded-3xl bg-white border-2 border-amber-400 border-b-8 p-8 shadow-xl flex flex-col justify-between space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 bg-amber-400 text-slate-950 font-black text-[10px] uppercase px-3 py-1 rounded-bl-xl tracking-wider">
             <T k="prem.17" /></div>
 
@@ -108,10 +111,14 @@ export default function PremiumPage() {
             </h3>
             <p className="text-xs text-slate-500"><T k="prem.19" /></p>
 
-            <div className="text-3xl font-black text-slate-900">
-              {formatSom(PREMIUM_PRICE_UZS)}{' '}
-              <span className="text-sm font-bold text-slate-400"><T k="prem.9" /></span>
-            </div>
+            <OfferPrice
+              fallback={
+                <div className="text-3xl font-black text-slate-900">
+                  {formatSom(PREMIUM_PRICE_UZS)}{' '}
+                  <span className="text-sm font-bold text-slate-400"><T k="prem.9" /></span>
+                </div>
+              }
+            />
             <p className="text-xs font-bold text-emerald-600">Bir marta to‘lov — obuna emas, qayta yechilmaydi</p>
 
             <ul className="space-y-3 text-xs sm:text-sm text-slate-700 pt-4 border-t border-slate-100">
@@ -148,7 +155,7 @@ export default function PremiumPage() {
             className="w-full btn-gold text-sm sm:text-base py-3.5 flex items-center justify-center gap-2 text-slate-950 font-black cursor-pointer shadow-lg shadow-amber-500/20"
           >
             <Crown className="w-4 h-4 fill-slate-950" />
-            <span><T k="prem.29" /></span>
+            <span>{offer.eligible && offer.ready ? t('offer.cta') : t('prem.29')}</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
@@ -232,6 +239,9 @@ export default function PremiumPage() {
           ))}
         </div>
       </div>
+
+      {/* Phones: offer + CTA stay within thumb reach (not shown to premium users) */}
+      <MobileOfferBar onStart={() => setIsPaymentModalOpen(true)} hidden={isPaymentModalOpen} />
 
       {/* Payment Modal */}
       <PaymentModal

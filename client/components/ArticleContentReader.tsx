@@ -9,6 +9,7 @@ import ArticleCompleteButton from '@/components/ArticleCompleteButton';
 import PaymentModal from '@/components/PaymentModal';
 import { PAYMENT_CARD, formatCard } from '@/lib/payments';
 import { T } from '@/components/T';
+import { PriceT } from '@/components/offer/Offer';
 
 interface ArticleContentReaderProps {
   article: Article;
@@ -86,7 +87,7 @@ export default function ArticleContentReader({ article: initialArticle }: Articl
             <div className="text-xs text-amber-900 font-bold uppercase tracking-wider"><T k="reader.4" /></div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
               <span><T k="reader.5" /></span>
-              <span className="text-emerald-700 font-black"><T k="reader.6" /></span>
+              <span className="text-emerald-700 font-black"><PriceT k="reader.6" /></span>
             </div>
             <div className="flex items-center justify-between text-xs sm:text-sm text-slate-800 font-bold">
               <span><T k="reader.7" /></span>

@@ -5,7 +5,9 @@ import Link from 'next/link';
 import { Crown, Copy, CheckCheck, X, LogIn, Clock, CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { accountApi, PaymentRequest } from '@/lib/accountApi';
-import { PAYMENT_CARD, PAYMENT_CARD_HOLDER, PREMIUM_PRICE_UZS, SUPPORT_TELEGRAM, formatCard, formatSom } from '@/lib/payments';
+import { PAYMENT_CARD, PAYMENT_CARD_HOLDER, SUPPORT_TELEGRAM, formatCard, formatSom } from '@/lib/payments';
+import { OFFER_PRICE_UZS, usePremiumOffer } from '@/lib/offer';
+import { Countdown } from '@/components/offer/Offer';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -24,6 +26,14 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
   const [payments, setPayments] = useState<PaymentRequest[] | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
+  const offer = usePremiumOffer();
+  // The price is locked when the modal opens: a parent who started paying during the
+  // offer is not moved to the regular price because the clock ran out mid-transfer.
+  const [lockedPrice, setLockedPrice] = useState<number | null>(null);
+  if (!isOpen && lockedPrice !== null) setLockedPrice(null);
+  if (isOpen && lockedPrice === null && offer.ready) setLockedPrice(offer.price);
+  const price = lockedPrice ?? offer.price;
+  const onOfferPrice = offer.eligible && price === OFFER_PRICE_UZS;
 
   const loadPayments = useCallback(async () => {
     const res = await accountApi.myPayments();
@@ -57,7 +67,7 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
   const confirmPaid = async () => {
     setSubmitting(true);
     setError('');
-    const res = await accountApi.createPayment();
+    const res = await accountApi.createPayment(undefined, price);
     setSubmitting(false);
     if (res.success) await loadPayments();
     else setError(res.message || 'So‘rovni yuborib bo‘lmadi. Qaytadan urinib ko‘ring.');
@@ -96,9 +106,26 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
         </div>
 
         <div className="p-6 space-y-5">
-          <div className="flex items-baseline justify-between">
-            <span className="text-3xl font-black text-slate-900">{formatSom(PREMIUM_PRICE_UZS)} so‘m</span>
-            <span className="text-sm font-bold text-emerald-700">bir martalik</span>
+          <div className="space-y-1.5">
+            <div className="flex items-baseline justify-between gap-3">
+              <span className="flex items-baseline gap-2.5">
+                {onOfferPrice && <s className="text-base font-bold text-slate-400">{formatSom(offer.regularPrice)}</s>}
+                <span className="text-3xl font-black text-slate-900">{formatSom(price)} so‘m</span>
+              </span>
+              <span className="text-sm font-bold text-emerald-700">bir martalik</span>
+            </div>
+            {onOfferPrice && !lifetime && (
+              <p className="text-xs font-semibold text-slate-600 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-amber-600" />
+                {offer.active ? (
+                  <>
+                    Maxsus taklif tugashiga: <Countdown seconds={offer.secondsLeft} className="text-slate-900" />
+                  </>
+                ) : (
+                  'Narx siz uchun saqlandi'
+                )}
+              </p>
+            )}
           </div>
 
           {!isAuthenticated ? (
@@ -144,7 +171,7 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
                   <span className="w-7 h-7 rounded-full bg-emerald-600 text-white text-sm font-black flex items-center justify-center shrink-0">1</span>
                   <div className="flex-1 space-y-2">
                     <p className="text-sm font-bold text-slate-800">
-                      {formatSom(PREMIUM_PRICE_UZS)} so‘mni kartaga o‘tkazing
+                      {formatSom(price)} so‘mni kartaga o‘tkazing
                     </p>
                     {PAYMENT_CARD ? (
                       <button

@@ -70,7 +70,7 @@ export const accountApi = {
 
   // --- payments ---
   paymentConfig: () => call('/payments/config'),
-  createPayment: (note?: string) => post('/payments', { note }),
+  createPayment: (note?: string, amount?: number) => post('/payments', { note, amount }),
   myPayments: () => call('/payments/mine'),
 
   // --- admin ---
