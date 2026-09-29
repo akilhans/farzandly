@@ -1,0 +1,103 @@
+{
+  "id": "bolalar-olami",
+  "bpm": 112.5,
+  "hook": {
+    "kicker": "Bolalar olami",
+    "lines": [
+      "Uxlashdan",
+      "oldin",
+      "nima",
+      "o‘qiymiz?"
+    ],
+    "accent": [
+      "o‘qiymiz?"
+    ],
+    "beats": 6
+  },
+  "scenes": [
+    {
+      "type": "cards",
+      "lines": [
+        "15 ta",
+        "ibratli ertak"
+      ],
+      "accent": [
+        "ibratli"
+      ],
+      "images": [
+        "ui/ertak-1.png",
+        "ui/ertak-2.png",
+        "ui/ertak-3.png"
+      ],
+      "say": "O‘zbek xalq ertaklari, har birida hayotiy saboq bor.",
+      "beats": 7,
+      "transition": "wipe"
+    },
+    {
+      "type": "screen",
+      "lines": [
+        "Bolalar olami",
+        "bir joyda"
+      ],
+      "accent": [
+        "bir",
+        "joyda"
+      ],
+      "src": "screens/phone-ertaklar.jpg",
+      "scrollTo": 1450,
+      "tap": {
+        "x": 580,
+        "y": 2800,
+        "beat": 4
+      },
+      "say": "Ertaklar, she’rlar, topishmoqlar va maqollar hammasi bir joyda.",
+      "beats": 7,
+      "transition": "push"
+    },
+    {
+      "type": "stat",
+      "value": 46,
+      "suffix": "ta she’r",
+      "label": "Fasllar, maktab va odob haqida",
+      "chips": [
+        "89 ta maqol",
+        "15 ta topishmoq"
+      ],
+      "say": "Qirq olti she’r, sakson to‘qqiz maqol va o‘n besh topishmoq.",
+      "beats": 6,
+      "transition": "iris",
+      "tone": "emerald"
+    },
+    {
+      "type": "headline",
+      "tone": "dark",
+      "lines": [
+        "Birga o‘qing,",
+        "birga o‘sing."
+      ],
+      "accent": [
+        "o‘sing."
+      ],
+      "say": "Farzandingiz bilan birga o‘qing, birga o‘sing.",
+      "beats": 6,
+      "transition": "wipe"
+    }
+  ],
+  "cta": {
+    "lines": [
+      "Hammasi",
+      "bepul."
+    ],
+    "accent": [
+      "bepul."
+    ],
+    "button": "Bolalar olamiga kirish",
+    "url": "farzandly.uz/bolalar",
+    "say": "Bolalar olamidagi barcha ertak va she’rlar bepul.",
+    "beats": 8,
+    "transition": "wipe"
+  },
+  "captions": {
+    "style": "word"
+  }
+}

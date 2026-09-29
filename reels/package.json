@@ -1,0 +1,32 @@
+{
+  "name": "farzandly-reels",
+  "private": true,
+  "type": "module",
+  "description": "Reusable Instagram Reels system for Farzandly (Remotion, 1080x1920)",
+  "scripts": {
+    "studio": "remotion studio src/index.ts",
+    "audio": "node scripts/audio.mjs",
+    "sheet": "node scripts/sheet.mjs",
+    "render": "node scripts/render.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@remotion/bundler": "^4.0.529",
+    "@remotion/captions": "^4.0.529",
+    "@remotion/cli": "^4.0.529",
+    "@remotion/fonts": "^4.0.529",
+    "@remotion/layout-utils": "^4.0.529",
+    "@remotion/renderer": "^4.0.529",
+    "@remotion/transitions": "^4.0.529",
+    "@remotion/zod-types": "^4.0.529",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "remotion": "^4.0.529",
+    "zod": "^4.5.4"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "typescript": "^7.0.2"
+  }
+}

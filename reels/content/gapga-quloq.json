@@ -1,0 +1,105 @@
+{
+  "id": "gapga-quloq",
+  "bpm": 100,
+  "hook": {
+    "kicker": "Ota-onalar uchun",
+    "lines": [
+      "Bolangiz",
+      "gapingizga",
+      "quloq",
+      "solmayaptimi?"
+    ],
+    "accent": [
+      "solmayaptimi?"
+    ],
+    "beats": 6
+  },
+  "scenes": [
+    {
+      "type": "headline",
+      "kicker": "Jazosiz tarbiya",
+      "lines": [
+        "Baqirmasdan ham",
+        "tushuntirsa",
+        "bo‘ladi."
+      ],
+      "accent": [
+        "bo‘ladi."
+      ],
+      "say": "Baqirish va jazo o‘rniga bolangiz bilan tushunib gaplashishni o‘rganing.",
+      "beats": 6,
+      "transition": "wipe"
+    },
+    {
+      "type": "screen",
+      "kicker": "Farzandly",
+      "lines": [
+        "Har kuni",
+        "5 daqiqalik dars"
+      ],
+      "accent": [
+        "5 daqiqalik"
+      ],
+      "src": "screens/phone-home.jpg",
+      "scrollTo": 1900,
+      "tap": {
+        "x": 585,
+        "y": 3130,
+        "beat": 4
+      },
+      "say": "Islomiy qadriyatlar va bolalar psixologiyasiga asoslangan qisqa darslar.",
+      "beats": 7,
+      "transition": "push"
+    },
+    {
+      "type": "points",
+      "kicker": "Darslarda",
+      "lines": [
+        "Kundalik",
+        "muammolarga yechim"
+      ],
+      "accent": [
+        "yechim"
+      ],
+      "items": [
+        "Bola gapga quloq solmasa",
+        "Injiqlik va tantrumlar",
+        "Telefon va ekran vaqti"
+      ],
+      "say": "Har bir dars kundalik muammoga amaliy yechim beradi.",
+      "beats": 6,
+      "transition": "wipe"
+    },
+    {
+      "type": "stat",
+      "kicker": "Farzandly’da",
+      "value": 69,
+      "suffix": "ta dars",
+      "label": "Har biri atigi 5 daqiqa",
+      "chips": [
+        "1–10-darslar bepul"
+      ],
+      "say": "Oltmish to‘qqiz ta dars, birinchi o‘ntasi mutlaqo bepul.",
+      "beats": 5,
+      "transition": "iris",
+      "tone": "emerald"
+    }
+  ],
+  "cta": {
+    "lines": [
+      "Bugun",
+      "boshlang."
+    ],
+    "accent": [
+      "boshlang."
+    ],
+    "button": "1-darsni bepul boshlash",
+    "url": "farzandly.uz",
+    "say": "Birinchi darsni bugun bepul boshlang.",
+    "beats": 8,
+    "transition": "wipe"
+  },
+  "captions": {
+    "style": "phrase"
+  }
+}
