@@ -22,6 +22,10 @@ function requireDb() {
 }
 
 export const LIFETIME_PRICE_UZS = Number(process.env.PREMIUM_PRICE_UZS) || 79000;
+/** Regular price once a visitor's 30-minute introductory offer has run out (client: lib/offer.ts). */
+export const REGULAR_PRICE_UZS = Number(process.env.PREMIUM_REGULAR_PRICE_UZS) || 219000;
+/** The only amounts a payment request may carry; anything else falls back to the offer price. */
+export const ALLOWED_PRICES_UZS = [LIFETIME_PRICE_UZS, REGULAR_PRICE_UZS];
 
 const TASHKENT_OFFSET_MS = 5 * 60 * 60 * 1000; // UTC+5, no DST
 
@@ -122,7 +126,7 @@ export class AccountService {
   }
 
   // ======================== PAYMENTS ========================
-  static async createPaymentRequest(user: any, note?: string) {
+  static async createPaymentRequest(user: any, note?: string, requestedAmount?: number) {
     requireDb();
     if (user.premiumType === 'lifetime') {
       throw new HttpError(409, 'Sizda umrbod Premium allaqachon faol');
@@ -130,12 +134,14 @@ export class AccountService {
     const existing = await Payment.findOne({ userId: String(user._id), status: 'pending' });
     if (existing) return { payment: existing, alreadyPending: true };
 
+    // the amount the parent was shown (offer or regular); the admin still checks the card receipt
+    const amount = ALLOWED_PRICES_UZS.includes(Number(requestedAmount)) ? Number(requestedAmount) : LIFETIME_PRICE_UZS;
     const payment = await Payment.create({
       userId: String(user._id),
       userName: user.name,
       telegramUsername: user.telegramUsername,
       plan: 'lifetime',
-      amount: LIFETIME_PRICE_UZS,
+      amount,
       currency: 'UZS',
       note: note?.slice(0, 500),
     });
@@ -148,7 +154,9 @@ export class AccountService {
         adminChat,
         `💳 <b>Yangi to‘lov so‘rovi</b>\n\n` +
           `👤 ${TelegramBotEngine.esc(who)}\n` +
-          `💰 ${LIFETIME_PRICE_UZS.toLocaleString('ru-RU')} so‘m — umrbod Premium\n` +
+          `💰 ${amount.toLocaleString('ru-RU')} so‘m — umrbod Premium` +
+          (amount === LIFETIME_PRICE_UZS ? ' (maxsus taklif)' : '') +
+          `\n` +
           (note ? `📝 ${TelegramBotEngine.esc(note.slice(0, 200))}\n` : '') +
           `\nKartaga tushganini tekshirib, admin panelda tasdiqlang.`,
         { reply_markup: { inline_keyboard: [[{ text: '✅ Admin panelni ochish', url }]] } }

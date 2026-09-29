@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { z } from 'zod';
-import { AccountService, HttpError, LIFETIME_PRICE_UZS } from '../services/accountService.js';
+import { AccountService, HttpError, LIFETIME_PRICE_UZS, REGULAR_PRICE_UZS } from '../services/accountService.js';
 
 function fail(res: Response, error: any, fallback: string) {
   const status = error?.statusCode || (error instanceof HttpError ? error.statusCode : 500);
@@ -40,6 +40,7 @@ export class AccountController {
       data: {
         plan: 'lifetime',
         amount: LIFETIME_PRICE_UZS,
+        regularAmount: REGULAR_PRICE_UZS,
         currency: 'UZS',
       },
     });
@@ -48,8 +49,9 @@ export class AccountController {
   // POST /api/payments  (auth) — "Men to'ladim"
   static async createPayment(req: Request, res: Response) {
     const note = typeof req.body?.note === 'string' ? req.body.note : undefined;
+    const amount = typeof req.body?.amount === 'number' ? req.body.amount : undefined;
     try {
-      const result = await AccountService.createPaymentRequest(req.user, note);
+      const result = await AccountService.createPaymentRequest(req.user, note, amount);
       res.status(result.alreadyPending ? 200 : 201).json({
         success: true,
         message: result.alreadyPending
