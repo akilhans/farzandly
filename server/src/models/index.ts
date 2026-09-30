@@ -83,6 +83,14 @@ export interface IUser extends Document {
   reminderEnabled?: boolean;
   reminderHour?: number;
   lastReminderDate?: string;
+  // Bot engagement messages (win-back, weekly summary, milestones, streak saver)
+  botBlocked?: boolean;
+  engagementOptOut?: boolean;
+  winbackAnchor?: Date;
+  winbackStage?: number;
+  lastWeeklySummary?: string;
+  lastStreakSaverDate?: string;
+  sentMilestones?: string[];
   // Multi-child profiles
   children?: IChild[];
   activeChildId?: string;
@@ -130,6 +138,14 @@ const UserSchema = new Schema<IUser>({
   reminderEnabled: { type: Boolean, default: false, index: true },
   reminderHour: { type: Number, default: 20, min: 0, max: 23 },
   lastReminderDate: { type: String },
+  // Bot engagement messages. botBlocked is set when Telegram answers 403 and cleared when the user writes again.
+  botBlocked: { type: Boolean, default: false },
+  engagementOptOut: { type: Boolean, default: false },
+  winbackAnchor: { type: Date }, // the lastActiveDate the win-back stage belongs to
+  winbackStage: { type: Number, default: 0 }, // 0 | 3 | 7 days
+  lastWeeklySummary: { type: String }, // week-start date (YYYY-MM-DD) of the last summary sent
+  lastStreakSaverDate: { type: String },
+  sentMilestones: [{ type: String }], // "<childId>:<months>"
   // Multi-child profiles
   children: [
     {
@@ -670,7 +686,7 @@ export interface IPayment extends Document {
   userId: string;
   userName?: string;
   telegramUsername?: string;
-  plan: 'lifetime';
+  plan: 'lifetime' | 'gift';
   amount: number;
   currency: 'UZS';
   status: 'pending' | 'approved' | 'rejected';
@@ -685,7 +701,8 @@ const PaymentSchema = new Schema<IPayment>({
   userId: { type: String, required: true, index: true },
   userName: { type: String },
   telegramUsername: { type: String },
-  plan: { type: String, enum: ['lifetime'], default: 'lifetime' },
+  // 'gift' = the payer buys a lifetime Premium code for someone else
+  plan: { type: String, enum: ['lifetime', 'gift'], default: 'lifetime' },
   amount: { type: Number, required: true },
   currency: { type: String, enum: ['UZS'], default: 'UZS' },
   status: { type: String, enum: ['pending', 'approved', 'rejected'], default: 'pending', index: true },
@@ -720,3 +737,69 @@ const AuditLogSchema = new Schema<IAuditLog>({
 AuditLogSchema.index({ createdAt: -1 });
 
 export const AuditLog = mongoose.models.AuditLog || mongoose.model<IAuditLog>('AuditLog', AuditLogSchema);
+
+// ======================== GIFT CODE (Premium bought for someone else) ========================
+export interface IGiftCode extends Document {
+  code: string;
+  purchaserId: string;
+  purchaserName?: string;
+  paymentId: string;
+  status: 'active' | 'redeemed';
+  redeemedBy?: string;
+  redeemedByName?: string;
+  redeemedAt?: Date;
+  createdAt?: Date;
+}
+
+const GiftCodeSchema = new Schema<IGiftCode>({
+  code: { type: String, required: true, unique: true },
+  purchaserId: { type: String, required: true, index: true },
+  purchaserName: { type: String },
+  paymentId: { type: String, required: true, unique: true }, // one code per approved gift payment
+  status: { type: String, enum: ['active', 'redeemed'], default: 'active', index: true },
+  redeemedBy: { type: String },
+  redeemedByName: { type: String },
+  redeemedAt: { type: Date },
+}, { timestamps: true });
+
+export const GiftCode = mongoose.models.GiftCode || mongoose.model<IGiftCode>('GiftCode', GiftCodeSchema);
+
+// ======================== BROADCAST (admin → Telegram users) ========================
+export interface IBroadcast extends Document {
+  text: string;
+  segment: string;
+  ageGroup?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+  status: 'running' | 'done' | 'interrupted';
+  total: number;
+  sent: number;
+  failed: number;
+  blocked: number;
+  cursor?: string; // last processed user _id, so a restart resumes instead of resending
+  actorId: string;
+  actorName?: string;
+  finishedAt?: Date;
+  createdAt?: Date;
+}
+
+const BroadcastSchema = new Schema<IBroadcast>({
+  text: { type: String, required: true, maxlength: 3500 },
+  segment: { type: String, required: true },
+  ageGroup: { type: String },
+  buttonText: { type: String, maxlength: 60 },
+  buttonUrl: { type: String, maxlength: 500 },
+  status: { type: String, enum: ['running', 'done', 'interrupted'], default: 'running', index: true },
+  total: { type: Number, default: 0 },
+  sent: { type: Number, default: 0 },
+  failed: { type: Number, default: 0 },
+  blocked: { type: Number, default: 0 },
+  cursor: { type: String },
+  actorId: { type: String, required: true },
+  actorName: { type: String },
+  finishedAt: { type: Date },
+}, { timestamps: true });
+
+BroadcastSchema.index({ createdAt: -1 });
+
+export const Broadcast = mongoose.models.Broadcast || mongoose.model<IBroadcast>('Broadcast', BroadcastSchema);

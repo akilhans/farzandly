@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import {
   ShieldCheck,
-  Crown,
-  Search,
   CheckCircle2,
   XCircle,
   AlertCircle,
@@ -21,9 +19,10 @@ import { useAuth } from '@/context/AuthContext';
 import AdminLoginForm from '@/components/AdminLoginForm';
 import { accountApi, PaymentRequest } from '@/lib/accountApi';
 import { formatSom } from '@/lib/payments';
-import UserAvatar from '@/components/UserAvatar';
+import { UsersTab, SignupsChart } from '@/components/admin/AdminUsers';
+import { BroadcastTab } from '@/components/admin/AdminBroadcast';
 
-type Tab = 'payments' | 'users' | 'audit';
+type Tab = 'payments' | 'users' | 'broadcast' | 'audit';
 
 interface Stats {
   totalUsers: number;
@@ -37,6 +36,10 @@ interface Stats {
   revenueUzs: number;
   referralsRewarded: number;
   referralsPending: number;
+  signupsToday?: number;
+  signups30d?: number;
+  byProvider?: Record<string, number>;
+  signupSeries?: { date: string; count: number }[];
 }
 
 const fmtDate = (d?: string) =>
@@ -63,7 +66,7 @@ function AdminContent() {
   const { isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
   const params = useSearchParams();
-  const tab = (['payments', 'users', 'audit'].includes(params.get('tab') || '') ? params.get('tab') : 'payments') as Tab;
+  const tab = (['payments', 'users', 'broadcast', 'audit'].includes(params.get('tab') || '') ? params.get('tab') : 'payments') as Tab;
 
   const [access, setAccess] = useState<'checking' | 'ok' | 'denied' | 'unavailable'>('checking');
   const [stats, setStats] = useState<Stats | null>(null);
@@ -150,20 +153,35 @@ function AdminContent() {
       </header>
 
       {stats && (
-        <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            ['Foydalanuvchilar', stats.totalUsers, `+${stats.signups7d} shu hafta`],
-            ['Faol (7 kun)', stats.active7d, `${stats.activeToday} bugun`],
-            ['Umrbod Premium', stats.lifetimePremium, `${stats.bonusPremiumActive} bonusda`],
-            ['Tushum', `${formatSom(stats.revenueUzs)} so‘m`, `${stats.approvedPayments} to‘lov`],
-          ].map(([label, value, sub]) => (
-            <div key={String(label)} className="rounded-2xl bg-white border-2 border-slate-200 p-4">
-              <dt className="text-xs font-bold text-slate-500">{label}</dt>
-              <dd className="text-xl font-black text-slate-900 mt-1">{value}</dd>
-              <dd className="text-xs text-slate-500 mt-0.5">{sub}</dd>
-            </div>
-          ))}
-        </dl>
+        <div className="space-y-3">
+          <dl className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              ['Foydalanuvchilar', stats.totalUsers, `+${stats.signups7d} shu hafta`],
+              ['Faol (7 kun)', stats.active7d, `${stats.activeToday} bugun`],
+              ['Umrbod Premium', stats.lifetimePremium, `${stats.bonusPremiumActive} bonusda`],
+              ['Tushum', `${formatSom(stats.revenueUzs)} so‘m`, `${stats.approvedPayments} to‘lov`],
+              ['Bugun ro‘yxatdan o‘tdi', stats.signupsToday ?? '—', `${stats.signups30d ?? '—'} ta 30 kunda`],
+              [
+                'Premiumga o‘tish',
+                stats.totalUsers ? `${((stats.lifetimePremium / stats.totalUsers) * 100).toFixed(1)}%` : '—',
+                'umrbod / jami',
+              ],
+              [
+                'Kirish usuli',
+                `${stats.byProvider?.telegram ?? 0} TG`,
+                `${stats.byProvider?.email ?? 0} email${stats.byProvider?.guest ? ` · ${stats.byProvider.guest} mehmon` : ''}`,
+              ],
+              ['Takliflar', stats.referralsRewarded, `${stats.referralsPending} kutilmoqda`],
+            ].map(([label, value, sub]) => (
+              <div key={String(label)} className="rounded-2xl bg-white border-2 border-slate-200 p-4">
+                <dt className="text-xs font-bold text-slate-500">{label}</dt>
+                <dd className="text-xl font-black text-slate-900 mt-1">{value}</dd>
+                <dd className="text-xs text-slate-500 mt-0.5">{sub}</dd>
+              </div>
+            ))}
+          </dl>
+          {stats.signupSeries?.length ? <SignupsChart series={stats.signupSeries} /> : null}
+        </div>
       )}
 
       {notice && (
@@ -182,6 +200,7 @@ function AdminContent() {
         {([
           ['payments', `To‘lovlar${stats?.pendingPayments ? ` (${stats.pendingPayments})` : ''}`],
           ['users', 'Foydalanuvchilar'],
+          ['broadcast', 'Xabar yuborish'],
           ['audit', 'Jurnal'],
         ] as [Tab, string][]).map(([key, label]) => (
           <button
@@ -200,6 +219,7 @@ function AdminContent() {
 
       {tab === 'payments' && <PaymentsTab onChange={loadStats} say={say} />}
       {tab === 'users' && <UsersTab say={say} />}
+      {tab === 'broadcast' && <BroadcastTab say={say} />}
       {tab === 'audit' && <AuditTab />}
     </div>
   );
@@ -292,7 +312,12 @@ function PaymentsTab({ onChange, say }: { onChange: () => void; say: (k: 'ok' | 
             <li key={p._id} className="rounded-2xl bg-white border-2 border-slate-200 p-4 space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="font-black text-slate-900">{p.telegramUsername ? `@${p.telegramUsername}` : p.userName || 'Ota-ona'}</p>
+                  <p className="font-black text-slate-900">
+                    {p.telegramUsername ? `@${p.telegramUsername}` : p.userName || 'Ota-ona'}
+                    {p.plan === 'gift' && (
+                      <span className="ml-2 align-middle text-xs font-bold px-2 py-0.5 rounded-lg bg-amber-100 text-amber-900">🎁 Sovg‘a</span>
+                    )}
+                  </p>
                   <p className="text-sm text-slate-500">
                     {formatSom(p.amount)} so‘m · {fmtDate(p.createdAt)}
                   </p>
@@ -351,118 +376,13 @@ function PaymentsTab({ onChange, say }: { onChange: () => void; say: (k: 'ok' | 
   );
 }
 
-function UsersTab({ say }: { say: (k: 'ok' | 'err', t: string) => void }) {
-  const [q, setQ] = useState('');
-  const [items, setItems] = useState<any[] | null>(null);
-  const [total, setTotal] = useState(0);
-  const [busy, setBusy] = useState<string | null>(null);
-
-  const search = useCallback(async (term: string) => {
-    setItems(null);
-    const res = await accountApi.adminUsers(term);
-    setItems(res.success ? res.data.items : []);
-    setTotal(res.success ? res.data.total : 0);
-  }, []);
-
-  useEffect(() => {
-    search('');
-  }, [search]);
-
-  const act = async (u: any, action: 'lifetime' | 'revoke' | 'bonus', days?: number) => {
-    const who = u.telegramUsername ? `@${u.telegramUsername}` : u.name;
-    const question =
-      action === 'lifetime' ? `${who} uchun umrbod Premium yoqilsinmi?` : action === 'revoke' ? `${who} Premiumi bekor qilinsinmi?` : `${who} ga ${days} kun bonus qo‘shilsinmi?`;
-    if (!window.confirm(question)) return;
-    setBusy(u._id);
-    const res = await accountApi.adminSetPremium(u._id, action, days);
-    setBusy(null);
-    if (res.success) {
-      setItems((list) => (list || []).map((x) => (x._id === u._id ? { ...x, ...res.data } : x)));
-      say('ok', 'Saqlandi.');
-    } else say('err', res.message || 'Xatolik');
-  };
-
-  return (
-    <section className="space-y-4">
-      <form
-        className="flex gap-2"
-        onSubmit={(e) => {
-          e.preventDefault();
-          search(q);
-        }}
-        role="search"
-      >
-        <label htmlFor="user-search" className="sr-only">Foydalanuvchi qidirish</label>
-        <div className="relative flex-1">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-          <input
-            id="user-search"
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="@username, ism, email yoki Telegram ID"
-            className="w-full rounded-xl border-2 border-slate-200 pl-9 pr-3 py-2.5 text-sm focus:border-emerald-500 outline-none"
-          />
-        </div>
-        <button type="submit" className="btn-primary text-sm px-5">Qidirish</button>
-      </form>
-
-      {items === null ? (
-        <div className="flex justify-center py-10"><Loader2 className="w-6 h-6 animate-spin text-emerald-600" /></div>
-      ) : items.length === 0 ? (
-        <p className="text-sm text-slate-500 py-10 text-center">Hech kim topilmadi.</p>
-      ) : (
-        <>
-          <p className="text-sm text-slate-500">{total} ta natija{total > items.length ? ` (birinchi ${items.length} tasi)` : ''}</p>
-          <ul className="space-y-2">
-            {items.map((u) => (
-              <li key={u._id} className="rounded-2xl bg-white border-2 border-slate-200 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div className="flex items-center gap-3 min-w-0">
-                  <UserAvatar name={u.name} photoUrl={u.photoUrl} telegramUsername={u.telegramUsername} size="sm" />
-                  <div className="min-w-0">
-                    <p className="font-black text-slate-900 truncate flex items-center gap-1.5">
-                      {u.telegramUsername ? `@${u.telegramUsername}` : u.name}
-                      {u.isPremium && <Crown className="w-4 h-4 text-amber-500 fill-amber-400" aria-label="Premium" />}
-                    </p>
-                    <p className="text-xs text-slate-500 truncate">
-                      {u.email || (u.telegramId ? `TG ${u.telegramId}` : '')} · {u.xp} XP · {u.completedLessonsCount} dars
-                      {u.premiumType === 'lifetime'
-                        ? ' · umrbod'
-                        : u.isPremium && u.premiumExpiresAt
-                        ? ` · ${new Date(u.premiumExpiresAt).toLocaleDateString('uz-UZ')} gacha`
-                        : ''}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  {u.premiumType !== 'lifetime' && (
-                    <button type="button" disabled={busy === u._id} onClick={() => act(u, 'lifetime')} className="btn-gold text-xs px-3 py-2 text-slate-950 font-black">
-                      Umrbod
-                    </button>
-                  )}
-                  <button type="button" disabled={busy === u._id} onClick={() => act(u, 'bonus', 7)} className="btn-outline text-xs px-3 py-2">
-                    +7 kun
-                  </button>
-                  {u.isPremium && (
-                    <button type="button" disabled={busy === u._id} onClick={() => act(u, 'revoke')} className="btn-outline text-xs px-3 py-2 text-rose-700">
-                      Bekor qilish
-                    </button>
-                  )}
-                </div>
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-    </section>
-  );
-}
-
 const ACTION_LABELS: Record<string, string> = {
   'payment.approve': 'To‘lovni tasdiqladi',
   'payment.reject': 'To‘lovni rad etdi',
   'premium.lifetime': 'Umrbod Premium berdi',
   'premium.bonus': 'Bonus kun qo‘shdi',
   'premium.revoke': 'Premiumni bekor qildi',
+  'broadcast.send': 'Telegram xabar yubordi',
 };
 
 function AuditTab() {

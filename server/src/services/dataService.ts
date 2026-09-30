@@ -345,6 +345,7 @@ export class DataService {
         user.telegramUsername = data.telegramUsername || user.telegramUsername;
         user.photoUrl = data.photoUrl || user.photoUrl;
         user.lastActiveDate = new Date();
+        user.botBlocked = false; // they are writing to the bot, so it can reach them again
         await user.save();
         return user;
       }
@@ -580,6 +581,21 @@ export class DataService {
     const user: any = Object.values(memoryUsers).find((u: any) => u.telegramId === telegramId);
     if (user) Object.assign(user, clean);
     return user || null;
+  }
+
+  /** Opt out of (or back into) automated bot messages other than the daily reminder. */
+  static async setEngagementOptOut(telegramId: string, optOut: boolean) {
+    if (isDbConnected()) {
+      return User.findOneAndUpdate({ telegramId }, { $set: { engagementOptOut: optOut } }, { new: true });
+    }
+    const user: any = Object.values(memoryUsers).find((u: any) => u.telegramId === telegramId);
+    if (user) user.engagementOptOut = optOut;
+    return user || null;
+  }
+
+  /** Telegram answered 403: the user blocked the bot. Cleared again when they write to it. */
+  static async markBotBlocked(telegramId: string) {
+    if (isDbConnected()) await User.updateOne({ telegramId }, { $set: { botBlocked: true } });
   }
 
   static async getReminderCandidates(hour: number, today: string): Promise<any[]> {
