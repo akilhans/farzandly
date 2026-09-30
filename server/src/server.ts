@@ -4,6 +4,7 @@ dotenv.config();
 import { app } from './app.js';
 import { connectDB } from './config/db.js';
 import { TelegramBotEngine } from './services/telegramBotEngine.js';
+import { EngagementService } from './services/engagementService.js';
 import { seedHealthCollection } from './scripts/seedHealthData.js';
 import { assertSecurityConfig } from './lib/security.js';
 
@@ -31,6 +32,7 @@ async function bootstrap() {
   if (TelegramBotEngine.isConfigured()) {
     console.log(`🤖 Telegram Bot: Bot token aniqlandi.`);
     TelegramBotEngine.startReminderScheduler();
+    EngagementService.start();
     if (process.env.BOT_MODE !== 'webhook') {
       TelegramBotEngine.startPolling().catch((err) => {
         console.warn('[TelegramBot] Polling boshlashda xatolik:', err.message);

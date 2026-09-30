@@ -61,13 +61,21 @@ apiRouter.get('/payments/config', AccountController.paymentConfig);
 apiRouter.post('/payments', requireAuth, rateLimit({ windowMs: 60 * 60_000, max: 5, key: (req) => req.userId || req.ip || 'anon' }), AccountController.createPayment);
 apiRouter.get('/payments/mine', requireAuth, AccountController.myPayments);
 
+// Premium gift codes (bought via a 'gift' payment, redeemed by anyone signed in)
+apiRouter.get('/gifts/mine', requireAuth, AccountController.myGifts);
+apiRouter.post('/gifts/redeem', requireAuth, rateLimit({ windowMs: 15 * 60_000, max: 10, key: (req) => req.userId || req.ip || 'anon' }), AccountController.redeemGift);
+
 // Admin
 apiRouter.get('/admin/stats', requireAdmin, AccountController.adminStats);
 apiRouter.get('/admin/payments', requireAdmin, AccountController.adminPayments);
 apiRouter.post('/admin/payments/:id/review', requireAdmin, AccountController.adminReviewPayment);
 apiRouter.get('/admin/users', requireAdmin, AccountController.adminUsers);
+apiRouter.get('/admin/users/:id', requireAdmin, AccountController.adminUserDetail);
 apiRouter.post('/admin/users/:id/premium', requireAdmin, AccountController.adminSetPremium);
 apiRouter.get('/admin/audit', requireAdmin, AccountController.adminAudit);
+apiRouter.get('/admin/broadcasts', requireAdmin, AccountController.adminBroadcasts);
+apiRouter.get('/admin/broadcasts/audience', requireAdmin, AccountController.adminBroadcastAudience);
+apiRouter.post('/admin/broadcasts', requireAdmin, rateLimit({ windowMs: 60_000, max: 10, key: (req) => req.userId || req.ip || 'anon' }), AccountController.adminBroadcast);
 
 // Newsletter
 apiRouter.post('/newsletter/subscribe', rateLimit({ windowMs: 60 * 60_000, max: 10 }), ApiController.subscribeNewsletter);

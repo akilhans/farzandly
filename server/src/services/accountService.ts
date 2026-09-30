@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { User, UserProgress, Payment, AuditLog, Referral } from '../models/index.js';
+import { GiftService } from './giftService.js';
 import { isDbConnected } from './dataService.js';
 import { TelegramBotEngine } from './telegramBotEngine.js';
 import { isPremiumActive, toPublicUser } from '../lib/premium.js';
@@ -27,6 +28,14 @@ export const REGULAR_PRICE_UZS = Number(process.env.PREMIUM_REGULAR_PRICE_UZS) |
 /** The only amounts a payment request may carry; anything else falls back to the offer price. */
 export const ALLOWED_PRICES_UZS = [LIFETIME_PRICE_UZS, REGULAR_PRICE_UZS];
 
+/** Telegram chats that receive admin alerts (payment requests). */
+export function adminChatIds(): string[] {
+  const ids = [process.env.ADMIN_TELEGRAM_CHAT_ID || '', ...(process.env.ADMIN_TELEGRAM_IDS || '').split(',')]
+    .map((s) => s.trim())
+    .filter(Boolean);
+  return Array.from(new Set(ids));
+}
+
 const TASHKENT_OFFSET_MS = 5 * 60 * 60 * 1000; // UTC+5, no DST
 
 /** Monday 00:00 Asia/Tashkent of the current week, as a UTC Date. */
@@ -35,6 +44,12 @@ export function tashkentWeekStart(now = new Date()): Date {
   const day = (local.getUTCDay() + 6) % 7; // 0 = Monday
   const mondayLocal = Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate() - day);
   return new Date(mondayLocal - TASHKENT_OFFSET_MS);
+}
+
+/** Today 00:00 Asia/Tashkent, as a UTC Date. */
+export function tashkentDayStart(nowMs = Date.now()): Date {
+  const local = new Date(nowMs + TASHKENT_OFFSET_MS);
+  return new Date(Date.UTC(local.getUTCFullYear(), local.getUTCMonth(), local.getUTCDate()) - TASHKENT_OFFSET_MS);
 }
 
 function escapeRegex(value: string) {
@@ -126,12 +141,18 @@ export class AccountService {
   }
 
   // ======================== PAYMENTS ========================
-  static async createPaymentRequest(user: any, note?: string, requestedAmount?: number) {
+  static async createPaymentRequest(user: any, note?: string, requestedAmount?: number, gift = false) {
     requireDb();
-    if (user.premiumType === 'lifetime') {
+    // A gift is bought for someone else, so the payer's own Premium doesn't matter.
+    if (!gift && user.premiumType === 'lifetime') {
       throw new HttpError(409, 'Sizda umrbod Premium allaqachon faol');
     }
-    const existing = await Payment.findOne({ userId: String(user._id), status: 'pending' });
+    const plan = gift ? 'gift' : 'lifetime';
+    const existing = await Payment.findOne({
+      userId: String(user._id),
+      status: 'pending',
+      ...(gift ? { plan: 'gift' } : { plan: { $ne: 'gift' } }),
+    });
     if (existing) return { payment: existing, alreadyPending: true };
 
     // the amount the parent was shown (offer or regular); the admin still checks the card receipt
@@ -140,27 +161,27 @@ export class AccountService {
       userId: String(user._id),
       userName: user.name,
       telegramUsername: user.telegramUsername,
-      plan: 'lifetime',
+      plan,
       amount,
       currency: 'UZS',
       note: note?.slice(0, 500),
     });
 
-    const adminChat = process.env.ADMIN_TELEGRAM_CHAT_ID || (process.env.ADMIN_TELEGRAM_IDS || '').split(',')[0]?.trim();
-    if (adminChat) {
+    const adminChats = adminChatIds();
+    if (adminChats.length) {
       const who = user.telegramUsername ? `@${user.telegramUsername}` : user.email || user.name;
-      const url = `${TelegramBotEngine.getClientUrl()}/admin?tab=payments`;
-      TelegramBotEngine.sendMessage(
-        adminChat,
-        `💳 <b>Yangi to‘lov so‘rovi</b>\n\n` +
-          `👤 ${TelegramBotEngine.esc(who)}\n` +
-          `💰 ${amount.toLocaleString('ru-RU')} so‘m — umrbod Premium` +
-          (amount === LIFETIME_PRICE_UZS ? ' (maxsus taklif)' : '') +
-          `\n` +
-          (note ? `📝 ${TelegramBotEngine.esc(note.slice(0, 200))}\n` : '') +
-          `\nKartaga tushganini tekshirib, admin panelda tasdiqlang.`,
-        { reply_markup: { inline_keyboard: [[{ text: '✅ Admin panelni ochish', url }]] } }
-      ).catch(() => {});
+      const text =
+        `💳 <b>Yangi to‘lov so‘rovi</b>${gift ? ' — 🎁 sovg‘a' : ''}\n\n` +
+        `👤 ${TelegramBotEngine.esc(who)}\n` +
+        `💰 ${amount.toLocaleString('ru-RU')} so‘m — ${gift ? 'umrbod Premium sovg‘a kodi' : 'umrbod Premium'}` +
+        (amount === LIFETIME_PRICE_UZS ? ' (maxsus taklif)' : '') +
+        `\n` +
+        (note ? `📝 ${TelegramBotEngine.esc(note.slice(0, 200))}\n` : '') +
+        `\nKartaga tushganini tekshirib, shu yerda yoki admin panelda tasdiqlang.`;
+      const reply_markup = TelegramBotEngine.paymentButtons(String(payment._id));
+      for (const chat of adminChats) {
+        TelegramBotEngine.sendMessage(chat, text, { reply_markup }).catch(() => {});
+      }
     }
 
     return { payment, alreadyPending: false };
@@ -206,7 +227,11 @@ export class AccountService {
     if (!payment) throw new HttpError(409, 'To‘lov topilmadi yoki allaqachon ko‘rib chiqilgan');
 
     let user: any = null;
-    if (decision === 'approve') {
+    let gift: any = null;
+    if (decision === 'approve' && payment.plan === 'gift') {
+      user = await User.findById(payment.userId);
+      gift = await GiftService.issue(payment, user);
+    } else if (decision === 'approve') {
       user = await User.findByIdAndUpdate(
         payment.userId,
         { $set: { premiumType: 'lifetime', isPremium: true, subscriptionStatus: 'premium' }, $unset: { premiumExpiresAt: 1 } },
@@ -219,10 +244,13 @@ export class AccountService {
     await this.audit(admin, decision === 'approve' ? 'payment.approve' : 'payment.reject', payment.userId, {
       paymentId: String(payment._id),
       amount: payment.amount,
+      plan: payment.plan,
       reason,
     });
 
-    if (user?.telegramId) {
+    if (gift) {
+      await GiftService.notifyPurchaser(user, gift);
+    } else if (user?.telegramId) {
       const text =
         decision === 'approve'
           ? `🎉 <b>To‘lovingiz tasdiqlandi!</b>\n\nUmrbod Premium faollashtirildi. Barcha darslar endi siz uchun ochiq.`
@@ -230,7 +258,7 @@ export class AccountService {
       TelegramBotEngine.sendMessage(user.telegramId, text).catch(() => {});
     }
 
-    return { payment, user: toPublicUser(user) };
+    return { payment, user: toPublicUser(user), giftCode: gift?.code };
   }
 
   // ======================== ADMIN ========================
@@ -253,34 +281,109 @@ export class AccountService {
     return AuditLog.find().sort({ createdAt: -1 }).limit(Math.min(limit, 200)).lean();
   }
 
-  static async searchUsers(q: string, page = 1, pageSize = 30) {
+  /**
+   * Admin user list: free-text search + segment filter + sort, newest first by default.
+   * Returns what an admin needs at a glance (registration, last activity, sign-in method,
+   * family and referral counts) without lesson/child payloads.
+   */
+  static async searchUsers(q: string, page = 1, pageSize = 30, filter = 'all', sort = 'newest') {
     requireDb();
-    const query: Record<string, any> = {};
+    const now = Date.now();
+    const day = 86400000;
+    const and: any[] = [];
     const term = (q || '').trim().replace(/^@/, '');
     if (term) {
       const rx = new RegExp(escapeRegex(term), 'i');
-      const or: any[] = [{ name: rx }, { email: rx }, { telegramUsername: rx }, { telegramId: term }];
-      if (mongoose.Types.ObjectId.isValid(term)) or.push({ _id: term });
-      query.$or = or;
+      const or: any[] = [{ name: rx }, { email: rx }, { telegramUsername: rx }, { phone: rx }, { telegramId: term }, { referralCode: term }];
+      if (mongoose.Types.ObjectId.isValid(term)) or.push({ _id: new mongoose.Types.ObjectId(term) });
+      and.push({ $or: or });
     }
+    const premiumNow = { $or: [{ premiumType: 'lifetime' }, { premiumType: 'bonus', premiumExpiresAt: { $gt: new Date(now) } }] };
+    const FILTERS: Record<string, any> = {
+      premium: premiumNow,
+      free: { $nor: premiumNow.$or },
+      lifetime: { premiumType: 'lifetime' },
+      new7d: { createdAt: { $gte: new Date(now - 7 * day) } },
+      active7d: { lastActiveDate: { $gte: new Date(now - 7 * day) } },
+      inactive30d: { lastActiveDate: { $lt: new Date(now - 30 * day) } },
+      telegram: { authProvider: 'telegram' },
+      email: { authProvider: 'email' },
+      admins: { role: 'admin' },
+    };
+    if (FILTERS[filter]) and.push(FILTERS[filter]);
+    const match = and.length ? { $and: and } : {};
+
+    const SORTS: Record<string, Record<string, 1 | -1>> = {
+      newest: { createdAt: -1 },
+      oldest: { createdAt: 1 },
+      active: { lastActiveDate: -1 },
+      xp: { xp: -1 },
+      lessons: { completedLessonsCount: -1 },
+    };
+    const safePage = Math.max(1, page);
     const [items, total] = await Promise.all([
-      User.find(query)
-        .sort({ createdAt: -1 })
-        .skip((page - 1) * pageSize)
-        .limit(pageSize)
-        .select('name email telegramId telegramUsername photoUrl xp streak level isPremium premiumType premiumExpiresAt role createdAt completedLessons')
-        .lean(),
-      User.countDocuments(query),
+      User.aggregate([
+        { $match: match },
+        {
+          $addFields: {
+            completedLessonsCount: { $size: { $ifNull: ['$completedLessons', []] } },
+            childrenCount: { $size: { $ifNull: ['$children', []] } },
+          },
+        },
+        { $sort: { ...(SORTS[sort] || SORTS.newest), _id: -1 } },
+        { $skip: (safePage - 1) * pageSize },
+        { $limit: pageSize },
+        {
+          $project: {
+            name: 1, email: 1, phone: 1, telegramId: 1, telegramUsername: 1, photoUrl: 1, authProvider: 1,
+            xp: 1, streak: 1, level: 1, isPremium: 1, premiumType: 1, premiumExpiresAt: 1, role: 1,
+            createdAt: 1, lastActiveDate: 1, referralCount: 1, referredBy: 1, partnerName: 1,
+            reminderEnabled: 1, childAgeGroup: 1, completedLessonsCount: 1, childrenCount: 1,
+          },
+        },
+      ]),
+      User.countDocuments(match),
     ]);
+    return { items: items.map((u: any) => toPublicUser(u)), total, page: safePage, pageSize };
+  }
+
+  /** Everything about one user for the admin detail panel. */
+  static async getUserDetail(userId: string) {
+    requireDb();
+    if (!mongoose.Types.ObjectId.isValid(userId)) throw new HttpError(404, 'Foydalanuvchi topilmadi');
+    const u: any = await User.findById(userId).lean();
+    if (!u) throw new HttpError(404, 'Foydalanuvchi topilmadi');
+    const id = String(u._id);
+    const [payments, audit, referrals, referredByRow, referrer] = await Promise.all([
+      Payment.find({ userId: id }).sort({ createdAt: -1 }).limit(20).lean(),
+      AuditLog.find({ targetUserId: id }).sort({ createdAt: -1 }).limit(30).lean(),
+      Referral.find({ referrerId: id }).sort({ createdAt: -1 }).limit(50).lean(),
+      Referral.findOne({ referredUserId: id }).lean(),
+      u.referredBy ? User.findOne({ referralCode: u.referredBy }).select('name telegramUsername').lean() : null,
+    ]);
+    const pub: any = toPublicUser(u);
     return {
-      items: items.map((u: any) => ({
-        ...toPublicUser(u),
+      user: {
+        ...pub,
         completedLessonsCount: (u.completedLessons || []).length,
         completedLessons: undefined,
-      })),
-      total,
-      page,
-      pageSize,
+        achievementsCount: (u.achievements || []).length,
+        achievements: undefined,
+        children: (u.children || []).map((c: any) => ({
+          id: c.id,
+          name: c.name,
+          ageGroup: c.ageGroup,
+          gender: c.gender,
+          birthDate: c.birthDate,
+          completedLessonsCount: (c.completedLessons || []).length,
+        })),
+      },
+      payments,
+      audit,
+      referrals: referrals.map((r: any) => ({ name: r.referredUserName, status: r.status, createdAt: r.createdAt })),
+      referredBy: referrer
+        ? { name: (referrer as any).telegramUsername ? `@${(referrer as any).telegramUsername}` : (referrer as any).name, code: u.referredBy, status: (referredByRow as any)?.status }
+        : null,
     };
   }
 
@@ -311,6 +414,20 @@ export class AccountService {
 
     const user = await User.findByIdAndUpdate(userId, update, { new: true });
     await this.audit(admin, `premium.${action}`, userId, { days: action === 'bonus' ? days : undefined, reason });
+
+    // Tell the parent when they receive Premium; a revoke stays silent.
+    if (action !== 'revoke' && user?.telegramId) {
+      const until = user.premiumType === 'bonus' && user.premiumExpiresAt
+        ? new Date(user.premiumExpiresAt).toLocaleDateString('ru-RU', { timeZone: 'Asia/Tashkent' })
+        : null;
+      const text = until
+        ? `🎁 <b>Sizga Premium sovg‘a qilindi!</b>\n\nPremium ${until} gacha faol. Barcha darslar va maqolalar endi siz uchun ochiq.`
+        : `🎉 <b>Sizga umrbod Premium berildi!</b>\n\nBarcha darslar va maqolalar endi siz uchun ochiq.`;
+      TelegramBotEngine.sendMessage(user.telegramId, text, {
+        reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi darsim', callback_data: 'n:' }]] },
+      }).catch((e: any) => console.warn('[TelegramNotify] Premium xabari yuborilmadi:', e?.message));
+    }
+
     return toPublicUser(user);
   }
 
@@ -318,7 +435,7 @@ export class AccountService {
     requireDb();
     const now = Date.now();
     const day = 86400000;
-    const [totalUsers, signups7d, activeToday, active7d, lifetime, bonusActive, pendingPayments, approvedPayments, referralsRewarded, referralsPending] =
+    const [totalUsers, signups7d, activeToday, active7d, lifetime, bonusActive, pendingPayments, approvedPayments, referralsRewarded, referralsPending, signupsToday, signups30d, byProvider, series] =
       await Promise.all([
         User.countDocuments(),
         User.countDocuments({ createdAt: { $gte: new Date(now - 7 * day) } }),
@@ -330,7 +447,20 @@ export class AccountService {
         Payment.aggregate([{ $match: { status: 'approved' } }, { $group: { _id: null, count: { $sum: 1 }, sum: { $sum: '$amount' } } }]),
         Referral.countDocuments({ status: 'rewarded' }),
         Referral.countDocuments({ status: 'pending' }),
+        User.countDocuments({ createdAt: { $gte: tashkentDayStart(now) } }),
+        User.countDocuments({ createdAt: { $gte: new Date(now - 30 * day) } }),
+        User.aggregate([{ $group: { _id: '$authProvider', count: { $sum: 1 } } }]),
+        User.aggregate([
+          { $match: { createdAt: { $gte: new Date(tashkentDayStart(now).getTime() - 29 * day) } } },
+          { $group: { _id: { $dateToString: { format: '%Y-%m-%d', date: '$createdAt', timezone: 'Asia/Tashkent' } }, count: { $sum: 1 } } },
+        ]),
       ]);
+    // 30 Tashkent days, oldest first, zero-filled so the chart has no gaps
+    const perDay = new Map(series.map((r: any) => [r._id, r.count]));
+    const signupSeries = Array.from({ length: 30 }, (_, i) => {
+      const d = new Date(tashkentDayStart(now).getTime() - (29 - i) * day + TASHKENT_OFFSET_MS).toISOString().slice(0, 10);
+      return { date: d, count: perDay.get(d) || 0 };
+    });
     return {
       totalUsers,
       signups7d,
@@ -343,6 +473,10 @@ export class AccountService {
       revenueUzs: approvedPayments[0]?.sum || 0,
       referralsRewarded,
       referralsPending,
+      signupsToday,
+      signups30d,
+      byProvider: Object.fromEntries(byProvider.map((r: any) => [r._id || 'unknown', r.count])),
+      signupSeries,
     };
   }
 

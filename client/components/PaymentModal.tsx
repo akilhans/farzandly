@@ -14,13 +14,17 @@ interface PaymentModalProps {
   onClose: () => void;
   /** @deprecated Premium is a single lifetime plan now; kept so existing callers compile. */
   defaultPlan?: string;
+  /** Buy a gift code for someone else instead of Premium for this account. */
+  gift?: boolean;
+  /** Called after a payment request is sent (e.g. to refresh the buyer's gift list). */
+  onSubmitted?: () => void;
 }
 
 /**
  * Lifetime Premium via card transfer:
  * transfer → "Men to'ladim" → admin confirms → Premium turns on and the bot notifies the parent.
  */
-export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, gift = false, onSubmitted }: PaymentModalProps) {
   const { user, isAuthenticated, refreshUser } = useAuth();
   const [copied, setCopied] = useState(false);
   const [payments, setPayments] = useState<PaymentRequest[] | null>(null);
@@ -54,9 +58,10 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
 
   if (!isOpen) return null;
 
-  const latest = payments?.[0];
+  // Gift and own-Premium requests are tracked separately: a parent can have one of each pending.
+  const latest = payments?.find((p) => (p.plan === 'gift') === gift);
   const pending = latest?.status === 'pending';
-  const lifetime = user?.premiumType === 'lifetime';
+  const lifetime = !gift && user?.premiumType === 'lifetime';
 
   const copyCard = () => {
     navigator.clipboard?.writeText(PAYMENT_CARD.replace(/\s+/g, ''));
@@ -67,9 +72,12 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
   const confirmPaid = async () => {
     setSubmitting(true);
     setError('');
-    const res = await accountApi.createPayment(undefined, price);
+    const res = await accountApi.createPayment(undefined, price, gift);
     setSubmitting(false);
-    if (res.success) await loadPayments();
+    if (res.success) {
+      await loadPayments();
+      onSubmitted?.();
+    }
     else setError(res.message || 'So‘rovni yuborib bo‘lmadi. Qaytadan urinib ko‘ring.');
   };
 
@@ -91,8 +99,12 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               <Crown className="w-6 h-6 text-amber-700 fill-amber-600" />
             </div>
             <div>
-              <h2 id="payment-title" className="text-lg font-black text-slate-900">Umrbod Premium</h2>
-              <p className="text-sm text-slate-500">Bir marta to‘lov — barcha darslar abadiy ochiq</p>
+              <h2 id="payment-title" className="text-lg font-black text-slate-900">
+                {gift ? 'Premiumni sovg‘a qilish' : 'Umrbod Premium'}
+              </h2>
+              <p className="text-sm text-slate-500">
+                {gift ? 'Yaqiningiz uchun bir martalik sovg‘a kodi' : 'Bir marta to‘lov — barcha darslar abadiy ochiq'}
+              </p>
             </div>
           </div>
           <button
@@ -150,7 +162,7 @@ export default function PaymentModal({ isOpen, onClose }: PaymentModalProps) {
               <div className="space-y-1">
                 <p className="text-sm text-amber-900 font-bold">To‘lovingiz tekshirilmoqda</p>
                 <p className="text-sm text-amber-900/80">
-                  Tasdiqlangach Premium avtomatik yoqiladi
+                  {gift ? 'Tasdiqlangach sovg‘a kodi shu sahifada paydo bo‘ladi' : 'Tasdiqlangach Premium avtomatik yoqiladi'}
                   {user?.telegramId ? ' va Telegram orqali xabar olasiz' : ''}. Odatda bir necha soat ichida.
                 </p>
               </div>

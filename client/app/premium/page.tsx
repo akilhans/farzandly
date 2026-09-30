@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
 import { m } from 'framer-motion';
 import {
@@ -18,6 +18,7 @@ import {
   Lock,
 } from 'lucide-react';
 import PaymentModal from '@/components/PaymentModal';
+import GiftPremium from '@/components/GiftPremium';
 import { START_LESSON_HREF } from '@/lib/site';
 import { DEFAULT_PAYMENT_CARD, PAYMENT_CARD, PREMIUM_PRICE_UZS, formatCard, formatSom } from '@/lib/payments';
 import { T } from '@/components/T';
@@ -224,6 +225,11 @@ export default function PremiumPage() {
           </div>
         </div>
       </div>
+
+      {/* Gift Premium: buy a code for someone / redeem one */}
+      <Suspense fallback={null}>
+        <GiftPremium />
+      </Suspense>
 
       {/* FAQ Accordion */}
       <div className="bg-white rounded-3xl border-2 border-slate-200 border-b-8 p-6 sm:p-10 space-y-6 max-w-3xl mx-auto">

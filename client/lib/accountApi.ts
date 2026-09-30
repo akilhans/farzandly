@@ -45,11 +45,45 @@ export interface PaymentRequest {
   userName?: string;
   telegramUsername?: string;
   amount: number;
+  plan?: 'lifetime' | 'gift';
   status: 'pending' | 'approved' | 'rejected';
   note?: string;
   rejectReason?: string;
   createdAt: string;
   reviewedAt?: string;
+}
+
+export interface GiftCodeInfo {
+  code: string;
+  status: 'active' | 'redeemed';
+  redeemedByName?: string;
+  redeemedAt?: string;
+  createdAt: string;
+  botLink?: string;
+  webLink?: string;
+  shareUrl?: string;
+}
+
+export type BroadcastSegment = 'all' | 'free' | 'premium' | 'active' | 'inactive';
+
+export interface BroadcastInput {
+  text: string;
+  segment: BroadcastSegment;
+  ageGroup?: string;
+  buttonText?: string;
+  buttonUrl?: string;
+}
+
+export interface BroadcastRecord extends BroadcastInput {
+  _id: string;
+  status: 'running' | 'done' | 'interrupted';
+  total: number;
+  sent: number;
+  failed: number;
+  blocked: number;
+  actorName?: string;
+  createdAt: string;
+  finishedAt?: string;
 }
 
 /** Auth + account endpoints that need the signed session token. */
@@ -70,16 +104,26 @@ export const accountApi = {
 
   // --- payments ---
   paymentConfig: () => call('/payments/config'),
-  createPayment: (note?: string, amount?: number) => post('/payments', { note, amount }),
+  createPayment: (note?: string, amount?: number, gift = false) => post('/payments', { note, amount, gift }),
   myPayments: () => call('/payments/mine'),
+
+  // --- gifts ---
+  myGifts: () => call('/gifts/mine'),
+  redeemGift: (code: string) => post('/gifts/redeem', { code }),
 
   // --- admin ---
   adminStats: () => call('/admin/stats'),
   adminPayments: (status = 'pending', page = 1) => call(`/admin/payments?status=${status}&page=${page}`),
   adminReviewPayment: (id: string, decision: 'approve' | 'reject', reason?: string) =>
     post(`/admin/payments/${id}/review`, { decision, reason }),
-  adminUsers: (q = '', page = 1) => call(`/admin/users?q=${encodeURIComponent(q)}&page=${page}`),
+  adminUsers: (q = '', page = 1, filter = 'all', sort = 'newest') =>
+    call(`/admin/users?q=${encodeURIComponent(q)}&page=${page}&filter=${filter}&sort=${sort}`),
+  adminUserDetail: (id: string) => call(`/admin/users/${id}`),
   adminSetPremium: (id: string, action: 'lifetime' | 'revoke' | 'bonus', days?: number, reason?: string) =>
     post(`/admin/users/${id}/premium`, { action, days, reason }),
   adminAudit: (limit = 50) => call(`/admin/audit?limit=${limit}`),
+  adminBroadcasts: () => call('/admin/broadcasts'),
+  adminBroadcastAudience: (segment: BroadcastSegment, ageGroup = '') =>
+    call(`/admin/broadcasts/audience?segment=${segment}&ageGroup=${encodeURIComponent(ageGroup)}`),
+  adminBroadcast: (input: BroadcastInput, test = false) => post('/admin/broadcasts', { ...input, test }),
 };

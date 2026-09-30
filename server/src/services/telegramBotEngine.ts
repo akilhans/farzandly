@@ -2,6 +2,7 @@ import { DataService } from './dataService.js';
 import { getWebhookSecret, signLoginTicket } from '../lib/security.js';
 import { isPremiumActive } from '../lib/premium.js';
 import { TelegramSessionService } from './telegramSessionService.js';
+import { isAdminUser } from '../middleware/auth.js';
 
 export interface TelegramBotOptions {
   token?: string;
@@ -316,6 +317,9 @@ export class TelegramBotEngine {
         if (startParam.toLowerCase() === 'eslatma') {
           return this.sendReminderSettings(chatId, from);
         }
+        if (/^gift_/i.test(startParam)) {
+          return this.redeemGift(chatId, from, startParam.slice(5));
+        }
 
         // Check if startParam is an active web login session!
         const authUser = await TelegramSessionService.authenticateSession(startParam, from);
@@ -354,6 +358,8 @@ export class TelegramBotEngine {
     if (is('/premium', '👑 Premium')) return this.sendPremiumInfo(chatId, from);
     if (is('/eslatma', '⏰ Eslatma')) return this.sendReminderSettings(chatId, from);
     if (is('/keyingi')) return this.sendNextLesson(chatId, from);
+    const giftMatch = text.match(/^\/sovga(?:@\w+)?\s+(\S+)/i);
+    if (giftMatch) return this.redeemGift(chatId, from, giftMatch[1]);
 
     if (lower.startsWith('/qidiruv') || is('🔎 Qidiruv')) {
       const q = text.replace(/^\/qidiruv(@\w+)?/i, '').replace('🔎 Qidiruv', '').trim();
@@ -391,9 +397,13 @@ export class TelegramBotEngine {
 
     if (data.startsWith('rem:')) {
       toast = await this.handleReminderCallback(chatId, from, data);
+    } else if (data.startsWith('ntf:')) {
+      toast = await this.handleEngagementCallback(chatId, from, data);
+    } else if (data.startsWith('pay:')) {
+      toast = await this.handlePaymentCallback(cb, data);
     }
     await this.answerCallbackQuery(cb.id, toast);
-    if (data.startsWith('rem:')) return;
+    if (data.startsWith('rem:') || data.startsWith('ntf:') || data.startsWith('pay:')) return;
 
     if (data === 'cmd_courses') return this.sendCoursesList(chatId, from);
     if (data === 'cmd_articles') return this.sendArticlesList(chatId, from);
@@ -624,7 +634,7 @@ export class TelegramBotEngine {
   }
 
   /** First lesson the user hasn't completed (respecting age group and premium access). */
-  private static async findNextLesson(user: any) {
+  static async findNextLesson(user: any) {
     const premium = this.isPremiumUser(user);
     const completed: string[] = user?.completedLessons || [];
     const ageGroup: string | undefined = user?.childAgeGroup;
@@ -861,6 +871,7 @@ export class TelegramBotEngine {
       `• /profil — ball, daraja, tugatilgan darslar\n` +
       `• /premium — Premium (platformada faollashtiriladi)\n` +
       `• /login — saytga bir klikda kirish\n` +
+      `• /sovga <i>kod</i> — Premium sovg‘a kodini faollashtirish\n` +
       `• /maslahat — kunlik maslahat`;
 
     await this.sendMessage(chatId, text, {
@@ -880,6 +891,7 @@ export class TelegramBotEngine {
     const user = await this.getUser(from);
     const enabled = Boolean(user?.reminderEnabled);
     const hour: number = user?.reminderHour ?? 20;
+    const engagement = !user?.engagementOptOut;
 
     const hourRow = this.REMINDER_HOURS.map((h) => ({
       text: `${h === hour && enabled ? '✅ ' : ''}${String(h).padStart(2, '0')}:00`,
@@ -890,7 +902,8 @@ export class TelegramBotEngine {
       chatId,
       `⏰ <b>Kunlik dars eslatmasi</b>\n\n` +
         `Holat: <b>${enabled ? `yoqilgan — har kuni ${String(hour).padStart(2, '0')}:00 (Toshkent vaqti)` : 'o‘chirilgan'}</b>\n\n` +
-        `Har kuni tanlangan vaqtda keyingi darsingiz va ketma-ketlik (streak) haqida xabar yuboramiz. Vaqtni tanlang:`,
+        `Har kuni tanlangan vaqtda keyingi darsingiz va ketma-ketlik (streak) haqida xabar yuboramiz. Vaqtni tanlang:\n\n` +
+        `📬 Boshqa xabarlar (haftalik hisobot, farzand yoshi bosqichlari, seriya eslatmasi, yangiliklar): <b>${engagement ? 'yoqilgan' : 'o‘chirilgan'}</b>`,
       {
         reply_markup: {
           inline_keyboard: [
@@ -900,6 +913,11 @@ export class TelegramBotEngine {
               enabled
                 ? { text: '🔕 Eslatmani o‘chirish', callback_data: 'rem:off' }
                 : { text: '🔔 Eslatmani yoqish', callback_data: 'rem:on' },
+            ],
+            [
+              engagement
+                ? { text: '📭 Boshqa xabarlarni o‘chirish', callback_data: 'ntf:off' }
+                : { text: '📬 Boshqa xabarlarni yoqish', callback_data: 'ntf:on' },
             ],
           ],
         },
@@ -928,6 +946,108 @@ export class TelegramBotEngine {
     return '';
   }
 
+  private static async handleEngagementCallback(chatId: string | number, from: any, data: string): Promise<string> {
+    const optOut = data === 'ntf:off';
+    if (!optOut && data !== 'ntf:on') return '';
+    await DataService.setEngagementOptOut(String(from.id), optOut);
+    await this.sendReminderSettings(chatId, from);
+    return optOut ? 'Boshqa xabarlar o‘chirildi' : 'Boshqa xabarlar yoqildi';
+  }
+
+  // ---------------------------------------------------------------------------
+  // Gift codes and admin payment review
+  // ---------------------------------------------------------------------------
+
+  private static async redeemGift(chatId: string | number, from: any, code: string) {
+    const { GiftService } = await import('./giftService.js');
+    try {
+      const user = await this.getUser(from);
+      const res = await GiftService.redeem(user, code);
+      await this.sendMessage(
+        chatId,
+        `🎁 <b>Sovg‘a qabul qilindi!</b>\n\n` +
+          `${this.esc(res.purchaserName || 'Yaqiningiz')} sizga <b>umrbod Premium</b> sovg‘a qildi. ` +
+          `Barcha darslar va maqolalar endi siz uchun ochiq.`,
+        { reply_markup: { inline_keyboard: [[{ text: '▶️ Keyingi darsim', callback_data: 'n:' }]] } }
+      );
+    } catch (e: any) {
+      const known = e?.statusCode && e.statusCode < 500;
+      await this.sendMessage(
+        chatId,
+        `⚠️ ${this.esc(known ? e.message : 'Sovg‘ani faollashtirib bo‘lmadi. Birozdan so‘ng qayta urinib ko‘ring.')}`
+      );
+    }
+  }
+
+  private static readonly REJECT_REASONS = [
+    'Karta tushumida to‘lov topilmadi.',
+    'To‘langan summa noto‘g‘ri.',
+    'Takroriy so‘rov.',
+  ];
+
+  static paymentButtons(id: string) {
+    return {
+      inline_keyboard: [
+        [
+          { text: '✅ Tasdiqlash', callback_data: `pay:a:${id}` },
+          { text: '❌ Rad etish', callback_data: `pay:r:${id}` },
+        ],
+        [{ text: '🗂 Admin panel', url: `${this.getClientUrl()}/admin?tab=payments` }],
+      ],
+    };
+  }
+
+  /** Approve / reject buttons on the admin payment alert. Only admins may press them. */
+  private static async handlePaymentCallback(cb: any, data: string): Promise<string> {
+    const from = cb.from;
+    const chatId = cb.message?.chat?.id;
+    const messageId = cb.message?.message_id;
+    const user = await this.getUser(from);
+    if (!isAdminUser(user) && !isAdminUser({ telegramId: String(from.id) })) return 'Ruxsat yo‘q';
+
+    const match = data.match(/^pay:([arxb]):([a-f0-9]{24})(?::(\d))?$/);
+    if (!match) return '';
+    const [, op, id, reasonIdx] = match;
+    const panelOnly = { inline_keyboard: [[{ text: '🗂 Admin panel', url: `${this.getClientUrl()}/admin?tab=payments` }]] };
+    const setButtons = (reply_markup: any) =>
+      this.callApi('editMessageReplyMarkup', { chat_id: chatId, message_id: messageId, reply_markup });
+
+    if (op === 'r') {
+      await setButtons({
+        inline_keyboard: [
+          ...this.REJECT_REASONS.map((r, i) => [{ text: `❌ ${r}`, callback_data: `pay:x:${id}:${i}` }]),
+          [{ text: '↩️ Orqaga', callback_data: `pay:b:${id}` }],
+        ],
+      });
+      return 'Rad etish sababini tanlang';
+    }
+    if (op === 'b') {
+      await setButtons(this.paymentButtons(id));
+      return '';
+    }
+
+    const { AccountService } = await import('./accountService.js');
+    const actor = user || { _id: `tg:${from.id}`, name: from.first_name || 'Admin', telegramUsername: from.username };
+    const decision = op === 'a' ? 'approve' : 'reject';
+    const reason = op === 'x' ? this.REJECT_REASONS[Number(reasonIdx)] : undefined;
+    try {
+      const res: any = await AccountService.reviewPayment(actor, id, decision, reason);
+      await setButtons(panelOnly);
+      await this.sendMessage(
+        chatId,
+        decision === 'approve'
+          ? `✅ To‘lov tasdiqlandi — ${res.giftCode ? 'sovg‘a kodi yaratildi va xaridorga yuborildi' : 'Premium yoqildi'}.`
+          : `❌ To‘lov rad etildi: ${this.esc(reason || '')}`,
+        { reply_to_message_id: messageId }
+      );
+      return decision === 'approve' ? 'Tasdiqlandi' : 'Rad etildi';
+    } catch (e: any) {
+      // Already reviewed (here, by another admin, or in the panel): drop the stale buttons.
+      if (e?.statusCode === 409) await setButtons(panelOnly);
+      return this.truncate(e?.message || 'Xatolik yuz berdi', 190);
+    }
+  }
+
   private static getTashkentNow() {
     const shifted = new Date(Date.now() + 5 * 60 * 60 * 1000);
     return { hour: shifted.getUTCHours(), date: shifted.toISOString().slice(0, 10) };
@@ -948,6 +1068,7 @@ export class TelegramBotEngine {
         if (res?.ok === false && res.error_code === 403) {
           // User blocked the bot — stop reminding
           await DataService.updateUserSettings(telegramId, { reminderEnabled: false });
+          await DataService.markBotBlocked(telegramId);
         } else {
           sent++;
         }
