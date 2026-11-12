@@ -47,8 +47,9 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
   const [isSpeaking, setIsSpeaking] = useState(false);
 
   const playSentence = useCallback(
-    (text: string) => {
+    (text: string, audioUrl?: string) => {
       speakUzbek(text, {
+        audioUrl,
         muted: sound.muted,
         onStart: () => setIsSpeaking(true),
         onEnd: () => setIsSpeaking(false),
@@ -76,6 +77,15 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
   }, [selectedLevel]);
 
   const currentScenario = scenarios[currentIndex] || scenarios[0];
+
+  // Preload scenario audio so completion playback is instant (0ms latency)
+  useEffect(() => {
+    if (!currentScenario) return;
+    const url = `/audio/kids/${currentScenario.id}-${isKr ? 'kr' : 'uz'}.wav`;
+    const audio = new Audio();
+    audio.preload = 'auto';
+    audio.src = url;
+  }, [currentScenario, isKr]);
 
   // Initialize and shuffle available pieces for current scenario
   useEffect(() => {
@@ -147,14 +157,15 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
       setXpToast({ show: true, amount: reward });
       setTimeout(() => setXpToast({ show: false, amount: 0 }), 2500);
 
-      // Read completed sentence in natural Uzbek voice
+      // Read completed sentence in natural Uzbek voice (instant via pre-generated pure audio)
       const sentenceText = currentScenario.correctOrder
         .map((id) => {
           const p = currentScenario.pieces.find((x) => x.id === id);
           return isKr ? p?.textKr : p?.textUz;
         })
         .join(' ');
-      playSentence(sentenceText);
+      const audioUrl = `/audio/kids/${currentScenario.id}-${isKr ? 'kr' : 'uz'}.wav`;
+      playSentence(sentenceText, audioUrl);
     } else {
       sound.play('no');
     }
@@ -558,7 +569,8 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
                           return isKr ? p?.textKr : p?.textUz;
                         })
                         .join(' ');
-                      playSentence(sentenceText);
+                      const audioUrl = `/audio/kids/${currentScenario.id}-${isKr ? 'kr' : 'uz'}.wav`;
+                      playSentence(sentenceText, audioUrl);
                     }}
                     title={isKr ? 'Гапни қайта тинглаш' : 'Gapni qayta tinglash'}
                     className="p-1 rounded-lg bg-emerald-200/60 hover:bg-emerald-300 text-emerald-800 transition-colors cursor-pointer"

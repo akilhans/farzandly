@@ -1,10 +1,12 @@
-// High-quality Uzbek Speech Synthesis using Gemini AI Voice with Web Speech fallback
+// High-quality Uzbek Speech Audio Manager
+// Plays studio-grade pure Uzbek audio assets or dynamic Gemini AI TTS.
+// Never uses browser robot synthesis because browsers do not support pure Uzbek.
 
-// In-memory client blob cache to make repeated plays instantaneous (0 network calls)
 const clientAudioCache = new Map<string, string>();
 let activeAudio: HTMLAudioElement | null = null;
 
 export interface SpeechOptions {
+  audioUrl?: string; // Direct static audio asset (e.g. /audio/kids/easy-mushuk-sut-uz.wav)
   onStart?: () => void;
   onEnd?: () => void;
   onError?: (err: any) => void;
@@ -12,7 +14,7 @@ export interface SpeechOptions {
 }
 
 /**
- * Stop any currently playing speech audio immediately
+ * Stop any currently playing audio immediately
  */
 export function stopSpeech(): void {
   if (activeAudio) {
@@ -22,75 +24,57 @@ export function stopSpeech(): void {
     } catch {}
     activeAudio = null;
   }
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try {
-      window.speechSynthesis.cancel();
-    } catch {}
-  }
 }
 
 /**
- * Speak text in natural, warm Uzbek voice.
- * Prioritizes Gemini AI Audio API, falls back gracefully to Web Speech API.
+ * Speak text in natural, pure Uzbek voice.
+ * If audioUrl is provided, plays the static audio file directly (instant, 0 latency).
+ * Otherwise queries the Gemini AI TTS server endpoint.
+ * Browser speechSynthesis fallback is explicitly omitted to prevent robotic foreign accents.
  */
 export async function speakUzbek(text: string, options: SpeechOptions = {}): Promise<void> {
   if (options.muted) return;
-  const clean = text.trim();
-  if (!clean) return;
+  const clean = text?.trim() || '';
 
   stopSpeech();
 
-  // 1. Try Gemini AI Voice via server API route
   try {
-    let blobUrl = clientAudioCache.get(clean);
+    // 1. Direct static audio asset or cached URL
+    let finalUrl = options.audioUrl || clientAudioCache.get(clean);
 
-    if (!blobUrl) {
+    if (!finalUrl && clean) {
       const res = await fetch(`/api/tts?text=${encodeURIComponent(clean)}`);
       if (res.ok && res.headers.get('content-type')?.includes('audio')) {
         const blob = await res.blob();
-        blobUrl = URL.createObjectURL(blob);
-        clientAudioCache.set(clean, blobUrl);
+        finalUrl = URL.createObjectURL(blob);
+        clientAudioCache.set(clean, finalUrl);
       }
     }
 
-    if (blobUrl) {
-      const audio = new Audio(blobUrl);
-      activeAudio = audio;
-
-      audio.onplay = () => {
-        options.onStart?.();
-      };
-      audio.onended = () => {
-        if (activeAudio === audio) activeAudio = null;
-        options.onEnd?.();
-      };
-      audio.onerror = (e) => {
-        if (activeAudio === audio) activeAudio = null;
-        options.onError?.(e);
-      };
-
-      await audio.play();
+    if (!finalUrl) {
+      console.warn('[speech] Audio not available for:', clean);
+      options.onError?.(new Error('Audio unavailable'));
       return;
     }
-  } catch (error) {
-    console.warn('[speech] High-fidelity TTS failed, falling back to Web Speech API', error);
-  }
 
-  // 2. Fallback: Browser Web Speech API
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try {
-      const utterance = new SpeechSynthesisUtterance(clean);
-      utterance.lang = 'uz-UZ';
-      utterance.rate = 0.95;
-      utterance.pitch = 1.05;
+    const audio = new Audio(finalUrl);
+    activeAudio = audio;
 
-      utterance.onstart = () => options.onStart?.();
-      utterance.onend = () => options.onEnd?.();
-      utterance.onerror = (e) => options.onError?.(e);
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
+    audio.onplay = () => {
+      options.onStart?.();
+    };
+    audio.onended = () => {
+      if (activeAudio === audio) activeAudio = null;
+      options.onEnd?.();
+    };
+    audio.onerror = (e) => {
+      if (activeAudio === audio) activeAudio = null;
       options.onError?.(e);
-    }
+    };
+
+    await audio.play();
+  } catch (error) {
+    if (activeAudio) activeAudio = null;
+    options.onError?.(error);
   }
 }
