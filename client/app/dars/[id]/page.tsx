@@ -483,7 +483,7 @@ export default function LessonRunnerPage() {
               {currentScreen.example && (
                 <div className="p-4 rounded-2xl bg-slate-50 border-2 border-slate-200 text-xs sm:text-sm text-slate-700 space-y-1">
                   <p className="font-bold text-slate-800">
-                    {language === 'en' ? 'Context / Example:' : language === 'ru' ? 'Пример / Контекст:' : 'Misol / Vaziyat:'}
+                    {language === 'kr' ? 'Мисол / Вазият:' : 'Misol / Vaziyat:'}
                   </p>
                   <p className="italic text-slate-600 whitespace-pre-line">{currentScreen.example}</p>
                 </div>

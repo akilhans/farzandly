@@ -48,7 +48,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
     };
   }, [initialTopic, user?.isPremium]);
   const { language } = useI18n();
-  const lang = (language === 'ru' || language === 'en' ? language : 'uz') as 'uz' | 'en' | 'ru';
+  const lang = (language === 'kr' ? 'kr' : 'uz') as 'uz' | 'kr';
   const isUserPremium = Boolean(user?.isPremium || user?.subscriptionStatus === 'premium');
   const isPaywalled = Boolean(topic.isPremium && (!isUserPremium || topic.locked));
 
@@ -62,7 +62,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
   const handleShare = () => {
     if (typeof navigator !== 'undefined') {
       const pageTitle =
-        lang === 'uz' ? topic.titleUz : lang === 'ru' ? topic.titleRu : topic.title;
+        lang === 'kr' ? (topic.titleRu || topic.titleUz) : topic.titleUz;
       if (navigator.share) {
         navigator.share({
           title: pageTitle,
@@ -150,95 +150,53 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
       lockedQuizTitle: '🔒 Interaktiv test va asosiy xulosalar yopiq',
       lockedQuizSubtitle: 'Ushbu mavzu bo‘yicha bilimlaringizni sinash va +10 XP yutib olish uchun Farzandly Premium obunasini faollashtiring.',
     },
-    en: {
-      home: 'Home',
-      section: 'Health (Body Basics)',
-      readTime: 'min read',
-      reviewedBy: 'Medically reviewed by:',
-      reviewSubtitle: 'Reviewed for scientific accuracy by pediatric health experts.',
-      share: 'Share',
-      copied: 'Link copied!',
-      termsTitle: 'Medical Terms & Pronunciation Guide',
-      sayPrefix: 'say:',
-      visualTitle: 'Anatomy Visualization & Diagram',
-      visualCaption: '💡 Visual body basics guide for kids and parents',
-      visualCredit: 'KidsHealth Medical Diagram',
-      galleryTitle: 'Detailed Anatomy & Organ Parts',
-      gallerySubtitle: 'Click on the buttons below to explore detailed anatomical parts',
-      didYouKnow: 'Did You Know?',
-      takeaways: '📌 Key Takeaways:',
-      quizTitle: 'Test What You Learned!',
-      quizSubtitle: 'Earn +10 XP for every correct answer and solidify your knowledge',
-      correct: '🎉 Correct answer! +10 XP earned',
-      incorrect: 'Incorrect. The correct answer was:',
-      quizComplete: 'Awesome job! Total XP gained on this topic:',
-      backBtn: 'Back to all health topics',
-      footerNote: 'Farzandly — Kids Body Basics & Health Encyclopedia',
+    kr: {
+      home: 'Асосий',
+      section: 'Саломатлик (Тана сирлари)',
+      readTime: 'дақиқа ўқиш',
+      reviewedBy: 'Тиббий кўрикдан ўтган:',
+      reviewSubtitle: 'Ушбу маълумотлар болалар саломатлиги мутахассислари томонидан илмий асосда тасдиқланган.',
+      share: 'Улашиш',
+      copied: 'Ҳавола нусхаланди!',
+      termsTitle: 'Янги тиббий атамалар ва маънолари',
+      sayPrefix: 'талаффузи:',
+      visualTitle: 'Анатомик тузилиш ва кўргазмали тасвир',
+      visualCaption: '💡 Болалар ва ота-оналар учун кўргазмали тана аъзоси схемаси',
+      visualCredit: 'Тиббиёт мутахассислари илмий схемаси',
+      galleryTitle: 'Аъзонинг батафсил қисмлари ва анатомик тузилиши',
+      gallerySubtitle: 'Тугмаларни босиб, аъзо қисмларини катталаштирилган кўринишда ўрганинг',
+      didYouKnow: 'Биласизми?',
+      takeaways: '📌 Асосий хулосалар ва эслаб қолинг:',
+      quizTitle: 'Ўрганганларингизни синаб кўринг!',
+      quizSubtitle: 'Ҳар бир тўғри жавоб учун +10 XP олинг ва билимларингизни мустаҳкамланг',
+      correct: '🎉 Тўғри жавоб! +10 XP берилди',
+      incorrect: 'Нотўғри. Тўғри вариант:',
+      quizComplete: 'Ажойиб натижа! Мавзу бўйича жами тўплаган балларингиз:',
+      backBtn: 'Барча мавзуларга қайтиш',
+      footerNote: 'Farzandly — Болалар анатомияси ва саломатлик энциклопедияси',
       premiumBadge: 'Farzandly Premium',
-      premiumUserBadgeTitle: 'You are a Premium Member',
-      premiumUserBadgeDesc: 'Full anatomical article, microscopic galleries, and all quizzes are unlocked.',
-      previewNotice: 'This story is part of Farzandly Premium. Enjoy the free preview below.',
-      paywallTitle: 'Get unlimited access to the rest of this story with Farzandly Premium',
-      paywallSubtitle: 'Enjoy full medically-verified anatomical guides, interactive quizzes (+10 XP), and exclusive parental knowledge without limits.',
-      paywallBenefit1: 'Complete 19+ kids body basics & health encyclopedia',
-      paywallBenefit2: 'High-resolution microscopic & anatomical galleries',
-      paywallBenefit3: 'Interactive quizzes with +10 XP reward system',
-      paywallBenefit4: 'Pediatric experts verified medical recommendations',
-      paywallBenefit5: 'Unlimited access for the entire family',
-      paywallPriceNote: 'From only 39,000 UZS/month — cancel anytime',
-      upgradeBtn: 'Upgrade to Premium',
-      haveAccountBtn: 'Already a member? Sign in',
-      lockedPreviewNotice: 'The remaining sections are available to Premium members only',
-      lockedQuizTitle: '🔒 Interactive Quiz & Key Takeaways are Locked',
-      lockedQuizSubtitle: 'Activate Farzandly Premium to test your knowledge on this topic and earn +10 XP.',
-    },
-    ru: {
-      home: 'Главная',
-      section: 'Здоровье (Основы тела)',
-      readTime: 'мин. чтения',
-      reviewedBy: 'Проверено медицинскими экспертами:',
-      reviewSubtitle: 'Материал проверен на научную достоверность детскими врачами и специалистами.',
-      share: 'Поделиться',
-      copied: 'Ссылка скопирована!',
-      termsTitle: 'Медицинские термины и произношение',
-      sayPrefix: 'произношение:',
-      visualTitle: 'Анатомическая визуализация и схема',
-      visualCaption: '💡 Наглядное пособие по строению органов для детей и родителей',
-      visualCredit: 'Медицинская визуализация',
-      galleryTitle: 'Детальное строение и отделы органа',
-      gallerySubtitle: 'Нажимайте на отделы ниже, чтобы изучить подробное строение',
-      didYouKnow: 'А вы знали?',
-      takeaways: '📌 Главные выводы и памятка:',
-      quizTitle: 'Проверьте свои знания!',
-      quizSubtitle: 'Получайте +10 XP за каждый правильный ответ!',
-      correct: '🎉 Правильно! +10 XP начислено',
-      incorrect: 'Неверно. Правильный вариант:',
-      quizComplete: 'Отличный результат! Всего получено за эту тему:',
-      backBtn: 'Вернуться ко всем темам',
-      footerNote: 'Farzandly — Детская анатомия и основы здоровья',
-      premiumBadge: 'Farzandly Premium',
-      premiumUserBadgeTitle: 'Вы являетесь Premium-пользователем',
-      premiumUserBadgeDesc: 'Полная статья, микроскопические снимки органов и тесты открыты.',
-      previewNotice: 'Эта статья входит в коллекцию Farzandly Premium. Ниже доступен бесплатный фрагмент.',
-      paywallTitle: 'Оформите подписку Farzandly Premium, чтобы дочитать статью до конца',
-      paywallSubtitle: 'Получите неограниченный доступ к медицинским статьям, интерактивным тестам (+10 XP) и эксклюзивным материалам.',
-      paywallBenefit1: 'Полная детская медицинская энциклопедия из 19+ тем',
-      paywallBenefit2: 'Микроскопические и анатомические иллюстрации высокой четкости',
-      paywallBenefit3: 'Интерактивные тесты и система начисления +10 XP',
-      paywallBenefit4: 'Рекомендации, проверенные экспертами-педиатрами',
-      paywallBenefit5: 'Неограниченный доступ для всей семьи',
-      paywallPriceNote: 'От 39 000 сум в месяц — возможность отмены в любое время',
-      upgradeBtn: 'Подключить Premium',
-      haveAccountBtn: 'Уже есть аккаунт? Войти',
-      lockedPreviewNotice: 'Остальные разделы доступны только подписчикам Premium',
-      lockedQuizTitle: '🔒 Интерактивный тест и выводы заблокированы',
-      lockedQuizSubtitle: 'Подключите Farzandly Premium, чтобы проверить знания по теме и заработать +10 XP.',
+      premiumUserBadgeTitle: 'Сиз Premium аъзосисиз',
+      premiumUserBadgeDesc: 'Тўлиқ анатомик мақола, микроскопик тасвирлар ва барча тестлар сиз учун очиқ.',
+      previewNotice: 'Ушбу мақола Farzandly Premium тўпламига киради. Бепул дастлабки қисмини ўқишингиз мумкин.',
+      paywallTitle: 'Ушбу мақоланинг давомини ўқиш учун Premium обунага эга бўлинг',
+      paywallSubtitle: 'Тиббиёт мутахассислари томонидан тасдиқланган тўлиқ анатомик таҳлиллар, интерактив тестлар (+10 XP) ва эксклюзив билимлардан тўсиқларсиз баҳраманд бўлинг.',
+      paywallBenefit1: 'Тўлиқ 19+ болалар тиббий ва анатомик мақолалари',
+      paywallBenefit2: 'Микроскопик ва юқори аниқликдаги тана аъзолари тасвирлари',
+      paywallBenefit3: 'Мавзу бўйича интерактив тестлар ва +10 XP баллар тизими',
+      paywallBenefit4: 'Педиатрия мутахассислари тасдиқлаган илмий тавсиялар',
+      paywallBenefit5: 'Барча оила аъзолари учун чексиз кириш имконияти',
+      paywallPriceNote: 'Ойига атиги 39 000 сўмдан — исталган вақтда бекор қилиш мумкин',
+      upgradeBtn: 'Premium обунага ўтиш',
+      haveAccountBtn: 'Менда ҳисоб бор (Кириш)',
+      lockedPreviewNotice: 'Қолган бўлимлар фақат Premium аъзолар учун очиқ',
+      lockedQuizTitle: '🔒 Интерактив тест ва асосий хулосалар ёпиқ',
+      lockedQuizSubtitle: 'Ушбу мавзу бўйича билимларингизни синаш ва +10 XP ютиб олиш учун Farzandly Premium обунасини фаоллаштиринг.',
     },
   }[lang];
 
-  const currentTitle = lang === 'uz' ? topic.titleUz : lang === 'ru' ? topic.titleRu : topic.title;
-  const currentSubtitle = lang === 'uz' ? topic.subtitleUz : lang === 'ru' ? topic.subtitleRu : topic.subtitle;
-  const currentSystem = lang === 'uz' ? topic.systemUz : lang === 'ru' ? topic.systemRu : topic.system;
+  const currentTitle = lang === 'kr' ? (topic.titleRu || topic.titleUz) : topic.titleUz;
+  const currentSubtitle = lang === 'kr' ? (topic.subtitleRu || topic.subtitleUz) : topic.subtitleUz;
+  const currentSystem = lang === 'kr' ? (topic.systemRu || topic.systemUz) : topic.systemUz;
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12 space-y-10">
@@ -247,7 +205,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
         <div className="fixed bottom-6 right-6 z-50 animate-bounce bg-emerald-600 text-white px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border-2 border-emerald-300">
           <Award className="w-6 h-6 text-amber-300 animate-spin" />
           <div className="text-sm font-black">
-            +{xpToast.amount} XP {lang === 'uz' ? 'qobiliyatlaringizga qo‘shildi!' : lang === 'ru' ? 'добавлено к опыту!' : 'added to your XP!'}
+            +{xpToast.amount} XP {lang === 'kr' ? 'қобилиятларингизга қўшилди!' : 'qobiliyatlaringizga qo‘shildi!'}
           </div>
         </div>
       )}
@@ -360,7 +318,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {topic.pronunciations.map((p) => {
-              const meaning = lang === 'uz' ? p.meaningUz : lang === 'ru' ? p.meaningRu : p.meaningEn;
+              const meaning = lang === 'kr' ? (p.meaningRu || p.meaningUz) : p.meaningUz;
               return (
                 <div
                   key={p.term}
@@ -458,11 +416,9 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
               <div className="p-4 bg-emerald-900 text-white space-y-1.5">
                 <div className="flex items-center justify-between">
                   <span className="font-black text-sm sm:text-base">
-                    {lang === 'uz'
-                      ? topic.galleryImages[selectedGalleryIdx].labelUz
-                      : lang === 'ru'
-                      ? topic.galleryImages[selectedGalleryIdx].labelRu
-                      : topic.galleryImages[selectedGalleryIdx].labelEn}
+                    {lang === 'kr'
+                      ? (topic.galleryImages[selectedGalleryIdx].labelRu || topic.galleryImages[selectedGalleryIdx].labelUz)
+                      : topic.galleryImages[selectedGalleryIdx].labelUz}
                   </span>
                   <span className="text-xs font-bold text-emerald-200 bg-emerald-800/80 px-2.5 py-1 rounded-lg">
                     {selectedGalleryIdx + 1} / {topic.galleryImages.length}
@@ -470,11 +426,9 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
                 </div>
                 {(() => {
                   const desc =
-                    lang === 'uz'
-                      ? topic.galleryImages[selectedGalleryIdx].descriptionUz
-                      : lang === 'ru'
-                      ? topic.galleryImages[selectedGalleryIdx].descriptionRu
-                      : topic.galleryImages[selectedGalleryIdx].descriptionEn;
+                    lang === 'kr'
+                      ? (topic.galleryImages[selectedGalleryIdx].descriptionRu || topic.galleryImages[selectedGalleryIdx].descriptionUz)
+                      : topic.galleryImages[selectedGalleryIdx].descriptionUz;
                   if (!desc) return null;
                   return (
                     <p className="text-xs text-emerald-100 font-medium leading-relaxed">
@@ -489,7 +443,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
           {/* Gallery Thumbnails / Tabs */}
           <div className="flex flex-wrap gap-2 pt-2">
             {topic.galleryImages.map((img, idx) => {
-              const label = lang === 'uz' ? img.labelUz : lang === 'ru' ? img.labelRu : img.labelEn;
+              const label = lang === 'kr' ? (img.labelRu || img.labelUz) : img.labelUz;
               const isSelected = selectedGalleryIdx === idx;
               return (
                 <button
@@ -521,33 +475,25 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
           <section className="space-y-8">
             {visibleSections.map((section, sIdx) => {
               const sectionTitle =
-                lang === 'uz' && section.titleUz
-                  ? section.titleUz
-                  : lang === 'ru' && section.titleRu
+                lang === 'kr' && section.titleRu
                   ? section.titleRu
-                  : section.title;
+                  : (section.titleUz || section.title);
 
               const paragraphs =
-                lang === 'uz' && section.paragraphsUz
-                  ? section.paragraphsUz
-                  : lang === 'ru' && section.paragraphsRu
+                lang === 'kr' && section.paragraphsRu
                   ? section.paragraphsRu
-                  : section.paragraphs;
+                  : (section.paragraphsUz || section.paragraphs);
 
               const highlight = section.highlightBox
                 ? {
                     title:
-                      lang === 'uz' && section.highlightBox.titleUz
-                        ? section.highlightBox.titleUz
-                        : lang === 'ru' && section.highlightBox.titleRu
+                      lang === 'kr' && section.highlightBox.titleRu
                         ? section.highlightBox.titleRu
-                        : section.highlightBox.title,
+                        : (section.highlightBox.titleUz || section.highlightBox.title),
                     text:
-                      lang === 'uz' && section.highlightBox.textUz
-                        ? section.highlightBox.textUz
-                        : lang === 'ru' && section.highlightBox.textRu
+                      lang === 'kr' && section.highlightBox.textRu
                         ? section.highlightBox.textRu
-                        : section.highlightBox.text,
+                        : (section.highlightBox.textUz || section.highlightBox.text),
                   }
                 : null;
 
@@ -673,18 +619,14 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
                   {lockedSections.map((sec, idx) => (
                     <div key={idx} className="space-y-3">
                       <h3 className="text-xl sm:text-2xl font-black text-slate-800">
-                        {lang === 'uz' && sec.titleUz
-                          ? sec.titleUz
-                          : lang === 'ru' && sec.titleRu
+                        {lang === 'kr' && sec.titleRu
                           ? sec.titleRu
-                          : sec.title}
+                          : (sec.titleUz || sec.title)}
                       </h3>
                       <div className="space-y-2 text-base text-slate-700">
-                        {(lang === 'uz' && sec.paragraphsUz
-                          ? sec.paragraphsUz
-                          : lang === 'ru' && sec.paragraphsRu
+                        {(lang === 'kr' && sec.paragraphsRu
                           ? sec.paragraphsRu
-                          : sec.paragraphs
+                          : (sec.paragraphsUz || sec.paragraphs)
                         )
                           .slice(0, 2)
                           .map((p, pIdx) => (
@@ -704,13 +646,11 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
       {topic.id === 'burp-digestive-system' && (
         <section className="pt-4 space-y-3">
           <h2 className="text-xl sm:text-2xl font-black text-slate-800">
-            {lang === 'uz'
-              ? 'Qizilo‘ngach va oshqozonning joylashuvi'
-              : lang === 'ru'
-              ? 'Расположение пищевода и желудка'
-              : 'Where Does the Gas Travel?'}
+            {lang === 'kr'
+              ? 'Қизилўнгач ва ошқозоннинг жойлашуви'
+              : 'Qizilo‘ngach va oshqozonning joylashuvi'}
           </h2>
-          <DigestiveDiagram highlightOrgan="esophagus" lang={lang === 'ru' ? 'ru' : lang === 'uz' ? 'uz' : 'en'} />
+          <DigestiveDiagram highlightOrgan="esophagus" lang={lang} />
         </section>
       )}
 
@@ -724,7 +664,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {topic.funFacts.map((fact, idx) => {
-              const text = lang === 'uz' ? fact.uz : lang === 'ru' ? fact.ru : fact.en;
+              const text = lang === 'kr' ? (fact.ru || fact.uz) : fact.uz;
               return (
                 <div
                   key={idx}
@@ -780,7 +720,7 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
               </h3>
               <ul className="space-y-2.5">
                 {topic.takeaways.map((item, idx) => {
-                  const text = lang === 'uz' ? item.uz : lang === 'ru' ? item.ru : item.en;
+                  const text = lang === 'kr' ? (item.ru || item.uz) : item.uz;
                   return (
                     <li key={idx} className="flex items-start gap-3 text-sm sm:text-base text-slate-200">
                       <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
@@ -823,10 +763,10 @@ export default function HealthArticleReader({ topic: initialTopic }: HealthArtic
                   const selectedOpt = quizAnswers[qIdx];
                   const isAnswered = selectedOpt !== undefined;
                   const isCorrect = selectedOpt === q.correctIndex;
-                  const questionText = lang === 'uz' ? q.questionUz : lang === 'ru' ? q.questionRu : q.question;
-                  const options = lang === 'uz' ? q.optionsUz : lang === 'ru' ? q.optionsRu : q.options;
+                  const questionText = lang === 'kr' ? (q.questionRu || q.questionUz) : q.questionUz;
+                  const options = lang === 'kr' ? (q.optionsRu || q.optionsUz) : q.optionsUz;
                   const explanation =
-                    lang === 'uz' ? q.explanationUz : lang === 'ru' ? q.explanationRu : q.explanation;
+                    lang === 'kr' ? (q.explanationRu || q.explanationUz) : q.explanationUz;
 
                   return (
                     <div key={qIdx} className="space-y-3 bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200">

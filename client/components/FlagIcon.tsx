@@ -53,6 +53,5 @@ export function FlagIcon({ country, className = '', size = 'sm' }: FlagIconProps
     </span>
   );
 }
-}
 
 export default FlagIcon;

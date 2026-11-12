@@ -1304,7 +1304,7 @@ export default function ProfilePage() {
                         user?.premiumExpiresAt
                           ? t('prof.prem_expires', undefined, {
                               date: new Date(user.premiumExpiresAt).toLocaleDateString(
-                                language === 'ru' ? 'ru-RU' : language === 'en' ? 'en-GB' : 'uz-UZ'
+                                language === 'kr' ? 'uz-Cyrl' : 'uz-UZ'
                               ),
                             })
                           : t('prof.prem_forever')

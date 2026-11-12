@@ -15,7 +15,7 @@ import { useI18n } from '@/context/LanguageContext';
 
 interface BrainAnatomySlideshowProps {
   slides: GalleryImage[];
-  lang?: 'uz' | 'en' | 'ru';
+  lang?: 'uz' | 'kr';
 }
 
 const DEFAULT_ANATOMY_IMAGE = '/body basics/default-anatomy.svg';
@@ -25,7 +25,7 @@ export default function BrainAnatomySlideshow({
   lang: propLang,
 }: BrainAnatomySlideshowProps) {
   const { language } = useI18n();
-  const lang = propLang || (language === 'ru' || language === 'en' ? language : 'uz');
+  const lang = propLang || (language === 'kr' ? 'kr' : 'uz');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [slideErrors, setSlideErrors] = useState<Record<number, boolean>>({});
 
@@ -64,49 +64,31 @@ export default function BrainAnatomySlideshow({
       sourceAttribution: 'Manba: © 2026 The Nemours Foundation/KidsHealth tibbiyot ilmiy fondi. Barcha huquqlar himoyalangan.',
       pageLabel: 'Slayd sahifalari:',
     },
-    en: {
-      sectionBadge: 'Interactive Anatomy Slideshow',
-      title: 'The Anatomy of the Brain',
+    kr: {
+      sectionBadge: 'Интерактив анатомик слайд-шоу',
+      title: 'Бош мия анатомик тузилиши',
       introLead:
-        "The brain is like a computer that controls the body's functions, and the nervous system is like a network that relays messages to parts of the body.",
+        'Бош мия худди тана фаолиятини бошқарувчи компьютерга ўхшайди, асаб тизими эса тана аъзоларига хабарларни етказувчи тармоқдир.',
       introPrompt:
-        'Click through this slideshow to learn more about the brain and nervous system.',
-      prev: 'Previous',
-      next: 'Next',
-      slideCounter: (c: number, t: number) => `Slide ${c} of ${t}`,
-      organParts: 'Brain parts & structures:',
-      sourceAttribution: 'src: © 2026 The Nemours Foundation/KidsHealth. All rights reserved.',
-      pageLabel: 'Slides:',
-    },
-    ru: {
-      sectionBadge: 'Интерактивное анатомическое слайд-шоу',
-      title: 'Анатомия головного мозга (The Anatomy of the Brain)',
-      introLead:
-        'Мозг подобен компьютеру, управляющему функциями тела, а нервная система — сети, передающей сообщения частям тела.',
-      introPrompt:
-        'Листайте это слайд-шоу, чтобы узнать больше о мозге и нервной системе.',
-      prev: 'Назад',
-      next: 'Вперед',
-      slideCounter: (c: number, t: number) => `Слайд ${c} из ${t}`,
-      organParts: 'Отделы и структуры мозга:',
-      sourceAttribution: 'Источник: © 2026 The Nemours Foundation/KidsHealth. Все права защищены.',
-      pageLabel: 'Слайды:',
+        'Бош мия ва асаб тизими ҳақида кўпроқ маълумот олиш учун ушбу слайдларни бирма-бир кўриб чиқинг.',
+      prev: 'Олдинги',
+      next: 'Кейинги',
+      slideCounter: (c: number, t: number) => `${c} / ${t}-слайд`,
+      organParts: 'Мия бўлимлари ва аъзолари:',
+      sourceAttribution: 'Манба: © 2026 The Nemours Foundation/KidsHealth тиббиёт илмий фонди. Барча ҳуқуқлар ҳимояланган.',
+      pageLabel: 'Слайд саҳифалари:',
     },
   }[lang];
 
   const slideLabel =
-    lang === 'uz'
-      ? currentSlide.labelUz
-      : lang === 'ru'
-      ? currentSlide.labelRu
-      : currentSlide.labelEn;
+    lang === 'kr'
+      ? (currentSlide.labelRu || currentSlide.labelUz)
+      : currentSlide.labelUz;
 
   const slideDesc =
-    lang === 'uz'
-      ? currentSlide.descriptionUz || currentSlide.labelUz
-      : lang === 'ru'
-      ? currentSlide.descriptionRu || currentSlide.labelRu
-      : currentSlide.descriptionEn || currentSlide.labelEn;
+    lang === 'kr'
+      ? (currentSlide.descriptionRu || currentSlide.descriptionUz || currentSlide.labelUz)
+      : (currentSlide.descriptionUz || currentSlide.labelUz);
 
   const slideImageSrc =
     !slideErrors[currentIndex] && currentSlide.url
@@ -229,11 +211,9 @@ export default function BrainAnatomySlideshow({
           {slides.map((slide, idx) => {
             const isCurrent = currentIndex === idx;
             const name =
-              lang === 'uz'
-                ? slide.labelUz.split('—')[0].split('(')[0].trim()
-                : lang === 'ru'
-                ? slide.labelRu.split('—')[0].split('(')[0].trim()
-                : slide.labelEn.split('—')[0].split('(')[0].trim();
+              lang === 'kr'
+                ? (slide.labelRu || slide.labelUz).split('—')[0].split('(')[0].trim()
+                : slide.labelUz.split('—')[0].split('(')[0].trim();
 
             return (
               <button

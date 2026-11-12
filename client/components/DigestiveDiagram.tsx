@@ -93,12 +93,12 @@ const ORGANS: OrganInfo[] = [
 
 interface DigestiveDiagramProps {
   highlightOrgan?: string;
-  lang?: 'uz' | 'en' | 'ru';
+  lang?: 'uz' | 'kr';
 }
 
 export default function DigestiveDiagram({ highlightOrgan = 'esophagus', lang: propLang }: DigestiveDiagramProps) {
   const { language } = useI18n();
-  const lang = propLang || (language === 'ru' || language === 'en' ? language : 'uz');
+  const lang = propLang || (language === 'kr' ? 'kr' : 'uz');
   const [selectedOrgan, setSelectedOrgan] = useState<OrganInfo>(
     ORGANS.find((o) => o.id === highlightOrgan) || ORGANS[1]
   );
@@ -115,44 +115,29 @@ export default function DigestiveDiagram({ highlightOrgan = 'esophagus', lang: p
       organGeneral: 'Hazm qilish a’zosi',
       burpQuestion: 'Kekirishda qanday ishtirok etadi?',
     },
-    en: {
-      title: 'Digestive System Anatomy',
-      subtitle: 'Click any organ below to see how it works and where burps travel',
-      badge: 'Body Basics Anatomy',
-      routeLabel: 'Digestive route:',
-      routePath: 'Mouth ➔ Esophagus ➔ Stomach',
-      selectPrompt: 'Select an organ:',
-      burpRelated: '⭐ Directly involved in burping',
-      organGeneral: 'Digestive organ',
-      burpQuestion: 'Role in burping:',
-    },
-    ru: {
-      title: 'Карта органов пищеварения',
-      subtitle: 'Нажмите на любой орган ниже, чтобы узнать его функцию',
-      badge: 'Детская анатомия: Органы тела',
-      routeLabel: 'Путь пищи:',
-      routePath: 'Рот ➔ Пищевод ➔ Желудок',
-      selectPrompt: 'Выберите орган:',
-      burpRelated: '⭐ Напрямую связан с отрыжкой',
-      organGeneral: 'Орган пищеварения',
-      burpQuestion: 'Какова его роль в отрыжке?',
+    kr: {
+      title: 'Ҳазм қилиш аъзолари харитаси',
+      subtitle: 'Ҳар бир аъзога босинг ва унинг қандай ишлашини билиб олинг',
+      badge: 'Болалар анатомияси: Тана аъзолари',
+      routeLabel: 'Ҳазм йўли:',
+      routePath: 'Оғиз ➔ Қизилўнгач ➔ Ошқозон',
+      selectPrompt: 'Аъзони танланг:',
+      burpRelated: '⭐ Кекиришга бевосита боғлиқ',
+      organGeneral: 'Ҳазм қилиш аъзоси',
+      burpQuestion: 'Кекиришда қандай иштирок этади?',
     },
   }[lang];
 
   const organName =
-    lang === 'uz' ? selectedOrgan.nameUz : lang === 'ru' ? selectedOrgan.nameRu : selectedOrgan.nameEn;
+    lang === 'kr' ? (selectedOrgan.nameRu || selectedOrgan.nameUz) : selectedOrgan.nameUz;
   const organDesc =
-    lang === 'uz'
-      ? selectedOrgan.descriptionUz
-      : lang === 'ru'
-      ? selectedOrgan.descriptionRu
-      : selectedOrgan.descriptionEn;
+    lang === 'kr'
+      ? (selectedOrgan.descriptionRu || selectedOrgan.descriptionUz)
+      : selectedOrgan.descriptionUz;
   const burpRole =
-    lang === 'uz'
-      ? selectedOrgan.burpRoleUz
-      : lang === 'ru'
-      ? selectedOrgan.burpRoleRu
-      : selectedOrgan.burpRoleEn;
+    lang === 'kr'
+      ? (selectedOrgan.burpRoleRu || selectedOrgan.burpRoleUz)
+      : selectedOrgan.burpRoleUz;
 
   return (
     <div className="bg-white rounded-3xl border-2 border-emerald-100 shadow-xl overflow-hidden">
@@ -210,7 +195,7 @@ export default function DigestiveDiagram({ highlightOrgan = 'esophagus', lang: p
             {ORGANS.map((organ) => {
               const isSelected = selectedOrgan.id === organ.id;
               const name =
-                lang === 'uz' ? organ.nameUz : lang === 'ru' ? organ.nameRu : organ.nameEn;
+                lang === 'kr' ? (organ.nameRu || organ.nameUz) : organ.nameUz;
               return (
                 <button
                   key={organ.id}
