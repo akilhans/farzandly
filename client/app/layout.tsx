@@ -9,6 +9,7 @@ import { T } from "@/components/T";
 import MotionProvider from "@/components/MotionProvider";
 import { OfferBanner } from "@/components/offer/Offer";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { Analytics } from "@vercel/analytics/next";
 import {
   DEFAULT_OG_IMAGE,
   SITE_DESCRIPTION,
@@ -203,6 +204,7 @@ export default function RootLayout({
               <OfferBanner />
             </MotionProvider>
           </AuthProvider>
+          <Analytics />
         </LanguageProvider>
       </body>
     </html>
