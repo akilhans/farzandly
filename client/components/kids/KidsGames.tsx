@@ -2,7 +2,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Volume2, VolumeX, Star, ArrowRight, Sparkles } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Volume2, VolumeX, Star, ArrowRight, Heart } from 'lucide-react';
 import { EASE_OUT, SPRING_POP } from '@/lib/motion';
 
 const fireConfetti = (opts: import('canvas-confetti').Options) =>
@@ -641,7 +641,7 @@ export default function KidsGames() {
       {game === null ? (
         <div className="space-y-6">
           <div className="flex items-start gap-3 bg-white border-2 border-slate-200 rounded-2xl p-4 text-sm text-slate-600">
-            <Sparkles className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+            <Heart className="w-5 h-5 text-rose-500 fill-rose-100 shrink-0 mt-0.5" />
             <p>
               Farzandingiz bilan <b className="text-slate-800">birga</b> o‘ynang: savolni ovoz chiqarib o‘qing, to‘g‘ri javobni
               maqtang, xato qilsa — shoshirmasdan qayta urinishga undang.

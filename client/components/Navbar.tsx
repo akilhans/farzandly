@@ -49,10 +49,9 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const languages: Array<{ code: Language; label: string; flag: string }> = [
-    { code: 'uz', label: 'O‘zbekcha', flag: '🇺🇿' },
-    { code: 'en', label: 'English', flag: '🇬🇧' },
-    { code: 'ru', label: 'Русский', flag: '🇷🇺' },
+  const languages: Array<{ code: Language; label: string }> = [
+    { code: 'uz', label: 'O‘zbek (Lotin)' },
+    { code: 'kr', label: 'Ўзбек (Кирилл)' },
   ];
 
   const currentLangObj = languages.find((l) => l.code === language) || languages[0];
@@ -148,10 +147,10 @@ export function Navbar() {
                 type="button"
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
                 className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-2xl bg-slate-50/90 hover:bg-slate-100 border-2 border-slate-200 text-xs font-bold text-slate-700 transition-all cursor-pointer"
-                title="Tilni tanlash / Select Language"
+                title="Yozuv turini tanlash / Тилни танлаш"
               >
                 <FlagIcon country={currentLangObj.code} size="sm" />
-                <span className="uppercase tracking-wider font-extrabold">{currentLangObj.code}</span>
+                <span className="uppercase tracking-wider font-extrabold">{currentLangObj.code === 'kr' ? 'КИР' : 'LOT'}</span>
                 <ChevronDown className="w-3 h-3 text-slate-400" />
               </button>
 

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { Crown, Lock, Sparkles, ArrowRight, ShieldCheck, Check } from 'lucide-react';
+import { Crown, Lock, ArrowRight, ShieldCheck, Check } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { Article, api } from '@/lib/api';
 import ArticleCompleteButton from '@/components/ArticleCompleteButton';

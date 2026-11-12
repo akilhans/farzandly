@@ -119,7 +119,7 @@ const siteJsonLd = {
         "@type": "ContactPoint",
         contactType: "customer support",
         url: `${SITE_URL}/#contact`,
-        availableLanguage: ["uz", "ru"],
+        availableLanguage: ["uz", "kr"],
       },
     },
     {
@@ -128,7 +128,7 @@ const siteJsonLd = {
       url: SITE_URL,
       name: SITE_NAME,
       alternateName: "Farzandly — Farzand tarbiyalash platformasi",
-      inLanguage: ["uz", "ru"],
+      inLanguage: ["uz", "kr"],
       publisher: { "@id": `${SITE_URL}/#organization` },
       potentialAction: {
         "@type": "SearchAction",

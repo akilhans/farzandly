@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { Bookmark, Sparkles, QrCode } from 'lucide-react';
+import { Bookmark, QrCode } from 'lucide-react';
 import { CardCustomization } from './types';
 import { MehrliTarbiyaTemplate } from './templates/MehrliTarbiyaTemplate';
 import { EkranVaqtiTemplate } from './templates/EkranVaqtiTemplate';

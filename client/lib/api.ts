@@ -43,6 +43,7 @@ export interface Article {
   tags: string[];
   seoTitle: string;
   seoDescription: string;
+  author?: string;
   isPremium?: boolean;
   isPublished: boolean;
   publishedAt: string;
@@ -70,6 +71,7 @@ export interface Lesson {
   title: string;
   slug: string;
   summary: string;
+  author?: string;
   order: number;
   estimatedMinutes: number;
   ageGroup: string;

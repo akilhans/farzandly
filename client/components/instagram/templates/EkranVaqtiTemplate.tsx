@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, Timer, BookOpen, Compass, Flame, AlertCircle, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Smartphone, Timer, BookOpen, Compass, Flame, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { EkranVaqtiContent } from '../types';
 
 interface Props {

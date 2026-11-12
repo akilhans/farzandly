@@ -13,8 +13,10 @@ import {
   ShieldCheck,
   Share2,
   Crown,
+  User,
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { getArticleAuthor } from '@/lib/author';
 import ArticleContentReader from '@/components/ArticleContentReader';
 import { articleTeaser } from '@/lib/premiumPreview';
 import { SITE_NAME, SITE_URL, START_LESSON_HREF, absoluteUrl } from '@/lib/site';
@@ -180,6 +182,10 @@ export default async function ArticleDetailPage({ params }: ArticlePageProps) {
             <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-3 py-1 rounded-full font-black text-[11px]">
               <T k="art.5" /></span>
           )}
+          <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium bg-slate-100/90 border border-slate-200/70 px-2.5 py-1 rounded-full">
+            <User className="w-3.5 h-3.5 text-slate-400" />
+            <span>Muallif: <strong className="font-semibold text-slate-700">{getArticleAuthor(article)}</strong></span>
+          </span>
           <span className="flex items-center gap-1 text-slate-400 ml-auto">
             <Clock className="w-3.5 h-3.5" /> {article.readingTimeMinutes} <T k="art.6" /></span>
         </div>

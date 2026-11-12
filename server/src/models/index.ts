@@ -226,6 +226,7 @@ export interface IArticle extends Document {
   tags: string[];
   seoTitle: string;
   seoDescription: string;
+  author?: string;
   isPremium?: boolean;
   isPublished: boolean;
   publishedAt: Date;
@@ -243,6 +244,7 @@ const ArticleSchema = new Schema<IArticle>({
   tags: [{ type: String }],
   seoTitle: { type: String, required: true },
   seoDescription: { type: String, required: true },
+  author: { type: String },
   isPremium: { type: Boolean, default: false },
   isPublished: { type: Boolean, default: true },
   publishedAt: { type: Date, default: Date.now },
@@ -304,6 +306,7 @@ export interface ILesson extends Document {
   title: string;
   slug: string;
   summary: string;
+  author?: string;
   order: number;
   estimatedMinutes: number;
   ageGroup: string;
@@ -321,6 +324,7 @@ const LessonSchema = new Schema<ILesson>({
   title: { type: String, required: true },
   slug: { type: String, required: true, unique: true, index: true },
   summary: { type: String, required: true },
+  author: { type: String },
   order: { type: Number, required: true },
   estimatedMinutes: { type: Number, default: 5 },
   ageGroup: { type: String, required: true, index: true },

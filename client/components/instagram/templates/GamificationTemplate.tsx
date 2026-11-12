@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flame, Star, Trophy, Heart, Check, Lock, Play, Sparkles, HelpCircle, CheckCircle } from 'lucide-react';
+import { Flame, Star, Trophy, Heart, Check, Lock, Play, HelpCircle, CheckCircle } from 'lucide-react';
 import { GamificationContent } from '../types';
 
 interface Props {
@@ -13,7 +13,7 @@ export const GamificationTemplate: React.FC<Props> = ({ content }) => {
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-100/90 text-emerald-800 text-base font-bold tracking-wider uppercase border border-emerald-200/80">
-            <Sparkles className="w-4 h-4 text-emerald-600" />
+            <Star className="w-4 h-4 text-emerald-600 fill-emerald-500" />
             <span>{content.categoryTag}</span>
           </div>
 
@@ -173,7 +173,7 @@ export const GamificationTemplate: React.FC<Props> = ({ content }) => {
       {/* Takeaway Banner */}
       <div className="bg-slate-900 rounded-[22px] p-5 text-white shadow-lg flex items-center gap-4 border border-slate-800">
         <div className="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0">
-          <Sparkles className="w-6 h-6" />
+          <Trophy className="w-6 h-6" />
         </div>
         <p className="text-base font-bold leading-snug">
           {content.takeaway}

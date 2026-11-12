@@ -19,13 +19,13 @@ import {
   Heart,
   HelpCircle,
   Lightbulb,
-  Play,
-  Sparkles,
+  User,
   Trophy,
   Lock,
   Crown,
 } from 'lucide-react';
 import { api, Lesson, LessonScreen } from '@/lib/api';
+import { getLessonAuthor } from '@/lib/author';
 import { useAuth } from '@/context/AuthContext';
 import { useI18n } from '@/context/LanguageContext';
 import { playChimeSound } from '@/lib/gamification';
@@ -53,9 +53,6 @@ export default function LessonRunnerPage() {
   const [isCorrect, setIsCorrect] = useState(false);
   const [hasFailedQuiz, setHasFailedQuiz] = useState(false);
   const [quizScore, setQuizScore] = useState(100);
-
-  // Video state
-  const [showVideo, setShowVideo] = useState(false);
 
   // Completed state
   const [isFinished, setIsFinished] = useState(false);
@@ -164,43 +161,43 @@ export default function LessonRunnerPage() {
       case 'scenario':
         return {
           icon: HelpCircle,
-          label: language === 'en' ? 'Core Context' : language === 'ru' ? 'Ситуация' : 'Hayotiy vaziyat',
+          label: language === 'kr' ? 'Ҳаётий вазият' : 'Hayotiy vaziyat',
           className: 'text-sky-600 bg-sky-50 border-sky-200',
         };
       case 'concept':
         return {
           icon: Lightbulb,
-          label: language === 'en' ? 'Core Concept' : language === 'ru' ? 'Основная суть' : 'Asosiy tushuncha',
+          label: language === 'kr' ? 'Асосий тушунча' : 'Asosiy tushuncha',
           className: 'text-emerald-600 bg-emerald-50 border-emerald-200',
         };
       case 'explanation':
         return {
           icon: BookOpen,
-          label: language === 'en' ? 'Psychological Insight' : language === 'ru' ? 'Анализ' : 'Tarbiyaviy tahlil',
+          label: language === 'kr' ? 'Тарбиявий таҳлил' : 'Tarbiyaviy tahlil',
           className: 'text-indigo-600 bg-indigo-50 border-indigo-200',
         };
       case 'islamic_perspective':
         return {
           icon: Heart,
-          label: language === 'en' ? 'Sacred Wisdom' : language === 'ru' ? 'Исламская мудрость' : 'Islomiy hikmat',
+          label: language === 'kr' ? 'Исломий ҳикмат' : 'Islomiy hikmat',
           className: 'text-teal-700 bg-teal-50 border-teal-200',
         };
       case 'practice':
         return {
           icon: CheckCircle2,
-          label: language === 'en' ? 'Practical Step' : language === 'ru' ? 'Практика' : 'Bugungi amaliyot',
+          label: language === 'kr' ? 'Бугунги амалиёт' : 'Bugungi amaliyot',
           className: 'text-amber-700 bg-amber-50 border-amber-200',
         };
       case 'quiz':
         return {
           icon: Award,
-          label: language === 'en' ? 'Mini-quiz' : language === 'ru' ? 'Тест' : 'Mini-test',
+          label: language === 'kr' ? 'Мини-тест' : 'Mini-test',
           className: 'text-purple-700 bg-purple-50 border-purple-200',
         };
       default:
         return {
           icon: BookOpen,
-          label: language === 'en' ? 'Lesson Step' : language === 'ru' ? 'Шаг урока' : 'Dars bosqichi',
+          label: language === 'kr' ? 'Дарс босқичи' : 'Dars bosqichi',
           className: 'text-slate-600 bg-slate-50 border-slate-200',
         };
     }
@@ -334,39 +331,11 @@ export default function LessonRunnerPage() {
           <span className="text-[11px] font-black uppercase tracking-wider text-slate-400 line-clamp-1">
             {lesson.title}
           </span>
-          {lesson.videoUrl && (
-            <button
-              type="button"
-              onClick={() => setShowVideo(!showVideo)}
-              className="text-[11px] font-bold text-emerald-700 hover:text-emerald-800 bg-emerald-50 hover:bg-emerald-100 px-2.5 py-1 rounded-xl border border-emerald-200 flex items-center gap-1 transition-all cursor-pointer"
-            >
-              <Play className="w-3 h-3 fill-emerald-600" />
-              <span>{t('lesson.video_btn')}</span>
-            </button>
-          )}
+          <span className="text-[11px] font-medium text-slate-500 bg-slate-100/90 border border-slate-200/70 px-2.5 py-0.5 rounded-full flex items-center gap-1 shrink-0 shadow-2xs">
+            <User className="w-3 h-3 text-slate-400" />
+            <span>Muallif: <strong className="font-semibold text-slate-700">{getLessonAuthor(lesson)}</strong></span>
+          </span>
         </div>
-
-        {/* Video Embed Section */}
-        <AnimatePresence>
-          {showVideo && lesson.videoUrl && (
-            <m.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="overflow-hidden rounded-2xl border-2 border-emerald-200 shadow-md bg-black"
-            >
-              <div className="aspect-video w-full">
-                <iframe
-                  src={`https://www.youtube-nocookie.com/embed/${lesson.videoId || ''}`}
-                  title={lesson.title}
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full border-0"
-                />
-              </div>
-            </m.div>
-          )}
-        </AnimatePresence>
       </div>
 
       {/* 2. DYNAMIC SCREEN CONTENT WITH MOTION */}
@@ -423,7 +392,7 @@ export default function LessonRunnerPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="bg-amber-50 border-2 border-amber-300 rounded-2xl p-3 max-w-sm mx-auto flex items-center justify-center gap-2 text-amber-900 font-bold text-xs sm:text-sm shadow-xs"
                 >
-                  <Sparkles className="w-4 h-4 text-amber-600 fill-amber-500" />
+                  <Star className="w-4 h-4 text-amber-600 fill-amber-500" />
                   <span><T k="lsn.14" /></span>
                 </m.div>
               )}

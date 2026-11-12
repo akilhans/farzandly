@@ -12,7 +12,7 @@ import {
   Share2,
   Copy,
   ChevronRight,
-  Sparkles,
+  Lightbulb,
   CheckCircle2,
   Bookmark,
 } from 'lucide-react';
@@ -189,7 +189,7 @@ export default function JazosizReader({ part }: JazosizReaderProps) {
         {part.keyTakeaways && part.keyTakeaways.length > 0 && (
           <section className="bg-emerald-50/80 dark:bg-emerald-950/40 border-2 border-emerald-200 dark:border-emerald-800 rounded-3xl p-5 sm:p-7 space-y-3">
             <h3 className="text-sm font-black uppercase tracking-wider text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+              <Lightbulb className="w-4 h-4 text-emerald-600" />
               <span>Ushbu qismning asosiy g‘oyalari:</span>
             </h3>
             <div className="space-y-2">

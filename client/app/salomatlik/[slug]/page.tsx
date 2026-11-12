@@ -121,7 +121,7 @@ export default async function HealthTopicPage({ params }: Props) {
         alternativeHeadline: topic.title,
         description: topic.subtitleUz,
         image: [absoluteUrl(topic.heroImage || '/body basics/brain.jpg')],
-        inLanguage: ['uz', 'en', 'ru'],
+        inLanguage: ['uz', 'kr'],
         medicalAudience: {
           '@type': 'PatientAudience',
           name: 'Bolalar va ota-onalar (Children and Parents)',

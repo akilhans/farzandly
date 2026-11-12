@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { m } from 'framer-motion';
-import { Gift, Sparkles, CheckCircle, ArrowRight, ShieldCheck, Heart, Users, BookOpen } from 'lucide-react';
+import { Gift, CheckCircle, ArrowRight, ShieldCheck, Heart, Users, BookOpen } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function ReferralLandingPage() {
@@ -99,7 +99,7 @@ export default function ReferralLandingPage() {
             ) : isAuthenticated ? (
               <>
                 <span>7 Kunlik Premium Sovg‘ani Olish</span>
-                <Sparkles className="w-5 h-5" />
+                <Gift className="w-5 h-5" />
               </>
             ) : (
               <>

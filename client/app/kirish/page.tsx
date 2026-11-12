@@ -20,7 +20,6 @@ import {
   Smartphone,
   X,
   RefreshCw,
-  Sparkles,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { T } from '@/components/T';

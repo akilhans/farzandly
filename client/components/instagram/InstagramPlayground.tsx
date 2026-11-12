@@ -8,7 +8,8 @@ import {
   RotateCcw,
   Eye,
   Sliders,
-  Sparkles,
+  Award,
+  BookOpen,
   Palette,
   Layers,
   ZoomIn,
@@ -358,7 +359,7 @@ export function InstagramPlayground() {
                                     : 'bg-slate-800 text-slate-300 group-hover:bg-slate-700'
                                 }`}
                               >
-                                {tpl.id === 'platform-intro' && <Sparkles className="w-5 h-5 text-amber-300" />}
+                                {tpl.id === 'platform-intro' && <Award className="w-5 h-5 text-amber-300" />}
                                 {tpl.id === 'nega-farzandly' && <HeartHandshake className="w-5 h-5 text-teal-300" />}
                                 {tpl.id === 'feature-showcase' && <Layers className="w-5 h-5 text-sky-300" />}
                               </div>
@@ -425,7 +426,7 @@ export function InstagramPlayground() {
                                 {tpl.id === 'mehrli-tarbiya' && <HeartHandshake className="w-5 h-5" />}
                                 {tpl.id === 'ekran-vaqti' && <Smartphone className="w-5 h-5" />}
                                 {tpl.id === 'gamification' && <Flame className="w-5 h-5" />}
-                                {tpl.id === 'hikmat-va-ilm' && <Sparkles className="w-5 h-5" />}
+                                {tpl.id === 'hikmat-va-ilm' && <BookOpen className="w-5 h-5" />}
                               </div>
                               <div>
                                 <h4 className="font-bold text-white text-sm">

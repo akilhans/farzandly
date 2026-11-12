@@ -21,7 +21,6 @@ import {
   User as UserIcon,
   Trophy,
   Target,
-  Sparkles,
   Crown,
 } from 'lucide-react';
 import { api, Lesson } from '@/lib/api';

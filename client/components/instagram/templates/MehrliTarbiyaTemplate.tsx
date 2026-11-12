@@ -1,5 +1,5 @@
 import React from 'react';
-import { Eye, HeartHandshake, ShieldCheck, ArrowRight, Lightbulb, Sparkles, Check, X } from 'lucide-react';
+import { Eye, HeartHandshake, ShieldCheck, ArrowRight, Lightbulb, Check, X } from 'lucide-react';
 import { MehrliTarbiyaContent } from '../types';
 
 interface Props {
@@ -12,7 +12,7 @@ export const MehrliTarbiyaTemplate: React.FC<Props> = ({ content }) => {
       {/* Hook Header Section */}
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-100/90 text-emerald-800 text-base font-bold tracking-wider uppercase border border-emerald-200/80">
-          <Sparkles className="w-4 h-4 text-emerald-600" />
+          <HeartHandshake className="w-4 h-4 text-emerald-600" />
           <span>{content.categoryTag}</span>
         </div>
 

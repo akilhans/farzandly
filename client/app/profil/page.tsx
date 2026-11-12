@@ -46,7 +46,6 @@ import {
   Link2,
   Unlink,
   RefreshCw,
-  Sparkles,
 } from 'lucide-react';
 import { api, Achievement, FamilyData, ReferralStats } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
@@ -915,7 +914,7 @@ export default function ProfilePage() {
 
             <div className="card-farzandly p-5 text-center space-y-1">
               <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mb-1">
-                <Sparkles className="w-5 h-5" />
+                <Star className="w-5 h-5 fill-emerald-500 text-emerald-600" />
               </div>
               <div className="text-2xl font-black text-emerald-700">
                 +{(referralStats?.referralCount || user?.referralCount || 0) * 100} XP
@@ -1205,9 +1204,8 @@ export default function ProfilePage() {
 
               <div className="flex items-center gap-1.5 bg-white p-1 rounded-xl border border-slate-200">
                 {[
-                  { code: 'uz' as const, label: 'O‘zbek' },
-                  { code: 'en' as const, label: 'English' },
-                  { code: 'ru' as const, label: 'Русский' },
+                  { code: 'uz' as const, label: 'O‘zbek (Lotin)' },
+                  { code: 'kr' as const, label: 'Ўзбек (Кирилл)' },
                 ].map((lang) => (
                   <button
                     key={lang.code}

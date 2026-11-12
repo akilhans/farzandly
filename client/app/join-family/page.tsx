@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { m } from 'framer-motion';
-import { Users, Heart, CheckCircle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { Users, Heart, CheckCircle, ArrowRight, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 export default function JoinFamilyPage() {

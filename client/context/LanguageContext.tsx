@@ -3,8 +3,8 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import uz from '@/lib/i18n/uz';
 
-export type Language = 'uz' | 'en' | 'ru';
-export const LANGUAGES: Language[] = ['uz', 'en', 'ru'];
+export type Language = 'uz' | 'kr';
+export const LANGUAGES: Language[] = ['uz', 'kr'];
 
 export interface LanguageContextType {
   language: Language;
@@ -14,16 +14,15 @@ export interface LanguageContextType {
 
 type Dict = Record<string, string>;
 
-// Uzbek is the default and always bundled; en/ru are fetched only when actually used.
+// Uzbek (Latin) is default and bundled; Cyrillic is loaded when selected
 const loaders: Record<Exclude<Language, 'uz'>, () => Promise<{ default: Dict }>> = {
-  en: () => import('@/lib/i18n/en'),
-  ru: () => import('@/lib/i18n/ru'),
+  kr: () => import('@/lib/i18n/kr'),
 };
 const cache: Partial<Record<Language, Dict>> = { uz };
 
 const isLanguage = (v: unknown): v is Language => typeof v === 'string' && (LANGUAGES as string[]).includes(v);
 
-/** Saved choice wins; otherwise follow the browser language (ru/en), defaulting to Uzbek. */
+/** Saved choice wins; otherwise default to Latin Uzbek */
 function detectLanguage(): Language {
   try {
     const saved = localStorage.getItem('farzandly_lang');
@@ -31,8 +30,7 @@ function detectLanguage(): Language {
   } catch {
     // storage unavailable
   }
-  const nav = (typeof navigator !== 'undefined' ? navigator.language : '').slice(0, 2).toLowerCase();
-  return nav === 'ru' || nav === 'en' ? nav : 'uz';
+  return 'uz';
 }
 
 const LanguageContext = createContext<LanguageContextType>({

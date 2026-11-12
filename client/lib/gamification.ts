@@ -21,27 +21,17 @@ export function calculateLevel(xp: number, lang: string = 'uz'): LevelInfo {
     { name: 'Donishmand ota-ona', minXp: 1000, maxXp: 2000 },
   ];
 
-  const levelsEn = [
-    { name: 'Beginner Parent', minXp: 0, maxXp: 40 },
-    { name: 'Learner Parent', minXp: 40, maxXp: 100 },
-    { name: 'Conscious Parent', minXp: 100, maxXp: 200 },
-    { name: 'Mindful Educator', minXp: 200, maxXp: 350 },
-    { name: 'Caring Mentor', minXp: 350, maxXp: 600 },
-    { name: 'Experienced Parent', minXp: 600, maxXp: 1000 },
-    { name: 'Wise Grandmaster', minXp: 1000, maxXp: 2000 },
+  const levelsKr = [
+    { name: 'Бошловчи ота-она', minXp: 0, maxXp: 40 },
+    { name: 'Ўрганувчи ота-она', minXp: 40, maxXp: 100 },
+    { name: 'Онгли ота-она', minXp: 100, maxXp: 200 },
+    { name: 'Онгли тарбиячи', minXp: 200, maxXp: 350 },
+    { name: 'Меҳрли мураббий', minXp: 350, maxXp: 600 },
+    { name: 'Тажрибали ота-она', minXp: 600, maxXp: 1000 },
+    { name: 'Донишманд ота-она', minXp: 1000, maxXp: 2000 },
   ];
 
-  const levelsRu = [
-    { name: 'Начинающий родитель', minXp: 0, maxXp: 40 },
-    { name: 'Обучающийся родитель', minXp: 40, maxXp: 100 },
-    { name: 'Осознанный родитель', minXp: 100, maxXp: 200 },
-    { name: 'Чуткий воспитатель', minXp: 200, maxXp: 350 },
-    { name: 'Заботливый наставник', minXp: 350, maxXp: 600 },
-    { name: 'Опытный родитель', minXp: 600, maxXp: 1000 },
-    { name: 'Мудрый наставник', minXp: 1000, maxXp: 2000 },
-  ];
-
-  const levelSet = lang === 'en' ? levelsEn : lang === 'ru' ? levelsRu : levelsUz;
+  const levelSet = lang === 'kr' ? levelsKr : levelsUz;
 
   let currentTier = levelSet[0];
   let tierIndex = 1;

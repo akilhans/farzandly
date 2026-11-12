@@ -3,7 +3,6 @@ import Link from 'next/link';
 import {
   BookOpen,
   Clock,
-  Sparkles,
   ArrowRight,
   ShieldCheck,
   Heart,
@@ -107,7 +106,7 @@ export default function JazosizTarbiyaHubPage() {
 
           <div className="bg-white rounded-3xl p-6 sm:p-7 border-2 border-slate-200/90 shadow-sm space-y-3">
             <div className="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
-              <Sparkles className="w-6 h-6" />
+              <ShieldCheck className="w-6 h-6" />
             </div>
             <h3 className="text-lg font-black text-slate-900">Haqiqiy intizom</h3>
             <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">

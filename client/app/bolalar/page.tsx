@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import { useSearchParams, useRouter } from 'next/navigation';
 import {
   BookOpen,
-  Sparkles,
   Search,
   Clock,
   Heart,

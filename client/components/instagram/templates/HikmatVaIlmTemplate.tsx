@@ -1,5 +1,5 @@
 import React from 'react';
-import { BookOpen, Sparkles, Brain, Check, Quote } from 'lucide-react';
+import { BookOpen, Star, Brain, Check, Quote } from 'lucide-react';
 import { HikmatVaIlmContent } from '../types';
 
 interface Props {
@@ -12,7 +12,7 @@ export const HikmatVaIlmTemplate: React.FC<Props> = ({ content }) => {
       {/* Hook Section */}
       <div className="space-y-4">
         <div className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-emerald-100/90 text-emerald-800 text-base font-bold tracking-wider uppercase border border-emerald-200/80">
-          <Sparkles className="w-4 h-4 text-emerald-600" />
+          <BookOpen className="w-4 h-4 text-emerald-600" />
           <span>{content.categoryTag}</span>
         </div>
 
@@ -101,7 +101,7 @@ export const HikmatVaIlmTemplate: React.FC<Props> = ({ content }) => {
       {/* Synthesis Takeaway Banner */}
       <div className="bg-gradient-to-r from-emerald-800 via-teal-900 to-slate-900 rounded-[22px] p-5 text-white shadow-lg space-y-1.5 border border-emerald-700/40">
         <div className="flex items-center gap-2 text-xs font-extrabold text-emerald-300 uppercase tracking-wider">
-          <Sparkles className="w-4 h-4 text-amber-300" />
+          <Star className="w-4 h-4 text-amber-300 fill-amber-300" />
           <span>{content.synthesisTitle}</span>
         </div>
         <p className="text-base font-bold leading-relaxed text-slate-100">

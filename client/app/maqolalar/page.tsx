@@ -1,7 +1,8 @@
 import React from 'react';
 import Link from 'next/link';
-import { BookOpen, Clock, Tag, ArrowRight, Baby, Crown } from 'lucide-react';
+import { BookOpen, Clock, Tag, ArrowRight, Baby, Crown, User } from 'lucide-react';
 import { api } from '@/lib/api';
+import { getArticleAuthor } from '@/lib/author';
 import SearchForm from '@/components/SearchForm';
 import Pagination, { EmptyArticles } from '@/components/Pagination';
 import type { Metadata } from 'next';
@@ -163,10 +164,16 @@ export default async function MaqolalarPage({ searchParams }: MaqolalarProps) {
 
               {/* Footer CTA & Metadata */}
               <div className="pt-4 mt-5 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-xs font-medium text-slate-500 bg-slate-50 border border-slate-200/70 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5">
-                  <Baby className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{article.ageGroup} <T k="arts.7" /></span>
-                </span>
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-medium text-slate-500 bg-slate-50 border border-slate-200/70 px-2.5 py-1 rounded-lg inline-flex items-center gap-1.5">
+                    <Baby className="w-3.5 h-3.5 text-slate-400" />
+                    <span>{article.ageGroup} <T k="arts.7" /></span>
+                  </span>
+                  <span className="text-[11px] text-slate-500 font-medium inline-flex items-center gap-1 bg-slate-50 border border-slate-200/60 px-2 py-0.5 rounded-md">
+                    <User className="w-3 h-3 text-slate-400" />
+                    <span>{getArticleAuthor(article)}</span>
+                  </span>
+                </div>
 
                 <Link
                   href={`/maqolalar/${article.slug}`}

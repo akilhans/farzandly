@@ -11,7 +11,6 @@ import {
   ShieldCheck,
   HelpCircle,
   BookOpen,
-  Sparkles,
   Copy,
   CheckCheck,
   Send,

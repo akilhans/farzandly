@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 // Loaded on demand so the confetti library isn't part of the initial bundle
 const fireConfetti = (opts: import('canvas-confetti').Options) => import('canvas-confetti').then((mod) => mod.default(opts));
-import { Star, CheckCircle, Sparkles } from 'lucide-react';
+import { Star, CheckCircle } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { api } from '@/lib/api';
 import { playChimeSound } from '@/lib/gamification';
@@ -72,7 +72,7 @@ export default function ArticleCompleteButton({ articleSlug }: Props) {
           </>
         ) : (
           <>
-            <Sparkles className="w-4 h-4 text-amber-300 fill-amber-300" />
+            <Star className="w-4 h-4 text-amber-300 fill-amber-300" />
             <span><T k="complete.4" /></span>
           </>
         )}

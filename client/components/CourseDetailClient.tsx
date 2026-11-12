@@ -11,8 +11,10 @@ import {
   Baby,
   ArrowRight,
   Lock,
+  User,
 } from 'lucide-react';
 import { api, Course } from '@/lib/api';
+import { getLessonAuthor } from '@/lib/author';
 import { useI18n } from '@/context/LanguageContext';
 import { T } from '@/components/T';
 
@@ -84,6 +86,10 @@ export default function CourseDetailClient({ slug, initialCourse = null }: { slu
               {t('courses.free_badge', 'BEPUL ASOSIY DARSLAR')}
             </span>
           )}
+          <span className="inline-flex items-center gap-1.5 text-xs text-slate-500 font-medium bg-slate-50 border border-slate-200/70 px-2.5 py-1 rounded-full">
+            <User className="w-3.5 h-3.5 text-slate-400" />
+            <span>Muallif: <strong className="font-semibold text-slate-700">{getLessonAuthor({ courseSlug: course.slug })}</strong></span>
+          </span>
           <span className="ml-auto text-slate-400 flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" /> {t('course_detail.total', 'Jami:')} {course.estimatedMinutes} {t('courses.duration', 'daqiqa')}
           </span>
