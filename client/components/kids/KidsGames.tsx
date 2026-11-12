@@ -2,8 +2,11 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, RotateCcw, Volume2, VolumeX, Star, ArrowRight, Heart } from 'lucide-react';
+import { ArrowLeft, RotateCcw, Volume2, VolumeX, Star, ArrowRight, Heart, Flame } from 'lucide-react';
 import { EASE_OUT, SPRING_POP } from '@/lib/motion';
+import { useAuth } from '@/context/AuthContext';
+import { useI18n } from '@/context/LanguageContext';
+import SentenceBuilderGame from './SentenceBuilderGame';
 
 const fireConfetti = (opts: import('canvas-confetti').Options) =>
   import('canvas-confetti').then((mod) => mod.default(opts));
@@ -68,39 +71,80 @@ type Sound = ReturnType<typeof useSound>;
 /* Game catalogue                                                      */
 /* ------------------------------------------------------------------ */
 
-type GameId = 'xotira' | 'sanash' | 'ranglar' | 'ortiqcha';
+type GameId = 'gap-tuzish' | 'xotira' | 'sanash' | 'ranglar' | 'ortiqcha';
 
-const GAMES: Array<{ id: GameId; emoji: string; title: string; desc: string; age: string; tint: string }> = [
+interface GameItem {
+  id: GameId;
+  emoji: string;
+  titleUz: string;
+  titleKr: string;
+  descUz: string;
+  descKr: string;
+  ageUz: string;
+  ageKr: string;
+  xpBadge: string;
+  tint: string;
+}
+
+const GAMES: GameItem[] = [
+  {
+    id: 'gap-tuzish',
+    emoji: '🧩',
+    titleUz: 'Rasmli gap tuzuvchi',
+    titleKr: 'Расмли гап тузувчи',
+    descUz: 'Katta sahnaga qarab, so‘z kartochkalaridan to‘g‘ri gap tuzing.',
+    descKr: 'Катта саҳнага қараб, сўз карточкаларидан тўғри гап тузинг.',
+    ageUz: '3–8 yosh',
+    ageKr: '3–8 ёш',
+    xpBadge: '+10 / +20 XP',
+    tint: 'bg-violet-50 border-violet-200',
+  },
   {
     id: 'xotira',
     emoji: '🧠',
-    title: 'Xotira o‘yini',
-    desc: 'Kartalarni ochib, bir xil hayvonlar juftini toping.',
-    age: '3+ yosh',
+    titleUz: 'Xotira o‘yini',
+    titleKr: 'Хотира ўйини',
+    descUz: 'Kartalarni ochib, bir xil hayvonlar juftini toping.',
+    descKr: 'Карталарни очиб, бир хил ҳайвонлар жуфтини топинг.',
+    ageUz: '3+ yosh',
+    ageKr: '3+ ёш',
+    xpBadge: '+15 / +20 XP',
     tint: 'bg-emerald-50 border-emerald-200',
   },
   {
     id: 'sanash',
     emoji: '🔢',
-    title: 'Sanashni o‘rganamiz',
-    desc: 'Nechta narsa borligini sanab, to‘g‘ri sonni tanlang.',
-    age: '3+ yosh',
+    titleUz: 'Sanashni o‘rganamiz',
+    titleKr: 'Санашни ўрганамиз',
+    descUz: 'Nechta narsa borligini sanab, to‘g‘ri sonni tanlang.',
+    descKr: 'Нечта нарса борлигини санаб, тўғри сонни танланг.',
+    ageUz: '3+ yosh',
+    ageKr: '3+ ёш',
+    xpBadge: '+25 XP gacha',
     tint: 'bg-sky-50 border-sky-200',
   },
   {
     id: 'ranglar',
     emoji: '🎨',
-    title: 'Ranglarni top',
-    desc: 'Aytilgan rangni topib, uning nomini yod oling.',
-    age: '2+ yosh',
+    titleUz: 'Ranglarni top',
+    titleKr: 'Рангларни топ',
+    descUz: 'Aytilgan rangni topib, uning nomini yod oling.',
+    descKr: 'Айтилган рангни топиб, унинг номини ёд олинг.',
+    ageUz: '2+ yosh',
+    ageKr: '2+ ёш',
+    xpBadge: '+25 XP gacha',
     tint: 'bg-amber-50 border-amber-200',
   },
   {
     id: 'ortiqcha',
     emoji: '🔍',
-    title: 'Qaysi biri ortiqcha?',
-    desc: 'To‘rttasidan boshqalariga o‘xshamaganini toping.',
-    age: '4+ yosh',
+    titleUz: 'Qaysi biri ortiqcha?',
+    titleKr: 'Қайси бири ортиқча?',
+    descUz: 'To‘rttasidan boshqalariga o‘xshamaganini toping.',
+    descKr: 'Тўрттасидан бошқаларига ўхшамаганини топинг.',
+    ageUz: '4+ yosh',
+    ageKr: '4+ ёш',
+    xpBadge: '+25 XP gacha',
     tint: 'bg-rose-50 border-rose-200',
   },
 ];
@@ -155,13 +199,17 @@ function GameHeader({
 function WinPanel({
   stars,
   detail,
+  xpEarned,
   onAgain,
   onExit,
+  isKr,
 }: {
   stars: number;
   detail: string;
+  xpEarned?: number;
   onAgain: () => void;
   onExit: () => void;
+  isKr?: boolean;
 }) {
   return (
     <m.div
@@ -187,15 +235,23 @@ function WinPanel({
           </m.span>
         ))}
       </div>
-      <h3 className="text-3xl sm:text-4xl font-black text-slate-800">Barakalla! 🎉</h3>
+      <h3 className="text-3xl sm:text-4xl font-black text-slate-800">
+        {isKr ? 'Баракалла! 🎉' : 'Barakalla! 🎉'}
+      </h3>
       <p className="text-slate-600 font-medium">{detail}</p>
+      {Boolean(xpEarned && xpEarned > 0) && (
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-amber-50 border-2 border-amber-200 text-amber-800 font-black text-sm shadow-xs">
+          <Flame className="w-5 h-5 text-amber-500 fill-amber-500" />
+          <span>+{xpEarned} XP {isKr ? 'тўпланди!' : 'to‘plandi!'}</span>
+        </div>
+      )}
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
         <button type="button" onClick={onAgain} className="btn-primary px-7 py-3.5 text-base gap-2 cursor-pointer w-full sm:w-auto">
           <RotateCcw className="w-5 h-5" />
-          Yana o‘ynash
+          {isKr ? 'Яна ўйнаш' : 'Yana o‘ynash'}
         </button>
         <button type="button" onClick={onExit} className="btn-outline px-7 py-3.5 text-base cursor-pointer w-full sm:w-auto">
-          Boshqa o‘yin
+          {isKr ? 'Бошқа ўйин' : 'Boshqa o‘yin'}
         </button>
       </div>
     </m.div>
@@ -218,11 +274,22 @@ type MemCard = { id: number; face: string; matched: boolean };
 const makeDeck = (pairs: number): MemCard[] =>
   shuffle(shuffle(ANIMALS).slice(0, pairs).flatMap((f) => [f, f])).map((face, id) => ({ id, face, matched: false }));
 
-function MemoryGame({ onExit, sound }: { onExit: () => void; sound: Sound }) {
+function MemoryGame({
+  onExit,
+  sound,
+  onAwardXP,
+  isKr,
+}: {
+  onExit: () => void;
+  sound: Sound;
+  onAwardXP?: (xp: number, id: string) => void;
+  isKr?: boolean;
+}) {
   const [pairs, setPairs] = useState(4);
   const [deck, setDeck] = useState<MemCard[]>(() => makeDeck(4));
   const [open, setOpen] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
+  const [xpAwarded, setXpAwarded] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const done = deck.every((c) => c.matched);
 
@@ -231,9 +298,13 @@ function MemoryGame({ onExit, sound }: { onExit: () => void; sound: Sound }) {
   }, []);
 
   useEffect(() => {
-    if (done) celebrate(sound);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [done]);
+    if (done && !xpAwarded) {
+      celebrate(sound);
+      const reward = pairs === 4 ? 15 : 20;
+      onAwardXP?.(reward, `xotira-${pairs}-${Date.now()}`);
+      setXpAwarded(true);
+    }
+  }, [done, xpAwarded, pairs, sound, onAwardXP]);
 
   const restart = (p = pairs) => {
     if (timer.current) clearTimeout(timer.current);
@@ -241,6 +312,7 @@ function MemoryGame({ onExit, sound }: { onExit: () => void; sound: Sound }) {
     setDeck(makeDeck(p));
     setOpen([]);
     setMoves(0);
+    setXpAwarded(false);
   };
 
   const flip = (i: number) => {
@@ -266,21 +338,32 @@ function MemoryGame({ onExit, sound }: { onExit: () => void; sound: Sound }) {
 
   return (
     <div>
-      <GameHeader title="Xotira o‘yini" onExit={onExit} onRestart={() => restart()} sound={sound} />
+      <GameHeader
+        title={isKr ? 'Хотира ўйини' : 'Xotira o‘yini'}
+        onExit={onExit}
+        onRestart={() => restart()}
+        sound={sound}
+      />
       {done ? (
         <WinPanel
           stars={stars}
-          detail={`Hamma juftlarni ${moves} ta urinishda topdingiz!`}
+          detail={
+            isKr
+              ? `Ҳамма жуфтларни ${moves} та уринишда топдингиз!`
+              : `Hamma juftlarni ${moves} ta urinishda topdingiz!`
+          }
+          xpEarned={pairs === 4 ? 15 : 20}
           onAgain={() => restart()}
           onExit={onExit}
+          isKr={isKr}
         />
       ) : (
         <>
           <div className="flex items-center justify-between mb-4 text-sm font-bold text-slate-600">
             <div className="flex gap-2" role="group" aria-label="Qiyinlik">
               {[
-                { p: 4, label: 'Oson' },
-                { p: 6, label: 'Qiyinroq' },
+                { p: 4, label: isKr ? 'Осон (+15 XP)' : 'Oson (+15 XP)' },
+                { p: 6, label: isKr ? 'Қийинроқ (+20 XP)' : 'Qiyinroq (+20 XP)' },
               ].map(({ p, label }) => (
                 <button
                   key={p}
@@ -295,7 +378,7 @@ function MemoryGame({ onExit, sound }: { onExit: () => void; sound: Sound }) {
                 </button>
               ))}
             </div>
-            <span>Urinishlar: {moves}</span>
+            <span>{isKr ? 'Уринишлар' : 'Urinishlar'}: {moves}</span>
           </div>
 
           <div className="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-lg mx-auto" style={{ perspective: 900 }}>
@@ -356,18 +439,23 @@ function QuizGame({
   onExit,
   sound,
   optionGrid = 'grid-cols-3',
+  onAwardXP,
+  isKr,
 }: {
   title: string;
   makeRounds: () => Round[];
   onExit: () => void;
   sound: Sound;
   optionGrid?: string;
+  onAwardXP?: (xp: number, id: string) => void;
+  isKr?: boolean;
 }) {
   const [rounds, setRounds] = useState<Round[]>(makeRounds);
   const [idx, setIdx] = useState(0);
   const [wrong, setWrong] = useState<string[]>([]);
   const [solved, setSolved] = useState(false);
   const [firstTry, setFirstTry] = useState(0);
+  const [totalXpEarned, setTotalXpEarned] = useState(0);
   const done = idx >= rounds.length;
   const round = rounds[idx];
 
@@ -382,13 +470,18 @@ function QuizGame({
     setWrong([]);
     setSolved(false);
     setFirstTry(0);
+    setTotalXpEarned(0);
   };
 
   const choose = (key: string) => {
     if (solved || wrong.includes(key)) return;
     if (key === round.answer) {
       setSolved(true);
-      if (wrong.length === 0) setFirstTry((n) => n + 1);
+      const isFirst = wrong.length === 0;
+      if (isFirst) setFirstTry((n) => n + 1);
+      const gain = isFirst ? 5 : 3;
+      setTotalXpEarned((prev) => prev + gain);
+      onAwardXP?.(gain, `quiz-${title.slice(0, 8)}-${idx}-${Date.now()}`);
       sound.play('ok');
     } else {
       setWrong((w) => [...w, key]);
@@ -428,9 +521,15 @@ function QuizGame({
       {done ? (
         <WinPanel
           stars={stars}
-          detail={`${ROUNDS} ta savoldan ${firstTry} tasini birinchi urinishda topdingiz!`}
+          detail={
+            isKr
+              ? `${ROUNDS} та саволдан ${firstTry} тасини биринчи уринишда топдингиз!`
+              : `${ROUNDS} ta savoldan ${firstTry} tasini birinchi urinishda topdingiz!`
+          }
+          xpEarned={totalXpEarned}
           onAgain={restart}
           onExit={onExit}
+          isKr={isKr}
         />
       ) : (
         <AnimatePresence mode="wait">
@@ -484,12 +583,14 @@ function QuizGame({
                 >
                   <p className="text-lg sm:text-xl font-black text-emerald-700 text-center">{round.explain}</p>
                   <button type="button" onClick={next} className="btn-primary px-7 py-3 text-base gap-2 cursor-pointer">
-                    {idx + 1 < ROUNDS ? 'Keyingisi' : 'Natija'}
+                    {idx + 1 < ROUNDS ? (isKr ? 'Кейингиси' : 'Keyingisi') : (isKr ? 'Натижа' : 'Natija')}
                     <ArrowRight className="w-5 h-5" />
                   </button>
                 </m.div>
               ) : wrong.length > 0 ? (
-                <p className="text-base font-bold text-amber-700">Hechqisi yo‘q, yana urinib ko‘ring! 💪</p>
+                <p className="text-base font-bold text-amber-700">
+                  {isKr ? 'Ҳечқиси йўқ, яна уриниб кўринг! 💪' : 'Hechqisi yo‘q, yana urinib ko‘ring! 💪'}
+                </p>
               ) : null}
             </div>
           </m.div>
@@ -626,9 +727,23 @@ const makeOddRounds = (): Round[] =>
 /* ------------------------------------------------------------------ */
 
 export default function KidsGames() {
+  const { updateUserProgress } = useAuth();
+  const { language } = useI18n();
+  const isKr = language === 'kr';
+
   const [game, setGame] = useState<GameId | null>(null);
+  const [xpToast, setXpToast] = useState<{ show: boolean; amount: number }>({ show: false, amount: 0 });
   const sound = useSound();
   const topRef = useRef<HTMLDivElement>(null);
+
+  const handleAwardXP = useCallback(
+    (amount: number, id: string) => {
+      updateUserProgress(amount, `oyin-${id}`);
+      setXpToast({ show: true, amount });
+      setTimeout(() => setXpToast({ show: false, amount: 0 }), 2500);
+    },
+    [updateUserProgress]
+  );
 
   const open = (id: GameId | null) => {
     setGame(id);
@@ -637,14 +752,38 @@ export default function KidsGames() {
   const exit = () => open(null);
 
   return (
-    <div ref={topRef} className="scroll-mt-24">
+    <div ref={topRef} className="scroll-mt-24 relative">
+      {/* Floating XP Toast */}
+      <AnimatePresence>
+        {xpToast.show && (
+          <m.div
+            initial={{ opacity: 0, y: -20, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            className="fixed top-20 right-6 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 border-2 border-emerald-300 font-black text-sm pointer-events-none"
+          >
+            <Flame className="w-5 h-5 text-amber-300 fill-amber-300" />
+            <span>+{xpToast.amount} XP {isKr ? 'қўшилди!' : 'qo‘shildi!'}</span>
+          </m.div>
+        )}
+      </AnimatePresence>
+
       {game === null ? (
         <div className="space-y-6">
           <div className="flex items-start gap-3 bg-white border-2 border-slate-200 rounded-2xl p-4 text-sm text-slate-600">
             <Heart className="w-5 h-5 text-rose-500 fill-rose-100 shrink-0 mt-0.5" />
             <p>
-              Farzandingiz bilan <b className="text-slate-800">birga</b> o‘ynang: savolni ovoz chiqarib o‘qing, to‘g‘ri javobni
-              maqtang, xato qilsa — shoshirmasdan qayta urinishga undang.
+              {isKr ? (
+                <>
+                  Фарзандингиз билан <b className="text-slate-800">бирга</b> ўйнанг: саволни овоз чиқариб ўқинг, тўғри жавобни
+                  мақтанг, хато қилса — шоширмасдан қайта уринишга унданг ва биргаликда ХП тўпланг!
+                </>
+              ) : (
+                <>
+                  Farzandingiz bilan <b className="text-slate-800">birga</b> o‘ynang: savolni ovoz chiqarib o‘qing, to‘g‘ri javobni
+                  maqtang, xato qilsa — shoshirmasdan qayta urinishga undang va birgalikda XP to‘plang!
+                </>
+              )}
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
@@ -657,7 +796,7 @@ export default function KidsGames() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.07, duration: 0.5, ease: EASE_OUT }}
-                className="lift-card group card-farzandly p-5 sm:p-6 flex items-center gap-4 sm:gap-5 text-left cursor-pointer hover:border-emerald-500"
+                className="lift-card group card-farzandly p-5 sm:p-6 flex items-center gap-4 sm:gap-5 text-left cursor-pointer hover:border-emerald-500 relative overflow-hidden"
               >
                 <span
                   className={`lift-icon shrink-0 w-20 h-20 sm:w-24 sm:h-24 rounded-3xl border-2 flex items-center justify-center text-5xl sm:text-6xl ${g.tint}`}
@@ -665,14 +804,22 @@ export default function KidsGames() {
                 >
                   {g.emoji}
                 </span>
-                <span className="space-y-1.5 min-w-0">
-                  <span className="inline-block text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-                    {g.age}
-                  </span>
+                <span className="space-y-1.5 min-w-0 flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="inline-block text-[11px] font-black uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                      {isKr ? g.ageKr : g.ageUz}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[11px] font-black text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
+                      <Flame className="w-3 h-3 text-amber-500 fill-amber-500" />
+                      <span>{g.xpBadge}</span>
+                    </span>
+                  </div>
                   <span className="block text-lg sm:text-xl font-black text-slate-800 group-hover:text-emerald-700 transition-colors">
-                    {g.title}
+                    {isKr ? g.titleKr : g.titleUz}
                   </span>
-                  <span className="block text-sm text-slate-500 leading-relaxed">{g.desc}</span>
+                  <span className="block text-sm text-slate-500 leading-relaxed">
+                    {isKr ? g.descKr : g.descUz}
+                  </span>
                 </span>
               </m.button>
             ))}
@@ -680,26 +827,42 @@ export default function KidsGames() {
         </div>
       ) : (
         <div className="bg-white rounded-3xl border-2 border-slate-200 border-b-8 p-4 sm:p-8 max-w-3xl mx-auto">
-          {game === 'xotira' && <MemoryGame onExit={exit} sound={sound} />}
+          {game === 'gap-tuzish' && (
+            <SentenceBuilderGame onExit={exit} sound={sound} onAwardXP={handleAwardXP} />
+          )}
+          {game === 'xotira' && (
+            <MemoryGame onExit={exit} sound={sound} onAwardXP={handleAwardXP} isKr={isKr} />
+          )}
           {game === 'sanash' && (
-            <QuizGame title="Sanashni o‘rganamiz" makeRounds={makeCountRounds} onExit={exit} sound={sound} />
+            <QuizGame
+              title={isKr ? 'Санашни ўрганамиз' : 'Sanashni o‘rganamiz'}
+              makeRounds={makeCountRounds}
+              onExit={exit}
+              sound={sound}
+              onAwardXP={handleAwardXP}
+              isKr={isKr}
+            />
           )}
           {game === 'ranglar' && (
             <QuizGame
-              title="Ranglarni top"
+              title={isKr ? 'Рангларни топ' : 'Ranglarni top'}
               makeRounds={makeColorRounds}
               onExit={exit}
               sound={sound}
               optionGrid="grid-cols-2"
+              onAwardXP={handleAwardXP}
+              isKr={isKr}
             />
           )}
           {game === 'ortiqcha' && (
             <QuizGame
-              title="Qaysi biri ortiqcha?"
+              title={isKr ? 'Қайси бири ортиқча?' : 'Qaysi biri ortiqcha?'}
               makeRounds={makeOddRounds}
               onExit={exit}
               sound={sound}
               optionGrid="grid-cols-2"
+              onAwardXP={handleAwardXP}
+              isKr={isKr}
             />
           )}
         </div>

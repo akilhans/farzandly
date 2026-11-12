@@ -49,7 +49,7 @@ const PROVERBS_PAGE_SIZE = 12;
 function BolalarContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { t } = useI18n();
+  const { t, language } = useI18n();
 
   const tabParam = (searchParams.get('tab') as TabType) || 'ertaklar';
   const categoryParam = searchParams.get('category') || 'all';
@@ -355,13 +355,13 @@ function BolalarContent() {
               }`}
             >
               <Gamepad2 className="w-4 h-4" />
-              <span>O‘yinlar</span>
+              <span>{language === 'kr' ? 'Ўйинлар' : 'O‘yinlar'}</span>
               <span
                 className={`text-xs px-2 py-0.5 rounded-full font-black ${
                   activeTab === 'oyinlar' ? 'bg-emerald-700 text-emerald-100' : 'bg-amber-100 text-amber-700'
                 }`}
               >
-                4
+                5
               </span>
             </button>
           </div>
