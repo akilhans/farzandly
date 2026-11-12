@@ -75,8 +75,6 @@ export function Navbar() {
     { href: '/premium', label: t('nav.premium'), icon: Crown, highlight: true },
   ];
 
-  if (pathname?.startsWith('/instagram')) return null;
-
   return (
     <header
       data-scrolled={scrolled}

@@ -12,7 +12,6 @@ import {
   RefreshCw,
   Download,
   Loader2,
-  Camera,
   ArrowRight,
 } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
@@ -143,9 +142,6 @@ function AdminContent() {
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900">Farzandly boshqaruvi</h1>
         </div>
         <div className="flex gap-2">
-          <Link href="/instagram" className="btn-outline text-sm px-4 py-2.5 inline-flex items-center gap-2">
-            <Camera className="w-4 h-4" /> Instagram studio
-          </Link>
           <button type="button" onClick={loadStats} className="btn-outline text-sm px-4 py-2.5 inline-flex items-center gap-2">
             <RefreshCw className="w-4 h-4" /> Yangilash
           </button>

@@ -31,7 +31,7 @@ export function Countdown({ seconds, className = '' }: { seconds: number; classN
 /* ------------------------------------------------------------------ */
 
 // Pages where a promo would interrupt focused work or duplicate the offer.
-const QUIET_ROUTES = ['/premium', '/admin', '/instagram', '/kirish', '/dars/', '/join-family', '/ref/'];
+const QUIET_ROUTES = ['/premium', '/admin', '/kirish', '/dars/', '/join-family', '/ref/'];
 
 export function OfferBanner() {
   const pathname = usePathname() || '/';
