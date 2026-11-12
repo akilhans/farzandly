@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useI18n } from '@/context/LanguageContext';
 import { SENTENCE_SCENARIOS, ScenarioGame, SentencePiece } from '@/lib/kidsSentenceData';
+import { speakUzbek, stopSpeech } from '@/lib/speech';
 
 const fireConfetti = (opts: import('canvas-confetti').Options) =>
   import('canvas-confetti').then((mod) => mod.default(opts));
@@ -27,21 +28,6 @@ interface SentenceBuilderGameProps {
     muted: boolean;
     setMuted: React.Dispatch<React.SetStateAction<boolean>>;
   };
-}
-
-// Speak sentence using Web Speech API
-function speakText(text: string) {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
-  try {
-    window.speechSynthesis.cancel();
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'uz-UZ';
-    utterance.rate = 0.9;
-    utterance.pitch = 1.1;
-    window.speechSynthesis.speak(utterance);
-  } catch {
-    // Speech synthesis unavailable
-  }
 }
 
 export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: SentenceBuilderGameProps) {
@@ -58,6 +44,30 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
   const [xpToast, setXpToast] = useState<{ show: boolean; amount: number }>({ show: false, amount: 0 });
   const [isLevelFinished, setIsLevelFinished] = useState(false);
   const [shuffledPieces, setShuffledPieces] = useState<SentencePiece[]>([]);
+  const [isSpeaking, setIsSpeaking] = useState(false);
+
+  const playSentence = useCallback(
+    (text: string) => {
+      speakUzbek(text, {
+        muted: sound.muted,
+        onStart: () => setIsSpeaking(true),
+        onEnd: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false),
+      });
+    },
+    [sound.muted]
+  );
+
+  useEffect(() => {
+    return () => {
+      stopSpeech();
+    };
+  }, []);
+
+  useEffect(() => {
+    stopSpeech();
+    setIsSpeaking(false);
+  }, [currentIndex, selectedLevel]);
 
   // Filter scenarios by chosen level
   const scenarios = useMemo(() => {
@@ -137,14 +147,14 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
       setXpToast({ show: true, amount: reward });
       setTimeout(() => setXpToast({ show: false, amount: 0 }), 2500);
 
-      // Read completed sentence
+      // Read completed sentence in natural Uzbek voice
       const sentenceText = currentScenario.correctOrder
         .map((id) => {
           const p = currentScenario.pieces.find((x) => x.id === id);
           return isKr ? p?.textKr : p?.textUz;
         })
         .join(' ');
-      speakText(sentenceText);
+      playSentence(sentenceText);
     } else {
       sound.play('no');
     }
@@ -399,11 +409,11 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
             <button
               onClick={() => {
                 const text = isKr ? currentScenario.sceneDescriptionKr : currentScenario.sceneDescriptionUz;
-                speakText(text);
+                playSentence(text);
               }}
               className="text-xs font-bold text-slate-600 hover:text-emerald-700 bg-white/90 hover:bg-white px-2.5 py-1 rounded-xl shadow-2xs border border-slate-200 flex items-center gap-1.5 transition-all cursor-pointer"
             >
-              <Volume2 className="w-3.5 h-3.5 text-emerald-600" />
+              <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-600 animate-pulse' : 'text-emerald-600'}`} />
               <span>{isKr ? 'Таърифни тинглаш' : 'Ta’rifni tinglash'}</span>
             </button>
           </div>
@@ -528,14 +538,34 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
               ) : (
                 <HelpCircle className="w-6 h-6 text-rose-600 shrink-0" />
               )}
-              <div className="text-xs sm:text-sm font-black">
-                {isCorrect
-                  ? isKr
-                    ? '🎉 Баракалла! Гап тўғри тузилди!'
-                    : '🎉 Barakalla! Gap to‘g‘ri tuzildi!'
-                  : isKr
-                    ? 'Қайта уриниб кўринг, сўзлар тартибини текширинг.'
-                    : 'Qayta urinib ko‘ring, so‘zlar tartibini tekshiring.'}
+              <div className="text-xs sm:text-sm font-black flex items-center gap-2">
+                <span>
+                  {isCorrect
+                    ? isKr
+                      ? '🎉 Баракалла! Гап тўғри тузилди!'
+                      : '🎉 Barakalla! Gap to‘g‘ri tuzildi!'
+                    : isKr
+                      ? 'Қайта уриниб кўринг, сўзлар тартибини текширинг.'
+                      : 'Qayta urinib ko‘ring, so‘zlar tartibini tekshiring.'}
+                </span>
+                {isCorrect && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const sentenceText = currentScenario.correctOrder
+                        .map((id) => {
+                          const p = currentScenario.pieces.find((x) => x.id === id);
+                          return isKr ? p?.textKr : p?.textUz;
+                        })
+                        .join(' ');
+                      playSentence(sentenceText);
+                    }}
+                    title={isKr ? 'Гапни қайта тинглаш' : 'Gapni qayta tinglash'}
+                    className="p-1 rounded-lg bg-emerald-200/60 hover:bg-emerald-300 text-emerald-800 transition-colors cursor-pointer"
+                  >
+                    <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'animate-bounce text-emerald-900' : ''}`} />
+                  </button>
+                )}
               </div>
             </div>
 
