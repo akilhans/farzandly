@@ -419,13 +419,19 @@ export default function SentenceBuilderGame({ onExit, onAwardXP, sound }: Senten
             </span>
             <button
               onClick={() => {
-                const text = isKr ? currentScenario.sceneDescriptionKr : currentScenario.sceneDescriptionUz;
-                playSentence(text);
+                const sentenceText = currentScenario.correctOrder
+                  .map((id) => {
+                    const p = currentScenario.pieces.find((x) => x.id === id);
+                    return isKr ? p?.textKr : p?.textUz;
+                  })
+                  .join(' ');
+                const audioUrl = `/audio/kids/${currentScenario.id}-${isKr ? 'kr' : 'uz'}.wav`;
+                playSentence(sentenceText, audioUrl);
               }}
               className="text-xs font-bold text-slate-600 hover:text-emerald-700 bg-white/90 hover:bg-white px-2.5 py-1 rounded-xl shadow-2xs border border-slate-200 flex items-center gap-1.5 transition-all cursor-pointer"
             >
               <Volume2 className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-600 animate-pulse' : 'text-emerald-600'}`} />
-              <span>{isKr ? 'Таърифни тинглаш' : 'Ta’rifni tinglash'}</span>
+              <span>{isKr ? 'Гапни тинглаш' : 'Gapni tinglash'}</span>
             </button>
           </div>
 
